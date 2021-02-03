@@ -1,0 +1,258 @@
+#! python
+# -*- coding: shift-jis -*-
+"""Property list of buffers
+
+Author: Kazuya O'moto <komoto@jeol.co.jp>
+"""
+from __future__ import (division, print_function,
+                        absolute_import, unicode_literals)
+from pprint import pformat
+import wx
+from wx import aui
+import scipy as np
+from mwx.graphman import Layer
+from mwx.framework import CtrlInterface
+from wx.lib.mixins.listctrl import CheckListCtrlMixin
+
+
+class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
+    """ CheckList with FSM
+    list item order = buffer order リストアイテムとバッファの並び順 0..n は常に一致します．
+    """
+    @property
+    def checked_items(self):
+        return [j for j in range(self.ItemCount) if self.IsChecked(j)]
+    
+    @property
+    def selected_items(self):
+        return [j for j in range(self.ItemCount) if self.IsSelected(j)]
+    
+    @property
+    def all_items(self):
+        rows = range(self.ItemCount)
+        cols = range(self.ColumnCount)
+        return [[self.GetItemText(j, k) for k in cols] for j in rows]
+    
+    def __init__(self, parent, target, **kwargs):
+        wx.ListCtrl.__init__(self, parent,
+            size=(400,130), style=wx.LC_REPORT|wx.LC_HRULES, **kwargs)
+        CheckListCtrlMixin.__init__(self)
+        CtrlInterface.__init__(self)
+        
+        self.parent = parent
+        self.Target = target
+        
+        self.alist = ( # assoc list of column names
+            ("id", 42),
+            ("name", 160),
+            ("shape", 90),
+            ("dtype", 60),
+            ("Mb",   40),
+            ("unit", 60),
+            ("mean", 60),
+            ("std", 60),
+            ("med", 60),
+            ("max", 50),
+            ("min", 50),
+           #("annotation", 200),
+        )
+        for k,(name,w) in enumerate(self.alist):
+            self.InsertColumn(k, name, width=w)
+        
+        for j, frame in enumerate(self.Target.all_frames):
+            self.InsertItem(j, str(j))
+            self.Update(frame) # update all --> 計算が入ると時間がかかる
+        
+        self.handler.update({ # 親のキーバインドとかぶるときは，親の優先です
+            0 : {
+                            '*' : (0, lambda v: v.Skip()),
+               'Lbutton dclick' : (0, self.OnShowItems), # --> frame_shown
+                'enter pressed' : (0, self.OnShowItems), # --> frame_shown
+               #'space pressed' : (0, self.OnToggleItems),
+               'delete pressed' : (0, self.OnRemoveItems), # --> frame_removed/shown
+                  'C-a pressed' : (0, self.OnSelectAllItems),
+                  'C-s pressed' : (0, self.OnSaveItems),
+                 'M-up pressed' : (0, self.Target.OnPageUp),
+               'M-down pressed' : (0, self.Target.OnPageDown),
+            },
+        })
+        self.__dir = True
+        self.SetToolTip('')
+        self.ToolTip.SetMaxWidth(2048)
+        self.Bind(wx.EVT_MOTION, self.OnMotion)
+        self.Bind(wx.EVT_LIST_COL_CLICK, self.OnSortItems)
+        
+        self.context = { # This context is to be bound to the target handler
+            None: {
+                  'frame_shown' : [ None, self.on_frame_shown ],
+                 'frame_hidden' : [ None, self.on_frame_hidden ],
+                 'frame_loaded' : [ None, self.on_frame_loaded ],
+                'frame_removed' : [ None, self.on_frames_removed ],
+               'frame_modified' : [ None, self.Update ],
+                'frame_updated' : [ None, self.Update ],
+            }
+        }
+        self.Target.handler.append(self.context)
+    
+    def Destroy(self):
+        self.Target.handler.remove(self.context)
+        return wx.ListCtrl.Destroy(self)
+    
+    def Update(self, frame):
+        ls = ("{}".format(frame.index),
+              "{}".format(frame.name),
+              "{}".format(frame.buffer.shape),
+              "{}".format(frame.buffer.dtype),
+          "{:.1f}".format(frame.buffer.nbytes/1e6),
+          "{:g}{}".format(frame.unit, '*' if frame.localunit else ''),
+          "{:.2f}".format(np.mean(frame.buffer)),
+          "{:.2f}".format(np.std(frame.buffer)),
+          "{:.2f}".format(np.median(frame.buffer)),
+            "{:g}".format(frame.buffer.max()),
+            "{:g}".format(frame.buffer.min()),
+             #"{}".format(frame.annotation),
+        )
+        j = frame.index
+        for k, v in enumerate(ls):
+            self.SetItem(j, k, v)
+        if frame.pathname:
+            self.CheckItem(j)
+    
+    def OnMotion(self, evt):
+        j, flag = self.HitTest(evt.GetPosition())
+        if j >= 0:
+            attr = self.Target.all_frames[j].attributes
+            if attr:
+                tip = pformat(attr, width=80, depth=1) # compact=0:PY3
+            else:
+                tip = "No attributes"
+            self.SetToolTip(tip)
+        evt.Skip()
+    
+    def OnToggleItems(self, evt):
+        for j in self.selected_items:
+            self.CheckItem(j, not self.IsChecked(j))
+    
+    def OnShowItems(self, evt):
+        self.Target.select(self.FocusedItem)
+    
+    def OnRemoveItems(self, evt):
+        del self.Target[self.selected_items]
+    
+    def OnSortItems(self, evt): #<wx._controls.ListEvent>
+        col = evt.GetColumn()
+        if col == 0: # reverse the first column
+            self.__dir = False
+        self.__dir = not self.__dir # toggle 0:ascend/1:descend
+        
+        def _eval(x):
+            try: return eval(x)
+            except: return x
+        
+        frames = self.Target.all_frames
+        if frames:
+            la = sorted(self.all_items, key=lambda v: _eval(v[col]), reverse=self.__dir)
+            li = [int(x[0]) for x in la] # list of index is Id of all_frames
+            frames[:] = [frames[i] for i in li] # arange by Id to set new all_frames
+            
+            for j, items in enumerate(la):
+                self.Select(j, False) # いったんすべての選択を解除し，
+                for k, v in enumerate(items[1:]): # id 以外 (name, shape,...) を更新する
+                    self.SetItem(j, k+1, v) # テキストだけを更新しているので Update より速い
+            
+            self.Target.select(li.index(self.Target.frame.index)) # invokes [frame_shown]
+    
+    def OnSelectAllItems(self, evt):
+        for j in range(self.ItemCount):
+            self.Select(j)
+    
+    def OnSaveItems(self, evt):
+        self.parent.parent.export_buffers(
+            frames=[self.Target.all_frames[j] for j in self.selected_items])
+    
+    ## --------------------------------
+    ## Actions of Frame handler
+    ## --------------------------------
+    
+    def on_frame_loaded(self, frame):
+        j = frame.index
+        self.InsertItem(j, str(j))
+        for k in range(j+1, self.ItemCount): # id(0) を更新する
+            self.SetItem(k, 0, str(k))
+        self.Update(frame)
+    
+    def on_frame_shown(self, frame):
+        j = frame.index
+        self.SetItemFont(j, self.Font.Bold())
+        self.Select(j)
+        self.Focus(j)
+    
+    def on_frame_hidden(self, frame):
+        j = frame.index
+        self.SetItemFont(j, self.Font)
+        self.Select(j, False)
+    
+    def on_frames_removed(self, indices):
+        for j in reversed(indices):
+            self.DeleteItem(j)
+        for k in range(self.ItemCount): # id(0) を更新する
+            self.SetItem(k, 0, str(k))
+
+
+
+class Plugin(Layer):
+    """Property list of Grpah buffers
+    """
+    menu = "&File/&Extensions"
+    menustr = "&Buffer listbox\tAlt+b"
+    caption = "Property list"
+    dockable = False
+    unloadable = False
+    
+    @property
+    def checked_buffers(self):
+        lc = self.nb.CurrentPage
+        return lc.Target[lc.checked_items]
+    
+    @property
+    def selected_buffers(self):
+        lc = self.nb.CurrentPage
+        return lc.Target[lc.selected_items]
+    
+    def Init(self):
+        self.nb = aui.AuiNotebook(self, size=(400,150),
+            style = (aui.AUI_NB_DEFAULT_STYLE|aui.AUI_NB_RIGHT)
+                  &~(aui.AUI_NB_CLOSE_ON_ACTIVE_TAB|aui.AUI_NB_MIDDLE_CLICK_CLOSE)
+        )
+        self.layout(None, [self.nb], expand=2, border=0)
+        self.attach(self.graph, "graph")
+        self.attach(self.output, "output")
+    
+    def attach(self, target, caption=None):
+        lc = CheckList(self, target)
+        self.nb.AddPage(lc, caption or target.parent.__module__)
+    
+    def detach(self, target):
+        try:
+            for i in range(self.nb.PageCount):
+                lc = self.nb.GetPage(i)
+                if target is lc.Target:
+                    self.nb.DeletePage(i)
+                    return
+            print("- No such target {!r} in the view".format(target))
+        except Exception:
+            pass
+
+
+if __name__ == "__main__":
+    import glob
+    import wxpyJemacs as wxpj
+    
+    app = wx.App()
+    frm = wxpj.Frame(None)
+    frm.load_plug(__file__, show=1, docking=0)
+    for path in glob.glob(r"C:/usr/home/workspace/images/*.bmp"):
+        print("loading path =", path)
+        frm.load_buffer(path)
+    frm.Show()
+    app.MainLoop()

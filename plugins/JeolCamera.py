@@ -1,0 +1,442 @@
+#! python
+# -*- coding: shift-jis -*-
+"""Jeol Camera module
+
+Author: Kazuya O'moto <komoto@jeol.co.jp>
+Contributions by Hiroyuki Satoh @JEOL.JP
+"""
+from __future__ import (division, print_function,
+                        absolute_import, unicode_literals)
+from datetime import datetime
+import time
+import sys
+import os
+import wx
+import httplib2
+import scipy as np
+from PIL import Image
+from mwx import Param, LParam
+from mwx.graphman import Layer
+import wxpyJemacs as wxpj
+try:
+    Offline = 1
+    
+    if 'PyJEM.offline' in sys.modules:
+        print('Loading PyJEM:offline module has already loaded.')
+        from PyJEM.offline import detector
+        Offline = True
+    
+    elif 'PyJEM' in sys.modules:
+        print('Loading PyJEM:online module has already loaded.')
+        from PyJEM import detector
+        Offline = False
+    
+    else: # the case when this modulue is tested in standalone
+        if Offline:
+            from PyJEM.offline import detector
+        else:
+            from PyJEM import detector
+
+except Exception as e:
+    print(e)
+    print("  Current sys.version is Python {}".format(sys.version.split()[0]))
+    print("  PyJEM is supported under Python 3.5... sorry")
+    Offline = None
+    detector = None
+
+## REST client
+##   Performs a single HTTP request.
+##   The return value is a tuple of (response, content),
+##   the first being an instance of the 'Response' class,
+##   the second being a string that contains the response entity body.
+## 
+HTTP = httplib2.Http()
+TEM_URL = "http://{}:49229/TEMService/TEM/{}".format
+CAM_URL = "http://{}:49230/CameraStationService/{}".format
+DET_URL = "http://{}:49226/DetectorRESTService/Detector/{}".format
+
+HEADER = {"connection" : "close"}
+
+
+def StartCreateCache(host):
+    """ライブ像のキャッシュを受け取るようにする処理の開始"""
+    url = DET_URL(host, "StartCreateRawDataCache")
+    res, con = HTTP.request(url, "POST", headers=HEADER)
+    return con
+
+def StopCreateCache(host):
+    """ライブ像のキャッシュを受け取るようにする処理の停止"""
+    url = DET_URL(host, "StopCreateRawDataCache")
+    res, con = HTTP.request(url, "POST", headers=HEADER)
+    return con
+
+def CreateCache(host, name):
+    """ライブ像のキャッシュを受け取る"""
+    url = DET_URL(host, name + "/CreateRawDataCache")
+    res, data = HTTP.request(url, "GET", headers=HEADER)
+    return data
+
+
+hostnames = [
+    'localhost',
+    '172.17.41.1',  # TEM server
+]
+
+typenames_info = { # 0:maxcnt, (1;bins, 2:gains,
+         "camera" : (65535, ), # dummy for offline
+        "TVCAM_U" : (65535, ), # Flash cam
+    "TVCAM_SCR_L" : ( 4096, ), # Large screen
+    "TVCAM_SCR_F" : ( 4096, ), # Focus screen
+}
+
+bins_list = (1,2,4)
+gains_list = np.arange(1, 10.1, 0.5)
+
+
+class Camera(object):
+    """Jeol Camera (proxy of Detector)
+    
+    name : name of selected camera
+    host : localhost if offline (default) otherwise 172.17.41.1
+    cont : camera controler
+    """
+    busy = 0
+    
+    def __init__(self, name, host):
+        self.name = name
+        self.host = host
+        self.cont = detector.Detector(name)
+        self.pixel_size = 0.05
+        self.__bin_index = 0
+        self.__gain_index = 0
+        self.cached_time = 0
+        self.cached_image = None
+        self.max_count = typenames_info[self.name][0]
+    
+    def __del__(self):
+        try:
+            StopCreateCache(self.host) # ▲不要みたいだがトレースバックがうぜえ
+        except Exception:
+            pass
+    
+    def start(self):
+        StartCreateCache(self.host) # check status
+        self.cont.livestart()
+        return True
+    
+    def stop(self):
+        StopCreateCache(self.host) # close connection
+        self.cont.livestop()
+    
+    ## def snapshot(self):
+    ##     if not Offline: # ▲Offilne とフォーマット違うし(ﾟДﾟ) しかもおそすぎ
+    ##         data = self.cont.snapshot('tif')
+    ##         return np.asarray(Image.open(io.BytesIO(data)))
+    ##     return self.cont.snapshot('tif')
+    
+    def cache(self):
+        """Cache of the current image <uint16>"""
+        try:
+            while Camera.busy:
+                time.sleep(0.01) # ここで通信待機
+            Camera.busy += 1
+            if time.time() - self.cached_time < self.exposure:
+                if self.cached_image is not None:
+                    return self.cached_image
+            
+            StartCreateCache(self.host)
+            data = CreateCache(self.host, self.name)
+            buf = np.frombuffer(data, dtype=np.uint16)
+            buf.resize(self.shape)
+            self.cached_image = buf
+            self.cached_time = time.time()
+            return buf
+        finally:
+            Camera.busy -= 1
+    
+    ## pixel size [mm/pix] without binning modification
+    pixel_size = 0.05
+    pixel_unit = property(lambda self: self.pixel_size * self.binning)
+    
+    @property
+    def shape(self):
+        ji = self.cont.get_detectorsetting()
+        h = ji['OutputImageInformation']['ImageSize']['Height']
+        w = ji['OutputImageInformation']['ImageSize']['Width']
+        return h, w
+    
+    @property
+    def exposure(self):
+        ji = self.cont.get_detectorsetting()
+        return ji['ExposureTimeValue'] /1e3
+    
+    @exposure.setter
+    def exposure(self, sec):
+        if abs(self.exposure - sec) > 1e-6:
+            self.cont.set_exposuretime_value(sec * 1e3) # set as <msec>
+    
+    @property
+    def binning(self):
+        ji = self.cont.get_detectorsetting()
+        return bins_list[ji.get('BinningIndex', self.__bin_index)]
+    
+    @binning.setter
+    def binning(self, v):
+        if 0 < v <= bins_list[-1]:
+            j = np.searchsorted(bins_list, v)
+            self.__bin_index = j
+            self.cont.set_binningindex(int(j)) #<np.int64> crashes online▲
+    
+    @property
+    def gain(self):
+        ji = self.cont.get_detectorsetting()
+        return gains_list[ji.get('GainIndex', self.__gain_index)]
+    
+    @gain.setter
+    def gain(self, v):
+        if 0 < v <= gains_list[-1]:
+            j = np.searchsorted(gains_list, v)
+            self.__gain_index = j
+            self.cont.set_gainindex(int(j)) #<np.int64> crashes online▲
+
+
+class DummyCamera(object):
+    def __init__(self, parent):
+        self.parent = parent
+        self.name = 'camera'
+        self.host = 'localhost'
+        self.gain = 1
+        self.binning = 1
+        self.exposure = 0.05
+        self.max_count = typenames_info[self.name][0]
+    
+    def cache(self):
+        ## n = 2048 // self.binning
+        ## return np.uint16(np.randn(n,n) * self.max_count)
+        return self.parent.graph.buffer
+    
+    pixel_size = 0.05
+    pixel_unit = property(lambda self: self.pixel_size * self.binning)
+    
+    @property
+    def shape(self):
+        return self.parent.graph.buffer.shape
+
+
+class Plugin(Layer):
+    """Jeol camera manager
+    """
+    menu = "&Camera"
+    menustr = "&Jeol camera ver.2"
+    
+    def Init(self):
+        self.binning_selector = Param("bin", (1,2,4), handler=self.set_binning)
+        self.exposure_selector = LParam("exp", (0.05, 5, 0.05), handler=self.set_exposure)
+        self.gain_selector = LParam("gain", (1, 10, 0.5), handler=self.set_gain)
+        
+        self.dark_chk = wx.CheckBox(self, label="dark")
+        self.dark_chk.Enable(0)
+        
+        self.name_selector = wxpj.Choice(self,
+            choices=list(typenames_info), size=(100,22), readonly=1)
+        
+        self.host_selector = wxpj.Choice(self,
+            choices=hostnames, size=(100,22))
+        
+        self.unit_selector = LParam("mm/pix", (0,1,1e-4), self.graph.unit,
+            handler=self.set_pixsize)
+        
+        self.layout("Acquire setting", (
+            self.binning_selector,
+            self.exposure_selector,
+            self.gain_selector,
+            ),
+            type='vspin', lw=32, cw=-1, tw=40
+        )
+        self.layout(None, (
+            wxpj.Button(self, "Capture", self.capture_ex, icon='cam'),
+            self.dark_chk,
+            ),
+            row=2,
+        )
+        self.layout("Setup", (
+            self.name_selector,
+            self.host_selector,
+            self.unit_selector,
+            wxpj.Button(self, "Connect", self.connect, size=(-1,20)),
+            wxpj.Button(self, "Prepare/dark", self.prepare_dark, size=(-1,20)),
+            ),
+            row=1, show=0, type=None, lw=-1, tw=50,
+        )
+    
+    def set_current_session(self, session):
+        self.name_selector.value = session.get('name')
+        self.host_selector.value = session.get('host')
+        self.unit_selector.value = session.get('unit')
+        self.preset_dark()
+    
+    def get_current_session(self):
+        return {
+            'name': self.name_selector.value,
+            'host': self.host_selector.value,
+            'unit': self.unit_selector.value,
+        }
+    
+    def Destroy(self):
+        return Layer.Destroy(self)
+    
+    ## --------------------------------
+    ## Camera Interface
+    ## --------------------------------
+    camera = None
+    
+    def set_exposure(self, p):
+        if self.camera:
+            self.camera.exposure = p.value
+    
+    def set_binning(self, p):
+        if self.camera:
+            self.camera.binning = p.value
+            self.preset_dark()
+    
+    def set_gain(self, p):
+        if self.camera:
+            self.camera.gain = p.value
+    
+    def set_pixsize(self, p):
+        if self.camera:
+            self.camera.pixel_size = p.value
+    
+    def connect(self, evt=None):
+        name = self.name_selector.value
+        host = self.host_selector.value
+        if not name:
+            print(self.message("- Camera name is not specified."))
+            return
+        try:
+            if name != 'camera':
+                self.camera = Camera(name, host)
+                self.camera.start()
+            else:
+                self.camera = DummyCamera(self)
+            
+            self.message("Connected to {!r}".format(self.camera))
+            
+            ## <--- set camera parameter
+            self.camera.pixel_size = self.unit_selector.value
+            
+            ## ---> get camera info from system
+            self.gain_selector.value = self.camera.gain
+            self.binning_selector.value = self.camera.binning
+            self.exposure_selector.value = self.camera.exposure
+            self.preset_dark()
+            return self.camera
+        
+        except Exception as e:
+            print(self.message("- Connection failed; {!r}".format(e)))
+            self.camera = None
+    
+    ## --------------------------------
+    ## Camera Interface
+    ## --------------------------------
+    dark_image = None
+    
+    @property
+    def dark_filename(self):
+        if self.camera:
+            name = self.camera.name
+            binning = self.camera.binning
+        else:
+            name = self.name_selector.value
+            binning = self.binning_selector.value
+            
+        return "{}-dark-bin{}.tif".format(name, binning)
+    
+    @property
+    def attributes(self):
+        return {
+                'camera' : self.camera.name,
+                 'pixel' : self.camera.pixel_size,
+               'binning' : self.camera.binning,
+              'exposure' : self.camera.exposure,
+          'acq_datetime' : datetime.now(), # acquired datetime stamp
+        }
+    
+    def acquire(self):
+        """Acquire image with no dark subtraction"""
+        try:
+            ## self.message("Acquiring...")
+            if self.camera is None:
+                self.connect()
+            return self.camera.cache()
+        except Exception as e:
+            print(self.message(e))
+    
+    def capture(self):
+        """Capture image
+        If `dark subtraction' is checked, the image is dark-subtracted,
+        and the result image is dtype:float32, otherwise uint16.
+        """
+        buf = self.acquire()
+        if buf is not None:
+            if self.dark_chk.Value and self.dark_image is not None:
+                return buf - self.dark_image
+        return buf
+    
+    def capture_ex(self, evt=None):
+        """Capture imaage and load to the target window
+        """
+        buf = self.capture()
+        if buf is not None:
+            frame = self.graph.load(buf,
+                localunit=self.camera.pixel_unit, **self.attributes)
+            self.parent.handler('frame_cached', frame)
+    
+    def preset_dark(self, evt=None): # internal use only
+        f = self.dark_filename
+        if os.path.exists(f):
+            self.dark_image = np.asarray(Image.open(f)) # cf. read_buffer
+            self.dark_chk.Enable(1)
+            self.dark_chk.SetToolTip("Subtract dark: {!r}".format(f))
+        else:
+            ## self.message("- No such file: {!r}".format(f))
+            self.dark_chk.Enable(0)
+    
+    def prepare_dark(self, evt=None, verbose=True):
+        """Prepare dark reference
+        Before execution, blank the beam manually.
+        Please close the curtain to prevent light leakage.
+        """
+        if not self.camera:
+            wx.MessageBox("The camera is not ready", self.__module__,
+                style=wx.ICON_WARNING)
+            return
+        
+        if verbose:
+            if wx.MessageBox("Proceeding new dark reference.", self.__module__,
+                style=wx.OK|wx.CANCEL|wx.ICON_INFORMATION) != wx.OK:
+                    return
+        
+        f = self.dark_filename
+        
+        self.dark_image = self.acquire().astype(np.float32) # for underflow in subtraction
+        self.dark_chk.Value = True
+        self.dark_chk.Enable(1)
+        self.dark_chk.SetToolTip("Subtract dark: {!r}".format(f))
+        
+        Image.fromarray(self.dark_image).save(f) # cf. write_buffer
+        
+        frame = self.output.load(self.dark_image, name=f,
+            localunit=self.camera.pixel_unit, **self.attributes)
+        frame.pathname = f
+        
+        self.parent.handler('frame_cached', frame)
+        self.message("dark ref saved to {!r}".format(f))
+
+
+if __name__ == "__main__":
+    app = wx.App()
+    frm = wxpj.Frame(None)
+    frm.load_plug(__file__, show=1, docking=4)
+    frm.Show()
+    app.MainLoop()

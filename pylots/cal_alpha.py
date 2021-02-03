@@ -1,0 +1,61 @@
+#! python
+# -*- coding: shift-jis -*-
+from mwx.graphman import Layer
+from pylots.temixins import TemInterface
+import wxpyJemacs as wxpj
+
+
+class Plugin(TemInterface, Layer):
+    """Plugin of measurement
+    Calibrate alpha angle for each spot:alpha
+    """
+    menu = None #"&Maintenance/&Measure"
+    category = "Measurement"
+    caption = "Alpha"
+    conf_key = 'alpha'
+    
+    diffspot = property(lambda self: self.parent.require('beam_spot_diff'))
+    spot = property(lambda self: self.parent.require('beam_spot'))
+    pla = property(lambda self: self.parent.require('align_pla'))
+    cla = property(lambda self: self.parent.require('align2_clapt'))
+    
+    def Init(self):
+        TemInterface.Init(self)
+        
+        self.layout("Manual calibration", (
+            wxpj.Button(self, "Cal", lambda v: self.thread.Start(self.cal), icon='cal'),
+            wxpj.Button(self, "Save", lambda v: self.config.save(self.conf_key), icon='save'),
+            wxpj.Button(self, "Load", lambda v: self.config.load(self.conf_key), icon='proc'),
+            ),
+            row=3, show=1,
+        )
+    
+    @property
+    def conf_table(self):
+        r = self.CLAPT.dia /100
+        i = self.illumination.Selector
+        return self.config[self.conf_key][i] * r
+    
+    def cal(self):
+        if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
+            with self.save_excursion(mmode='DIFF'):
+                self.spot.focus()
+                self.diffspot.focus()
+                self.pla.align()
+                self.delay(2)
+                d, p, q = self.detect_beam_diameter()
+                if d:
+                    r = self.CLAPT.dia /100
+                    i = self.illumination.Selector
+                    self.config[self.conf_key][i] = d * self.cam_unit / r #= 2ƒ¿[mrad]
+                    return True
+    
+    def execute(self):
+        with self.thread:
+            with self.save_restriction(CLAPT=3, SAAPT=0):
+                with self.save_excursion(mmode='MAG'):
+                    self.cla.align()
+                with self.save_excursion(mmode='DIFF', mag=2000):
+                    return all([self.cal()
+                        for a in self.for_each_alpha()
+                        for s in self.for_each_spot()])
