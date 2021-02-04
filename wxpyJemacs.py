@@ -161,11 +161,11 @@ class pyJemacs(Framebase):
     def export_buffers(self, savedir=None, frames=None):
         """Save frames and the associated results
         """
-        savedir = Framebase.export_buffers(self, savedir, frames) # 選択フレームを保存する
-        if not savedir:
+        frames = Framebase.export_buffers(self, savedir, frames) # 選択フレームを保存する
+        if not frames:
             return
         
-        ## savedir = os.path.dirname(frames[0].pathname) # dir to save *results*
+        savedir = os.path.dirname(frames[0].pathname) # dir to save *results*
         f = os.path.join(savedir, 'results')
         results = OrderedDict()
         if os.path.exists(f):
@@ -173,7 +173,6 @@ class pyJemacs(Framebase):
                 results.update(eval(i.read()))
                 
                 for name, attr in tuple(results.items()): # check missing files
-                    ## path = attr.get('pathname') # get abs-path from attribtutes
                     path = os.path.join(savedir, name) # get rel-path (.name)
                     if not os.path.exists(path):
                         results.pop(name)

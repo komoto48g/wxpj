@@ -62,11 +62,13 @@ class Plugin(TemInterface, Layer):
             wxpj.Button(self, "Brightness", size=(70,-1)),
             self.tem.foci['CL3'],
             (),
-            wxpj.Button(self, "OL:Std/F", self.on_olstdf_update, size=(70,-1)),
+            wxpj.Button(self, "OL:Std/F", self.on_olstdf_update, size=(70,-1),
+                tip="Set the current value as the standard focus of MAG mode"),
             self.tem.foci['OLC'],
             self.tem.foci['OLF'],
             
-            wxpj.Button(self, "OM:Std/F", self.on_olstdf_update, size=(70,-1)),
+            wxpj.Button(self, "OM:Std/F", self.on_omstdf_update, size=(70,-1),
+                tip="Set the current value as the standard focus of LOWMAG mode"),
             self.tem.foci['OM1'],
             self.tem.foci['OM2'],
             
@@ -81,6 +83,11 @@ class Plugin(TemInterface, Layer):
         
         self.parent.notify.handler.bind("lens_notify", self.on_lens_notify)
         self.parent.notify.handler.bind("imaging_info", self.on_imaging_notify)
+        try:
+            self.on_lens_notify(self.tem.lsys)
+            self.on_imaging_notify(self.imaging.Info)
+        except Exception as e:
+            print("- tem controler failed to get TEM info; {}.".format(e))
     
     def Destroy(self):
         for name in "CL3 OLC OLF OM1 FLC FLF".split():
@@ -92,16 +99,23 @@ class Plugin(TemInterface, Layer):
     
     def set_current_session(self, session):
         self.ol_focus_param.std_value = session.get('ol')
+        self.om_focus_param.std_value = session.get('om')
         self.fl_focus_param.std_value = session.get('fl')
     
     def get_current_session(self):
         return {
             'ol' : self.ol_focus_param.std_value,
+            'om' : self.om_focus_param.std_value,
             'fl' : self.fl_focus_param.std_value,
         }
     
     def on_olstdf_update(self, evt):
-        self.ol_focus_param.std_value = self.tem.OL # save current value as std/f
+        if not self.lowmagp:
+            self.ol_focus_param.std_value = self.tem.OL # save current value as std/f
+    
+    def on_omstdf_update(self, evt):
+        if self.lowmagp:
+            self.om_focus_param.std_value = self.tem.OM # save current value as std/f
     
     def on_flstdf_update(self, evt):
         self.fl_focus_param.std_value = self.tem.FL # save current value as std/f
@@ -109,10 +123,11 @@ class Plugin(TemInterface, Layer):
     def on_lens_notify(self, argv):
         self.cl_focus_param.value = self.tem.CL3
         self.ol_focus_param.value = self.tem.OL
+        self.om_focus_param.value = self.tem.OM
         self.fl_focus_param.value = self.tem.FL
     
     def on_imaging_notify(self, argv):
-        lowmagp = argv['mode'] == 2
+        lowmagp = (argv['mode'] == 2)
         for x in self.ol_focus_param.knobs:
             x.Enable(not lowmagp)
         for x in self.om_focus_param.knobs:

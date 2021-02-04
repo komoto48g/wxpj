@@ -35,11 +35,10 @@ class Plugin(TemInterface, Layer):
             row=3, show=1,
         )
     
-    @property
-    def tilt(self):
+    def get_tilt(self, j=0):
         i = self.illumination.Alpha
-        T = self.config['beamtilt'][i].reshape(2,2) # raw config table [mrad/bit]
-        return T * self.default_wobstep # [bit] -> (x,y)-tilting angles [mrad]
+        L = self.config['beamtilt'][i] # raw config table [mrad/bit]
+        return L[j::2] * self.default_wobstep # [bit] -> (x,y)-tilting angles [mrad]
     
     def calc_disp(self):
         try:
@@ -60,7 +59,7 @@ class Plugin(TemInterface, Layer):
         if self.mode_selection('MAG'):
             try:
                 org = self.index
-                dt = self.tilt[:,0]
+                dt = self.get_tilt()
                 dy = self.calc_disp()   # [um] image displacement
                 dz = min(dy / dt) * 1e3 # [um] @min eliminates inf
                 
@@ -77,7 +76,7 @@ class Plugin(TemInterface, Layer):
                 try:
                     step = 0x1000
                     org = self.index
-                    dt = self.tilt[:,0]
+                    dt = self.get_tilt()
                     
                     x1 = self.index
                     y1 = self.calc_disp()   # [um] image displacement

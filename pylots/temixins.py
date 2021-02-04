@@ -24,7 +24,7 @@ from pyJeol import pyJem2 as pj
 print("$(pj) = {!r}".format((pj)))
 
 ## TEM = pj.TEM # to be referred from pylots
-from pyJeol.pyJem2 import TEM, EOsys, HTsys # main systems of pmpj
+from pyJeol.pyJem2 import TEM, EOsys, HTsys, Filter, Stage
 
 
 class TemInterface(object):
