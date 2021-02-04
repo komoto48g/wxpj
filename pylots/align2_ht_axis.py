@@ -2,19 +2,22 @@
 # -*- coding: shift-jis -*-
 from mwx import LParam
 from mwx.graphman import Layer
-from pylots.temixins import AlignInterface, TEM
+from pylots.temixins import AlignInterface, TEM, HTsys
 
 
 class Plugin(AlignInterface, Layer):
     """Plugin of beam alignment
-    Adjust beam-axis-OL-alignment [alpha]
+    Adjust beam-axis-HT-alignment [alpha]
     """
-    caption = "OL-axis"
-    conf_key = 'beamaxis'
-    index = TEM.CLA2
-    wobbler = TEM.OL
+    menu = "&Test"
+    category = "Deflector Test"
     
-    default_wobstep = 0x1000 # olstep = 0x1000 => OLdf=12um
+    caption = "HT-axis"
+    conf_key = 'ht-beamaxis'
+    index = TEM.CLA2
+    wobbler = HTsys.Value
+    
+    default_wobstep = 100 # ht step [V]
     default_wobsec = 1.0
     
     spot = property(lambda self: self.parent.require('beam_spot'))
@@ -23,7 +26,7 @@ class Plugin(AlignInterface, Layer):
     def Init(self):
         AlignInterface.Init(self)
         
-        self.wobstep = LParam("Wobbler hex", (0x100,0x8000,0x100), self.default_wobstep, dtype=hex)
+        self.wobstep = LParam("Wobbler [V]", (10,200,10), self.default_wobstep)
         self.layout("Settings", (
             self.wobstep,
             ),
@@ -48,9 +51,9 @@ class Plugin(AlignInterface, Layer):
             if self.mode_selection('MAG'):
                 try:
                     worg = self.wobbler
-                    self.spot.focus()
+                    self.spot.focus(1)
                     self.shift.align()
-                    self.wobbler = worg + self.wobstep.value
+                    self.wobbler = worg - self.wobstep.value
                     self.delay(self.default_wobsec)
                     return AlignInterface.align(self)
                 finally:
@@ -59,12 +62,11 @@ class Plugin(AlignInterface, Layer):
     def cal(self):
         if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
             with self.save_excursion(mmode='MAG'):
-                self.spot.focus()
+                self.spot.focus(1)
                 self.shift.align()
                 try:
-                    ## 与えられた OL-Focus (+dz) で行う
                     worg = self.wobbler
-                    self.wobbler = worg + self.wobstep.value
+                    self.wobbler = worg - self.wobstep.value
                     self.delay(self.default_wobsec)
                     return AlignInterface.cal(self) and AlignInterface.align(self)
                 finally:

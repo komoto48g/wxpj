@@ -23,7 +23,8 @@ from pyJeol import pyJem2 as pj
 
 print("$(pj) = {!r}".format((pj)))
 
-TEM = pj.TEM # refer from plugins
+## TEM = pj.TEM # to be referred from pylots
+from pyJeol.pyJem2 import TEM, EOsys, HTsys # main systems of pmpj
 
 
 class TemInterface(object):
@@ -942,7 +943,7 @@ deflector : deflector to offset beam (shift or tilt)
         TemInterface.Init(self)
         
         self.threshold = LParam("Threshold", (0.005, 0.05, 0.005), self.default_threshold)
-        self.wobstep = LParam("Wobbler amp", (0x100,0x1000,0x100), self.default_wobstep, dtype=hex)
+        self.wobstep = LParam("Wobbler hex", (0x100,0x1000,0x100), self.default_wobstep, dtype=hex)
         
         self.layout(None, (
             wxpj.Button(self, "{}".format(self.caption),

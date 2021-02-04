@@ -1,39 +1,30 @@
 #! python
 # -*- coding: shift-jis -*-
+from mwx import LParam
 from mwx.graphman import Layer
-from pylots.temixins import TemInterface, TEM
-import wxpyJemacs as wxpj
-import editor as edi
+from pylots.temixins import AlignInterface, TEM, HTsys
 
 
-class Plugin(TemInterface, Layer):
-    """Plugin of Focus calibration
+class Plugin(AlignInterface, Layer):
+    """Plugin of beam alignment
+    Adjust beam-axis-HT-alignment [alpha]
     """
-    menu = None #"&Maintenance/&Focus"
-    category = "Focus"
-    caption = "OL"
-    conf_key = 'ol-focus'
-    index = TEM.OL
-    wobbler = TEM.CLA2
+    menu = "&Test"
+    category = "Deflector Test"
     
-    default_wobstep = 0x800
+    caption = "HT-imaxis"
+    conf_key = 'ht-imageaxis'
+    index = TEM.CLA2
+    wobbler = HTsys.Value
     
-    para = property(lambda self: self.parent.require('beam2_para'))
+    default_wobstep = 100 # [V]
+    default_wobsec = 1.0  # [s]
+    
+    spot = property(lambda self: self.parent.require('beam_spot'))
+    shift = property(lambda self: self.parent.require('beam_shift'))
     
     def Init(self):
-        TemInterface.Init(self)
-        
-        self.layout(None, (
-            wxpj.Button(self, "OL-Focus", lambda v: self.thread.Start(self.focus), icon='exe'),
-            ),
-        )
-        self.layout("Manual calibration", (
-            wxpj.Button(self, "Cal", lambda v: self.thread.Start(self.cal), icon='cal'),
-            wxpj.Button(self, "Save", lambda v: self.config.save(self.conf_key), icon='save'),
-            wxpj.Button(self, "Load", lambda v: self.config.load(self.conf_key), icon='proc'),
-            ),
-            row=3, show=1,
-        )
+        AlignInterface.Init(self)
     
     @property
     def tilt(self):
@@ -47,7 +38,7 @@ class Plugin(TemInterface, Layer):
             self.delay(2)
             src = self.capture()
             
-            self.wobbler = worg + [self.default_wobstep, 0]
+            self.wobbler = worg - self.default_wobstep
             self.delay(2)
             src2 = self.capture()
             
@@ -55,21 +46,6 @@ class Plugin(TemInterface, Layer):
             return y * self.mag_unit # [pix] -> [um]
         finally:
             self.wobbler = worg
-    
-    def focus(self):
-        if self.mode_selection('MAG'):
-            try:
-                org = self.index
-                dt = self.tilt[:,0]
-                dy = self.calc_disp()   # [um] image displacement
-                dz = min(dy / dt) * 1e3 # [um] @min eliminates inf
-                
-                print("$(dz) = {!r}".format((dz)))
-                self.index -= dz / self.config[self.conf_key] # [um/bit] <- config
-                
-            except Exception:
-                self.index = org
-                raise
     
     def cal(self):
         if self.apt_selection('SAAPT', 0):
@@ -101,6 +77,5 @@ class Plugin(TemInterface, Layer):
     def execute(self):
         with self.thread:
             with self.save_restriction(SAAPT=0):
-                with self.save_excursion(spot=0, alpha=-1, mmode='MAG'):
-                    self.para.focus()
-                    return self.cal()
+                with self.save_excursion(mmode='MAG'):
+                    return all(self.cal() for a in self.for_each_alpha())

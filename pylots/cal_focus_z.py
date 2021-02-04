@@ -42,17 +42,15 @@ class Plugin(TemInterface, Layer):
     def tilt(self):
         i = self.illumination.Alpha
         T = self.config['beamtilt'][i].reshape(2,2) # raw config table [mrad/bit]
-        return T * self.default_wobstep # [bit] -> xy-tilt [mrad]
+        return T * self.default_wobstep # [bit] -> (x,y)-tilting angles [mrad]
     
     def calc_disp(self):
         try:
             worg = self.wobbler
-            wstep = [self.default_wobstep, 0]
-            
             self.delay(0)
             src = self.capture()
             
-            self.wobbler = worg + wstep
+            self.wobbler = worg + [self.default_wobstep, 0]
             self.delay(1)
             src2 = self.capture()
             
@@ -62,18 +60,19 @@ class Plugin(TemInterface, Layer):
             self.wobbler = worg
     
     def focus(self):
-        try:
-            org = self.Gonio.Z
-            dt = self.tilt[:,0]
-            dy = self.calc_disp()   # [um] image displacement
-            dz = min(dy / dt) * 1e3 # [um] @min eliminates inf
-            
-            print("$(dz) = {!r}".format((dz)))
-            self.Gonio.Z += dz
-            
-        except Exception:
-            self.Gonio.Z = org
-            raise
+        if self.mode_selection('MAG'):
+            try:
+                org = self.Gonio.Z
+                dt = self.tilt[:,0]
+                dy = self.calc_disp()   # [um] image displacement
+                dz = min(dy / dt) * 1e3 # [um] @min eliminates inf
+                
+                print("$(dz) = {!r}".format((dz)))
+                self.Gonio.Z += dz
+                
+            except Exception:
+                self.Gonio.Z = org
+                raise
     
     @property
     def M(self):
