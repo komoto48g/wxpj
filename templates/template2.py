@@ -1,8 +1,8 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-01-28 15:16:12 +0900>
+Last updated: <2021-02-05 16:53:35 +0900>
      Version: 2.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -40,8 +40,7 @@ class Plugin(Layer):
                 tip="Check the standard blur"),
             
             wxpj.Button(self, "3. median", lambda v: self.run_med(), icon='help',
-                tip="Also check the Median blur\n"
-                    "Note image processing results are stacked in output window"),
+                tip="Also check the Median blur"),
             
             wxpj.Button(self, "4. ALL",
                 lambda v: (self.run(), self.run_blur(), self.run_med()), icon='phoenix',

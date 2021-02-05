@@ -123,7 +123,7 @@ class pyJemacs(Framebase):
                 lambda v: self.nfront.Show(v.IsChecked()),
                 lambda v: v.Check(self.nfront.IsShown())),
         ]
-        self.menubar["&File"][8:8] = [ # insert menus for extenstion, option, etc.
+        self.menubar["&File"][9:9] = [ # insert menus for extenstion, option, etc.
             ["&Extensions", []],
             ["&Functions", []],
             ["&Options", []],
@@ -136,58 +136,64 @@ class pyJemacs(Framebase):
         return Framebase.Destroy(self)
     
     ## --------------------------------
-    ## load/save buffers
+    ## load/save buffers +.results
     ## --------------------------------
     
-    def import_buffers(self, loadfile, target):
-        """Load frames and the associated results
-        `loadfile describes the list of frames and the attributes
+    def import_buffers(self, savedir=None, target=None):
+        """Load (override) frames and the associated result file
+        savedir/.results describes the list of frames and the attributes
         """
-        savedir = os.path.dirname(loadfile)
-        with open(loadfile) as i:
-            ## restore info. (locals: datetime, nan, inf)
-            results = OrderedDict(eval(i.read()))
-            
-            for name, attr in results.items():
-                ## path = attr.get('pathname') # get abs-path from attribtutes
-                path = os.path.join(savedir, name) # get rel-path (.name)
-                if os.path.exists(path):
-                    buf, info = self.read_buffer(path)
-                    frame = target.load(buf, name, show=0)
-                    frame.attributes.update(attr, **info)
-                    frame.pathname = path
-            target.select(-1)
-    
-    def export_buffers(self, savedir=None, frames=None):
-        """Save frames and the associated results
-        """
-        frames = Framebase.export_buffers(self, savedir, frames) # 選択フレームを保存する
+        target = target or self.graph
+        frames = Framebase.import_buffers(self, savedir, target)
         if not frames:
             return
         
-        savedir = os.path.dirname(frames[0].pathname) # dir to save *results*
-        f = os.path.join(savedir, 'results')
-        results = OrderedDict()
+        savedir = os.path.dirname(frames[0].pathname)
+        f = os.path.join(savedir, ".results")
+        res = OrderedDict()
         if os.path.exists(f):
             with open(f) as i:
-                results.update(eval(i.read()))
+                res.update(eval(i.read())) # restore (locals: datetime, nan, inf)
                 
-                for name, attr in tuple(results.items()): # check missing files
-                    path = os.path.join(savedir, name) # get rel-path (.name)
-                    if not os.path.exists(path):
-                        results.pop(name)
+                for name, attr in res.items():
+                    path = os.path.join(savedir, name) # get rel-path (name)
+                    if not os.path.exists(path): # check missing files
+                        res.pop(name)
+                    else:
+                        frame = target.find_frame(name)
+                        frame.attributes.update(attr)
+    
+    def export_buffers(self, savedir=None, frames=None):
+        """Save (override) frames and the associated result file
+        savedir/.results describes the list of frames and the attributes
+        """
+        frames = Framebase.export_buffers(self, savedir, frames)
+        if not frames:
+            return
         
-        ## in case of IO failure, save results to temporary file
+        savedir = os.path.dirname(frames[0].pathname)
+        f = os.path.join(savedir, ".results")
+        res = OrderedDict()
+        if os.path.exists(f):
+            with open(f) as i:
+                res.update(eval(i.read())) # restore (locals: datetime, nan, inf)
+                
+                for name, attr in tuple(res.items()):
+                    path = os.path.join(savedir, name) # get rel-path (name)
+                    if not os.path.exists(path): # check missing files
+                        res.pop(name)
+        
+        ## in case of IO failure, save result file to temporary file
         with open(f + ".tmp", 'w') as o:
             for frame in frames:
                 frame.attributes.update( # *** 保存したい情報を追記する ***
                     localunit = frame.unit,
                 )
-                results.update({frame.name : frame.attributes}) # set new info.
-            pprint(tuple(results.items()), stream=o)
+                res.update({frame.name : frame.attributes})
+            pprint(tuple(res.items()), stream=o)
         if os.path.exists(f):
             os.remove(f)
-        os.rename(o.name, f) # $ mv (cat) .tmp *results*
+        os.rename(o.name, f) # $ mv (cat) .tmp .results
     
     ## --------------------------------
     ## read/write buffers

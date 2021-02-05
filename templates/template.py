@@ -1,8 +1,8 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-01-19 23:07:10 +0900>
+Last updated: <2021-02-05 16:53:26 +0900>
      Version: 0.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
