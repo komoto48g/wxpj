@@ -427,8 +427,7 @@ class Plugin(Layer):
         Image.fromarray(self.dark_image).save(f) # cf. write_buffer
         
         frame = self.output.load(self.dark_image, name=f,
-            localunit=self.camera.pixel_unit, **self.attributes)
-        frame.pathname = f
+            localunit=self.camera.pixel_unit, pathname=f, **self.attributes)
         
         self.parent.handler('frame_cached', frame)
         self.message("dark ref saved to {!r}".format(f))

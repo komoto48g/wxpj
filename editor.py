@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """Editor's collection of wxpj code
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
@@ -209,15 +209,15 @@ def rotate(src, angle):
 
 
 def gradx(src, ksize=5):
-    """gradients: diff by Sobel (‚PŸ”÷•ª)"""
+    """gradients: diff by Sobel (ï¼‘æ¬¡å¾®åˆ†)"""
     return cv2.Sobel(src, cv2.CV_32F, 1, 0, ksize)
 
 def grady(src, ksize=5):
-    """gradients: diff by Sobel (‚PŸ”÷•ª)"""
+    """gradients: diff by Sobel (ï¼‘æ¬¡å¾®åˆ†)"""
     return cv2.Sobel(src, cv2.CV_32F, 0, 1, ksize)
 
 def grad2(src, ksize=5):
-    """gradients: diff by Laplacian (‚QŸ”÷•ª)"""
+    """gradients: diff by Laplacian (ï¼’æ¬¡å¾®åˆ†)"""
     return cv2.Laplacian(src, cv2.CV_32F, ksize=ksize)
 
 
@@ -243,7 +243,7 @@ def Corr(src, tmp):
 ## --------------------------------
 
 def centroid(src):
-    """centroids (dS)
+    """centroids (é‡å¿ƒ)
     cf. ndi.measurements.center_of_mass
     """
     M = cv2.moments(src)
@@ -280,9 +280,9 @@ def find_ellipses(src, frmin=None, frmax=None, ksize=1, sortby='size'):
     ls = [(c,r,a) for c,r,a in ellipses if rmin < r[0] < rmax and rmin < r[1] < rmax]
     
     if sortby == 'size':
-        return sorted(ls, key=lambda v: v[1][0], reverse=1) # ‘å‚«‚³‚Å~‡ƒ\[ƒg
+        return sorted(ls, key=lambda v: v[1][0], reverse=1) # å¤§ãã•ã§é™é †ã‚½ãƒ¼ãƒˆ
     
-    return sorted(ls, key=lambda v: np.hypot(v[0][0]-w/2, v[0][1]-h/2)) # ˆÊ’u‚Å¸‡ƒ\[ƒg
+    return sorted(ls, key=lambda v: np.hypot(v[0][0]-w/2, v[0][1]-h/2)) # ä½ç½®ã§æ˜‡é †ã‚½ãƒ¼ãƒˆ
 
 
 def calc_ellipse(src, ellipse):
@@ -296,19 +296,19 @@ def calc_ellipse(src, ellipse):
     ## t = (90 - angle) * pi/180
     ## xx = (x-xo) * cos(t) - (y-yo)*sin(t)
     ## yy = (x-xo) * sin(t) + (y-yo)*cos(t)
-    ## mask = np.hypot(yy/ra*2, xx/rb*2) < 1 # ‘È‰~‚Ì’ZŒa ra/2 < ’·Œa rb/2
+    ## mask = np.hypot(yy/ra*2, xx/rb*2) < 1 # æ¥•å††ã®çŸ­å¾„ ra/2 < é•·å¾„ rb/2
     t = angle * pi/180
     xx = (x-xo) * cos(t) + (y-yo)*sin(t)
     yy = (x-xo) *-sin(t) + (y-yo)*cos(t)
-    mask = np.hypot(xx/ra*2, yy/rb*2) < 1 # ‘È‰~‚Ì’ZŒa ra/2 < ’·Œa rb/2
+    mask = np.hypot(xx/ra*2, yy/rb*2) < 1 # æ¥•å††ã®çŸ­å¾„ ra/2 < é•·å¾„ rb/2
     
-    ## OTSU algorithm ‚ğg‚¤‚Ì‚ÅC‚«‚Á‚¿‚è—Ìˆæ‚ğ‚Æ‚é‚Æ‚ÍŒÀ‚ç‚È‚¢D
-    ## ‚Æ‚­‚É–O˜a‚µ‚Ä‚¢‚éê‡C³Šm‚È’l‚É‚È‚ç‚È‚¢D
+    ## OTSU algorithm ã‚’ä½¿ã†ã®ã§ï¼Œãã£ã¡ã‚Šé ˜åŸŸã‚’ã¨ã‚‹ã¨ã¯é™ã‚‰ãªã„ï¼
+    ## ã¨ãã«é£½å’Œã—ã¦ã„ã‚‹å ´åˆï¼Œæ­£ç¢ºãªå€¤ã«ãªã‚‰ãªã„ï¼
     if src.dtype in (np.int16, np.uint16, np.int32, np.uint32):
         src = np.float32(src)
     
-    power = src[mask].sum() # ‘È‰~‚Ì—Ìˆæ‚É“ü‚é‹­“x
-    area = mask.sum()       # ‘È‰~‚Ì—Ìˆæ
+    power = src[mask].sum() # æ¥•å††ã®é ˜åŸŸã«å…¥ã‚‹å¼·åº¦
+    area = mask.sum()       # æ¥•å††ã®é ˜åŸŸ
     p = power / area        # power density p:inside, q:outside,
     q = (src.sum() - power) / (src.size - area)
     return p, q
@@ -330,9 +330,9 @@ def calc_ellipse(src, ellipse):
 
 
 def qrsp(x, y):
-    """2Ÿ®‚Å‹É’l‚Ì‰ÓŠ‚ğ„’è‚·‚éD
-    x[3],y[3]: x,y ‹ßÚ‚µ‚½‚R“_‚ğ—^‚¦‚é
-  retval -> ’†‰›ˆÊ’u x[1] ‚©‚ç‚Ì·•ª’l (dx,dy)
+    """2æ¬¡å¼ã§æ¥µå€¤ã®ç®‡æ‰€ã‚’æ¨å®šã™ã‚‹ï¼
+    x[3],y[3]: x,y è¿‘æ¥ã—ãŸï¼“ç‚¹ã‚’ä¸ãˆã‚‹
+  retval -> ä¸­å¤®ä½ç½® x[1] ã‹ã‚‰ã®å·®åˆ†å€¤ (dx,dy)
     """
     x0 = x[0]-x[1]
     x2 = x[2]-x[1]
@@ -347,35 +347,35 @@ def qrsp(x, y):
 
 
 def find_local_extremum(x, y, max=True):
-    """2Ÿ®‚Å‹É’l‚Ì‰ÓŠ‚ğ„’è‚·‚éD
+    """2æ¬¡å¼ã§æ¥µå€¤ã®ç®‡æ‰€ã‚’æ¨å®šã™ã‚‹ï¼
     Estimates the `max|min peak pos y[x] and the value
-    x ‚Í¸‡ƒ\[ƒg‚³‚ê‚Ä‚¢‚é‚±‚ÆD­‚È‚­‚Æ‚à‚R“_‚È‚­‚Ä‚Í‚È‚ç‚È‚¢
-    „’èˆÊ’u‚ª”ÍˆÍ“à‚É‚È‚¯‚ê‚ÎC”ÍˆÍ“à‚Ì‹É’l“_‚Æ”»’èŒ‹‰Ê‚ğ•Ô‚·
+    x ã¯æ˜‡é †ã‚½ãƒ¼ãƒˆã•ã‚Œã¦ã„ã‚‹ã“ã¨ï¼å°‘ãªãã¨ã‚‚ï¼“ç‚¹ãªãã¦ã¯ãªã‚‰ãªã„
+    æ¨å®šä½ç½®ãŒç¯„å›²å†…ã«ãªã‘ã‚Œã°ï¼Œç¯„å›²å†…ã®æ¥µå€¤ç‚¹ã¨åˆ¤å®šçµæœã‚’è¿”ã™
   retval ->
-    convex : ‹É’l‚ª“ÊF‹É‘å‚Å‚ ‚é‚©‚Ç‚¤‚© a<0 ?
-     valid : ‹‚ß‚é„’è’l (Å‘å^Å¬) ‘¶İ‚µC‚©‚ÂC”ÍˆÍ“à‚Éû‚Ü‚Á‚Ä‚¢‚é‚© ?
+    convex : æ¥µå€¤ãŒå‡¸ï¼šæ¥µå¤§ã§ã‚ã‚‹ã‹ã©ã†ã‹ a<0 ?
+     valid : æ±‚ã‚ã‚‹æ¨å®šå€¤ (æœ€å¤§ï¼æœ€å°) å­˜åœ¨ã—ï¼Œã‹ã¤ï¼Œç¯„å›²å†…ã«åã¾ã£ã¦ã„ã‚‹ã‹ ?
     """
     N = len(x)
     if N < 3:
         raise ValueError("find_local_extremum: data length must be more than 2")
-    n = np.argmax(y) if max else np.argmin(y) # Å‘å‚©Å¬‚Ì‚Ç‚¿‚ç‚©‚ğ‹‚ß‚é
-    j = 1 if n==0 else N-2 if n==N-1 else n # ’[‚Å‚ ‚ê‚Îˆê‚Â“à‘¤‚É‚¸‚ç‚µ‚Ä‚¨‚­
-    dx, dy, convex, ok = qrsp(x[j-1:j+2], y[j-1:j+2]) # ‚R“_•]‰¿
+    n = np.argmax(y) if max else np.argmin(y) # æœ€å¤§ã‹æœ€å°ã®ã©ã¡ã‚‰ã‹ã‚’æ±‚ã‚ã‚‹
+    j = 1 if n==0 else N-2 if n==N-1 else n # ç«¯ã§ã‚ã‚Œã°ä¸€ã¤å†…å´ã«ãšã‚‰ã—ã¦ãŠã
+    dx, dy, convex, ok = qrsp(x[j-1:j+2], y[j-1:j+2]) # ï¼“ç‚¹è©•ä¾¡
     
     valid = ok and (max and convex) or (not max and not convex)
     if valid:
-        xo = x[j] + dx # “Ê‚Å”ÍˆÍ“à (max)C‚à‚µ‚­‚Í ‰š‚Å”ÍˆÍ“à (min)
+        xo = x[j] + dx # å‡¸ã§ç¯„å›²å†… (max)ï¼Œã‚‚ã—ãã¯ å‡¹ã§ç¯„å›²å†… (min)
         yo = y[j] + dy
     else:
-        xo = x[n] # ‹É’l‚Í”ÍˆÍ“à‚É‘¶İ‚·‚é‚ªC‹‚ß‚éÅ‘å^Å¬‚Å‚Í‚È‚¢C‚à‚µ‚­‚ÍC
-        yo = y[n] # ‹É’l‚Í”ÍˆÍŠO‚Å‚ ‚é‚ªCŠO‘}‚ÍŠëŒ¯‚È‚Ì‚ÅC”ÍˆÍ“à‚ÌÅ‘å^Å¬‚ğ•Ô‚·
+        xo = x[n] # æ¥µå€¤ã¯ç¯„å›²å†…ã«å­˜åœ¨ã™ã‚‹ãŒï¼Œæ±‚ã‚ã‚‹æœ€å¤§ï¼æœ€å°ã§ã¯ãªã„ï¼Œã‚‚ã—ãã¯ï¼Œ
+        yo = y[n] # æ¥µå€¤ã¯ç¯„å›²å¤–ã§ã‚ã‚‹ãŒï¼Œå¤–æŒ¿ã¯å±é™ºãªã®ã§ï¼Œç¯„å›²å†…ã®æœ€å¤§ï¼æœ€å°ã‚’è¿”ã™
     return xo, yo, convex, valid
 
 
 def find_local_extremum2d(src, max=True):
-    """2Ÿ®‚Å‹É’l‚Ì‰ÓŠ‚ğ„’è‚·‚éD
+    """2æ¬¡å¼ã§æ¥µå€¤ã®ç®‡æ‰€ã‚’æ¨å®šã™ã‚‹ï¼
     Estimates the `max|min peak pos [x,y] and the value
-    „’èˆÊ’u‚ª”ÍˆÍ“à‚É‚ ‚é‚Æ‚ÍŒÀ‚ç‚È‚¢Dmax:‰šCmin:“ÊC‚¨‚æ‚ÑCˆÆ“_‚Ìê‡‚Í None ‚ğ•Ô‚·
+    æ¨å®šä½ç½®ãŒç¯„å›²å†…ã«ã‚ã‚‹ã¨ã¯é™ã‚‰ãªã„ï¼max:å‡¹ï¼Œmin:å‡¸ï¼ŒãŠã‚ˆã³ï¼Œéç‚¹ã®å ´åˆã¯ None ã‚’è¿”ã™
     """
     Ny, Nx = src.shape
     n = src.argmax() if max else src.argmin()

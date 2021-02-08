@@ -71,6 +71,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
                #'space pressed' : (0, self.OnToggleItems),
                'delete pressed' : (0, self.OnRemoveItems), # --> frame_removed/shown
                   'C-a pressed' : (0, self.OnSelectAllItems),
+                  'C-o pressed' : (0, self.OnLoadItems),
                   'C-s pressed' : (0, self.OnSaveItems),
                  'M-up pressed' : (0, self.Target.OnPageUp),
                'M-down pressed' : (0, self.Target.OnPageDown),
@@ -120,13 +121,14 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
     
     def OnMotion(self, evt):
         j, flag = self.HitTest(evt.GetPosition())
+        tip = ''
         if j >= 0:
             attr = self.Target.all_frames[j].attributes
             if attr:
                 tip = pformat(attr, width=80, depth=1) # compact=0:PY3
             else:
                 tip = "No attributes"
-            self.SetToolTip(tip)
+        self.SetToolTip(tip)
         evt.Skip()
     
     def OnToggleItems(self, evt):
@@ -160,14 +162,18 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
                 for k, v in enumerate(items[1:]): # id 以外 (name, shape,...) を更新する
                     self.SetItem(j, k+1, v) # テキストだけを更新しているので Update より速い
             
-            self.Target.select(li.index(self.Target.frame.index)) # invokes [frame_shown]
+            self.Target.select(
+                li.index(self.Target.frame.index)) # invokes [frame_shown]
     
     def OnSelectAllItems(self, evt):
         for j in range(self.ItemCount):
             self.Select(j)
     
+    def OnLoadItems(self, evt):
+        self.parent.parent.import_frames(target=self.Target)
+    
     def OnSaveItems(self, evt):
-        self.parent.parent.export_buffers(
+        self.parent.parent.export_frames(
             frames=[self.Target.all_frames[j] for j in self.selected_items])
     
     ## --------------------------------
@@ -199,7 +205,6 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
             self.SetItem(k, 0, str(k))
 
 
-
 class Plugin(Layer):
     """Property list of Grpah buffers
     """
@@ -209,15 +214,8 @@ class Plugin(Layer):
     dockable = False
     unloadable = False
     
-    @property
-    def checked_buffers(self):
-        lc = self.nb.CurrentPage
-        return lc.Target[lc.checked_items]
-    
-    @property
-    def selected_buffers(self):
-        lc = self.nb.CurrentPage
-        return lc.Target[lc.selected_items]
+    all_pages = property(
+        lambda self: [self.nb.GetPage(i) for i in range(self.nb.PageCount)])
     
     def Init(self):
         self.nb = aui.AuiNotebook(self, size=(400,150),
@@ -228,20 +226,20 @@ class Plugin(Layer):
         self.attach(self.graph, "graph")
         self.attach(self.output, "output")
     
-    def attach(self, target, caption=None):
+    def attach(self, target, caption):
         lc = CheckList(self, target)
-        self.nb.AddPage(lc, caption or target.parent.__module__)
+        self.nb.AddPage(lc, caption)
     
     def detach(self, target):
         try:
-            for i in range(self.nb.PageCount):
-                lc = self.nb.GetPage(i)
-                if target is lc.Target:
-                    self.nb.DeletePage(i)
-                    return
-            print("- No such target {!r} in the view".format(target))
+            self.nb.DeletePage(next(k
+                for k,lc in enumerate(self.all_pages) if target is lc.Target))
         except Exception:
-            pass
+            print("- No such target {!r} in the view".format(target))
+    
+    def show_page(self, target):
+        self.nb.SetSelection(next((k
+            for k,lc in enumerate(self.all_pages) if target is lc.Target), -1))
 
 
 if __name__ == "__main__":

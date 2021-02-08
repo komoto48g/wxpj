@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """deb utility
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
@@ -7,8 +7,6 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import scipy as np
-import wx
-import mwx
 
 
 def init_spec(self):
@@ -19,7 +17,7 @@ def init_spec(self):
     
     @shell.define_key('C-tab')
     def insert_space_like_tab():
-        """ƒ^ƒu‚Ì‹C‚¿‚É‚È‚Á‚Ä”¼ŠpƒXƒy[ƒX‚ğ“ü—Í‚·‚é"""
+        """ã‚¿ãƒ–ã®æ°—æŒã¡ã«ãªã£ã¦åŠè§’ã‚¹ãƒšãƒ¼ã‚¹ã‚’å…¥åŠ›ã™ã‚‹"""
         shell.eat_white_forward()
         _text, lp = shell.CurLine
         n = lp % 4
@@ -27,7 +25,7 @@ def init_spec(self):
     
     @shell.define_key('C-S-tab')
     def delete_backward_space_like_tab():
-        """SHIFT+ƒ^ƒu‚Ì‹C‚¿‚É‚È‚Á‚Ä”¼ŠpƒXƒy[ƒX‚ğÁ‚·"""
+        """SHIFT+ã‚¿ãƒ–ã®æ°—æŒã¡ã«ãªã£ã¦åŠè§’ã‚¹ãƒšãƒ¼ã‚¹ã‚’æ¶ˆã™"""
         shell.eat_white_forward()
         _text, lp = shell.CurLine
         n = lp % 4 or 4
@@ -68,6 +66,8 @@ def init_spec(self):
 
 
 if __name__ == '__main__':
+    import wx
+    import mwx
     app = wx.App()
     inspector = mwx.MinidebFrame(None)
     inspector.Unbind(wx.EVT_CLOSE)

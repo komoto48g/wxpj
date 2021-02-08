@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """Editor's collection of wxpj miscellaneous functions
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
@@ -56,7 +56,7 @@ class ConfigData(object):
     """
     def __init__(self, path, section):
         self.parser = configparser.ConfigParser()
-        ## self.parser.optionxform = str # ‘å•¶š^¬•¶š‚Ì‹æ•Ê
+        ## self.parser.optionxform = str # å¤§æ–‡å­—ï¼å°æ–‡å­—ã®åŒºåˆ¥
         self.data = {}
         self.path = path
         self.section = section
