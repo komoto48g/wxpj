@@ -66,7 +66,7 @@ class Plugin(Layer):
     
     def run(self, frame=None, **kwargs):
         if not frame:
-            frame = self.graph.frame
+            frame = self.current_graph.frame
         del self.Arts
         
         ## Search center of circles

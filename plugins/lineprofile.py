@@ -30,14 +30,10 @@ class Plugin(Layer):
     
     def Draw(self, show=True):
         if show:
-            ## self.plot.attach(self.graph)
-            ## self.plot.attach(self.output)
             for win in self.parent.graphic_windows:
                 self.plot.attach(win)
             self.plot.linplot(self.parent.current_graph.frame)
         else:
-            ## self.plot.detach(self.graph)
-            ## self.plot.detach(self.output)
             for win in self.parent.graphic_windows:
                 self.plot.detach(win)
         return Layer.Draw(self, show)

@@ -35,7 +35,9 @@ class Plugin(Layer):
             row=3, expand=0, type="vspin", lw=32, cw=12, tw=60
         )
         self.parent.define_key('C-x r', self.rotate)
+        
         self.graph.handler.bind('line_draw', self.calc_rotdeg)
+        self.output.handler.bind('line_draw', self.calc_rotdeg)
     
     def Destroy(self):
         self.graph.handler.unbind('line_draw', self.calc_rotdeg)

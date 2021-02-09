@@ -170,7 +170,7 @@ class Plugin(Layer):
     
     def run(self, frame=None, skip=0):
         if not frame:
-            frame = self.graph.frame
+            frame = self.current_graph.frame
         
         x, y = frame.markers
         if not x.any():

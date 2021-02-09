@@ -167,7 +167,7 @@ class Plugin(Layer):
     
     def run(self, frame=None, shift=0):
         if not frame:
-            frame = self.graph.frame
+            frame = self.current_graph.frame
         
         center = edi.centroid(frame.buffer)
         ## center = None
@@ -212,6 +212,6 @@ class Plugin(Layer):
         frame.markers = (x[oz][0:-1:3], y[oz][0:-1:3]) # scatter markers onto the arc
         
         ## サークル描画 (確認用)
-        ## self.Arts = self.graph.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75)
+        ## self.Arts = self.current_graph.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75)
         ## self.Arts[0].set_data(x, y) # draw line arc
         ## self.Draw()

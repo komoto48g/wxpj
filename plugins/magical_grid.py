@@ -20,7 +20,7 @@ class Plugin(Layer):
     
     def Init(self):
         self.index = LParam("page", (-1,1024,1), -1)
-        self.index.bind(lambda lp: self.graph.select(lp.value))
+        self.index.bind(lambda lp: self.current_graph.select(lp.value))
         
         self.choice = wxpj.Choice(self, size=(60,-1),
             choices=['FFT',
@@ -48,7 +48,7 @@ class Plugin(Layer):
         
         self.layout("Evaluate step by step", (
             wxpj.Button(self, "1. Show",
-                lambda v: self.graph.select(self.index.value), icon='help', size=size,
+                lambda v: self.current_graph.select(self.index.value), icon='help', size=size,
                 tip="Select frame buffer.\n"
                     "(index -1 means the last frame)"),
             self.index,
@@ -99,7 +99,7 @@ class Plugin(Layer):
     
     def testrun(self, frame=None):
         if not frame:
-            frame = self.graph.all_frames[self.index.value]
+            frame = self.current_graph.all_frames[self.index.value]
         
         if self.choice.Selection < 2:
             nop = "*result of fft*" not in frame.parent
@@ -118,10 +118,10 @@ class Plugin(Layer):
                 name = "*result of fft*"
             else:
                 name = "*result of matching*"
-            if name not in self.graph:
+            if name not in self.current_graph:
                 self.message("- No results found: testrun may have not been run yet.")
                 return
-            frame = self.graph.find_frame(name)
+            frame = self.current_graph.find_frame(name)
             
         elif not frame.name.startswith("*result of"):
             self.message("- The frame must be the result of *fft* or *cor*")

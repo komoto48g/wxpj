@@ -50,7 +50,7 @@ class Plugin(Layer):
      invert : invert dst image (0 <--> 255)
         """
         if not frame:
-            frame = self.graph.frame
+            frame = self.current_graph.frame
         
         k, s, t = np.int32(self.params)
         hi, lo = np.float32(self.cutoff_params)

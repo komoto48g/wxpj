@@ -38,7 +38,7 @@ class Plugin(Layer):
     
     def run(self, frame=None):
         if not frame:
-            frame = self.graph.frame
+            frame = self.current_graph.frame
         
         if '*remap*' in self.output:
             del self.output["*remap*"] # to avoid MemoryError
