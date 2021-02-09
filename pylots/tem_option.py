@@ -66,24 +66,22 @@ class Plugin(TemInterface, Layer):
         )
     
     def set_current_session(self, session):
-        self.reset_params((
-            session.get('noise') or self.noise_level,
-            session.get('delay') or self.default_delay,
-            session.get('camera') or '',
-            session.get('config'),
-        ))
-        setq(noise_level=self.noise_param.value)
-        setq(default_delay=self.delay_param.value)
-        setq(camerasys=self.camera_selector.value)
+        noise = session.get('noise') or self.noise_level
+        delay = session.get('delay') or self.default_delay
+        camera = session.get('camera') or ''
+        config = session.get('config') or ''
         
-        self.set_config(self.config_selector.value)
+        TemInterface.noise_level = self.noise_param.value = noise
+        TemInterface.default_delay = self.delay_param.value = delay
+        TemInterface.camerasys = self.camera_selector.value = camera
+        self.set_config(config)
     
     def get_current_session(self):
         return {
             'noise': self.noise_param.value,
             'delay': self.delay_param.value,
             'camera': self.camera_selector.value,
-            'config': self.config_selector.value,
+            'config': self.config.path if self.config else ''
        }
     
     def set_camerasys(self, v):
