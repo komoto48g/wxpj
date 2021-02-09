@@ -343,7 +343,7 @@ class TemInterface(object):
                 "\n Press [OK] to continue."
                 "\n Press [CANCEL] to terminate the process.",
                 style = wx.OK|wx.CANCEL|wx.ICON_WARNING) != wx.OK:
-                    self.thread.Stop()
+                    ## self.thread.Stop() --> ŒÄ‚Ño‚µ‘¤‚Ås‚¤
                     return False
             return True
         finally:
