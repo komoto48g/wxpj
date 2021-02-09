@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 from itertools import chain
@@ -22,19 +22,19 @@ def calc_aspect(u, r, t):
 
 
 class Model(object):
-    """ƒOƒŠƒbƒhƒpƒ^[ƒ“ƒ‚ƒfƒ‹ [mm]
+    """ã‚°ãƒªãƒƒãƒ‰ãƒ‘ã‚¿ãƒ¼ãƒ³ãƒ¢ãƒ‡ãƒ« [mm]
      grid : length per grid [mm/gr]
      tilt : rotation angles of pattern
     xc,yc : position of center
     """
-    nGrid = 30 # number of grid (in x,y) --> (N+1) –{‚ÌƒOƒŠƒbƒhü‚ğˆø‚­
+    nGrid = 30 # number of grid (in x,y) --> (N+1) æœ¬ã®ã‚°ãƒªãƒƒãƒ‰ç·šã‚’å¼•ã
     
     def __init__(self, parent):
         self.owner = parent
     
     def basegrid(self, params):
-        """•`‰æ”ÍˆÍ‚ÌŠî€ƒOƒŠƒbƒh (•¡‘f””z—ñ‚Ì‘g) ‚ğ•Ô‚·
-        ƒƒbƒVƒ…”‚Æ•ªŠ„”‚Í“¯”‚Å‚ ‚é•K—v‚Í‚È‚¢‚ªC‚±‚±‚Å‚Í“¯”D
+        """æç”»ç¯„å›²ã®åŸºæº–ã‚°ãƒªãƒƒãƒ‰ (è¤‡ç´ æ•°é…åˆ—ã®çµ„) ã‚’è¿”ã™
+        ãƒ¡ãƒƒã‚·ãƒ¥æ•°ã¨åˆ†å‰²æ•°ã¯åŒæ•°ã§ã‚ã‚‹å¿…è¦ã¯ãªã„ãŒï¼Œã“ã“ã§ã¯åŒæ•°ï¼
         """
         grid, tilt, xc, yc = np.float32(params)
         u = grid * exp(1j * tilt * pi/180)
@@ -45,16 +45,16 @@ class Model(object):
         return [(X + 1j * y) for y in Y]\
              + [(x + 1j * Y) for x in X]
         
-        ## ƒƒbƒVƒ…”‚Æ•ªŠ„”‚Í“¯”‚Ìê‡C‚±‚ê‚Å‚n‚j
+        ## ãƒ¡ãƒƒã‚·ãƒ¥æ•°ã¨åˆ†å‰²æ•°ã¯åŒæ•°ã®å ´åˆï¼Œã“ã‚Œã§ï¼¯ï¼«
         ## X, Y = np.meshgrid(lu, lu)
         ## return (xc + 1j * yc) + np.vstack((X + 1j * Y, Y + 1j * X))
     
     def residual(self, fitting_params, x, y):
-        """Å¬©æ–@‚Ìè—]”Ÿ”"""
+        """æœ€å°è‡ªä¹—æ³•ã®å‰°ä½™å‡½æ•°"""
         grid, tilt, xc, yc, ratio, phi, D, d = fitting_params
         z = x + 1j*y
         
-        ## ƒÓ’´‰ß‚Ì•â³
+        ## Ï†è¶…éæ™‚ã®è£œæ­£
         if not -90 < phi < 90:
             ## print("  warning! phi is over limit ({:g})".format(phi))
             if phi < -90: phi += 180
@@ -65,7 +65,7 @@ class Model(object):
             print("... Iteration stopped")
             raise StopIteration
         
-        ## ŒŸõ”ÍˆÍi•`‰æ”ÍˆÍ‚Å‚Í‚È‚¢j‚ÌŠî€ƒOƒŠƒbƒh (-N:N \•ªL‚­İ’è‚·‚é)
+        ## æ¤œç´¢ç¯„å›²ï¼ˆæç”»ç¯„å›²ã§ã¯ãªã„ï¼‰ã®åŸºæº–ã‚°ãƒªãƒƒãƒ‰ (-N:N ååˆ†åºƒãè¨­å®šã™ã‚‹)
         N = int(max(np.hypot(x,y)) / grid) + 1
         u = grid * exp(1j * tilt * pi/180)
         lu = u * np.arange(-N, N+1)
@@ -73,7 +73,7 @@ class Model(object):
         net = (xc + 1j * yc + X + 1j * Y).ravel()
         gr = calc_aspect(net, ratio, phi) + calc_dist(net, D, d)
         
-        ## Ä‹ßÚƒOƒŠƒbƒh“_‚©‚ç‚ÌƒYƒŒ‚ğ•]‰¿‚·‚é (’Tõ”ÍˆÍ‚ÌƒŠƒ~ƒbƒg‚ğİ‚¯‚é)
+        ## å†è¿‘æ¥ã‚°ãƒªãƒƒãƒ‰ç‚¹ã‹ã‚‰ã®ã‚ºãƒ¬ã‚’è©•ä¾¡ã™ã‚‹ (æ¢ç´¢ç¯„å›²ã®ãƒªãƒŸãƒƒãƒˆã‚’è¨­ã‘ã‚‹)
         lim = N * grid
         res = [ min(abs(gr - p))**2 for p in z if abs(p.real) < lim and abs(p.imag) < lim ]
         
@@ -99,8 +99,8 @@ class Plugin(Layer):
             LParam("d", (-x, x, x/1e5), 0.0, '{:.3G}'.format),
         )
         self.ratio_params = (
-            LParam("ƒÁ", (0.5, 1.5, 0.001), 1.0),
-            LParam("ƒÓ", (-90, 90, 0.1), 0.0),
+            LParam("Î³", (0.5, 1.5, 0.001), 1.0),
+            LParam("Ï†", (-90, 90, 0.1), 0.0),
         )
         self.grid_params = (
             LParam("grid", (0, 5e4, 0.1), 1.0),
@@ -136,17 +136,17 @@ class Plugin(Layer):
                   + [axes.plot([], [], 'r-',  lw=0.5, alpha=0.75)[0] for z in grid]
     
     def calc(self):
-        """ƒAƒXƒyƒNƒg”äF R1=Y/X, R2=Y2/X2 ‚ğŒvZ‚·‚é
-        ƒAƒXƒyƒNƒg”ä‚¸‚ê{‚RŸ˜c—¦‚ğl—¶‚µ‚½ƒOƒŠƒbƒhƒf[ƒ^‚É•ÏŠ·‚µ‚Ä•`‰æ‚·‚é
+        """ã‚¢ã‚¹ãƒšã‚¯ãƒˆæ¯”ï¼š R1=Y/X, R2=Y2/X2 ã‚’è¨ˆç®—ã™ã‚‹
+        ã‚¢ã‚¹ãƒšã‚¯ãƒˆæ¯”ãšã‚Œï¼‹ï¼“æ¬¡æ­ªç‡ã‚’è€ƒæ…®ã—ãŸã‚°ãƒªãƒƒãƒ‰ãƒ‡ãƒ¼ã‚¿ã«å¤‰æ›ã—ã¦æç”»ã™ã‚‹
         """
         r, t = np.float32(self.ratio_params)
         D, d = np.float32(self.dist_params)
         
         grid0 = list(self.model.basegrid(self.grid_params))
         grid1 = list(calc_aspect(z,r,t) + calc_dist(z,D,d) for z in grid0)
-        grids = grid0 + grid1 # ƒŠƒXƒg˜a
+        grids = grid0 + grid1 # ãƒªã‚¹ãƒˆå’Œ
         
-        for art,z in zip(self.Arts, grids): # ƒOƒŠƒbƒh‚Ìİ’è
+        for art,z in zip(self.Arts, grids): # ã‚°ãƒªãƒƒãƒ‰ã®è¨­å®š
             art.set_data(z.real, z.imag)
         self.Draw()
         
@@ -156,14 +156,14 @@ class Plugin(Layer):
         R1 = (1 - e * cos(2*t)) / (1 + e * cos(2*t))
         R2 = (1 - e * sin(2*t)) / (1 + e * sin(2*t))
         
-        ## R50 ‚Ì˜c—¦w•WFƒAƒXƒyƒNƒg”ä‚¸‚ê(Y/X){‚RŸ˜c—¦
+        ## R50 ã®æ­ªç‡æŒ‡æ¨™ï¼šã‚¢ã‚¹ãƒšã‚¯ãƒˆæ¯”ãšã‚Œ(Y/X)ï¼‹ï¼“æ¬¡æ­ªç‡
         ## R = 50
         ## d = abs(complex(*self.dist_params)) * (R ** 2)
         
         self.text.SetValue("\n".join((
             "Y/X = {:.3f}".format(R1),
             "Y2/X2 = {:.3f}".format(R2),
-            "Aspect ƒÃ = {:.2%}".format((r-1)*2),
+            "Aspect Îµ = {:.2%}".format((r-1)*2),
             ## "Total(R50) = {:.2%}".format(d + (r-1)*2),
         )))
         return R1, R2
@@ -181,12 +181,12 @@ class Plugin(Layer):
         self.init_grid(frame.axes)
         
         with self.thread:
-            ## ‰ŠúƒOƒŠƒbƒhƒpƒ‰ƒ[ƒ^‚ÌŒ©Ï‚à‚è
+            ## åˆæœŸã‚°ãƒªãƒƒãƒ‰ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®è¦‹ç©ã‚‚ã‚Š
             if not skip:
                 print("estimating initial grid paramtres... order(0)")
                 self.find_near_grid(x, y)
             
-            ## Å“KƒOƒŠƒbƒhƒpƒ‰ƒ[ƒ^‚ÌŒ©Ï‚à‚è
+            ## æœ€é©ã‚°ãƒªãƒƒãƒ‰ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®è¦‹ç©ã‚‚ã‚Š
             order = self.order.value
             if order > 0:
                 result = optimize.leastsq(self.model.residual,
@@ -208,7 +208,7 @@ class Plugin(Layer):
         dy = y - y[j]
         dx[j] = dy[j] = 1e3 # dummy to escape argmin
         dd = np.hypot(dx,dy)
-        k = dd.argmin() # ’†S‚ÉÅ‚à‹ß‚¢“_‚©‚çCŸ‚É‹ß‚¢“_
+        k = dd.argmin() # ä¸­å¿ƒã«æœ€ã‚‚è¿‘ã„ç‚¹ã‹ã‚‰ï¼Œæ¬¡ã«è¿‘ã„ç‚¹
         grid = dd[k]
         tilt = np.arctan(dy[k]/dx[k]) * 180/pi
         for lp,v in zip(self.grid_params, (grid,tilt,x[j],y[j])): # set parameters

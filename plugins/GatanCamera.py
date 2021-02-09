@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """Gatan Camera module
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
@@ -63,7 +63,7 @@ class Camera(gatan.GatanSocket):
         """Cache of the current image"""
         try:
             while Camera.busy:
-                time.sleep(0.01) # ‚±‚±‚Å’ÊM‘Ò‹@
+                time.sleep(0.01) # ã“ã“ã§é€šä¿¡å¾…æ©Ÿ
             Camera.busy += 1
             
             h, w = self.shape

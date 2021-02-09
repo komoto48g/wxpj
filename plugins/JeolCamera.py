@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """Jeol Camera module
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
@@ -59,19 +59,19 @@ HEADER = {"connection" : "close"}
 
 
 def StartCreateCache(host):
-    """ƒ‰ƒCƒu‘œ‚ÌƒLƒƒƒbƒVƒ…‚ğó‚¯æ‚é‚æ‚¤‚É‚·‚éˆ—‚ÌŠJn"""
+    """ãƒ©ã‚¤ãƒ–åƒã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’å—ã‘å–ã‚‹ã‚ˆã†ã«ã™ã‚‹å‡¦ç†ã®é–‹å§‹"""
     url = DET_URL(host, "StartCreateRawDataCache")
     res, con = HTTP.request(url, "POST", headers=HEADER)
     return con
 
 def StopCreateCache(host):
-    """ƒ‰ƒCƒu‘œ‚ÌƒLƒƒƒbƒVƒ…‚ğó‚¯æ‚é‚æ‚¤‚É‚·‚éˆ—‚Ì’â~"""
+    """ãƒ©ã‚¤ãƒ–åƒã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’å—ã‘å–ã‚‹ã‚ˆã†ã«ã™ã‚‹å‡¦ç†ã®åœæ­¢"""
     url = DET_URL(host, "StopCreateRawDataCache")
     res, con = HTTP.request(url, "POST", headers=HEADER)
     return con
 
 def CreateCache(host, name):
-    """ƒ‰ƒCƒu‘œ‚ÌƒLƒƒƒbƒVƒ…‚ğó‚¯æ‚é"""
+    """ãƒ©ã‚¤ãƒ–åƒã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’å—ã‘å–ã‚‹"""
     url = DET_URL(host, name + "/CreateRawDataCache")
     res, data = HTTP.request(url, "GET", headers=HEADER)
     return data
@@ -115,7 +115,7 @@ class Camera(object):
     
     def __del__(self):
         try:
-            StopCreateCache(self.host) # £•s—v‚İ‚½‚¢‚¾‚ªƒgƒŒ[ƒXƒoƒbƒN‚ª‚¤‚º‚¦
+            StopCreateCache(self.host) # â–²ä¸è¦ã¿ãŸã„ã ãŒãƒˆãƒ¬ãƒ¼ã‚¹ãƒãƒƒã‚¯ãŒã†ãœãˆ
         except Exception:
             pass
     
@@ -129,7 +129,7 @@ class Camera(object):
         self.cont.livestop()
     
     ## def snapshot(self):
-    ##     if not Offline: # £Offilne ‚ÆƒtƒH[ƒ}ƒbƒgˆá‚¤‚µ(ß„Dß) ‚µ‚©‚à‚¨‚»‚·‚¬
+    ##     if not Offline: # â–²Offilne ã¨ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆé•ã†ã—(ï¾ŸĞ”ï¾Ÿ) ã—ã‹ã‚‚ãŠãã™ã
     ##         data = self.cont.snapshot('tif')
     ##         return np.asarray(Image.open(io.BytesIO(data)))
     ##     return self.cont.snapshot('tif')
@@ -138,7 +138,7 @@ class Camera(object):
         """Cache of the current image <uint16>"""
         try:
             while Camera.busy:
-                time.sleep(0.01) # ‚±‚±‚Å’ÊM‘Ò‹@
+                time.sleep(0.01) # ã“ã“ã§é€šä¿¡å¾…æ©Ÿ
             Camera.busy += 1
             if time.time() - self.cached_time < self.exposure:
                 if self.cached_image is not None:
@@ -185,7 +185,7 @@ class Camera(object):
         if 0 < v <= bins_list[-1]:
             j = np.searchsorted(bins_list, v)
             self.__bin_index = j
-            self.cont.set_binningindex(int(j)) #<np.int64> crashes online£
+            self.cont.set_binningindex(int(j)) #<np.int64> crashes onlineâ–²
     
     @property
     def gain(self):
@@ -197,7 +197,7 @@ class Camera(object):
         if 0 < v <= gains_list[-1]:
             j = np.searchsorted(gains_list, v)
             self.__gain_index = j
-            self.cont.set_gainindex(int(j)) #<np.int64> crashes online£
+            self.cont.set_gainindex(int(j)) #<np.int64> crashes onlineâ–²
 
 
 class DummyCamera(object):

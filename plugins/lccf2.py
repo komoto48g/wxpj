@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
@@ -37,8 +37,8 @@ class Plugin(Layer):
     
     lgbt = property(lambda self: self.parent.require('lgbt'))
     
-    maxcount = 256 # ‘I‘ğ‚·‚é“_‚Ì”‚ğ§ŒÀ‚·‚é
-    maxratio = 5.0 # ‚Ğ‚¸‚İ‚Ì‘å‚«‚¢‘È‰~‚ÍœŠO‚·‚é
+    maxcount = 256 # é¸æŠã™ã‚‹ç‚¹ã®æ•°ã‚’åˆ¶é™ã™ã‚‹
+    maxratio = 5.0 # ã²ãšã¿ã®å¤§ãã„æ¥•å††ã¯é™¤å¤–ã™ã‚‹
     
     def run(self, frame=None, **kwargs):
         if not frame:
@@ -56,21 +56,21 @@ class Plugin(Layer):
         circles = edi.find_ellipses(dst, rmin, rmax, sortby='pos')
         self.message("found {} circles".format(len(circles)))
         
-        ## 1. maxcount `N ˆÈã‚ÍƒtƒBƒbƒeƒBƒ“ƒO‚É‚Í‘½‚·‚¬‚é‚Ì‚Å§ŒÀ‚·‚é
-        ## 2. ‘È‰~‚Ì’·’ZŒa”ä‚ª‘å‚«‚¢‚à‚Ì‚ÍC³‚µ‚¢ƒXƒ|ƒbƒg‚Å‚È‚¢‚½‚ßœŠO‚·‚é
+        ## 1. maxcount `N ä»¥ä¸Šã¯ãƒ•ã‚£ãƒƒãƒ†ã‚£ãƒ³ã‚°ã«ã¯å¤šã™ãã‚‹ã®ã§åˆ¶é™ã™ã‚‹
+        ## 2. æ¥•å††ã®é•·çŸ­å¾„æ¯”ãŒå¤§ãã„ã‚‚ã®ã¯ï¼Œæ­£ã—ã„ã‚¹ãƒãƒƒãƒˆã§ãªã„ãŸã‚é™¤å¤–ã™ã‚‹
         ## 
-        ## ** ‘È‰~ŒŸo‚ğs‚¤‚½‚ßC5 “_ˆÈã‚ÌƒRƒ“ƒ^[‚ª•K—vD¬‚³‚¢ƒXƒ|ƒbƒg‚ÍœŠO‚³‚ê‚é
-        ##    ¬‚³‚¢ƒXƒ|ƒbƒg‚ğŒŸo‚·‚é‚½‚ß‚É‚Í‚Ú‚©‚µ—Ê‚ğ‘å‚«‚­‚·‚é‚±‚Æ
+        ## ** æ¥•å††æ¤œå‡ºã‚’è¡Œã†ãŸã‚ï¼Œ5 ç‚¹ä»¥ä¸Šã®ã‚³ãƒ³ã‚¿ãƒ¼ãŒå¿…è¦ï¼å°ã•ã„ã‚¹ãƒãƒƒãƒˆã¯é™¤å¤–ã•ã‚Œã‚‹
+        ##    å°ã•ã„ã‚¹ãƒãƒƒãƒˆã‚’æ¤œå‡ºã™ã‚‹ãŸã‚ã«ã¯ã¼ã‹ã—é‡ã‚’å¤§ããã™ã‚‹ã“ã¨
         if circles:
             N = self.maxcount
             if len(circles) > N:
                 self.message("\b is too many, chopped (< {})".format(N))
-                circles = circles[:N] # (N) ‘½‚·‚¬‚é‚Ì‚ÅC‰æ‘œ’†‰›‚©‚ç‹ß‚¢‚Ì‚¾‚¯‘I‚Ô
+                circles = circles[:N] # (N) å¤šã™ãã‚‹ã®ã§ï¼Œç”»åƒä¸­å¤®ã‹ã‚‰è¿‘ã„ã®ã ã‘é¸ã¶
             
             xy = []
             for (cx,cy), (ra,rb), angle in circles:
                 if rb/ra < self.maxratio:
-                    ## •s“Á’è‘½”‚Ì Arts ‚ğ•`‰æ‚·‚é
+                    ## ä¸ç‰¹å®šå¤šæ•°ã® Arts ã‚’æç”»ã™ã‚‹
                     art = patches.Circle((0,0), 0, color='r', ls='dotted', lw=1, fill=0)
                     art.center = frame.xyfrompixel(cx, cy)
                     art.height = ra * frame.unit
@@ -80,7 +80,7 @@ class Plugin(Layer):
                     self.Arts.append(art)
                     ## xy.append(art.center)
                     
-                    ## --> centr-of-mass: ‹­“xdS‚ğ‚Æ‚é
+                    ## --> centr-of-mass: å¼·åº¦é‡å¿ƒã‚’ã¨ã‚‹
                     r = int(min(ra,rb) /2)
                     nx, ny = int(cx), int(cy)
                     

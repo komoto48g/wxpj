@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """Property list of buffers
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
@@ -17,7 +17,7 @@ from wx.lib.mixins.listctrl import CheckListCtrlMixin
 
 class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
     """ CheckList with FSM
-    list item order = buffer order ƒŠƒXƒgƒAƒCƒeƒ€‚Æƒoƒbƒtƒ@‚Ì•À‚Ñ‡ 0..n ‚Íí‚Éˆê’v‚µ‚Ü‚·D
+    list item order = buffer order ãƒªã‚¹ãƒˆã‚¢ã‚¤ãƒ†ãƒ ã¨ãƒãƒƒãƒ•ã‚¡ã®ä¸¦ã³é † 0..n ã¯å¸¸ã«ä¸€è‡´ã—ã¾ã™ï¼
     """
     @property
     def checked_items(self):
@@ -61,9 +61,9 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
         
         for j, frame in enumerate(self.Target.all_frames):
             self.InsertItem(j, str(j))
-            self.Update(frame) # update all --> ŒvZ‚ª“ü‚é‚ÆŠÔ‚ª‚©‚©‚é
+            self.Update(frame) # update all --> è¨ˆç®—ãŒå…¥ã‚‹ã¨æ™‚é–“ãŒã‹ã‹ã‚‹
         
-        self.handler.update({ # e‚ÌƒL[ƒoƒCƒ“ƒh‚Æ‚©‚Ô‚é‚Æ‚«‚ÍCe‚Ì—Dæ‚Å‚·
+        self.handler.update({ # è¦ªã®ã‚­ãƒ¼ãƒã‚¤ãƒ³ãƒ‰ã¨ã‹ã¶ã‚‹ã¨ãã¯ï¼Œè¦ªã®å„ªå…ˆã§ã™
             0 : {
                             '*' : (0, lambda v: v.Skip()),
                'Lbutton dclick' : (0, self.OnShowItems), # --> frame_shown
@@ -158,9 +158,9 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
             frames[:] = [frames[i] for i in li] # arange by Id to set new all_frames
             
             for j, items in enumerate(la):
-                self.Select(j, False) # ‚¢‚Á‚½‚ñ‚·‚×‚Ä‚Ì‘I‘ğ‚ğ‰ğœ‚µC
-                for k, v in enumerate(items[1:]): # id ˆÈŠO (name, shape,...) ‚ğXV‚·‚é
-                    self.SetItem(j, k+1, v) # ƒeƒLƒXƒg‚¾‚¯‚ğXV‚µ‚Ä‚¢‚é‚Ì‚Å Update ‚æ‚è‘¬‚¢
+                self.Select(j, False) # ã„ã£ãŸã‚“ã™ã¹ã¦ã®é¸æŠã‚’è§£é™¤ã—ï¼Œ
+                for k, v in enumerate(items[1:]): # id ä»¥å¤– (name, shape,...) ã‚’æ›´æ–°ã™ã‚‹
+                    self.SetItem(j, k+1, v) # ãƒ†ã‚­ã‚¹ãƒˆã ã‘ã‚’æ›´æ–°ã—ã¦ã„ã‚‹ã®ã§ Update ã‚ˆã‚Šé€Ÿã„
             
             self.Target.select(
                 li.index(self.Target.frame.index)) # invokes [frame_shown]
@@ -183,7 +183,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
     def on_frame_loaded(self, frame):
         j = frame.index
         self.InsertItem(j, str(j))
-        for k in range(j+1, self.ItemCount): # id(0) ‚ğXV‚·‚é
+        for k in range(j+1, self.ItemCount): # id(0) ã‚’æ›´æ–°ã™ã‚‹
             self.SetItem(k, 0, str(k))
         self.Update(frame)
     
@@ -201,7 +201,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
     def on_frames_removed(self, indices):
         for j in reversed(indices):
             self.DeleteItem(j)
-        for k in range(self.ItemCount): # id(0) ‚ğXV‚·‚é
+        for k in range(self.ItemCount): # id(0) ã‚’æ›´æ–°ã™ã‚‹
             self.SetItem(k, 0, str(k))
 
 
@@ -231,11 +231,8 @@ class Plugin(Layer):
         self.nb.AddPage(lc, caption)
     
     def detach(self, target):
-        try:
-            self.nb.DeletePage(next(k
-                for k,lc in enumerate(self.all_pages) if target is lc.Target))
-        except Exception:
-            print("- No such target {!r} in the view".format(target))
+        self.nb.DeletePage(next((k
+            for k,lc in enumerate(self.all_pages) if target is lc.Target), -1))
     
     def show_page(self, target):
         self.nb.SetSelection(next((k

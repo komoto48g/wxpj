@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """Collection of wxpj extension
 """
 from __future__ import (division, print_function,

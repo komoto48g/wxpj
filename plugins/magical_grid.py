@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
@@ -57,7 +57,7 @@ class Plugin(Layer):
                 lambda v: self.testrun(), icon='help', size=size,
                 tip="Select evaluation method\n"
                     "  :FFT evaluates using FFT method. Use when grid is small\n"
-                    "  :FFT+ in addition to FFT method, corss-cut the center (\•¶š‚«‚è‚¿‚å‚ñ‚Ï)\n"
+                    "  :FFT+ in addition to FFT method, corss-cut the center (åæ–‡å­—ãã‚Šã¡ã‚‡ã‚“ã±)\n"
                     "  :Cor evaluates using Cor (pattern matching) method. Use when grid is large"),
             self.choice,
             
@@ -137,13 +137,13 @@ class Plugin(Layer):
         
         self.message("\b @ldc...")
         self.ldc.reset_params(backcall=None)
-        self.ldc.thread.Start(self.ldc.run, frame) # ‚±‚±‚©‚çqƒXƒŒƒbƒh IN
+        self.ldc.thread.Start(self.ldc.run, frame) # ã“ã“ã‹ã‚‰å­ã‚¹ãƒ¬ãƒƒãƒ‰ IN
         self.ldc.Show()
         
-        ## ldc ‚ÌƒXƒŒƒbƒh‚ªI‚í‚é‚Ü‚Å‘Ò‚½‚È‚¯‚ê‚ÎC“r’†Œ‹‰Ê‚ğQÆ‚µ‚Ä‚µ‚Ü‚¤D
-        ## ‚µ‚©‚µCƒƒCƒ“ƒvƒƒZƒXe‚ª‘Ò‚¿‘±‚¯‚é (ƒrƒW[ó‘Ô) ‚ÆqƒXƒŒƒbƒh‚Í‘Ó‚¯‚Ä‚µ‚Ü‚¤D
-        ## self.ldc.thread.join(1) ... ‚È‚Ì‚Å‚±‚ê‚Å‚Íƒ_ƒDƒƒCƒ“ƒXƒŒƒbƒh‚Å‘Ò‹@‚·‚é•K—v‚ª‚ ‚éD
-        ## ‚±‚±‚Å‚Í thread_end <sentinel> ‚ğ‘Ò‹@‚µ‚ÄÅIŒ‹‰Ê‚ğo—Í‚·‚éD
+        ## ldc ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒçµ‚ã‚ã‚‹ã¾ã§å¾…ãŸãªã‘ã‚Œã°ï¼Œé€”ä¸­çµæœã‚’å‚ç…§ã—ã¦ã—ã¾ã†ï¼
+        ## ã—ã‹ã—ï¼Œãƒ¡ã‚¤ãƒ³ãƒ—ãƒ­ã‚»ã‚¹ï¼è¦ªãŒå¾…ã¡ç¶šã‘ã‚‹ (ãƒ“ã‚¸ãƒ¼çŠ¶æ…‹) ã¨å­ã‚¹ãƒ¬ãƒƒãƒ‰ã¯æ€ ã‘ã¦ã—ã¾ã†ï¼
+        ## self.ldc.thread.join(1) ... ãªã®ã§ã“ã‚Œã§ã¯ãƒ€ãƒ¡ï¼ãƒ¡ã‚¤ãƒ³ã‚¹ãƒ¬ãƒƒãƒ‰ã§å¾…æ©Ÿã™ã‚‹å¿…è¦ãŒã‚ã‚‹ï¼
+        ## ã“ã“ã§ã¯ thread_end <sentinel> ã‚’å¾…æ©Ÿã—ã¦æœ€çµ‚çµæœã‚’å‡ºåŠ›ã™ã‚‹ï¼
         self.ldc.handler.hook('thread_end', lambda v: self.calc_mag())
     
     def calc_mag(self):
@@ -163,7 +163,7 @@ class Plugin(Layer):
     ##     h, w = src.shape
     ##     
     ##     self.message("processing corr...")
-    ##     buf = edi.Corr(src, src) # ƒŠƒ\[ƒX‚ß‚Á‚¿‚áH‚í‚ê‚é
+    ##     buf = edi.Corr(src, src) # ãƒªã‚½ãƒ¼ã‚¹ã‚ã£ã¡ã‚ƒé£Ÿã‚ã‚Œã‚‹
     ##     tmp = cv2.GaussianBlur(src, (111,111), 0)
     ##     bkg = edi.Corr(tmp, tmp)
     ##     dst = edi.imconv(buf - bkg)
@@ -173,9 +173,9 @@ class Plugin(Layer):
         src = frame.buffer
         h, w = src.shape
         
-        d = h//10           # “Á’¥“_‚ğ‘I‚ñ‚Å ROI ‚ğ‚Æ‚è‚½‚¢‚Æ‚±‚ë‚¾‚ªC
-        i, j = h//2, w//2   # ld_cgrid ‚ğg‚¤‚Ì‚ÅC‰æ‘œ‚Ì’†S‚Å‚ ‚é‚±‚Æ‚ª•K{D
-        temp = src[i-d:i+d, j-d:j+d] # ‚Æ‚è‚ ‚¦‚¸‚Ì^‚ñ’†‚ç‚Ö‚ñ‚ğƒeƒLƒg[‚É ROI ‚é
+        d = h//10           # ç‰¹å¾´ç‚¹ã‚’é¸ã‚“ã§ ROI ã‚’ã¨ã‚ŠãŸã„ã¨ã“ã‚ã ãŒï¼Œ
+        i, j = h//2, w//2   # ld_cgrid ã‚’ä½¿ã†ã®ã§ï¼Œç”»åƒã®ä¸­å¿ƒã§ã‚ã‚‹ã“ã¨ãŒå¿…é ˆï¼
+        temp = src[i-d:i+d, j-d:j+d] # ã¨ã‚Šã‚ãˆãšã®çœŸã‚“ä¸­ã‚‰ã¸ã‚“ã‚’ãƒ†ã‚­ãƒˆãƒ¼ã« ROI ã‚‹
         
         self.message("processing pattern matching...")
         src = edi.imconv(src)
@@ -209,7 +209,7 @@ class Plugin(Layer):
             self.message("\b @polar-transform")
             rmax = w/2
             buf = cv2.linearPolar(buf, (w/2, h/2), rmax, cv2.WARP_FILL_OUTLIERS)
-            buf -= sum(buf) / h # ƒoƒbƒNƒOƒ‰ƒEƒ“ƒh(‚Û‚¢)‹­“x‚ğˆø‚¢‚Ä‚İ‚é
+            buf -= sum(buf) / h # ãƒãƒƒã‚¯ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰(ã½ã„)å¼·åº¦ã‚’å¼•ã„ã¦ã¿ã‚‹
             
             self.message("\b @remap")
             X, Y = np.meshgrid(
@@ -221,9 +221,9 @@ class Plugin(Layer):
             buf = cv2.remap(buf.astype(np.float32), map_r, map_t,
                             cv2.INTER_CUBIC, cv2.WARP_FILL_OUTLIERS)
             
-        dst = np.exp(buf) - 1 # log --> exp ‚Å–ß‚·
+        dst = np.exp(buf) - 1 # log --> exp ã§æˆ»ã™
         
-        ## \–äŒ`Ø‚¿‚å‚ñ‚Ïƒ}ƒXƒN (to be option)
+        ## åç´‹å½¢åˆ‡ã¡ã‚‡ã‚“ã±ãƒã‚¹ã‚¯ (to be option)
         if crossline:
             d = int(h * 0.001)
             i, j = h//2, w//2
@@ -238,8 +238,8 @@ class Plugin(Layer):
             m = np.where(np.hypot(y,x) <= d)   # mask submatrix
             dst[m[0]+i-d,m[1]+j-d] = dst.max() # apply to the center +-d
         
-        ## <uint8> ‹t‹óŠÔ ˜_—ƒXƒP[ƒ‹ [ru/pixel] ‚É•ÏŠ·‚·‚é
-        ## do not cuts hi/lo: ‹­“xdS‚ğ³‚µ‚­‚Æ‚é‚½‚ß‚É‚Í–O˜a‚µ‚È‚¢‚æ‚¤‚É‚·‚é
+        ## <uint8> é€†ç©ºé–“ è«–ç†ã‚¹ã‚±ãƒ¼ãƒ« [ru/pixel] ã«å¤‰æ›ã™ã‚‹
+        ## do not cuts hi/lo: å¼·åº¦é‡å¿ƒã‚’æ­£ã—ãã¨ã‚‹ãŸã‚ã«ã¯é£½å’Œã—ãªã„ã‚ˆã†ã«ã™ã‚‹
         dst = edi.imconv(dst, hi=0.0)
         return frame.parent.load(dst, name="*result of fft*", pos=0, localunit=1/w/frame.unit)
 

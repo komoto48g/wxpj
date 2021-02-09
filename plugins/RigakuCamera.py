@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """Rigaku camera module
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
@@ -156,7 +156,7 @@ class Camera(object):
         """Cache of the current image <uint16|uint32>"""
         try:
             while Camera.busy:
-                time.sleep(0.01) # ‚±‚±‚Å’ÊM‘Ò‹@
+                time.sleep(0.01) # ã“ã“ã§é€šä¿¡å¾…æ©Ÿ
             Camera.busy += 1
             if time.time() - self.cached_time < self.exposure:
                 if self.cached_image is not None:

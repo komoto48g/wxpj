@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
@@ -12,21 +12,21 @@ from mwx.graphman import Layer
 
 def find_circles(src, rmin=10, rmax=1000):
     ## Finds contours in binary image
-    ## £ src ‚Íã‘‚«‚³‚ê‚é‚Ì‚ÅŒã‚Åg‚¤‚Æ‚«‚Í’ˆÓ‚·‚é
+    ## â–² src ã¯ä¸Šæ›¸ãã•ã‚Œã‚‹ã®ã§å¾Œã§ä½¿ã†ã¨ãã¯æ³¨æ„ã™ã‚‹
     c, contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     ## detect enclosing circles [(nx,ny), c]
     circles = [cv2.minEnclosingCircle(v) for v in contours]
     
     ## check: draw contours directly on image (! img is src)
-    ## img = cv2.drawContours(src.copy(), contours, -1, 255, 1) # linetype=-1 => “h‚è‚Â‚Ô‚µ
+    ## img = cv2.drawContours(src.copy(), contours, -1, 255, 1) # linetype=-1 => å¡—ã‚Šã¤ã¶ã—
     
-    ## ŠOÚ‰~‚Ì”¼Œa‚ª (rmin, rmax) ˆÈ“à‚É‚ ‚é‚à‚Ì‚ğ (x,y,r) ƒŠƒXƒg‚É‚µ‚Ä•Ô‚·
-    ## ‚½‚¾‚µC‰æ‘œ‚Ì’[‚É‚ ‚é‰~ (dr := tol * radius ˆÈ“à) ‚ÍœŠO‚·‚é
+    ## å¤–æ¥å††ã®åŠå¾„ãŒ (rmin, rmax) ä»¥å†…ã«ã‚ã‚‹ã‚‚ã®ã‚’ (x,y,r) ãƒªã‚¹ãƒˆã«ã—ã¦è¿”ã™
+    ## ãŸã ã—ï¼Œç”»åƒã®ç«¯ã«ã‚ã‚‹å†† (dr := tol * radius ä»¥å†…) ã¯é™¤å¤–ã™ã‚‹
     tol = 0.75
     h, w = src.shape
     isinside = lambda p,dr: dr < p[0] < w-dr and dr < p[1] < h-dr
-    distance = lambda p: np.hypot(p[0]-w/2, p[1]-h/2) # ˆÊ’u‚Å¸‡ƒ\[ƒg
+    distance = lambda p: np.hypot(p[0]-w/2, p[1]-h/2) # ä½ç½®ã§æ˜‡é †ã‚½ãƒ¼ãƒˆ
     
     ls = [(c,r) for c,r in circles if rmin < r < rmax and isinside(c, r*tol)]
     return sorted(ls, key=lambda v: distance(v[0]))
@@ -62,7 +62,7 @@ class Plugin(Layer):
     rmin = property(lambda self: self.params[0])
     rmax = property(lambda self: self.params[1])
     
-    maxcount = 256 # ‘I‘ğ‚·‚é“_‚Ì”‚ğ§ŒÀ‚·‚é
+    maxcount = 256 # é¸æŠã™ã‚‹ç‚¹ã®æ•°ã‚’åˆ¶é™ã™ã‚‹
     
     def run(self, frame=None, **kwargs):
         if not frame:
@@ -84,7 +84,7 @@ class Plugin(Layer):
                 x, y = frame.xyfrompixel(nx, ny)
                 r *= frame.unit
                 
-                ## •s“Á’è‘½”‚Ì Arts ‚ğ•`‰æ‚·‚é
+                ## ä¸ç‰¹å®šå¤šæ•°ã® Arts ã‚’æç”»ã™ã‚‹
                 art = patches.Circle((x,y), r, color='r', ls='dotted', lw=1, fill=0)
                 frame.axes.add_artist(art)
                 self.Arts.append(art)

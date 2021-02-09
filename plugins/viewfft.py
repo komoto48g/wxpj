@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """View of FFT/iFFT
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
@@ -18,7 +18,7 @@ from mwx.graphman import Layer
 class Plugin(Layer):
     """FFT view
     FFT src (graph.buffer) to dst (output.buffer)
-    ’·•ûŒ`‚ÌƒŠ[ƒWƒ‡ƒ“‚Í˜c‚ñ‚¾ƒpƒ^[ƒ“‚É‚È‚é‚Ì‚Å—v’ˆÓ
+    é•·æ–¹å½¢ã®ãƒªãƒ¼ã‚¸ãƒ§ãƒ³ã¯æ­ªã‚“ã ãƒ‘ã‚¿ãƒ¼ãƒ³ã«ãªã‚‹ã®ã§è¦æ³¨æ„
     """
     menu = "&File/&Functions"
     menustr = "&FFT view\tAlt+f"
@@ -82,7 +82,7 @@ class Plugin(Layer):
     
     def refft(self, frame):
         """Show or get new fft of frame (graph.frame) to output.frame
-        ƒfƒBƒƒ“ƒWƒ‡ƒ“‚ÌÄİ’è‚Í‚µ‚È‚¢ (Äİ’è‚µ‚½‚¢‚Æ‚«‚Íˆê“x‘S•”Á‚·‚±‚Æ)"""
+        ãƒ‡ã‚£ãƒ¡ãƒ³ã‚¸ãƒ§ãƒ³ã®å†è¨­å®šã¯ã—ãªã„ (å†è¨­å®šã—ãŸã„ã¨ãã¯ä¸€åº¦å…¨éƒ¨æ¶ˆã™ã“ã¨)"""
         if frame:
             name = "*fft of {}*".format(frame.name)
             if name not in self.output:

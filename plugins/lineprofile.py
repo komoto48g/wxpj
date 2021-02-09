@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """Line profile
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>

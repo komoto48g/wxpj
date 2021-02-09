@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 from itertools import chain
@@ -10,12 +10,12 @@ import plugins.ld_grid as base
 
 class Model(base.Model):
     def residual(self, fitting_params, x, y):
-        """Å¬©æ–@‚Ìè—]”Ÿ”"""
+        """æœ€å°è‡ªä¹—æ³•ã®å‰°ä½™å‡½æ•°"""
         xc, yc = 0, 0
         grid, tilt, ratio, phi = fitting_params
         z = x + 1j*y
         
-        ## ƒÓ’´‰ß‚Ì•â³
+        ## Ï†è¶…éæ™‚ã®è£œæ­£
         if not -90 < phi < 90:
             ## print("  warning! phi is over limit ({:g})".format(phi))
             if phi < -90: phi += 180
@@ -26,7 +26,7 @@ class Model(base.Model):
             print("... Iteration stopped")
             raise StopIteration
         
-        ## ŒŸõ”ÍˆÍi•`‰æ”ÍˆÍ‚Å‚Í‚È‚¢j‚ÌŠî€ƒOƒŠƒbƒh (\•ªL‚­İ’è‚·‚é)
+        ## æ¤œç´¢ç¯„å›²ï¼ˆæç”»ç¯„å›²ã§ã¯ãªã„ï¼‰ã®åŸºæº–ã‚°ãƒªãƒƒãƒ‰ (ååˆ†åºƒãè¨­å®šã™ã‚‹)
         N = int(max(np.hypot(x,y)) / grid) + 1
         u = grid * exp(1j * tilt * pi/180)
         lu = u * np.arange(-N, N+1)
@@ -34,7 +34,7 @@ class Model(base.Model):
         net = (xc + 1j * yc) + (X + 1j * Y).ravel()
         gr = base.calc_aspect(net, ratio, phi)
         
-        ## Ä‹ßÚƒOƒŠƒbƒh“_‚©‚ç‚ÌƒYƒŒ‚ğ•]‰¿‚·‚é (‚½‚¾‚µC’Tõ”ÍˆÍ‚ÌƒŠƒ~ƒbƒg‚ªİ‚¯‚ç‚ê‚é)
+        ## å†è¿‘æ¥ã‚°ãƒªãƒƒãƒ‰ç‚¹ã‹ã‚‰ã®ã‚ºãƒ¬ã‚’è©•ä¾¡ã™ã‚‹ (ãŸã ã—ï¼Œæ¢ç´¢ç¯„å›²ã®ãƒªãƒŸãƒƒãƒˆãŒè¨­ã‘ã‚‰ã‚Œã‚‹)
         lim = N * grid
         res = [ min(abs(gr - p))**2 for p in z if abs(p.real) < lim and abs(p.imag) < lim ]
         

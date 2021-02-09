@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 from itertools import chain
@@ -8,12 +8,12 @@ import plugins.ld_ring as base
 
 class Model(base.Model):
     def residual(self, fitting_params, x, y):
-        """�ŏ�����@�̏�]����"""
+        """最小自乗法の剰余函数"""
         xc, yc = 0, 0
         cam, ratio, phi = fitting_params
-        z = base.calc_aspect(x + 1j*y, 1/ratio, phi) # z = x+iy --> �t�ϊ� 1/r
+        z = base.calc_aspect(x + 1j*y, 1/ratio, phi) # z = x+iy --> 逆変換 1/r
         
-        ## �Ӓ��ߎ��̕␳
+        ## φ超過時の補正
         if not -90 < phi < 90:
             ## print("  warning! phi is over limit ({:g})".format(phi))
             if phi < -90: phi += 180
@@ -24,7 +24,7 @@ class Model(base.Model):
             print("... Iteration stopped")
             raise StopIteration
         
-        ## �^�~����̃Y����]������
+        ## 真円からのズレを評価する
         x, y = z.real, z.imag
         rc = cam * self.Angles[self.Index]
         res = abs((x-xc)**2 + (y-yc)**2 - rc**2)

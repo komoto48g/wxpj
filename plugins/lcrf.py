@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
@@ -31,8 +31,8 @@ class Model(object):
 
 def find_ring_center(src, center, lo, hi=None, N=128):
     """find center of ring pattern in buffer
-    Polar •ÏŠ·‚µ‚½ŒãCŠp“xƒZƒOƒƒ“ƒg‚É•ªŠ„‚µ‚Ä‘ŠŒİ‘ŠŠÖ‚ğ‚Æ‚éD
-    theta = 0 ‚ğŠî€‚Æ‚µ‚ÄC‘Š‘Î•ÏˆÊ [pixels] ‚ğŒvZ‚·‚é
+    Polar å¤‰æ›ã—ãŸå¾Œï¼Œè§’åº¦ã‚»ã‚°ãƒ¡ãƒ³ãƒˆã«åˆ†å‰²ã—ã¦ç›¸äº’ç›¸é–¢ã‚’ã¨ã‚‹ï¼
+    theta = 0 ã‚’åŸºæº–ã¨ã—ã¦ï¼Œç›¸å¯¾å¤‰ä½ [pixels] ã‚’è¨ˆç®—ã™ã‚‹
     src : source buffer
  center : initial value of center positoin [nx,ny]
   lo-hi : masking size of radial axis
@@ -49,7 +49,7 @@ def find_ring_center(src, center, lo, hi=None, N=128):
     dst[:,:lo] = 0
     dst[:,hi:] = 0
     
-    ## Resize Y (angular) axis (ŒvZ‚ğŒy‚­‚·‚é‚½‚ßƒŠƒTƒCƒY)
+    ## Resize Y (angular) axis (è¨ˆç®—ã‚’è»½ãã™ã‚‹ãŸã‚ãƒªã‚µã‚¤ã‚º)
     buf = dst.astype(np.float32)
     rdst = cv2.resize(buf[:,lo:hi], (hi-lo, N), interpolation=cv2.INTER_AREA)
     rdst -= rdst.mean()
@@ -59,19 +59,19 @@ def find_ring_center(src, center, lo, hi=None, N=128):
         p = signal.fftconvolve(fr, temp, mode='same')
         data.append(p.argmax())
     
-    ## ‘ŠŠÖ‚ÌŒvZ‚Íã‚©‚çs‚¤‚Ì‚ÅC2pi --> 0 ‚Ì•À‚Ñ‚ÌƒŠƒXƒg‚É‚È‚é
-    ##   ÅI“I‚É•Ô‚·ŒvZŒ‹‰Ê‚Í‹t“]‚³‚¹‚ÄC0 --> 2pi ‚Ì•À‚Ñ‚É‚·‚é
+    ## ç›¸é–¢ã®è¨ˆç®—ã¯ä¸Šã‹ã‚‰è¡Œã†ã®ã§ï¼Œ2pi --> 0 ã®ä¸¦ã³ã®ãƒªã‚¹ãƒˆã«ãªã‚‹
+    ##   æœ€çµ‚çš„ã«è¿”ã™è¨ˆç®—çµæœã¯é€†è»¢ã•ã›ã¦ï¼Œ0 --> 2pi ã®ä¸¦ã³ã«ã™ã‚‹
     Y = np.array(data[::-1]) - (hi-lo)/2
     X = np.arange(0, 1, 1/len(Y)) * 2*pi
     
-    ## remove serges ‹}Œƒ‚È•Ï‰» (‘ŠŠÖŒvZ‚ÌŒ‹‰Ê‚Ì‚Æ‚Ñ) ‚ğœŠO‚·‚é
+    ## remove serges æ€¥æ¿€ãªå¤‰åŒ– (ç›¸é–¢è¨ˆç®—ã®çµæœã®ã¨ã³) ã‚’é™¤å¤–ã™ã‚‹
     ## if 1:
     ##     ym = np.mean(Y)
     ##     ys = np.std(Y)
     ##     xy = [(x,y) for x,y in zip(X,Y) if -2*ys < y-ym < 2*ys]
     ##     X, Y = np.array(xy).T
     
-    ## remove serges (2) tol ‚æ‚è¬‚³‚¢‚Æ‚Ñ‚ğ‹–—e‚·‚é (‰æ‘fƒTƒCƒY‚É”ä—á)
+    ## remove serges (2) tol ã‚ˆã‚Šå°ã•ã„ã¨ã³ã‚’è¨±å®¹ã™ã‚‹ (ç”»ç´ ã‚µã‚¤ã‚ºã«æ¯”ä¾‹)
     tol = 0.02 * w
     xx, yy = [X[0]], [Y[0]]
     for x,y in zip(X[1:], Y[1:]):
@@ -87,17 +87,17 @@ def find_ring_center(src, center, lo, hi=None, N=128):
     fitting_curve = Model()
     fitting_curve.fit(xx, yy)
     
-    ## print(fitting_curve.params) # £ƒpƒ‰ƒ[ƒ^‚ª‘å‚«‚­‚¸‚ê‚é‚±‚Æ‚ª‚ ‚é‚Ì‚Å’ˆÓ
+    ## print(fitting_curve.params) # â–²ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãŒå¤§ãããšã‚Œã‚‹ã“ã¨ãŒã‚ã‚‹ã®ã§æ³¨æ„
     ## edi.plot(xx, yy, '+', X, fitting_curve(X))
     
-    a = fitting_curve.params[0] #= 0 # :a=0 ‚Æ‚µ‚Ä(•½‹Ï‚ğŠî€‚Æ‚·‚é)‘S‘Ì‚ÌƒIƒtƒZƒbƒg—Ê‚ğ•]‰¿‚·‚é
+    a = fitting_curve.params[0] #= 0 # :a=0 ã¨ã—ã¦(å¹³å‡ã‚’åŸºæº–ã¨ã™ã‚‹)å…¨ä½“ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆé‡ã‚’è©•ä¾¡ã™ã‚‹
     b = fitting_curve.params[1]
     c = fitting_curve.params[2] % (2*pi)
     n = max(nx, ny)
-    if abs(a) > n or abs(b) > n: # £ƒtƒBƒbƒeƒBƒ“ƒOƒpƒ‰ƒ[ƒ^ˆÙíD„’è‚É¸”s
+    if abs(a) > n or abs(b) > n: # â–²ãƒ•ã‚£ãƒƒãƒ†ã‚£ãƒ³ã‚°ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ç•°å¸¸ï¼æ¨å®šã«å¤±æ•—
         return find_ring_center(src, None, lo, hi, N)
     
-    t = c+pi if b>0 else c # ---> „’è’†S•ûŒü
+    t = c+pi if b>0 else c # ---> æ¨å®šä¸­å¿ƒæ–¹å‘
     nx -= abs(b) * cos(t)
     ny += abs(b) * sin(t)
     center = (nx, ny)
@@ -163,7 +163,7 @@ class Plugin(Layer):
     rmin = property(lambda self: self.params[0])
     rmax = property(lambda self: self.params[1])
     
-    maxloop = 4 # ’Tõƒ‹[ƒv‚Ì‰ñ”§ŒÀ maximum loop
+    maxloop = 4 # æ¢ç´¢ãƒ«ãƒ¼ãƒ—ã®å›æ•°åˆ¶é™ maximum loop
     
     def run(self, frame=None, shift=0):
         if not frame:
@@ -196,7 +196,7 @@ class Plugin(Layer):
             edi.plot(peaks, rdist[peaks], 'o')
         print("peaks =", peaks)
         
-        ## ‹­“x‚Ì‚‚¢‚Æ‚±‚ë‚É‚¨‚¨‚´‚Á‚Ï (oz) ‚Éƒ}[ƒJ[‚ğ‘Å‚Â (100/3 ’ö“x)
+        ## å¼·åº¦ã®é«˜ã„ã¨ã“ã‚ã«ãŠãŠã–ã£ã± (oz) ã«ãƒãƒ¼ã‚«ãƒ¼ã‚’æ‰“ã¤ (100/3 ç¨‹åº¦)
         j = np.argmax(rdist[peaks])
         a = np.linspace(0,1,100) * 2*pi
         nr = peaks[j] + fitting_curve(a)
@@ -211,7 +211,7 @@ class Plugin(Layer):
         oz = (z > 2 * rdist.mean())
         frame.markers = (x[oz][0:-1:3], y[oz][0:-1:3]) # scatter markers onto the arc
         
-        ## ƒT[ƒNƒ‹•`‰æ (Šm”F—p)
+        ## ã‚µãƒ¼ã‚¯ãƒ«æç”» (ç¢ºèªç”¨)
         ## self.Arts = self.graph.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75)
         ## self.Arts[0].set_data(x, y) # draw line arc
         ## self.Draw()

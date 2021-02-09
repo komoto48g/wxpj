@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 from itertools import chain
@@ -35,12 +35,12 @@ def calc_fcc_spacings(a, N=10):
 
 
 class Model(object):
-    """FCC �����������O�p�^�[�����f��
+    """FCC 多結晶リングパターンモデル
    Angles : scattering angles [rad] (n=0 included)
       cam : camera length [mm]
     xc,yc : position of center
     """
-    nGrid = 10 # �t�i�q�O���b�h
+    nGrid = 10 # 逆格子グリッド
     Index = 2  # fitting ring index (default 3rd ring)
     
     environ = property(lambda self: self.owner.parent.environ) # Environ of wxpj
@@ -59,8 +59,8 @@ class Model(object):
         ## self.Angles = sorted(le / ds)[:20]
     
     def basegrid(self, params):
-        """�`��͈͂̊�O���b�h (���f���z��̑g) ��Ԃ�
-        �~�̕`�惊�X�g�� n=0 ���܂ޕK�v�͂Ȃ��̂� [1:] ��Ԃ��D
+        """描画範囲の基準グリッド (複素数配列の組) を返す
+        円の描画リストは n=0 を含む必要はないので [1:] を返す．
         """
         cam, xc, yc = np.float32(params)
         t = np.linspace(0, 1, 101) * pi
@@ -68,11 +68,11 @@ class Model(object):
         return [p + cam * a * exp(2j*t) for a in self.Angles]
     
     def residual(self, fitting_params, x, y):
-        """�ŏ�����@�̏�]����"""
+        """最小自乗法の剰余函数"""
         cam, xc, yc, ratio, phi = fitting_params
-        z = calc_aspect(x + 1j*y, 1/ratio, phi) # z = x+iy --> �t�ϊ� 1/r
+        z = calc_aspect(x + 1j*y, 1/ratio, phi) # z = x+iy --> 逆変換 1/r
         
-        ## �Ӓ��ߎ��̕␳
+        ## φ超過時の補正
         if not -90 < phi < 90:
             ## print("  warning! phi is over limit ({:g})".format(phi))
             if phi < -90: phi += 180
@@ -83,7 +83,7 @@ class Model(object):
             print("... Iteration stopped")
             raise StopIteration
         
-        ## �^�~����̃Y����]������
+        ## 真円からのズレを評価する
         x, y = z.real, z.imag
         rc = cam * self.Angles[self.Index]
         res = abs((x-xc)**2 + (y-yc)**2 - rc**2)
@@ -110,8 +110,8 @@ class Plugin(Layer):
             LParam("d", (-x, x, x/1e5), 0.0, '{:.3G}'.format),
         )
         self.ratio_params = (
-            LParam("��", (0.5, 1.5, 0.001), 1.0),
-            LParam("��", (-90, 90, 0.1), 0.0),
+            LParam("γ", (0.5, 1.5, 0.001), 1.0),
+            LParam("φ", (-90, 90, 0.1), 0.0),
         )
         self.grid_params = (
             LParam("cam", (0, 5e4, 0.1), 100.0),
@@ -146,17 +146,17 @@ class Plugin(Layer):
                   + [axes.plot([], [], 'r-',  lw=0.5, alpha=0.75)[0] for z in grid]
     
     def calc(self):
-        """�A�X�y�N�g��F R1=Y/X, R2=Y2/X2 ���v�Z����
-        �A�X�y�N�g�䂸��{�R���c�����l�������O���b�h�f�[�^�ɕϊ����ĕ`�悷��
+        """アスペクト比： R1=Y/X, R2=Y2/X2 を計算する
+        アスペクト比ずれ＋３次歪率を考慮したグリッドデータに変換して描画する
         """
         r, t = np.float32(self.ratio_params)
         D, d = np.float32(self.dist_params)
         
         grid0 = list(self.model.basegrid(self.grid_params))
         grid1 = list(calc_aspect(z,r,t) + calc_dist(z,D,d) for z in grid0)
-        grids = grid0 + grid1 # ���X�g�a
+        grids = grid0 + grid1 # リスト和
         
-        for art,z in zip(self.Arts, grids): # �O���b�h�̐ݒ�
+        for art,z in zip(self.Arts, grids): # グリッドの設定
             art.set_data(z.real, z.imag)
         self.Draw()
         
@@ -166,14 +166,14 @@ class Plugin(Layer):
         R1 = (1 - e * cos(2*t)) / (1 + e * cos(2*t))
         R2 = (1 - e * sin(2*t)) / (1 + e * sin(2*t))
         
-        ## R50 �̘c���w�W�F�A�X�y�N�g�䂸��(Y/X)�{�R���c��
+        ## R50 の歪率指標：アスペクト比ずれ(Y/X)＋３次歪率
         ## R = 50
         ## d = abs(complex(*self.dist_params)) * (R ** 2)
         
         self.text.SetValue("\n".join((
             "Y/X = {:.3f}".format(R1),
             "Y2/X2 = {:.3f}".format(R2),
-            "Aspect �� = {:.2%}".format((r-1)*2),
+            "Aspect ε = {:.2%}".format((r-1)*2),
             ## "Total(R50) = {:.2%}".format(d + (r-1)*2),
         )))
         return R1, R2
@@ -191,7 +191,7 @@ class Plugin(Layer):
         self.init_grid(frame.axes)
         
         with self.thread:
-            ## �ߖT�ɂ���s�[�N�ʒu (�}n) ���ڂ����� (k,k) ���o����
+            ## 近傍にあるピーク位置 (±n) をぼかして (k,k) 検出する
             if not skip:
                 k = 5
                 n = 13
@@ -200,7 +200,7 @@ class Plugin(Layer):
                 nx, ny = self.find_near_maximum(src, nx, ny, n, times=2)
                 x, y = frame.markers = frame.xyfrompixel(nx, ny)
             
-            ## �œK�O���b�h�p�����[�^�̌��ς���
+            ## 最適グリッドパラメータの見積もり
             self.model.Index = self.order.value - 1
             
             result = optimize.leastsq(self.model.residual,
