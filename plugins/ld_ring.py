@@ -183,7 +183,7 @@ class Plugin(Layer):
             frame = self.current_graph.frame
         
         x, y = frame.markers
-        if not x.any():
+        if not x.size:
             print(self.message("- abort: No markers found in the frame."))
             return
         
