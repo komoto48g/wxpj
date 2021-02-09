@@ -258,14 +258,13 @@ class pyJemacs(Framebase):
         """Read a buffer from path file (override) +.dm3 extension"""
         if path[-4:] == '.dm3':
             dmf = DM3lib.DM3(path)
-            info = dmf.info
             ## return dmf.image # PIL Image file
-            return dmf.imagedata, info
+            return dmf.imagedata, {'header':dmf.info}
         
         if path[-4:] == '.img':
             with open(path, 'rb') as i:
                 head = i.read(4096).decode()
-                head = head[1:head.find('}')] # get field in {...} and convert to dictionary
+                head = head[1:head.find('}')] # get header in '{...}'
                 head = re.sub(r"(\w+)=\s(.*?);\n", r"\1='\2',", head)
                 info = eval("dict({})".format(head))
                 w = int(info['SIZE1'])
@@ -279,7 +278,7 @@ class pyJemacs(Framebase):
                     raise Exception("unexpected data type {!r}".format(type))
                 buf = np.frombuffer(i.read(), dtype)
                 buf.resize(h, w)
-                return buf, info
+                return buf, {'header':info}
         
         return Framebase.read_buffer(path)
     
