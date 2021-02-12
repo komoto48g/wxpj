@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from mwx.graphman import Layer
 from pylots.temixins import AlignInterface
 
@@ -23,7 +23,7 @@ class Plugin(AlignInterface, Layer):
     @index.setter
     def index(self, v):
         self.APT.pos = v
-        ## �ڕW�l�ƍŏI�l�͈�v����Ƃ͌���Ȃ����ȉ��̃R�[�h�ő҂�
+        ## 目標値と最終値は一致するとは限らない▼以下のコードで待つ
         while 1:
             u = self.APT.pos
             if sum(abs(u - v)) < 1: # wait until pos (reached) => stopped
@@ -34,7 +34,7 @@ class Plugin(AlignInterface, Layer):
     spot = property(lambda self: self.parent.require('beam_spot'))
     shift = property(lambda self: self.parent.require('beam_shift'))
     
-    ## �Ǝˌn Spot �ɂ͈ˑ����Ȃ��Ƃ���
+    ## 照射系 Spot には依存しないとする
     conf_arg = property(lambda self: self.illumination.Alpha)
     
     @property

@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from mwx.graphman import Layer
 from pylots.temixins import SpotInterface, TEM
 

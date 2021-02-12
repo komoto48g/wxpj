@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from mwx.graphman import Layer
 from pylots.temixins import TemInterface, TEM
 import wxpyJemacs as wxpj
@@ -87,7 +87,7 @@ class Plugin(TemInterface, Layer):
                     z2 = min(y2 / dt) * 1e3 # [um] @min eliminates inf
                     
                     zs = (z2-z1) / (x2-x1) # [um/bit] -> config
-                    x0 = x1 - z1 / zs      # フォーカス推定値
+                    x0 = x1 - z1 / zs      # 繝輔か繝ｼ繧ｫ繧ｹ謗ｨ螳壼､
                     
                     self.config[self.conf_key] = zs
                     self.index = x0

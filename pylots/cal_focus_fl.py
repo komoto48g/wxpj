@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 import scipy as np
 from scipy import cos,sin
 from mwx.graphman import Layer
@@ -41,7 +41,7 @@ class Plugin(TemInterface, Layer):
             h, w = self.camera.shape
             try:
                 org = self.index
-                c, p, q = self.detect_beam_center() # ‚±‚ê‚ªƒCƒC‚©‚Ç‚¤‚©‚Í—vŒŸ“¢£‚Æ‚­‚É—¿‚ª‚ ‚é‚Æ‚«
+                c, p, q = self.detect_beam_center() # ã“ã‚ŒãŒã‚¤ã‚¤ã‹ã©ã†ã‹ã¯è¦æ¤œè¨â–²ã¨ãã«è©¦æ–™ãŒã‚ã‚‹ã¨ã
                 if c is None:
                     return
                 
@@ -61,7 +61,7 @@ class Plugin(TemInterface, Layer):
             h, w = self.camera.shape
             ds = self.conf_table
             ys = np.hypot(*ds) # [pix/bit]
-            step = h / ys * 0.1 # (config) ‰Šúİ’è’l‚ğ‚à‚Æ‚ÉƒXƒeƒbƒv‚ğŒˆ‚ß‚é
+            step = h / ys * 0.1 # (config) åˆæœŸè¨­å®šå€¤ã‚’ã‚‚ã¨ã«ã‚¹ãƒ†ãƒƒãƒ—ã‚’æ±ºã‚ã‚‹
             try:
                 org = self.index
                 c, p, q = self.detect_beam_center()

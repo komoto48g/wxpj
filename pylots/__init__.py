@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """Editor's collection of Tem algorithms of Mixin (interface) class
 For the main implementaion, refer to `temixins' module
 

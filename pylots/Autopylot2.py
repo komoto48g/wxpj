@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """Editor's collection of TEM
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
@@ -160,8 +160,8 @@ class Plugin(UserInterface, Layer):
     
     def set_current_session(self, session):
         self.tree.set_flags(session)
-        ## reload ‚Í zip(temp,root) ’·‚³‚ª‡‚í‚È‚¢‚Ì‚Å‚³‚ç‚É’Ç‰Á
-        self.tree.restore_session(session) # [0]-Calibrations ˆÈ~‚ÌŠg’£ƒvƒ‰ƒOƒCƒ“‚ğ•œŒ³‚·‚é
+        ## reload æ™‚ã¯ zip(temp,root) é•·ã•ãŒåˆã‚ãªã„ã®ã§ã•ã‚‰ã«è¿½åŠ 
+        self.tree.restore_session(session) # [0]-Calibrations ä»¥é™ã®æ‹¡å¼µãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã‚’å¾©å…ƒã™ã‚‹
         self.tree.reset()
     
     def get_current_session(self):
@@ -214,8 +214,8 @@ class Plugin(UserInterface, Layer):
     
     def call_subprocess(self, data):
         """Callback of data calibrations"""
-        ## ƒcƒŠ[ì¬‚É‚Í‚Ü‚¾ƒCƒ“ƒXƒ^ƒ“ƒX‚ªŠm’è‚µ‚Ä‚¢‚È‚¢
-        ## ‚±‚±‚Å plug ƒCƒ“ƒXƒ^ƒ“ƒX‚ÉƒAƒNƒZƒX‚·‚éD‚È‚¯‚ê‚Îƒ[ƒh‚ğ‚İ‚é
+        ## ãƒ„ãƒªãƒ¼ä½œæˆæ™‚ã«ã¯ã¾ã ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒç¢ºå®šã—ã¦ã„ãªã„
+        ## ã“ã“ã§ plug ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã«ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹ï¼ãªã‘ã‚Œã°ãƒ­ãƒ¼ãƒ‰ã‚’è©¦ã¿ã‚‹
         try:
             name = data.name
             self.statusline("[{}]".format(name))

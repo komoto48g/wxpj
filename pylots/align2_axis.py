@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from mwx import LParam
 from mwx.graphman import Layer
 from pylots.temixins import AlignInterface, TEM
@@ -62,7 +62,7 @@ class Plugin(AlignInterface, Layer):
                 self.spot.focus()
                 self.shift.align()
                 try:
-                    ## ó^Ç¶ÇÁÇÍÇΩ OL-Focus (+dz) Ç≈çsÇ§
+                    ## ‰∏é„Åà„Çâ„Çå„Åü OL-Focus (+dz) „ÅßË°å„ÅÜ
                     worg = self.wobbler
                     self.wobbler = worg + self.wobstep.value
                     self.delay(self.default_wobsec)

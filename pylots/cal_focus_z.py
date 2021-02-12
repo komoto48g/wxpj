@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 import scipy as np
 from mwx.graphman import Layer
 from pylots.temixins import TemInterface, TEM

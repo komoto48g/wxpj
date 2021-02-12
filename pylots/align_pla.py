@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from mwx.graphman import Layer
 from pylots.temixins import AlignInterface, TEM
 
@@ -13,8 +13,8 @@ class Plugin(AlignInterface, Layer):
     
     spot = property(lambda self: self.parent.require('beam_spot'))
     
-    ## ”{—¦‚ÉˆË‘¶‚µ‚È‚¢ (PL = fixed ‰¼’è)DCCD –Ê [um/pix] Š·Z
-    ## PL = fixval ‚Å‚È‚¢ê‡‚ÍC‰ñ“]^”{—¦‚Ì•â³‚ª•K—v
+    ## å€ç‡ã«ä¾å­˜ã—ãªã„ (PL = fixed ä»®å®š)ï¼CCD é¢ [um/pix] æ›ç®—
+    ## PL = fixval ã§ãªã„å ´åˆã¯ï¼Œå›è»¢ï¼å€ç‡ã®è£œæ­£ãŒå¿…è¦
     conf_arg = 0
     conf_factor = property(lambda self: self.camera.pixel_unit * 1e3)
     

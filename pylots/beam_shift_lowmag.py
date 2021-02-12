@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from mwx.graphman import Layer
 from pylots.temixins import AlignInterface, TEM
 
@@ -15,7 +15,7 @@ class Plugin(AlignInterface, Layer):
     
     spot = property(lambda self: self.parent.require('beam_spot_lowmag'))
     
-    ## LOWMAG:Alpha(=CM) 依存性なし．単一データとする
+    ## LOWMAG:Alpha(=CM) 萓晏ｭ俶ｧ縺ｪ縺暦ｼ主腰荳繝�繝ｼ繧ｿ縺ｨ縺吶ｋ
     conf_arg = 0
     
     def align(self, *args, **kwargs):

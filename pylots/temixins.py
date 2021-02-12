@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 """Editor's collection of Tem algorithms of Mixins (interfaces) class
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
@@ -127,9 +127,9 @@ class TemInterface(object):
         
         ## Extracted Tem info are inherited to `pj` globals
         if Tem:
-            Aperture.APERTURES.update(Tem.APERTURES) # ID ‚ªŠÖŒW‚·‚é‚Ì‚Åã‘‚«‚Å‚Í‚È‚­XV
+            Aperture.APERTURES.update(Tem.APERTURES) # ID ãŒé–¢ä¿‚ã™ã‚‹ã®ã§ä¸Šæ›¸ãã§ã¯ãªãæ›´æ–°
             
-            pj.Illumination.MODES = OrderedDict(Tem.ILLUMINATION_MODES) # ‘¼‚Ì‚ÍƒI[ƒo[ƒ‰ƒCƒh
+            pj.Illumination.MODES = OrderedDict(Tem.ILLUMINATION_MODES) # ä»–ã®ã¯ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
             pj.Imaging.MODES = OrderedDict(Tem.IMAGING_MODES)
             pj.Omega.MODES = OrderedDict(Tem.OMEGA_MODES)
         
@@ -343,7 +343,7 @@ class TemInterface(object):
                 "\n Press [OK] to continue."
                 "\n Press [CANCEL] to terminate the process.",
                 style = wx.OK|wx.CANCEL|wx.ICON_WARNING) != wx.OK:
-                    ## self.thread.Stop() --> ŒÄ‚Ño‚µ‘¤‚Ås‚¤
+                    ## self.thread.Stop() --> å‘¼ã³å‡ºã—å´ã§è¡Œã†
                     return False
             return True
         finally:
@@ -434,8 +434,8 @@ class TemInterface(object):
         return args
     
     def detect_beam_center(self, border=None, **kwargs):
-        """ƒr[ƒ€‚Ì‘È‰~’†S (dS‚Å‚Í‚È‚¢)
-        border : ŒŸo”ÍˆÍ‚Ì‹«ŠE‚Ì‚µ‚«‚¢’l
+        """ãƒ“ãƒ¼ãƒ ã®æ¥•å††ä¸­å¿ƒ (é‡å¿ƒã§ã¯ãªã„)
+        border : æ¤œå‡ºç¯„å›²ã®å¢ƒç•Œã®ã—ãã„å€¤
         """
         el, p, q = self.detect_ellipse(**kwargs)
         if el and self.is_signal(p, q):
@@ -450,7 +450,7 @@ class TemInterface(object):
         return None, p, q
     
     ## def detect_beam_centroid(self, **kwargs):
-    ##     """ƒr[ƒ€‚ÌŒŸoˆæ“à‚ÌdS (‘È‰~’†S‚Å‚Í‚È‚¢)
+    ##     """ãƒ“ãƒ¼ãƒ ã®æ¤œå‡ºåŸŸå†…ã®é‡å¿ƒ (æ¥•å††ä¸­å¿ƒã§ã¯ãªã„)
     ##     """
     
     def detect_beam_diameter(self, **kwargs):
@@ -518,7 +518,7 @@ class DataLogger(object):
     
     def plot_data(self):
         x, y = self.data
-        if len(x) > 1: # üŒ`‹ß—ƒOƒ‰ƒt‚Ì’Ç‰Á
+        if len(x) > 1: # ç·šå½¢è¿‘ä¼¼ã‚°ãƒ©ãƒ•ã®è¿½åŠ 
             a, b = np.polyfit(x, y, 1)
             f = np.poly1d((a, b))
             edi.plot(x, f(x), '--')
@@ -613,7 +613,7 @@ class SpotInterface(TemInterface):
         """
         xo, ys = self.conf_table
         x = self.index
-        y,_p,_q = self.detect_beam_diameter() # y=None: —ÖŠs‚ª‚ ‚è‚Ü‚¹‚ñ
+        y,_p,_q = self.detect_beam_diameter() # y=None: è¼ªéƒ­ãŒã‚ã‚Šã¾ã›ã‚“
         ys = 2 * xo * y / (x**2 - xo**2)
         self.set_spot_beam((xo, ys))
     
@@ -627,7 +627,7 @@ class SpotInterface(TemInterface):
         try:
             h, w = self.camera.shape
             xo, ys = self.conf_table # [pix/bit]
-            step = step or h / ys * 0.1 # (config) ‰Šúİ’è’l‚ğ‚à‚Æ‚ÉƒXƒeƒbƒv‚ğŒˆ‚ß‚é
+            step = step or h / ys * 0.1 # (config) åˆæœŸè¨­å®šå€¤ã‚’ã‚‚ã¨ã«ã‚¹ãƒ†ãƒƒãƒ—ã‚’æ±ºã‚ã‚‹
             if step > 0x800: step = 0x800
             elif step < 0x80: step = 0x80
             
@@ -657,12 +657,12 @@ class SpotInterface(TemInterface):
                     self.update_config(temp)
                     return True
             
-            ## ƒ‹[ƒv”ÍˆÍ“à‚Å‚ÍC‚æ‚¢ğŒ‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½
+            ## ãƒ«ãƒ¼ãƒ—ç¯„å›²å†…ã§ã¯ï¼Œã‚ˆã„æ¡ä»¶ãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸ
             xo, yo = temp
             print("- Result (={:g}) exceeds threshold (> {})".format(yo/h, threshold),
                   "at illumination mode {}".format(self.illumination.Selector))
             
-            ## ƒeƒXƒg”ÍˆÍ“à‚Å‚ÌÅ—Ç’l‚ğ‚Æ‚è‚ ‚¦‚¸“ü‚ê‚Ä‚¨‚­
+            ## ãƒ†ã‚¹ãƒˆç¯„å›²å†…ã§ã®æœ€è‰¯å€¤ã‚’ã¨ã‚Šã‚ãˆãšå…¥ã‚Œã¦ãŠã
             self.update_config(temp)
             return False
         
@@ -672,7 +672,7 @@ class SpotInterface(TemInterface):
     
     def update_config(self, vo):
         xo, yo = vo
-        q, y = self.logger.data # Å‘åˆÊ’u (x,y) ‚ÆÅ¬ˆÊ’u (xo,yo) ‚©‚çŒvZ‚·‚é
+        q, y = self.logger.data # æœ€å¤§ä½ç½® (x,y) ã¨æœ€å°ä½ç½® (xo,yo) ã‹ã‚‰è¨ˆç®—ã™ã‚‹
         k = np.argmax(y)
         ys = 2 * xo * y[k] / (q[k] - xo**2)
         self.set_spot_beam((xo, ys))
@@ -680,14 +680,14 @@ class SpotInterface(TemInterface):
     ## --------------------------------
     ## Beam finder methods
     ## --------------------------------
-    ## `logger ‚Í‹¤’Ê‚È‚Ì‚ÅC‚»‚ê‚¼‚ê‚Ìƒ‹[ƒ`ƒ“‚ğg—p‚·‚é‘O‚É‚ ‚ç‚©‚¶‚ßƒNƒŠƒA‚·‚é
+    ## `logger ã¯å…±é€šãªã®ã§ï¼Œãã‚Œãã‚Œã®ãƒ«ãƒ¼ãƒãƒ³ã‚’ä½¿ç”¨ã™ã‚‹å‰ã«ã‚ã‚‰ã‹ã˜ã‚ã‚¯ãƒªã‚¢ã™ã‚‹
     ## `logger being a common object, :clear must be called every time before used.
     
     def find_beam(self, step=0x400):
-        """Beam finder ver.2 Œ»İˆÊ’u‚©‚ç‹­“x‚Ìƒs[ƒNˆÊ’u‚ğ„’è‚·‚é
-        £dark •â³‚µ‚Ä‚¢‚È‚¢‹­“x‚Å‚Í³‚µ‚­Œ©Ï‚à‚é‚±‚Æ‚Í‚Å‚«‚È‚¢
-        x = 1/f å J**2
-        y = 1/ãp å R  (ƒJƒEƒ“ƒg‘” N ‚ª‚í‚©‚ç‚È‚¢‚Ì‚Å R-”ä—áŒW”‚Í–¢’è)
+        """Beam finder ver.2 ç¾åœ¨ä½ç½®ã‹ã‚‰å¼·åº¦ã®ãƒ”ãƒ¼ã‚¯ä½ç½®ã‚’æ¨å®šã™ã‚‹
+        â–²dark è£œæ­£ã—ã¦ã„ãªã„å¼·åº¦ã§ã¯æ­£ã—ãè¦‹ç©ã‚‚ã‚‹ã“ã¨ã¯ã§ããªã„
+        x = 1/f âˆ J**2
+        y = 1/âˆšp âˆ R  (ã‚«ã‚¦ãƒ³ãƒˆç·æ•° N ãŒã‚ã‹ã‚‰ãªã„ã®ã§ R-æ¯”ä¾‹ä¿‚æ•°ã¯æœªå®š)
         """
         self.logger.clear_data()
         xj = self.index
@@ -700,12 +700,12 @@ class SpotInterface(TemInterface):
             self.index = xj
         
         x, y = self.logger.data
-        ## a, b = np.polyfit(x, y, 1) # y = a*x + b # ‚Q“_•âŠÔ‚Å’T‚·
-        ## self.index = np.sqrt(-b/a) # ƒNƒƒXƒI[ƒo[‚ğ‹²‚Ş‚Æ NG «ˆÈ‰º‚É•ÏX
-        ## ¥
+        ## a, b = np.polyfit(x, y, 1) # y = a*x + b # ï¼’ç‚¹è£œé–“ã§æ¢ã™
+        ## self.index = np.sqrt(-b/a) # ã‚¯ãƒ­ã‚¹ã‚ªãƒ¼ãƒãƒ¼ã‚’æŒŸã‚€ã¨ NG â†“ä»¥ä¸‹ã«å¤‰æ›´
+        ## â–¼
         yss = np.diff(y) / np.diff(x)
         k = np.argmax(abs(yss))
-        xq = x[k] - y[k] / yss[k] # ŒX‚«‚ªÅ‘å‚Æ‚È‚é•û‚©‚çüŒ`•âŠO‚·‚é
+        xq = x[k] - y[k] / yss[k] # å‚¾ããŒæœ€å¤§ã¨ãªã‚‹æ–¹ã‹ã‚‰ç·šå½¢è£œå¤–ã™ã‚‹
         if xq > 0:
             xo = np.sqrt(xq)
             self.index = xo
@@ -713,8 +713,8 @@ class SpotInterface(TemInterface):
             return el and self.is_signal(p, q)
     
     def find_spot_beam(self, step=0x80):
-        """Spot finder 3“_Œv‘ª–@
-        x = 1/f å J**2
+        """Spot finder 3ç‚¹è¨ˆæ¸¬æ³•
+        x = 1/f âˆ J**2
         y = d: Diameter of the spot (Total counts N := p * (pi/4 * d*d))
         """
         xj = self.index
@@ -733,7 +733,7 @@ class SpotInterface(TemInterface):
         dy = np.diff(y)
         yss = dy/dx
         k = np.argmax(abs(yss))
-        xq = x[k] - y[k] / yss[k] # ŒX‚«‚ªÅ‘å‚Æ‚È‚é•û‚©‚çüŒ`•âŠO‚·‚é
+        xq = x[k] - y[k] / yss[k] # å‚¾ããŒæœ€å¤§ã¨ãªã‚‹æ–¹ã‹ã‚‰ç·šå½¢è£œå¤–ã™ã‚‹
         if xq > 0:
             xo = np.sqrt(xq)
             self.index = xo
@@ -782,10 +782,10 @@ class AlignInterface(TemInterface):
         lambda self: self.get_conf_array(),
         lambda self,v: self.set_conf_array(v))
     
-    ## ƒfƒtƒHƒ‹ƒg‚Í ÆËŒn Spot ‚ÉˆË‘¶‚µ‚È‚¢Œn‚Æ‚·‚é
+    ## ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯ ç…§å°„ç³» Spot ã«ä¾å­˜ã—ãªã„ç³»ã¨ã™ã‚‹
     conf_arg = property(lambda self: self.illumination.Alpha)
     
-    ## ’Êí‚Í mag_unit(cam_unit ‚Æ“¯‚¶) ‚ÉˆË‘¶‚·‚é
+    ## é€šå¸¸ã¯ mag_unit(cam_unit ã¨åŒã˜) ã«ä¾å­˜ã™ã‚‹
     conf_factor = property(lambda self: self.mag_unit)
     
     def get_conf_array(self):
@@ -820,7 +820,7 @@ class AlignInterface(TemInterface):
         h, w = self.camera.shape
         m = self.conf_table
         ys = np.hypot(m[0], m[2])   # [pix/bit]
-        step = step or h / ys * 0.1 # (config) ‰Šúİ’è’l‚ğ‚à‚Æ‚ÉƒXƒeƒbƒv‚ğŒˆ‚ß‚é
+        step = step or h / ys * 0.1 # (config) åˆæœŸè¨­å®šå€¤ã‚’ã‚‚ã¨ã«ã‚¹ãƒ†ãƒƒãƒ—ã‚’æ±ºã‚ã‚‹
         if step < 0x10:
             step = 0x10 # set minimum step
         ## elif step > 0x2000:
@@ -888,7 +888,7 @@ class StigInterface(AlignInterface):
         step = step or 0x800
         try:
             org = self.index
-            xo, yo = (0x8000, 0x8000) # ’†“_‚©‚çn‚ß‚é
+            xo, yo = (0x8000, 0x8000) # ä¸­ç‚¹ã‹ã‚‰å§‹ã‚ã‚‹
             self.index = (xo, yo)
             c = self.eval_beam_roundness()
             if c is None:
@@ -935,7 +935,7 @@ deflector : deflector to offset beam (shift or tilt)
     menu = None #"&Maintenance/&Compensator"
     category = "Compensation Maintenance"
     
-    default_threshold = 0.005 # wobbler •ÏX‚É‘Î‚·‚éƒr[ƒ€ˆÊ’u‚Ì•Ï‰»(—¦
+    default_threshold = 0.005 # wobbler å¤‰æ›´ã«å¯¾ã™ã‚‹ãƒ“ãƒ¼ãƒ ä½ç½®ã®å¤‰åŒ–(ç‡
     default_wobstep = 0x800
     default_wobsec = 0.5
     
@@ -1048,8 +1048,8 @@ deflector : deflector to offset beam (shift or tilt)
                     self.conf_table[:] = xj # overwrite config raw-table
                     return True
                 
-                ## •ûˆÊ (•„†) ‚ğŠÜ‚ß‚Ä„’è’l x0 (Œ´“_‚Éˆê”Ô‹ß‚¢‚Æ‚±‚ë) ‚ğ‹‚ß‚éD
-                ## Y1, Y2 ‚Í•½–Ê‹óŠÔã‚Ì“_‚¾‚ªCŠî–{“I‚É‚Í‚¨‚È‚¶‚İ‚Ì N-R –@D
+                ## æ–¹ä½ (ç¬¦å·) ã‚’å«ã‚ã¦æ¨å®šå€¤ x0 (åŸç‚¹ã«ä¸€ç•ªè¿‘ã„ã¨ã“ã‚) ã‚’æ±‚ã‚ã‚‹ï¼
+                ## Y1, Y2 ã¯å¹³é¢ç©ºé–“ä¸Šã®ç‚¹ã ãŒï¼ŒåŸºæœ¬çš„ã«ã¯ãŠãªã˜ã¿ã® N-R æ³•ï¼
                 ys = (y2-y1) / (x2-x1)
                 u1, v1 = y1
                 u2, v2 = y2
@@ -1059,14 +1059,14 @@ deflector : deflector to offset beam (shift or tilt)
                 x0 = x1 - min((y1-y0) / ys) # @min eliminates inf
                 ## x0 = x1 - min(np.divide(y1-y0, ys)) # (y1-y0)/ys @min eliminates inf
                 
-                ## comp-ratio ‚ğ„’è’l x0 ‚É•ÏX‚µ‰¼‘zƒVƒtƒg—Ê‚ğƒLƒƒƒ“ƒZƒ‹‚·‚é
+                ## comp-ratio ã‚’æ¨å®šå€¤ x0 ã«å¤‰æ›´ã—ä»®æƒ³ã‚·ãƒ•ãƒˆé‡ã‚’ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã™ã‚‹
                 a = (O2-O1) / (x2-x1)
                 p = O1 - a * (x1 - x0)
                 self.deflector.align((w,h) - p) # q = o + (o-p)
                 xj[k] = int(x0)
                 
-            ## ƒ‹[ƒv‰ñ””ÍˆÍ“à‚Å‚ÍC‚æ‚¢ğŒ‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½
-            ## ƒeƒXƒg”ÍˆÍ“à‚Å‚ÌÅ—Ç’l‚ğ‚Æ‚è‚ ‚¦‚¸“ü‚ê‚Ä‚¨‚­
+            ## ãƒ«ãƒ¼ãƒ—å›æ•°ç¯„å›²å†…ã§ã¯ï¼Œã‚ˆã„æ¡ä»¶ãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸ
+            ## ãƒ†ã‚¹ãƒˆç¯„å›²å†…ã§ã®æœ€è‰¯å€¤ã‚’ã¨ã‚Šã‚ãˆãšå…¥ã‚Œã¦ãŠã
             xj, rd = temp
             self.index = xj
             print("Result (={:g}) exceeds threshold (> {})".format(rd, threshold),

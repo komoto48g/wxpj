@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 import os
 import wx
 from mwx import LParam
@@ -8,7 +8,7 @@ from pylots.temixins import TemInterface
 import wxpyJemacs as wxpj
 ## import logging
 ## 
-## logging ?? ‚È‚º‚© debshell ‚Ì‚Ù‚¤‚ÉƒpƒCƒv‚³‚ê‚é‚Ì‚Åg‚í‚È‚¢
+## logging ?? ãªãœã‹ debshell ã®ã»ã†ã«ãƒ‘ã‚¤ãƒ—ã•ã‚Œã‚‹ã®ã§ä½¿ã‚ãªã„
 ## logging.basicConfig(
 ##     level = logging.WARNING,
 ##    format = '%(filename)s:%(lineno)d: [%(threadName)s] %(message)s: %(asctime)s',

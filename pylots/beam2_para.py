@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from mwx import LParam
 from mwx.graphman import Layer
 from pylots.temixins import TemInterface, TEM
@@ -18,7 +18,7 @@ class Plugin(TemInterface, Layer):
     index = TEM.CL3
     wobbler = TEM.OL
     
-    default_threshold = 0.005 # wobbler •ÏX‚É‘Î‚·‚éƒr[ƒ€Œa‚Ì•Ï‰»(—¦
+    default_threshold = 0.005 # wobbler å¤‰æ›´ã«å¯¾ã™ã‚‹ãƒ“ãƒ¼ãƒ å¾„ã®å¤‰åŒ–(ç‡
     default_wobstep = 0x1000 # olstep = 0x1000 => OLdf=12um
     default_wobsec = 1.0
     
@@ -82,7 +82,7 @@ class Plugin(TemInterface, Layer):
     def set_para_beam_manually(self, evt=None):
         """Set the current index value to the Parallel beam manually"""
         xp = self.index
-        yp = self.eval_diameter() # yp=None: —ÖŠs‚ª‚ ‚è‚Ü‚¹‚ñ
+        yp = self.eval_diameter() # yp=None: è¼ªéƒ­ãŒã‚ã‚Šã¾ã›ã‚“
         self.set_para_beam((xp, yp))
     
     def eval_diameter(self):
@@ -144,7 +144,7 @@ class Plugin(TemInterface, Layer):
                     o2 = self.eval_diameter() # [o,x2]
                     
                     if o2 is None or p2 is None:
-                        ## CLAPT ‚ª‘å‚«‚·‚¬‚é‚©C”{—¦‚ª‚‚·‚¬‚é‚½‚ßCŒŸo•s”\
+                        ## CLAPT ãŒå¤§ãã™ãã‚‹ã‹ï¼Œå€ç‡ãŒé«˜ã™ãã‚‹ãŸã‚ï¼Œæ¤œå‡ºä¸èƒ½
                         self.imaging.Mag /= 2
                         continue
                     
@@ -164,7 +164,7 @@ class Plugin(TemInterface, Layer):
                         return True
                     
                     ys = (y2-y1) / (x2-x1)
-                    xj = x1 - y1/ys # „’è’l (index)
+                    xj = x1 - y1/ys # æ¨å®šå€¤ (index)
                     
                     if xj > 0xffff:
                         xj = 0xffff
@@ -175,16 +175,16 @@ class Plugin(TemInterface, Layer):
                         return None # bad result
                     
                     a = (o2-o1) / (x2-x1)
-                    p = o1 - a * (x1 - xj) # „’èƒr[ƒ€ƒTƒCƒY
+                    p = o1 - a * (x1 - xj) # æ¨å®šãƒ“ãƒ¼ãƒ ã‚µã‚¤ã‚º
                     
-                    ## self.imaging.Mag *= h /p /1.41421356 £
+                    ## self.imaging.Mag *= h /p /1.41421356 â–²
                 
-                ## ƒ‹[ƒv”ÍˆÍ“à‚Å‚ÍC‚æ‚¢ğŒ‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½
+                ## ãƒ«ãƒ¼ãƒ—ç¯„å›²å†…ã§ã¯ï¼Œã‚ˆã„æ¡ä»¶ãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸ
                 xj, rd = temp
                 print("- Result (={:g}) exceeds threshold (> {:g})".format(rd, threshold),
                       "at illumination mode {}".format(self.illumination.Selector))
                 
-                ## ƒeƒXƒg”ÍˆÍ“à‚Å‚ÌÅ—Ç’l‚ğ‚Æ‚è‚ ‚¦‚¸“ü‚ê‚Ä‚¨‚­
+                ## ãƒ†ã‚¹ãƒˆç¯„å›²å†…ã§ã®æœ€è‰¯å€¤ã‚’ã¨ã‚Šã‚ãˆãšå…¥ã‚Œã¦ãŠã
                 self.index = xj
                 p = self.eval_diameter()
                 self.set_para_beam((xj, p))
@@ -197,7 +197,7 @@ class Plugin(TemInterface, Layer):
                 self.wobbler = worg
     
     def execute(self):
-        ## alpha-specific mags given apriori£
+        ## alpha-specific mags given aprioriâ–²
         mags_apriori = [50e3, 30e3, 20e3, 12e3, 10e3, 8e3, 8e3, 8e3,]
         ret = True
         with self.thread:

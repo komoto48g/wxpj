@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from mwx.graphman import Layer
 from pylots.temixins import AlignInterface, TEM
 
@@ -14,7 +14,7 @@ class Plugin(AlignInterface, Layer):
     
     spot = property(lambda self: self.parent.require('beam_spot'))
     
-    ## ÆËŒnƒ‚[ƒh‹¤’Ê
+    ## ç…§å°„ç³»ãƒ¢ãƒ¼ãƒ‰å…±é€š
     conf_arg = 0
     
     def align(self, *args, **kwargs):

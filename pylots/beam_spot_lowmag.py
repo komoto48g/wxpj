@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from mwx.graphman import Layer
 from pylots.temixins import SpotInterface, TEM
 
@@ -19,14 +19,14 @@ class Plugin(SpotInterface, Layer):
         return self.mag_unit / (self.CLAPT.dia /100)
     
     def get_spot_beam(self):
-        i = (self.illumination.Spot, 0) # <spot> —ñ‚Ì”CˆÓ‚Ì—v‘f‚ğ‚Æ‚é
+        i = (self.illumination.Spot, 0) # <spot> åˆ—ã®ä»»æ„ã®è¦ç´ ã‚’ã¨ã‚‹
         j, k = self.conf_key
         xo = self.config[j][i]
         ys = self.config[k][i] / self.factor
         return xo, ys
     
     def set_spot_beam(self, v):
-        i = self.illumination.Spot # <spot> —ñ‚Ì‘S‚Ä‚Ì—v‘f‚ğ“¯‚É‘‚«Š·‚¦‚é
+        i = self.illumination.Spot # <spot> åˆ—ã®å…¨ã¦ã®è¦ç´ ã‚’åŒæ™‚ã«æ›¸ãæ›ãˆã‚‹
         j, k = self.conf_key
         xo, ys = v
         if xo: self.config[j][i] = int(xo)

@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 import scipy as np
 from mwx.graphman import Layer
 from pylots.temixins import CompInterface, TEM
@@ -13,9 +13,9 @@ class Plugin(CompInterface, Layer):
     caption = "ISSHIFT"
     conf_key = 'compisshift'
     
-    ## PYJEM ‚É‚Í ISCOMP ‚ª‚È‚¢‚½‚ß legacy ‚ğ’¼Úg‚¤
-    ## ISCOMP ‚É‚Íæ“¾ƒRƒ}ƒ“ƒh‚ª‚È‚¢‚Ì‚ÅC‚±‚±‚Å‚Í“à•”•Ï”‚ÅŠo‚¦‚Ä‚¨‚­
-    ## Notify ‚ª‘¶İ‚µ‚È‚¢‚Ì‚ÅC‚±‚Ì’l‚ª‘•’u‚ÌÀÛ‚Ì’l‚Æˆê’v‚·‚é‚Æ‚ÍŒÀ‚ç‚È‚¢
+    ## PYJEM ã«ã¯ ISCOMP ãŒãªã„ãŸã‚ legacy ã‚’ç›´æ¥ä½¿ã†
+    ## ISCOMP ã«ã¯å–å¾—ã‚³ãƒãƒ³ãƒ‰ãŒãªã„ã®ã§ï¼Œã“ã“ã§ã¯å†…éƒ¨å¤‰æ•°ã§è¦šãˆã¦ãŠã
+    ## Notify ãŒå­˜åœ¨ã—ãªã„ã®ã§ï¼Œã“ã®å€¤ãŒè£…ç½®ã®å®Ÿéš›ã®å€¤ã¨ä¸€è‡´ã™ã‚‹ã¨ã¯é™ã‚‰ãªã„
     __index = [0x8000, 0x8000]
     
     @property
@@ -39,7 +39,7 @@ class Plugin(CompInterface, Layer):
     
     def cal(self):
         with self.save_excursion(mmode='DIFF'):
-            self.index = [0x8000, 0x8000] # ’†“_‚É‰Šú‰»‚µ‚ÄŠJn‚·‚é
+            self.index = [0x8000, 0x8000] # ä¸­ç‚¹ã«åˆæœŸåŒ–ã—ã¦é–‹å§‹ã™ã‚‹
             self.spot.focus()
             return CompInterface.cal(self)
     

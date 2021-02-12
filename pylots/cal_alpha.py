@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from mwx.graphman import Layer
 from pylots.temixins import TemInterface
 import wxpyJemacs as wxpj
@@ -47,7 +47,7 @@ class Plugin(TemInterface, Layer):
                 if d:
                     r = self.CLAPT.dia /100
                     i = self.illumination.Selector
-                    self.config[self.conf_key][i] = d * self.cam_unit / r #= 2ƒ¿[mrad]
+                    self.config[self.conf_key][i] = d * self.cam_unit / r #= 2Î±[mrad]
                     return True
     
     def execute(self):

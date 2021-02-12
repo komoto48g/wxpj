@@ -1,5 +1,5 @@
 #! python
-# -*- coding: shift-jis -*-
+# -*- coding: utf-8 -*-
 from mwx.graphman import Layer
 from pylots.temixins import CompInterface, TEM
 
@@ -19,7 +19,7 @@ class Plugin(CompInterface, Layer):
     
     def cal(self):
         with self.save_excursion(mmode='DIFF'):
-            self.diffspot.focus() # DIFF-Focus ÇÇ´ÇøÇÒÇ∆çáÇÌÇπÇÈÇ±Ç∆ÅI
+            self.diffspot.focus() # DIFF-Focus „Çí„Åç„Å°„Çì„Å®Âêà„Çè„Åõ„Çã„Åì„Å®ÔºÅ
             self.spot.focus()
             return CompInterface.cal(self)
     
