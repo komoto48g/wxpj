@@ -79,6 +79,11 @@ class Plugin(UserInterface, Layer):
             return [[x, ItemData(self.tree, x, self.thread(self.call_subprocess))] for x in args]
         
         self.tree[0:0] = [
+            ("Settings", (
+                ("SYS", ItemData(self.tree, "tem_option", None)),
+                ("TEM", ItemData(self.tree, "tem_control", None)),
+                ("ROT", ItemData(self.tree, "tem_irot", None)),
+            )),
             ("Calibrations", (
                 ## ("Camera", (
                 ##     ("Dark", ItemData(self.tree, None, self.cal_dark)),
@@ -126,6 +131,9 @@ class Plugin(UserInterface, Layer):
                         "ol",
                 )),
             )),
+            ("*Descipline*", (
+                ("ht-axis", ItemData(self.tree, "align2_ht_axis", self.thread(self.call_subprocess))),
+            ))
         ]
         self.tree.reset()
         ## self.tree.Expand(self.tree.get_item(None, "Calibrations"))

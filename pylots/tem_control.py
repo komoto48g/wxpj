@@ -62,17 +62,17 @@ class Plugin(TemInterface, Layer):
             wxpj.Button(self, "Brightness", size=(70,-1)),
             self.tem.foci['CL3'],
             (),
-            wxpj.Button(self, "OL:Std/F", self.on_olstdf_update, size=(70,-1),
+            wxpj.Button(self, "OL:Std/F", self.on_update_olstdf, size=(70,-1),
                 tip="Set the current value as the standard focus of MAG mode"),
             self.tem.foci['OLC'],
             self.tem.foci['OLF'],
             
-            wxpj.Button(self, "OM:Std/F", self.on_omstdf_update, size=(70,-1),
+            wxpj.Button(self, "OM:Std/F", self.on_update_omstdf, size=(70,-1),
                 tip="Set the current value as the standard focus of LOWMAG mode"),
             self.tem.foci['OM1'],
             self.tem.foci['OM2'],
             
-            wxpj.Button(self, "FL:Std/F", self.on_flstdf_update, size=(70,-1)),
+            wxpj.Button(self, "FL:Std/F", self.on_update_flstdf, size=(70,-1)),
             self.tem.foci['FLC'],
             self.tem.foci['FLF'],
             ),
@@ -109,15 +109,19 @@ class Plugin(TemInterface, Layer):
             'fl' : self.fl_focus_param.std_value,
         }
     
-    def on_olstdf_update(self, evt):
+    ## --------------------------------
+    ## Standard Focus setting
+    ## --------------------------------
+    
+    def on_update_olstdf(self, evt):
         if not self.lowmagp:
             self.ol_focus_param.std_value = self.tem.OL # save current value as std/f
     
-    def on_omstdf_update(self, evt):
+    def on_update_omstdf(self, evt):
         if self.lowmagp:
             self.om_focus_param.std_value = self.tem.OM # save current value as std/f
     
-    def on_flstdf_update(self, evt):
+    def on_update_flstdf(self, evt):
         self.fl_focus_param.std_value = self.tem.FL # save current value as std/f
     
     def on_lens_notify(self, argv):

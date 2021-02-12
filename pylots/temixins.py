@@ -90,14 +90,14 @@ class TemInterface(object):
     def config(self):
         """configuration (mode-specific)"""
         ## if self.lowmagp:
-        ##     return self.__config_lowmag
-        ## return self.__config
+        ##     return self.config_tem_lowmag
+        ## return self.config_tem_mag
         try:
             if self.lowmagp: # cmdl:stream must be open
-                return self.__config_lowmag
+                return self.config_tem_lowmag
         except Exception:
             pass
-        return self.__config
+        return self.config_tem_mag
     
     @staticmethod
     def configure(path="config.ini"):
@@ -107,12 +107,12 @@ class TemInterface(object):
         if os.path.exists(path):
             print("$(config path) = {!r}".format((path)))
             
-            TemInterface.__config = ConfigData(path, section='TEM')
-            TemInterface.__config_lowmag = ConfigData(path, section='TEM-LOWMAG')
+            TemInterface.config_tem_mag = ConfigData(path, section='TEM')
+            TemInterface.config_tem_lowmag = ConfigData(path, section='TEM-LOWMAG')
             
             ## Extract Tem info from default section like,
             ## >>> from pyJeol.em import JEM_P1181 as Tem
-            config = TemInterface.__config
+            config = TemInterface.config_tem_mag
             try:
                 Tem = __import__(config['tem'])
             except ImportError:
@@ -122,8 +122,8 @@ class TemInterface(object):
                 Aperture = pj.ApertureEx
         else:
             print("- TemInterface:error: No such file: {!r}".format(path))
-            TemInterface.__config = None
-            TemInterface.__config_lowmag = None
+            TemInterface.config_tem_mag = None
+            TemInterface.config_tem_lowmag = None
         
         ## Extracted Tem info are inherited to `pj` globals
         if Tem:
