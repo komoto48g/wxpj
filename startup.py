@@ -43,10 +43,12 @@ class Plugin(Layer):
             ),
             row=1, expand=0, type='vspin', style='btn', lw=66, tw=60, cw=-1
         )
-        self.graph.handler.bind("frame_updated", self.on_unit_notify)
+        self.graph.handler.bind("frame_shown", self.on_unit_notify)
+        ## self.graph.handler.bind("frame_updated", self.on_unit_notify)
     
     def Destroy(self):
-        self.graph.handler.unbind("frame_updated", self.on_unit_notify)
+        self.graph.handler.unbind("frame_shown", self.on_unit_notify)
+        ## self.graph.handler.unbind("frame_updated", self.on_unit_notify)
         return Layer.Destroy(self)
     
     def set_current_session(self, session):
@@ -65,7 +67,7 @@ class Plugin(Layer):
         }
     
     def on_unit_notify(self, frame):
-        self.unit_param.value = frame.parent.unit
+        self.unit_param.value = frame.unit
         self.unit_param.std_value = frame.parent.unit
     
     def setup_unit(self, p):
@@ -74,6 +76,7 @@ class Plugin(Layer):
             if frame:
                 frame.unit = self.unit_param.value # make localunit
                 target.draw()
+                self.unit_param.value = frame.unit
     
     def setup_cutoff(self, p):
         for target in (self.graph, self.output):
