@@ -32,7 +32,7 @@ class Plugin(Layer):
         if show:
             for win in self.parent.graphic_windows:
                 self.plot.attach(win)
-            self.plot.linplot(self.parent.current_graph.frame)
+            self.plot.linplot(self.parent.selected_view.frame)
         else:
             for win in self.parent.graphic_windows:
                 self.plot.detach(win)

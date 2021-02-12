@@ -20,16 +20,16 @@ How to install
 pyJemacs_noarch_cp35_#date.7z を解凍して適当な場所に置く．
 7z が別途必要です．
 
-Currently required environs: Python 3.5-64
+**To setup environment necessary to work, do pip install,**
 
-    !! PYJEM 機能を使用するためには PY <= 3.5 (以下) をインストールしてください．
-    !! 別途，TemExternal のインストールが必要です．
-
-**To setup environment necessary to work, do pip,**
+Currently required environs: PY35
 
 $ python -m pip install -U pip setuptools  
 $ pip install scipy==1.2.3 pillow matplotlib opencv-python==3.4.5.20 wxpython==4.0.7 pywin32  
 $ pip install PyJEM-1.0.2.1143.zip httplib2  
+
+    !! PYJEM 機能を使用するためには PY <= 3.5 (以下) をインストールしてください．
+    !! 別途，TemExternal のインストールが必要です．
 
 
 How to execute wxpyJemacs
@@ -48,7 +48,7 @@ $ python wxpyjemacs.py -suser --pyjem=None
 
     -sxxx: xxx セッションで開始します
         セッションとは，プロジェクトファイル的なやつで，
-        プラグイン拡張，ウィンドウレイアウト，バッファとかを大ざっぱに保持します
+        プラグイン拡張，ウィンドウレイアウト，バッファとかをおーざっぱに保持します
 
     --pyjem: pyjem 拡張の使用を宣言します
         Launch wxpyJemacs with --pyjem=0(=offline), 1(=online), or 2(=online with TEM3)

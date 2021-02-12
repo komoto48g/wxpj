@@ -37,7 +37,7 @@ class Plugin(Layer):
         
     def calc(self, frame=None):
         if not frame:
-            frame = self.current_graph.frame
+            frame = self.selected_view.frame
         
         k, s, block, C = np.int32(self.params)
         hi, lo = np.float32(self.cutoff_params)

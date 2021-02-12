@@ -180,7 +180,7 @@ class Plugin(Layer):
     
     def run(self, frame=None, skip=0):
         if not frame:
-            frame = self.current_graph.frame
+            frame = self.selected_view.frame
         
         x, y = frame.markers
         if not x.size:

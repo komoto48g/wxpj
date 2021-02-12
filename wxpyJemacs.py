@@ -129,7 +129,7 @@ class pyJemacs(Framebase):
                 
             (102, "&Export frames", "Export buffers and attributes", Icon('saveas'),
                 lambda v: self.export_frames(),
-                lambda v: v.Enable(self.current_graph.frame is not None)),
+                lambda v: v.Enable(self.selected_view.frame is not None)),
             (),
             ["&Extensions", []],
             ["&Functions", []],
@@ -173,7 +173,7 @@ class pyJemacs(Framebase):
         savedir/.results describes the list of frames and the attributes to load.
         """
         if not target:
-            target = self.current_graph
+            target = self.selected_view
         
         if not savedir:
             with wx.DirDialog(self, "Select a directory of frames to import",
@@ -201,7 +201,7 @@ class pyJemacs(Framebase):
         savedir/.results describes the list of frames and the attributes to save.
         """
         if frames is None:
-            frames = self.current_graph.all_frames
+            frames = self.selected_view.all_frames
         
         if not frames: # no frames, no return
             return

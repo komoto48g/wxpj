@@ -120,8 +120,8 @@ def init_frame(self):
         else:
             self.graph.SetFocus()
     
-    self.define_key('pageup', lambda v: self.current_graph.OnPageUp(v), doc="previous page")
-    self.define_key('pagedown', lambda v: self.current_graph.OnPageDown(v), doc="next page")
+    self.define_key('pageup', lambda v: self.selected_view.OnPageUp(v), doc="previous page")
+    self.define_key('pagedown', lambda v: self.selected_view.OnPageDown(v), doc="next page")
     
     ## --------------------------------
     ## Shell starutp
