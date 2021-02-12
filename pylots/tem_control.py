@@ -6,7 +6,7 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
-from pylots import TemInterface
+from pylots.temixins import TemInterface
 from wxpyJemacs import LParam
 from wxpyJemacs import Layer
 import wxpyJemacs as wxpj
