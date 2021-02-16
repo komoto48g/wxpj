@@ -124,7 +124,7 @@ class Plugin(Layer):
             frame = self.selected_view.find_frame(name)
             
         elif not frame.name.startswith("*result of"):
-            self.message("- The frame must be the result of *fft* or *cor*")
+            self.message("- Selected frame must not be a result of *fft* or *cor*")
             return
         
         del frame.markers

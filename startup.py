@@ -22,12 +22,12 @@ class Plugin(Layer):
                 doc="Acceleration voltage [V]")
         
         self.unit_param = LParam("unit/pixel", (0,1,1e-4), self.graph.unit,
-            updater=self.setup_unit,
+            updater=self.set_localunit,
                 doc="Set cutoff score percentiles of the current frame\n"
                     "to cut the upper/lower limits given by the tolerances[%]")
         
         self.cuts_param = LParam("cutoff [%]", (0,1,1e-2), self.graph.score_percentile,
-            updater=self.setup_cutoff,
+            updater=self.set_cutoff,
                 doc="Set cutoff score percentiles of the current frame\n"
                     "to cut the upper/lower limits given by the tolerances[%]")
         
@@ -44,25 +44,22 @@ class Plugin(Layer):
             row=1, expand=0, type='vspin', style='btn', lw=66, tw=60, cw=-1
         )
         self.graph.handler.bind("frame_shown", self.on_unit_notify)
-        ## self.graph.handler.bind("frame_updated", self.on_unit_notify)
     
     def Destroy(self):
         self.graph.handler.unbind("frame_shown", self.on_unit_notify)
-        ## self.graph.handler.unbind("frame_updated", self.on_unit_notify)
         return Layer.Destroy(self)
     
     def set_current_session(self, session):
-        self.reset_params((
-            session.get('accv'),
-            session.get('unit'),
-            session.get('cuts'),
-        ))
+        self.accv_param.value = session.get('accv')
+        self.unit_param.std_value = session.get('unit')
+        self.cuts_param.value = session.get('cuts')
         self.setup_all()
+        self.set_htv(self.accv_param)
     
     def get_current_session(self):
         return {
             'accv': self.accv_param.value,
-            'unit': self.unit_param.value,
+            'unit': self.unit_param.std_value,
             'cuts': self.cuts_param.value,
         }
     
@@ -70,7 +67,10 @@ class Plugin(Layer):
         self.unit_param.value = frame.unit
         self.unit_param.std_value = frame.parent.unit
     
-    def setup_unit(self, p):
+    def set_htv(self, p):
+        self.parent.environ.__init__(p.value)
+    
+    def set_localunit(self, p):
         for target in (self.graph, self.output):
             frame = target.frame
             if frame:
@@ -78,7 +78,7 @@ class Plugin(Layer):
                 target.draw()
                 self.unit_param.value = frame.unit
     
-    def setup_cutoff(self, p):
+    def set_cutoff(self, p):
         for target in (self.graph, self.output):
             target.score_percentile = self.cuts_param.value # make localvar
             frame = target.frame
@@ -89,13 +89,10 @@ class Plugin(Layer):
     def setup_all(self):
         for target in (self.graph, self.output):
             target.score_percentile = self.cuts_param.value # make localvar
-            target.unit = self.unit_param.value # reset globalunit (localunits will ramain)
+            target.unit = self.unit_param.value # reset globalunit (localunits remain)
             for frame in target.all_frames:
                 frame.update_buffer() # update buffer cuts of floor/ceiling
             target.draw()
-    
-    def set_htv(self, p):
-        self.parent.environ.__init__(p.value)
 
 
 if __name__ == '__main__':
