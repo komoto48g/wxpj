@@ -13,7 +13,7 @@ import sys
 import os
 import wx
 import httplib2
-import scipy as np
+import numpy as np
 from PIL import Image
 from mwx import Param, LParam
 from mwx.graphman import Layer
@@ -212,7 +212,7 @@ class DummyCamera(object):
     
     def cache(self):
         ## n = 2048 // self.binning
-        ## return np.uint16(np.randn(n,n) * self.max_count)
+        ## return np.uint16(np.random.randn(n,n) * self.max_count)
         return self.parent.graph.buffer
     
     pixel_size = 0.05

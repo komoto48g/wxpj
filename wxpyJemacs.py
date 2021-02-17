@@ -19,8 +19,9 @@ import re
 import wx
 import cv2
 import matplotlib
-import scipy as np
-from scipy import nan, inf # imported but unused :necessary to eval
+import numpy as np
+from numpy import nan,inf # imported but unused :necessary to eval
+import scipy
 from PIL import Image
 from PIL import TiffImagePlugin # tiff extension for py2exe
 if 'mwx' not in sys.modules:
@@ -52,7 +53,7 @@ def version():
     return '\n  '.join((
       "<Python {}>".format(sys.version),
       "wx.version(selected) {}".format(wx.version()),
-      "scipy/numpy version {}/{}".format(np.__version__, np.__numpy_version__),
+      "scipy/numpy version {}/{}".format(scipy.__version__, np.__version__),
       "matplotlib verison {}".format(matplotlib.__version__),
       "Image verison {}".format(Image.__version__),
       "cv2 verison {}".format(cv2.__version__),
@@ -306,9 +307,11 @@ class Button(pb.PlateButton):
         tip = (tip or '').strip()
         self.SetToolTip(tip)
         try:
-            self.SetBitmap(Icon(icon))
+            if icon:
+                self.SetBitmap(Icon(icon))
         except Exception:
-            self.SetBitmap(wx.Bitmap(0,0)) # for pb no wx.NullBitmap?
+            ## self.SetBitmap(wx.Bitmap(0,0)) # for pb no wx.NullBitmap?
+            pass
 
 
 class ToggleButton(wx.ToggleButton):

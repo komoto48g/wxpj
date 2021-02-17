@@ -1,7 +1,7 @@
 #! python
 # -*- coding: utf-8 -*-
-import scipy as np
-from scipy import cos,sin
+import numpy as np
+from numpy import cos,sin
 from mwx.graphman import Layer
 from pylots.temixins import TemInterface, TEM
 import wxpyJemacs as wxpj

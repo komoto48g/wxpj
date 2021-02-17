@@ -7,7 +7,7 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
-import scipy as np
+import numpy as np
 from numpy.fft import fft2,ifft2,fftshift
 ## from scipy.fftpack import fft,ifft,fft2,ifft2 Memory Leak? <scipy 0.16.1>
 ## import cv2

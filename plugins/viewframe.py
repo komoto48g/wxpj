@@ -9,7 +9,7 @@ from __future__ import (division, print_function,
 from pprint import pformat
 import wx
 from wx import aui
-import scipy as np
+import numpy as np
 from mwx.graphman import Layer
 from mwx.framework import CtrlInterface
 from wx.lib.mixins.listctrl import CheckListCtrlMixin

@@ -3,7 +3,7 @@
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
-import scipy as np
+import numpy as np
 from matplotlib import patches
 from mwx import LParam
 from mwx.graphman import Layer

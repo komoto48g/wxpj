@@ -4,9 +4,9 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 from itertools import chain
 import wx
-import scipy as np
+import numpy as np
+from numpy import pi,exp,cos,sin
 from scipy import optimize
-from scipy import pi,exp,sin,cos
 from mwx import LParam
 from mwx.graphman import Layer
 

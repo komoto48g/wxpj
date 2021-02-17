@@ -4,8 +4,8 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
 import cv2
-import scipy as np
-from scipy import pi,exp,conj
+import numpy as np
+from numpy import pi,exp,conj
 from mwx.graphman import Layer
 
 

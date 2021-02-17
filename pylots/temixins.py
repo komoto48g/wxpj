@@ -11,8 +11,8 @@ import time
 import os
 import wx
 import mwx
-import scipy as np
-from scipy import pi,cos,sin
+import numpy as np
+from numpy import pi,cos,sin
 from mwx import Param, LParam
 from mwx.graphman import Thread
 from misc import ConfigData

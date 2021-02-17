@@ -1,6 +1,6 @@
 #! python
 # -*- coding: utf-8 -*-
-import scipy as np
+import numpy as np
 from mwx.graphman import Layer
 from pylots.temixins import CompInterface, TEM
 from pyJeol.legacy import DeflSystem

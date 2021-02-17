@@ -4,7 +4,7 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
 import mwx
-import scipy as np
+import numpy as np
 from pprint import pprint
 from mwx import Param, LParam
 from mwx.graphman import Layer

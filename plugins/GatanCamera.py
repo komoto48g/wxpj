@@ -11,7 +11,7 @@ from datetime import datetime
 import time
 import os
 import wx
-import scipy as np
+import numpy as np
 from PIL import Image
 from mwx import Param, LParam
 from mwx.graphman import Layer

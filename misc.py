@@ -12,7 +12,7 @@ import configparser
 import time
 import sys
 import wx
-import scipy as np
+import numpy as np
 
 LITERAL_TYPE = str if sys.version_info >= (3,0) else (str,unicode)
 

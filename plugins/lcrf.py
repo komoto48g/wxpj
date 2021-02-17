@@ -4,8 +4,8 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
 import cv2
-import scipy as np
-from scipy import pi,cos,sin
+import numpy as np
+from numpy import pi,cos,sin
 from scipy import optimize
 from scipy import signal
 from mwx import LParam
@@ -118,7 +118,7 @@ def find_radial_peaks(buf, rmod, lo, hi=None, pw=5):
         data += np.roll(x, -int(rmod(y))) # roll anti-shift (to modify peak pos)
     data /= h
     
-    ## Smooth with window (cf. np.signal.windows) and find peaks in
+    ## Smooth with window (cf. signal.windows) and find peaks in
     lw = w // 200
     if lw < 3:
         lw = 3
@@ -127,7 +127,7 @@ def find_radial_peaks(buf, rmod, lo, hi=None, pw=5):
     
     ## widths = [pw]
     widths = np.array([pw])
-    peaks = np.signal.find_peaks_cwt(rdist, widths)
+    peaks = signal.find_peaks_cwt(rdist, widths)
     
     hi = hi or np.hypot(h,w) // 2
     peaks = [p for p in peaks if lo < p < hi # limit the range of searched radius

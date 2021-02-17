@@ -7,10 +7,9 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import cv2
-import scipy as np
+import numpy as np
+from numpy import pi,cos,sin
 from scipy import signal
-from scipy import pi,cos,sin
-## from scipy import ndimage as ndi
 ## from numpy.fft import fft,ifft,fftfreq
 ## from numpy.fft import fft2,ifft2,fftshift
 from mpl_toolkits.mplot3d import axes3d

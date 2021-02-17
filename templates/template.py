@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-02-09 09:51:42 +0900>
+Last updated: <2021-02-17 14:37:10 +0900>
      Version: 0.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -11,7 +11,7 @@ from __future__ import (division, print_function,
 import wx
 import mwx
 import cv2
-import scipy as np
+import numpy as np
 from mwx import LParam
 from wxpyJemacs import Layer
 import wxpyJemacs as wxpj

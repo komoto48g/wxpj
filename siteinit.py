@@ -3,7 +3,7 @@
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import sys
-import scipy as np
+import numpy as np
 import editor as edi
 import debut
 
@@ -16,8 +16,8 @@ import os
 import wx
 import mwx
 import cv2
-import scipy as np
-from scipy import pi
+import numpy as np
+from numpy import pi
 from scipy import ndimage as ndi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 from matplotlib import pyplot as plt
