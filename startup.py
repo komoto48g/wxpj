@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
+import numpy as np 
 import wx
 from mwx import Param
 from mwx import LParam
@@ -23,8 +24,7 @@ class Plugin(Layer):
         
         self.unit_param = LParam("unit/pixel", (0,1,1e-4), self.graph.unit,
             updater=self.set_localunit,
-                doc="Set cutoff score percentiles of the current frame\n"
-                    "to cut the upper/lower limits given by the tolerances[%]")
+                doc="Set localunit to the selected frame")
         
         self.cuts_param = LParam("cutoff [%]", (0,1,1e-2), self.graph.score_percentile,
             updater=self.set_cutoff,
@@ -36,10 +36,9 @@ class Plugin(Layer):
             self.unit_param,
             self.cuts_param,
             (),
-            wxpj.Button(self, "Apply",
+            wxpj.Button(self, "Apply ALL",
                 lambda v: self.setup_all(), icon='v',
-                    tip="Apply conditions to all stack frames"
-                        "\n except for those who have localunit and localcuts"),
+                    tip="Set globalunit and cutoff conditions to all frames"),
             ),
             row=1, expand=0, type='vspin', style='btn', lw=66, tw=60, cw=-1
         )
@@ -74,23 +73,27 @@ class Plugin(Layer):
         for target in (self.graph, self.output):
             frame = target.frame
             if frame:
-                frame.unit = self.unit_param.value # make localunit
+                frame.unit = self.unit_param.value
                 target.draw()
                 self.unit_param.value = frame.unit
     
     def set_cutoff(self, p):
         for target in (self.graph, self.output):
-            target.score_percentile = self.cuts_param.value # make localvar
+            target.score_percentile = self.cuts_param.value
             frame = target.frame
             if frame:
                 frame.update_buffer()
                 target.draw()
     
     def setup_all(self):
+        cuts = self.cuts_param.value
+        unit = self.unit_param.value
         for target in (self.graph, self.output):
-            target.score_percentile = self.cuts_param.value # make localvar
-            target.unit = self.unit_param.value # reset globalunit (localunits remain)
+            target.score_percentile = cuts
+            target.unit = unit # reset globalunit (localunits remain, however)
             for frame in target.all_frames:
+                if unit is np.nan:
+                    frame.unit = None # remove localunits if none
                 frame.update_buffer() # update buffer cuts of floor/ceiling
             target.draw()
 
