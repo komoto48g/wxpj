@@ -128,8 +128,8 @@ class Plugin(Layer):
             return
         
         del frame.markers
-        self.lccf.Draw(0)
-        self.ldc.Draw(0)
+        ## self.lccf.Draw(0)
+        ## self.ldc.Draw(0)
         
         self.message("\b @lccf...")
         self.lgbt.thresh.value = np.percentile(frame.buffer, 100-self.score.value)

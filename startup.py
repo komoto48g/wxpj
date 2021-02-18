@@ -42,10 +42,16 @@ class Plugin(Layer):
             ),
             row=1, expand=0, type='vspin', style='btn', lw=66, tw=60, cw=-1
         )
-        self.graph.handler.bind("frame_shown", self.on_unit_notify)
+        ## self.graph.handler.bind("frame_shown", self.on_unit_notify)
+        for win in self.parent.graphic_windows:
+            win.handler.bind("frame_shown", self.on_unit_notify)
+            win.handler.bind("canvas_focus_set", self.on_unit_notify)
     
     def Destroy(self):
-        self.graph.handler.unbind("frame_shown", self.on_unit_notify)
+        ## self.graph.handler.unbind("frame_shown", self.on_unit_notify)
+        for win in self.parent.graphic_windows:
+            win.handler.unbind("frame_shown", self.on_unit_notify)
+            win.handler.unbind("canvas_focus_set", self.on_unit_notify)
         return Layer.Destroy(self)
     
     def set_current_session(self, session):
@@ -63,32 +69,34 @@ class Plugin(Layer):
         }
     
     def on_unit_notify(self, frame):
-        self.unit_param.value = frame.unit
-        self.unit_param.std_value = frame.parent.unit
+        if frame:
+            self.unit_param.value = frame.unit
+            self.unit_param.std_value = frame.parent.unit
     
     def set_htv(self, p):
         self.parent.environ.__init__(p.value)
     
     def set_localunit(self, p):
-        for target in (self.graph, self.output):
-            frame = target.frame
-            if frame:
-                frame.unit = self.unit_param.value
-                target.draw()
-                self.unit_param.value = frame.unit
+        target = self.selected_view
+        frame = target.frame
+        if frame:
+            frame.unit = self.unit_param.value
+            target.draw()
     
     def set_cutoff(self, p):
-        for target in (self.graph, self.output):
-            target.score_percentile = self.cuts_param.value
-            frame = target.frame
-            if frame:
-                frame.update_buffer()
-                target.draw()
+        target = self.selected_view
+        target.score_percentile = self.cuts_param.value
+        
+        frame = target.frame
+        if frame:
+            frame.update_buffer()
+            target.draw()
     
     def setup_all(self):
         cuts = self.cuts_param.value
         unit = self.unit_param.value
-        for target in (self.graph, self.output):
+        
+        for target in self.parent.graphic_windows:
             target.score_percentile = cuts
             target.unit = unit # reset globalunit (localunits remain, however)
             for frame in target.all_frames:

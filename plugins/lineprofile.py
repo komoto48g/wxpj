@@ -25,6 +25,7 @@ class Plugin(Layer):
         self.Draw(1)
     
     def Destroy(self):
+        self.Draw(0)
         self.plot.Destroy()
         return Layer.Destroy(self)
     
