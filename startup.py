@@ -78,18 +78,15 @@ class Plugin(Layer):
     
     def set_localunit(self, p):
         target = self.selected_view
-        frame = target.frame
-        if frame:
-            frame.unit = self.unit_param.value
+        if target.frame:
+            target.frame.unit = self.unit_param.value
             target.draw()
     
     def set_cutoff(self, p):
         target = self.selected_view
         target.score_percentile = self.cuts_param.value
-        
-        frame = target.frame
-        if frame:
-            frame.update_buffer()
+        if target.frame:
+            target.frame.update_buffer()
             target.draw()
     
     def setup_all(self):
