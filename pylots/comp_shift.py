@@ -14,13 +14,15 @@ class Plugin(CompInterface, Layer):
     wobbler = TEM.CLA1
     
     spot = property(lambda self: self.parent.require('beam_spot'))
+    para = property(lambda self: self.parent.require('beam2_para'))
     deflector = property(lambda self: self.parent.require('beam_tilt'))
     diffspot = property(lambda self: self.parent.require('beam_spot_diff'))
     
     def cal(self):
         with self.save_excursion(mmode='DIFF'):
-            self.diffspot.focus() # DIFF-Focus をきちんと合わせること！
-            self.spot.focus()
+            self.diffspot.focus() # DIFF-Focus をきちんと合わせること !
+            self.para.focus() # para で合わせるべし ! #20210219 Note 参照
+            ## self.spot.focus()
             return CompInterface.cal(self)
     
     def execute(self):
