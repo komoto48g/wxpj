@@ -58,7 +58,7 @@ class Plugin(Layer):
         buf = edi.imconv(src, hi, lo) # truncates hi & lo cutoff percentile
         if k > 1:
             buf = cv2.GaussianBlur(buf, (k,k), s)
-        ## self.output.load(buf, name='*Gauss*', localunit=frame.unit)
+        self.output.load(buf, name='*Gauss*', localunit=frame.unit)
         
         t, dst = cv2.threshold(buf, t, 255, cv2.THRESH_OTSU if otsu else cv2.THRESH_BINARY)
         self.thresh.value = t
