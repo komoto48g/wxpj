@@ -3,7 +3,7 @@ wxpj
 
 A package for TEM control
 
-„‚ÌŠÂ‹«‚Å‚ÍˆÈ‰º‚Ìƒo[ƒWƒ‡ƒ“‚Å“®ì‚µ‚Ä‚¢‚Ü‚·D
+ç§ã®ç’°å¢ƒã§ã¯ä»¥ä¸‹ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã§å‹•ä½œã—ã¦ã„ã¾ã™ï¼
 
     <Python 3.5.4 (v3.5.4:3f56838, Aug  8 2017, 02:17:05) [MSC v.1900 64 bit (AMD64)]>
         wx.version(selected) 4.0.7.post2 msw (phoenix) wxWidgets 3.0.5
@@ -17,8 +17,8 @@ A package for TEM control
 How to install
 --------------
 
-pyJemacs_noarch_cp35_#date.7z ‚ğ‰ğ“€‚µ‚Ä“K“–‚ÈêŠ‚É’u‚­D
-7z ‚ª•Ê“r•K—v‚Å‚·D
+pyJemacs_noarch_cp35_#date.7z ã‚’è§£å‡ã—ã¦é©å½“ãªå ´æ‰€ã«ç½®ãï¼
+7z ãŒåˆ¥é€”å¿…è¦ã§ã™ï¼
 
 **To setup environment necessary to work, do pip install,**
 
@@ -28,29 +28,29 @@ $ python -m pip install -U pip setuptools
 $ pip install scipy==1.2.3 pillow matplotlib opencv-python==3.4.5.20 wxpython==4.0.7 pywin32  
 $ pip install PyJEM-1.0.2.1143.zip httplib2  
 
-    !! PYJEM ‹@”\‚ğg—p‚·‚é‚½‚ß‚É‚Í PY <= 3.5 (ˆÈ‰º) ‚ğƒCƒ“ƒXƒg[ƒ‹‚µ‚Ä‚­‚¾‚³‚¢D
-    !! •Ê“rCTemExternal ‚ÌƒCƒ“ƒXƒg[ƒ‹‚ª•K—v‚Å‚·D
+    !! PYJEM æ©Ÿèƒ½ã‚’ä½¿ç”¨ã™ã‚‹ãŸã‚ã«ã¯ PY <= 3.5 (ä»¥ä¸‹) ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã—ã¦ãã ã•ã„ï¼
+    !! åˆ¥é€”ï¼ŒTemExternal ã®ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ãŒå¿…è¦ã§ã™ï¼
 
 
 How to execute wxpyJemacs
 -------------------------
 
-### 1a ƒoƒCƒiƒŠÀs‚Ìê‡
+### 1a ãƒã‚¤ãƒŠãƒªå®Ÿè¡Œã®å ´åˆ
 $ pJ.cmd
 
-    ƒoƒCƒiƒŠƒpƒbƒP[ƒW‚ÍÀs‚É•K—v‚Èƒ‰ƒ“ƒ^ƒCƒ€‚ğ‚·‚×‚ÄŠÜ‚ñ‚Å‚¢‚Ü‚·‚ªC
-    Windows 10 64bit (AMD64) ‚Åƒrƒ‹ƒh‚³‚ê‚Ä‚¢‚é‚½‚ßC‚»‚Ì‘¼‚Ì OS ‚Å‚ÍÀs‚Å‚«‚Ü‚¹‚ñD
-    (‚½‚Ô‚ñ OpenCV ‚Ì dll ƒo[ƒWƒ‡ƒ“‚ª‡‚í‚È‚¢‚½‚ß)
+    ãƒã‚¤ãƒŠãƒªãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ã¯å®Ÿè¡Œã«å¿…è¦ãªãƒ©ãƒ³ã‚¿ã‚¤ãƒ ã‚’ã™ã¹ã¦å«ã‚“ã§ã„ã¾ã™ãŒï¼Œ
+    Windows 10 64bit (AMD64) ã§ãƒ“ãƒ«ãƒ‰ã•ã‚Œã¦ã„ã‚‹ãŸã‚ï¼Œãã®ä»–ã® OS ã§ã¯å®Ÿè¡Œã§ãã¾ã›ã‚“ï¼
+    (ãŸã¶ã‚“ OpenCV ã® dll ãƒãƒ¼ã‚¸ãƒ§ãƒ³ãŒåˆã‚ãªã„ãŸã‚)
 
 
-### 1b ƒXƒNƒŠƒvƒgÀs‚Ìê‡
+### 1b ã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œã®å ´åˆ
 $ python wxpyjemacs.py -suser --pyjem=None
 
-    -sxxx: xxx ƒZƒbƒVƒ‡ƒ“‚ÅŠJn‚µ‚Ü‚·
-        ƒZƒbƒVƒ‡ƒ“‚Æ‚ÍCƒvƒƒWƒFƒNƒgƒtƒ@ƒCƒ‹“I‚È‚â‚Â‚ÅC
-        ƒvƒ‰ƒOƒCƒ“Šg’£CƒEƒBƒ“ƒhƒEƒŒƒCƒAƒEƒgCƒoƒbƒtƒ@‚Æ‚©‚ğ‚¨[‚´‚Á‚Ï‚É•Û‚µ‚Ü‚·
+    -sxxx: xxx ã‚»ãƒƒã‚·ãƒ§ãƒ³ã§é–‹å§‹ã—ã¾ã™
+        ã‚»ãƒƒã‚·ãƒ§ãƒ³ã¨ã¯ï¼Œãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ•ã‚¡ã‚¤ãƒ«çš„ãªã‚„ã¤ã§ï¼Œ
+        ãƒ—ãƒ©ã‚°ã‚¤ãƒ³æ‹¡å¼µï¼Œã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆï¼Œãƒãƒƒãƒ•ã‚¡ã¨ã‹ã‚’ãŠãƒ¼ã–ã£ã±ã«ä¿æŒã—ã¾ã™
 
-    --pyjem: pyjem Šg’£‚Ìg—p‚ğéŒ¾‚µ‚Ü‚·
+    --pyjem: pyjem æ‹¡å¼µã®ä½¿ç”¨ã‚’å®£è¨€ã—ã¾ã™
         Launch wxpyJemacs with --pyjem=0(=offline), 1(=online), or 2(=online with TEM3)
         The defalut switch is --pyjem=None, that means no PyJEMs to be involved.
-        £ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‹N“®Œã‚É PYJEM ‚ğŠÜ‚Şƒvƒ‰ƒOƒCƒ“‚ğ‘g‚İ‚Ş‚±‚Æ‚ÍˆêØ‚Å‚«‚Ü‚¹‚ñ
+        â–²ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³èµ·å‹•å¾Œã« PYJEM ã‚’å«ã‚€ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã‚’çµ„ã¿è¾¼ã‚€ã“ã¨ã¯ä¸€åˆ‡ã§ãã¾ã›ã‚“
