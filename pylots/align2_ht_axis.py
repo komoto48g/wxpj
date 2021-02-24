@@ -17,8 +17,8 @@ class Plugin(AlignInterface, Layer):
     index = TEM.CLA2
     wobbler = Filter.EnergyShift
     
-    default_wobstep = 100 # ht step [V]
-    default_wobsec = 0
+    default_wobstep = 100 # HT voltage -100V
+    default_wobsec = 1.0
     
     spot = property(lambda self: self.parent.require('beam_spot'))
     shift = property(lambda self: self.parent.require('beam_shift'))
