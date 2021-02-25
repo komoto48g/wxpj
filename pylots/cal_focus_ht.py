@@ -64,14 +64,20 @@ class Plugin(TemInterface, Layer):
                     y1 = self.calc_disp()   # [um] image displacement
                     z1 = min(y1 / dt) * 1e3 # [um] @min eliminates inf
                     print("$(z1) = {!r}".format((z1)))
+                    
                     x2 = self.index = -step
                     y2 = self.calc_disp()
                     z2 = min(y2 / dt) * 1e3 # [um] @min eliminates inf
                     print("$(z2) = {!r}".format((z2)))
+                    
                     zs = (z2-z1) / (x2-x1) # [um/V] -> config
+                    
+                    ccstar = zs * self.environ * acc_v # zs -> cc estimation
+                    cc = ccstar / self.environ.cstar
+                    print("$(cc) = {!r}".format((cc)))
+                    
                     self.config[self.conf_key] = zs
                     return True
-                
                 finally:
                     self.index = None
     
