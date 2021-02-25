@@ -21,8 +21,6 @@ class Plugin(TemInterface, Layer):
     para = property(lambda self: self.parent.require('beam2_para'))
     
     def Init(self):
-        TemInterface.Init(self)
-        
         self.layout(None, (
             wxpj.Button(self, "OL-Focus", lambda v: self.thread.Start(self.focus), icon='exe'),
             ),

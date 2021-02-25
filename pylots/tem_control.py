@@ -6,9 +6,9 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
+from mwx import LParam
+from mwx.graphman import Layer
 from pylots.temixins import TemInterface
-from wxpyJemacs import LParam
-from wxpyJemacs import Layer
 import wxpyJemacs as wxpj
 
 
@@ -21,8 +21,6 @@ class Plugin(TemInterface, Layer):
     caption = "TEM"
     
     def Init(self):
-        TemInterface.Init(self)
-        
         def setf(**kwargs):
             ## Note: [setf = self.tem.__dict__.update] gives no effect on property.
             for k,v in kwargs.items():

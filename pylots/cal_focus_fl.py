@@ -17,8 +17,6 @@ class Plugin(TemInterface, Layer):
     index = TEM.FL
     
     def Init(self):
-        TemInterface.Init(self)
-        
         self.layout(None, (
             wxpj.Button(self, "FL-Focus", lambda v: self.thread.Start(self.focus), icon='exe'),
             ),

@@ -1,6 +1,7 @@
 #! python
 # -*- coding: utf-8 -*-
-from mwx.graphman import Layer
+## from mwx.graphman import Layer
+from pylots.Autopylot2 import PylotItem as Layer
 from pylots.temixins import TemInterface, TEM, Filter
 import wxpyJemacs as wxpj
 import editor as edi
@@ -10,8 +11,8 @@ class Plugin(TemInterface, Layer):
     """Plugin of beam alignment
     Adjust beam-axis-HT-alignment [alpha]
     """
-    menu = "&Test"
-    category = "Focus"
+    menu = "&Maintenance/&Test"
+    category = "*Discipline*"
     caption = "HT"
     conf_key = 'ht-focus'
     index = Filter.EnergyShift
@@ -22,7 +23,7 @@ class Plugin(TemInterface, Layer):
     para = property(lambda self: self.parent.require('beam2_para'))
     
     def Init(self):
-        TemInterface.Init(self)
+        Layer.Init(self)
         
         self.layout("Manual calibration", (
             wxpj.Button(self, "Cal", lambda v: self.thread.Start(self.cal), icon='cal'),

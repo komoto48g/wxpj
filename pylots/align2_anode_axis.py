@@ -1,7 +1,7 @@
 #! python
 # -*- coding: utf-8 -*-
 from mwx import LParam
-from mwx.graphman import Layer
+from pylots.Autopylot2 import PylotItem as Layer
 from pylots.temixins import AlignInterface, TEM, HTsys
 
 
@@ -9,9 +9,8 @@ class Plugin(AlignInterface, Layer):
     """Plugin of beam alignment
     Adjust beam-axis-Anode-alignment [spot]
     """
-    menu = "&Test"
-    category = "Deflector Test"
-    
+    menu = "&Maintenance/&Test"
+    category = "*Discipline*"
     caption = "A2-axis"
     conf_key = 'a2-beamaxis'
     index = TEM.GUNA2
@@ -40,6 +39,7 @@ class Plugin(AlignInterface, Layer):
     
     def Init(self):
         AlignInterface.Init(self)
+        Layer.Init(self)
         
         self.wobstep = LParam("Wobbler [V]", (10,200,10), self.default_wobstep)
         self.layout("Settings", (
@@ -78,12 +78,12 @@ class Plugin(AlignInterface, Layer):
     def cal(self):
         if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
             with self.save_excursion(mmode='MAG'):
-                self.spot.focus()
-                self.shift.align()
                 try:
                     worg = self.wobbler
                     self.wobbler = (worg or 0) - self.wobstep.value
                     self.delay(self.default_wobsec)
+                    self.spot.focus()
+                    self.shift.align()
                     return AlignInterface.cal(self) and AlignInterface.align(self)
                 finally:
                     self.wobbler = worg

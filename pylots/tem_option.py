@@ -30,8 +30,6 @@ class Plugin(TemInterface, Layer):
     caption = "SYS"
     
     def Init(self):
-        TemInterface.Init(self)
-        
         self.noise_param = LParam("noise_level/s", (0, 1e3, 5), self.noise_level,
             handler=lambda p: setq(noise_level=p.value),
                 doc="Signal/Noize threshold [counts/pixel/s]"

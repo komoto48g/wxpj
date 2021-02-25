@@ -26,8 +26,6 @@ class Plugin(TemInterface, Layer):
     shift = property(lambda self: self.parent.require('beam_shift'))
     
     def Init(self):
-        TemInterface.Init(self)
-        
         self.threshold = LParam("Threshold", (0.005, 0.05, 0.005), self.default_threshold)
         self.wobstep = LParam("Wobbler hex", (0x100,0x10000,0x100), self.default_wobstep, dtype=hex)
         

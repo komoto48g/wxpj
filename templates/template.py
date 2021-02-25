@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-02-17 14:37:10 +0900>
+Last updated: <2021-02-25 14:19:52 +0900>
      Version: 0.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -12,7 +12,7 @@ import wx
 import mwx
 import cv2
 import numpy as np
-from mwx import LParam
+from wxpyJemacs import LParam
 from wxpyJemacs import Layer
 import wxpyJemacs as wxpj
 
@@ -30,6 +30,8 @@ class Plugin(Layer):
     unloadable = True
     
     def Init(self):
+        Layer.Init(self)
+        
         self.ksize = LParam("ksize", (1,99,2), 13, doc="kernel window size")
         
         self.btn = wx.Button(self, label="Run", size=(-1,22))

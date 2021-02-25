@@ -6,7 +6,7 @@ import numpy as np
 import wx
 from mwx import Param
 from mwx import LParam
-from wxpyJemacs import Layer
+from mwx.graphman import Layer
 import wxpyJemacs as wxpj
 
 

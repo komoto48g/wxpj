@@ -10,11 +10,11 @@ import wx
 import mwx
 from pyJeol.temcon import ItemData, TreeCtrl
 from pylots import UserInterface
-from wxpyJemacs import Layer
+from mwx.graphman import Layer
 import wxpyJemacs as wxpj
 
 
-class PylotItem(UserInterface, Layer):
+class PylotItem(Layer):
     """Pylot item:data layer
     
     The inherited class must have the following methods*
@@ -37,8 +37,6 @@ class PylotItem(UserInterface, Layer):
         self.item.Tree[self.section] = self.item
     
     def Init(self):
-        UserInterface.Init(self)
-        
         self.item = ItemData(self.owner.tree, self.__module__,
                         self.thread(self.owner.call_subprocess),
                         tip=(self.__doc__ or '') + (self.execute.__doc__ or ''))
@@ -69,8 +67,6 @@ class Plugin(UserInterface, Layer):
     menu = "&Maintenance"
     
     def Init(self):
-        UserInterface.Init(self)
-        
         self.tree = TreeCtrl(self, size=(160,-1),
             style=wx.TR_DEFAULT_STYLE|wx.TR_HIDE_ROOT
                  |wx.TR_FULL_ROW_HIGHLIGHT|wx.TR_NO_LINES
@@ -79,15 +75,12 @@ class Plugin(UserInterface, Layer):
             return [[x, ItemData(self.tree, x, self.thread(self.call_subprocess))] for x in args]
         
         self.tree[0:0] = [
-            ("Settings", (
+            ("Settings", [
                 ("SYS", ItemData(self.tree, "tem_option", None)),
                 ("TEM", ItemData(self.tree, "tem_control", None)),
                 ("ROT", ItemData(self.tree, "tem_irot", None)),
-            )),
+            ]),
             ("Calibrations", (
-                ## ("Camera", (
-                ##     ("Dark", ItemData(self.tree, None, self.cal_dark)),
-                ## )),
                 ("MAG", ItemData(self.tree, None, self.thread(self.calibrate_alpha_mag)),
                     branches(
                         "spot",
@@ -131,10 +124,10 @@ class Plugin(UserInterface, Layer):
                         "ol",
                 )),
             )),
-            ("*Descipline*", (
-                ("ht-axis", ItemData(self.tree, "align2_ht_axis", self.thread(self.call_subprocess))),
-                ("anode-axis", ItemData(self.tree, "align2_anode_axis", self.thread(self.call_subprocess))),
-            ))
+            ## ("*Discipline*", (
+            ##     ("ht-axis", ItemData(self.tree, "align2_ht_axis", self.thread(self.call_subprocess))),
+            ##     ("anode-axis", ItemData(self.tree, "align2_anode_axis", self.thread(self.call_subprocess))),
+            ## ))
         ]
         self.tree.reset()
         ## self.tree.Expand(self.tree.get_item(None, "Calibrations"))
@@ -188,35 +181,6 @@ class Plugin(UserInterface, Layer):
                 ),
             )
     
-    ## --------------------------------
-    ## Camera basic calibration
-    ## --------------------------------
-    ## 
-    ## def cal_dark(self):
-    ##     """Prepare camera dark references
-    ##     Note: The dark reference is necessary for beam finder algorithm.
-    ##           Therefore, this should be carried out BEFORE all calibrations.
-    ##     """
-    ##     with self.save_restriction(GUNA1=(0,0)):
-    ##         self.message("Wait one moment for preparing dark reference.")
-    ##         self.camera.cache() # acquire once to clear cache
-    ##         self.delay(4)       # wait until postglow attenuates enough (>2)
-    ##         
-    ##         org = self.camera.binning
-    ##         for x in (1,2,4):
-    ##             self.message("set binning({})...".format(x))
-    ##             ## self.camera.binning = x
-    ##             self.cameraman.binning_selector.reset(x)
-    ##             self.delay(1)
-    ##             
-    ##             self.message("\b capturing image...")
-    ##             self.cameraman.prepare_dark(verbose=False)
-    ##             
-    ##             print(self.message("\b done."))
-    ##         ## self.camera.binning = org
-    ##         self.cameraman.binning_selector.reset(org)
-    ##     return True
-    ## 
     ## --------------------------------
     ## MAG/DIFF Calibration procs
     ## --------------------------------

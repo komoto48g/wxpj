@@ -24,8 +24,6 @@ class Plugin(TemInterface, Layer):
     cla = property(lambda self: self.parent.require('align2_clapt'))
     
     def Init(self):
-        TemInterface.Init(self)
-        
         self.layout(None, (
             wxpj.Button(self, "Z-Focus", lambda v: self.thread.Start(self.focus), icon='exe'),
             ),

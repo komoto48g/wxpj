@@ -1,7 +1,7 @@
 #! python
 # -*- coding: utf-8 -*-
 from mwx import LParam
-from mwx.graphman import Layer
+from pylots.Autopylot2 import PylotItem as Layer
 from pylots.temixins import AlignInterface, TEM, Filter
 
 
@@ -9,9 +9,8 @@ class Plugin(AlignInterface, Layer):
     """Plugin of beam alignment
     Adjust beam-axis-HT-alignment [alpha]
     """
-    menu = "&Test"
-    category = "Deflector Test"
-    
+    menu = "&Maintenance/&Test"
+    category = "*Discipline*"
     caption = "HT-axis"
     conf_key = 'ht-beamaxis'
     index = TEM.CLA2
@@ -25,6 +24,7 @@ class Plugin(AlignInterface, Layer):
     
     def Init(self):
         AlignInterface.Init(self)
+        Layer.Init(self)
         
         self.wobstep = LParam("Wobbler [V]", (10,500,10), self.default_wobstep)
         self.layout("Settings", (

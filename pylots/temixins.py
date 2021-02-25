@@ -34,6 +34,8 @@ class TemInterface(object):
     This class is supposed to be mixied-in the Plugin.
     Otherwise, the `parent should be given explicitly.
     """
+    message = print # to be overrided
+    
     ## environ = Environ(300e3)
     environ = property(lambda self: self.parent.environ)
     
@@ -64,27 +66,6 @@ class TemInterface(object):
     thread = Thread() # Common workerthread instance shared by pylot modules
     thread.greenflag = threading.Event()
     thread.greenflag.set()
-    
-    def Init(self):
-        self.handler.update({ # Common handler instance
-            0 : {
-              'detect-beam' : [0], #o one ellipse found
-            'detect-nobeam' : [0], #- (noisy) under signal level
-          'detect-noborder' : [0], #+ ambiguous boundary
-          'detect-nocenter' : [0], #+ ellipse center is out of bound
-         'detect-noellipse' : [0], #+ detection failed
-          'detect-nosignal' : [0], #x (dark) under signal level
-             'thread_begin' : [1], # begin thread
-            },
-            1 : {
-               'thread_end' : [0], # end thread
-                  '*:enter' : [2], # enter the thread
-            },
-            2 : {
-                  '*:error' : [1], # error in the thread
-                   '*:exit' : [1], # exit the thread
-            },
-        })
     
     @property
     def config(self):
@@ -284,9 +265,7 @@ class TemInterface(object):
         a = self.illumination.Alpha
         for s in range(ns):
             self.raise_chequer_flag()
-            msg = self.message("spot={}, alpha={}".format(s, a))
-            if self.handler.debug:
-                print(msg)
+            self.message("spot={}, alpha={}".format(s, a))
             self.illumination.Spot = s
             self.delay(1)
             yield s
@@ -297,9 +276,7 @@ class TemInterface(object):
         s = self.illumination.Spot
         for a in range(na):
             self.raise_chequer_flag()
-            msg = self.message("spot={}, alpha={}".format(s, a))
-            if self.handler.debug:
-                print(msg)
+            self.message("spot={}, alpha={}".format(s, a))
             self.illumination.Alpha = a
             self.delay(1)
             yield a
@@ -308,9 +285,7 @@ class TemInterface(object):
         """Generates for each mag/cam (index, value)"""
         for j, v in enumerate(self.imaging.Range):
             self.raise_chequer_flag()
-            msg = self.message("mag/cam: [{}] {:,d}".format(j, v))
-            if self.handler.debug:
-                print(msg)
+            self.message("mag/cam: [{}] {:,d}".format(j, v))
             self.imaging.Mag = v
             self.delay(1)
             yield (j, v)
@@ -319,9 +294,7 @@ class TemInterface(object):
         """Generates for each dispersion (index, value)"""
         for j, v in enumerate(self.omega.Range):
             self.raise_chequer_flag()
-            msg = self.message("dispersion: [{}] {:,d}".format(j, v))
-            if self.handler.debug:
-                print(msg)
+            self.message("dispersion: [{}] {:,d}".format(j, v))
             self.omega.Dispersion = v
             self.delay(1)
             yield (j, v)
@@ -552,8 +525,6 @@ class SpotInterface(TemInterface):
     default_threshold = 0.05 # spot size ratio to the shape of image
     
     def Init(self):
-        TemInterface.Init(self)
-        
         self.threshold = LParam("Threshold", (0.005, 0.1, 0.005), self.default_threshold)
         
         self.layout(None, (
@@ -758,8 +729,6 @@ class AlignInterface(TemInterface):
     category = "Deflector Maintenance"
     
     def Init(self):
-        TemInterface.Init(self)
-        
         self.layout(None, (
             wxpj.Button(self, "{}".format(self.caption or self.conf_key),
                 lambda v: self.thread.Start(self.align), icon='exe'),
@@ -948,8 +917,6 @@ deflector : deflector to offset beam (shift or tilt)
     default_wobsec = 0.5
     
     def Init(self):
-        TemInterface.Init(self)
-        
         self.threshold = LParam("Threshold", (0.005, 0.05, 0.005), self.default_threshold)
         self.wobstep = LParam("Wobbler hex", (0x100,0x1000,0x100), self.default_wobstep, dtype=hex)
         

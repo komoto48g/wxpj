@@ -20,8 +20,6 @@ class Plugin(TemInterface, Layer):
     cla = property(lambda self: self.parent.require('align2_clapt'))
     
     def Init(self):
-        TemInterface.Init(self)
-        
         self.layout("Manual calibration", (
             wxpj.Button(self, "Cal", lambda v: self.thread.Start(self.cal), icon='cal'),
             wxpj.Button(self, "Save", lambda v: self.config.save(self.conf_key), icon='save'),
