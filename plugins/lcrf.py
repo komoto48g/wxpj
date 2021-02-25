@@ -212,6 +212,4 @@ class Plugin(Layer):
         frame.markers = (x[oz][0:-1:3], y[oz][0:-1:3]) # scatter markers onto the arc
         
         ## サークル描画 (確認用)
-        ## self.Arts = self.selected_view.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75)
-        ## self.Arts[0].set_data(x, y) # draw line arc
-        ## self.Draw()
+        self.Arts = self.selected_view.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75)

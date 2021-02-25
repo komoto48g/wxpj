@@ -84,7 +84,7 @@ class Plugin(Layer):
                 x, y = frame.xyfrompixel(nx, ny)
                 r *= frame.unit
                 
-                ## 不特定多数の Arts を描画する
+                ## 不特定多数の円を描画する
                 art = patches.Circle((x,y), r, color='r', ls='dotted', lw=1, fill=0)
                 frame.axes.add_artist(art)
                 self.Arts.append(art)

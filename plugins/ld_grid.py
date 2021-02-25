@@ -174,10 +174,10 @@ class Plugin(Layer):
         
         x, y = frame.markers
         if not x.size:
-            print(self.message("- abort: No markers found in the frame."))
+            print(self.message("- Abort: no markers in the frame: {!r}".format(frame.name)))
             return
         
-        ## re-init grid which is to be bound to the frame
+        ## re-init (erase) grid bound to the frame
         self.init_grid(frame.axes)
         
         with self.thread:

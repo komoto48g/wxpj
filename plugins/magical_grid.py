@@ -128,8 +128,6 @@ class Plugin(Layer):
             return
         
         del frame.markers
-        ## self.lccf.Draw(0)
-        ## self.ldc.Draw(0)
         
         self.message("\b @lccf...")
         self.lgbt.thresh.value = np.percentile(frame.buffer, 100-self.score.value)
@@ -195,7 +193,7 @@ class Plugin(Layer):
             ## nn = (1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192)
             ## k = np.searchsorted(nn, min(h,w), 'right')
             ## n = nn[k-1]//2
-            n = pow(2, int(np.logn(2, min(h,w)))-1)
+            n = pow(2, int(np.log2(min(h,w)))-1)
             i, j = h//2, w//2
             src = src[i-n:i+n,j-n:j+n]
             h, w = src.shape
