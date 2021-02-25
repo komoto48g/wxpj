@@ -833,6 +833,8 @@ class AlignInterface(TemInterface):
                 return
             
             for i in range(maxiter):
+                if not self.thread.is_active: # quit the thread
+                    return -1
                 self.index = (xo+step, yo)
                 u, p_, q_ = self.detect_beam_center()
                 if u is None or p_/p < 0.5:
@@ -841,6 +843,8 @@ class AlignInterface(TemInterface):
             else: return
             
             for i in range(maxiter):
+                if not self.thread.is_active: # quit the thread
+                    return -1
                 self.index = (xo, yo+step)
                 v, p_, q_ = self.detect_beam_center()
                 if u is None or p_/p < 0.5:
@@ -851,6 +855,7 @@ class AlignInterface(TemInterface):
             m = np.vstack((u-c, v-c)).T / step
             self.set_conf_array(m.flatten())
             return True
+        
         finally:
             self.index = org
 
@@ -877,9 +882,11 @@ class StigInterface(AlignInterface):
             if c is None:
                 return
             val = np.all(abs(c-1) < self.threshold)
-            print(" "*i, "[{}] Roundness =".format(i), c, val) # check the roundness in the criteria
+            print(" "*i, "[{}] Roundness =".format(i), c, val, end='') # check the roundness in the criteria
             if val:
+                print(": < {:g}".format(np.hypot(*(c-1))))
                 return True
+            print()
             self.index = (xo, yo) - np.dot(self.M, c-1)
         return False
     
@@ -904,6 +911,7 @@ class StigInterface(AlignInterface):
             self.set_conf_array(m.flatten())
             self.index = (xo, yo) - np.dot(np.linalg.inv(m), c-1) # adjust once,
             return True
+        
         except Exception:
             self.index = org
             raise
@@ -1069,7 +1077,7 @@ deflector : deflector to offset beam (shift or tilt)
             ## テスト範囲内での最良値をとりあえず入れておく
             xj, rd = temp
             self.index = xj
-            print("Result (={:g}) exceeds threshold (> {})".format(rd, threshold),
+            print("- Result (={:g}) exceeds threshold (> {})".format(rd, threshold),
                   "at mode {!r}".format(self.illumination.Selector))
             return False
         

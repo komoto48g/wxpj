@@ -133,6 +133,7 @@ class Plugin(UserInterface, Layer):
             )),
             ("*Descipline*", (
                 ("ht-axis", ItemData(self.tree, "align2_ht_axis", self.thread(self.call_subprocess))),
+                ("anode-axis", ItemData(self.tree, "align2_anode_axis", self.thread(self.call_subprocess))),
             ))
         ]
         self.tree.reset()
