@@ -31,7 +31,8 @@ class Plugin(CompInterface, Layer):
     wobbler = TEM.IS1
     
     spot = property(lambda self: self.parent.require('beam_spot'))
-    deflector = property(lambda self: self.parent.require('beam_tilt'))
+    ## deflector = property(lambda self: self.parent.require('beam_tilt')) # don't touch axis
+    pla = deflector = property(lambda self: self.parent.require('align_pla')) # deflector:=pla
     
     @property
     def conf_table(self):

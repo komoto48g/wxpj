@@ -34,7 +34,7 @@ class Plugin(AlignInterface, Layer):
     para = property(lambda self: self.parent.require('beam2_para'))
     pla = property(lambda self: self.parent.require('align_pla'))
     
-    ## ÆËŒnƒ‚[ƒh‹¤’Ê
+    ## ç…§å°„ç³»ãƒ¢ãƒ¼ãƒ‰å…±é€š
     conf_arg = 0
     
     @property

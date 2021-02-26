@@ -13,16 +13,19 @@ class Plugin(CompInterface, Layer):
     index = TEM.SHIFT
     wobbler = TEM.CLA1
     
-    spot = property(lambda self: self.parent.require('beam_spot'))
-    para = property(lambda self: self.parent.require('beam2_para'))
-    deflector = property(lambda self: self.parent.require('beam_tilt'))
+    ## spot = property(lambda self: self.parent.require('beam_spot'))
     diffspot = property(lambda self: self.parent.require('beam_spot_diff'))
+    para = property(lambda self: self.parent.require('beam2_para'))
+    
+    ## deflector = property(lambda self: self.parent.require('beam_tilt')) # don't touch axis
+    deflector = property(lambda self: self.parent.require('align_pla')) # deflector:=pla
     
     def cal(self):
         with self.save_excursion(mmode='DIFF'):
             self.diffspot.focus() # DIFF-Focus をきちんと合わせること !
             self.para.focus() # para で合わせるべし ! #20210219 Note 参照
             ## self.spot.focus()
+            ## self.pla.index = (0x8000, 0x8000) # neutralize
             return CompInterface.cal(self)
     
     def execute(self):

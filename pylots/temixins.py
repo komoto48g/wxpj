@@ -34,7 +34,7 @@ class TemInterface(object):
     This class is supposed to be mixied-in the Plugin.
     Otherwise, the `parent should be given explicitly.
     """
-    message = print # to be overrided
+    ## message = print # to be overrided
     
     ## environ = Environ(300e3)
     environ = property(lambda self: self.parent.environ)
@@ -853,7 +853,7 @@ class StigInterface(AlignInterface):
             val = np.all(abs(c-1) < self.threshold)
             print(" "*i, "[{}] Roundness =".format(i), c, val, end='') # check the roundness in the criteria
             if val:
-                print(": < {:g}".format(np.hypot(*(c-1))))
+                print(" < {:g}".format(np.hypot(*(c-1))))
                 return True
             print()
             self.index = (xo, yo) - np.dot(self.M, c-1)

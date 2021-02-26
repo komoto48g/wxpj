@@ -98,7 +98,7 @@ class Plugin(TemInterface, Layer):
             try:
                 h, w = self.camera.shape
                 xo, ys = self.spot.conf_table
-                step = h / ys * 0.1
+                step = h / ys * 0.05
                 
                 org = xj = self.index
                 if xj < xo:
