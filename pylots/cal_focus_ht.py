@@ -72,9 +72,8 @@ class Plugin(TemInterface, Layer):
                     
                     zs = (z2-z1) / (x2-x1) # [um/V] -> config
                     
-                    ccstar = zs * self.environ * acc_v # zs -> cc estimation
-                    cc = ccstar / self.environ.cstar
-                    print("$(cc) = {!r}".format((cc)))
+                    cc = zs * self.environ.acc_v / self.environ.cstar * 1e-3 # [mm]
+                    print("$(cc) = {:g} mm".format((cc)))
                     
                     self.config[self.conf_key] = zs
                     return True
