@@ -17,8 +17,8 @@ class Plugin(CompInterface, Layer):
     diffspot = property(lambda self: self.parent.require('beam_spot_diff'))
     para = property(lambda self: self.parent.require('beam2_para'))
     
-    ## deflector = property(lambda self: self.parent.require('beam_tilt')) # don't touch axis
-    deflector = property(lambda self: self.parent.require('align_pla')) # deflector:=pla
+    ## deflector = property(lambda self: self.parent.require('align_pla'))
+    deflector = property(lambda self: self.parent.require('beam_tilt'))
     
     def cal(self):
         with self.save_excursion(mmode='DIFF'):
