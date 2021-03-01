@@ -29,7 +29,7 @@ class Plugin(AlignInterface, Layer):
                 break
     
     default_wobstep = 100 # A2 voltage -100V
-    default_wobsec = 1.0
+    default_wobsec = 4.0
     
     spot = property(lambda self: self.parent.require('beam_spot'))
     shift = property(lambda self: self.parent.require('beam_shift'))
@@ -69,7 +69,7 @@ class Plugin(AlignInterface, Layer):
                     worg = self.wobbler
                     self.spot.focus()
                     self.shift.align()
-                    self.wobbler = (worg or 0) - self.wobstep.value
+                    self.wobbler = (worg or 0) + self.wobstep.value
                     self.delay(self.default_wobsec)
                     return AlignInterface.align(self)
                 finally:
@@ -80,11 +80,11 @@ class Plugin(AlignInterface, Layer):
             with self.save_excursion(mmode='MAG'):
                 try:
                     worg = self.wobbler
-                    self.wobbler = (worg or 0) - self.wobstep.value
-                    self.delay(self.default_wobsec)
                     self.spot.focus()
                     self.shift.align()
-                    return AlignInterface.cal(self) and AlignInterface.align(self)
+                    self.wobbler = (worg or 0) + self.wobstep.value
+                    self.delay(self.default_wobsec)
+                    return AlignInterface.cal(self) # and AlignInterface.align(self)
                 finally:
                     self.wobbler = worg
     

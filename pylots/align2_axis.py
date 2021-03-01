@@ -50,7 +50,7 @@ class Plugin(AlignInterface, Layer):
                     worg = self.wobbler
                     self.spot.focus()
                     self.shift.align()
-                    self.wobbler = worg - self.wobstep.value
+                    self.wobbler = worg + self.wobstep.value
                     self.delay(self.default_wobsec)
                     return AlignInterface.align(self)
                 finally:
@@ -63,7 +63,7 @@ class Plugin(AlignInterface, Layer):
                 self.shift.align()
                 try:
                     worg = self.wobbler
-                    self.wobbler = worg - self.wobstep.value
+                    self.wobbler = worg + self.wobstep.value
                     self.delay(self.default_wobsec)
                     return AlignInterface.cal(self) and AlignInterface.align(self)
                 finally:

@@ -8,6 +8,7 @@ from pylots.temixins import AlignInterface, TEM, Filter
 class Plugin(AlignInterface, Layer):
     """Plugin of beam alignment
     Adjust beam-axis-HT-alignment [alpha]
+    * Calibration with Magnification 100k or more is preferable
     """
     menu = "&Maintenance/&Test"
     category = "*Discipline*"
@@ -53,7 +54,7 @@ class Plugin(AlignInterface, Layer):
                     worg = self.wobbler
                     self.spot.focus()
                     self.shift.align()
-                    self.wobbler = (worg or 0) - self.wobstep.value
+                    self.wobbler = (worg or 0) + self.wobstep.value
                     self.delay(self.default_wobsec)
                     return AlignInterface.align(self)
                 finally:
@@ -66,9 +67,9 @@ class Plugin(AlignInterface, Layer):
                 self.shift.align()
                 try:
                     worg = self.wobbler
-                    self.wobbler = (worg or 0) - self.wobstep.value
+                    self.wobbler = (worg or 0) + self.wobstep.value
                     self.delay(self.default_wobsec)
-                    return AlignInterface.cal(self) and AlignInterface.align(self)
+                    return AlignInterface.cal(self) # and AlignInterface.align(self)
                 finally:
                     self.wobbler = worg
     
