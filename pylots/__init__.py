@@ -54,7 +54,7 @@ class UserInterface(TemInterface):
     @property
     def selected_aperture(self):
         info = self.Aperture.Info # pmpj:Aperture.Info is always being notified
-        name = info['id_name']    # get-currently-selected-aperture-name
+        name = info['id_name']    # get currently selected aperture plugin
         
         ## if name == 'CLA2': return self.clapt2 is NotImplemented
         if name == 'CLA': return self.clapt

@@ -10,7 +10,6 @@ import threading
 import time
 import os
 import wx
-import mwx
 import numpy as np
 from numpy import pi,cos,sin
 from mwx import Param, LParam
@@ -20,11 +19,9 @@ import wxpyJemacs as wxpj
 import editor as edi
 
 from pyJeol import pyJem2 as pj
+from pyJeol.pyJem2 import TEM, EOsys, HTsys, Filter, Stage # to be referred from pylots
 
 print("$(pj) = {!r}".format((pj)))
-
-## TEM = pj.TEM # to be referred from pylots
-from pyJeol.pyJem2 import TEM, EOsys, HTsys, Filter, Stage
 
 
 class TemInterface(object):
@@ -244,7 +241,7 @@ class TemInterface(object):
                 if apt.sel != v:
                     saved[k] = apt.sel
                     apt.sel = v
-                    busy = wx.BusyInfo("Relax one moment please; Aperture drive is moving...")
+                    busy = wx.BusyInfo("Relax one moment please. Aperture drive is moving...")
                     try:
                         self.wait('aptsel end')
                         self.delay(1)
