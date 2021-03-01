@@ -35,6 +35,7 @@ class PylotItem(Layer):
         self.owner.tree.update(self.section, self.item)
         ## self.owner.tree[self.section] = self.item
         ## self.owner.tree.reset()
+        self.owner.tree.Refresh()
         
         self.layout(None, (
             wxpj.Button(self, "Execute",
@@ -158,11 +159,10 @@ class Plugin(UserInterface, Layer):
                 try:
                     plug = self.parent.require(name)
                     plug.item.Tree = self.tree # update new tree:ref manually
-                    self.tree[plug.section] = plug.item # rest tree item
-                    
+                    self.tree[plug.section] = plug.item # reset tree item
                 except Exception:
                     pass
-            else:
+            elif flags:
                 self.restore_session(flags)
     
     def set_current_session(self, session):
