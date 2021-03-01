@@ -29,7 +29,7 @@ if 'mwx' not in sys.modules:
     home = os.path.dirname(os.path.abspath(__file__))
     sys.path += [
         os.path.join(home, "nest/pj-2.5-py3.5.egg"),
-        os.path.join(home, "nest/mwxlib-0.29-py3.5.egg"),
+        os.path.join(home, "nest/mwxlib-0.30-py3.5.egg"),
     ]
 import mwx
 from mwx import Param, LParam
