@@ -17,15 +17,16 @@ class Plugin(CompInterface, Layer):
     diffspot = property(lambda self: self.parent.require('beam_spot_diff'))
     para = property(lambda self: self.parent.require('beam2_para'))
     
-    ## deflector = property(lambda self: self.parent.require('align_pla'))
     deflector = property(lambda self: self.parent.require('beam_tilt'))
+    pla = property(lambda self: self.parent.require('align_pla'))
     
     def cal(self):
         with self.save_excursion(mmode='DIFF'):
-            self.diffspot.focus() # DIFF-Focus をきちんと合わせること !
             self.para.focus() # para で合わせるべし ! #20210219 Note 参照
+            self.diffspot.focus() # DIFF-Focus をきちんと合わせること !
             ## self.spot.focus()
             ## self.pla.index = (0x8000, 0x8000) # neutralize
+            self.pla.align()
             return CompInterface.cal(self)
     
     def execute(self):
