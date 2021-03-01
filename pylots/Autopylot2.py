@@ -27,23 +27,14 @@ class PylotItem(Layer):
     
     owner = property(lambda self: self.parent.require('Autopylot2'))
     
-    @property
-    def tree(self):
-        return self.item.Tree
-    
-    @tree.setter
-    def tree(self, v):
-        self.item.Tree = v
-        self.item.Tree[self.section] = self.item
-    
     def Init(self):
         self.item = ItemData(self.owner.tree, self.__module__,
                         self.thread(self.owner.call_subprocess),
                         tip=(self.__doc__ or '') + (self.execute.__doc__ or ''))
-        ## self.tree.update(self.section, self.item)
-        self.tree[self.section] = self.item
-        self.tree.reset()
-        self.tree.Refresh()
+        
+        self.owner.tree.update(self.section, self.item)
+        ## self.owner.tree[self.section] = self.item
+        ## self.owner.tree.reset()
         
         self.layout(None, (
             wxpj.Button(self, "Execute",
@@ -54,8 +45,8 @@ class PylotItem(Layer):
     
     def Destroy(self):
         try:
-            del self.tree[self.section]
-            self.tree.reset()
+            del self.owner.tree[self.section]
+            self.owner.tree.reset()
         except Exception: # wrapped C/C++ object has been deleted.
             pass
         return Layer.Destroy(self)
@@ -160,10 +151,23 @@ class Plugin(UserInterface, Layer):
             row=1, expand=2, border=0, vspacing=0,
         )
     
+    def restore_session(self, session):
+        for branch in session:
+            name, flags = branch[0], branch[-1]
+            if not isinstance(flags, (list, tuple)):
+                try:
+                    plug = self.parent.require(name)
+                    plug.item.Tree = self.tree # update new tree:ref manually
+                    self.tree[plug.section] = plug.item # rest tree item
+                    
+                except Exception:
+                    pass
+            else:
+                self.restore_session(flags)
+    
     def set_current_session(self, session):
-        self.tree.set_flags(session)
-        ## reload 時は zip(temp,root) 長さが合わないのでさらに追加
-        self.tree.restore_session(session) # [0]-Calibrations 以降の拡張プラグインを復元する
+        self.tree.set_flags(session)  # reload 時は zip 長さが合わないので以下を追加する
+        self.restore_session(session) # [0]-Calibrations 以降の拡張プラグインを復元する
         self.tree.reset()
     
     def get_current_session(self):
