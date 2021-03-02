@@ -14,6 +14,7 @@ class Plugin(StigInterface, Layer):
     index = TEM.ILS
     
     diffspot = property(lambda self: self.parent.require('beam_spot_diff'))
+    para = property(lambda self: self.parent.require('beam2_para'))
     pla = property(lambda self: self.parent.require('align_pla'))
     cla = property(lambda self: self.parent.require('align2_clapt'))
     
@@ -25,6 +26,7 @@ class Plugin(StigInterface, Layer):
         if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
             if self.mode_selection('DIFF'):
                 self.diffspot.focus(0.25)
+                self.para.focus()
                 self.pla.align()
                 return StigInterface.align(self)
     
@@ -32,6 +34,7 @@ class Plugin(StigInterface, Layer):
         if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
             with self.save_excursion(mmode='DIFF'):
                 self.diffspot.focus(0.25)
+                self.para.focus()
                 self.pla.align()
                 return StigInterface.cal(self)
     

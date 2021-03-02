@@ -39,7 +39,7 @@ class PylotItem(Layer):
         
         self.layout(None, (
             wxpj.Button(self, "Execute",
-                handler=lambda v: self.thread.Start(self.execute), icon='exe',
+                handler=lambda v: self.thread.Start(self.execute), icon='->',
                     tip=self.execute.__doc__),
             ),
         )
