@@ -72,7 +72,7 @@ class Plugin(Layer):
         )
         self.layout(None, (
             wxpj.Button(self, "Run ALL",
-                lambda v: (self.testrun(), self.run()), icon='help', size=size,
+                lambda v: (self.testrun() and self.run()), icon='help', size=size,
                 tip="Run above (1-2-3) step by step.\n"
                     "Before calculating Mags, check unit length [mm/pixel]"),
                     
@@ -89,17 +89,18 @@ class Plugin(Layer):
             ),
             row=1, show=1, tw=50, vspacing=4,
         )
-        ## self.lgbt.ksize.value = 13
-        ## self.lgbt.sigma.value = 0
     
     lgbt = property(lambda self: self.parent.require('lgbt'))
     lccf = property(lambda self: self.parent.require('lccf2'))
     ldc = property(lambda self: self.parent.require('ld_cgrid'))
-    ## ld = property(lambda self: self.parent.require('ld_grid'))
     
     def testrun(self, frame=None):
         if not frame:
-            frame = self.selected_view.all_frames[self.index.value]
+            frames = self.selected_view.all_frames
+            if not frames:
+                print(self.message("- The target view has no frames"))
+                return
+            frame = frames[self.index.value]
         
         if self.choice.Selection < 2:
             nop = "*result of fft*" not in frame.parent
@@ -135,16 +136,15 @@ class Plugin(Layer):
         
         self.message("\b @ldc...")
         self.ldc.reset_params(backcall=None)
-        self.ldc.thread.Start(self.ldc.run, frame) # ここから子スレッド IN
+        self.ldc.thread.Start(self.calc_fit, frame) # ここから子スレッド IN
+        
+    def calc_fit(self, frame):
+        self.ldc.run(frame)
+        self.ldc.run(frame) # 計算 x2 回目
         self.ldc.Show()
         
-        ## ldc のスレッドが終わるまで待たなければ，途中結果を参照してしまう．
-        ## しかし，メインプロセス＝親が待ち続ける (ビジー状態) と子スレッドは怠けてしまう．
-        ## self.ldc.thread.join(1) ... なのでこれではダメ．メインスレッドで待機する必要がある．
-        ## ここでは thread_end <sentinel> を待機して最終結果を出力する．
-        self.ldc.handler.hook('thread_end', lambda v: self.calc_mag())
-    
-    def calc_mag(self):
+        frame.update_attributes(parameters=self.parameters[:-1]) # set-attr except the last text
+        
         g = self.ldc.grid_params[0].value
         g0 = eval(self.grid.Value)
         if self.choice.Selection < 2:

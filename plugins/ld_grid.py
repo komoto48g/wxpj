@@ -168,7 +168,7 @@ class Plugin(Layer):
         )))
         return R1, R2
     
-    def run(self, frame=None, skip=0):
+    def run(self, frame=None, skip=False):
         if not frame:
             frame = self.selected_view.frame
         
