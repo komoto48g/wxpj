@@ -84,7 +84,7 @@ class Plugin(AlignInterface, Layer):
                     worg = self.wobbler
                     self.wobbler = (worg or 0) + self.wobstep.value
                     self.delay(self.default_wobsec)
-                    return AlignInterface.cal(self)
+                    return AlignInterface.cal(self) and AlignInterface.align(self)
                 finally:
                     self.wobbler = worg
     

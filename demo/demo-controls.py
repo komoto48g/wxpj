@@ -13,6 +13,7 @@ import wxpyJemacs as wxpj
 
 class Plugin(Layer):
     """catalogue of wxpj
+    
     This script shows wxpj icons/widgets
     """
     menu = "&Plugins/&Demo"

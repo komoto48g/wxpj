@@ -13,12 +13,9 @@ import wxpyJemacs as wxpj
 
 
 class Plugin(Layer):
-    """Image process: rotation
-    This script shows how to get data from graph
-    --------------------------------------------
-    The graph.frame has three arts called selector, markers, and region.
-    Each one posts events when they are drawing, drawn, and removed by user.
-    This script also shows how to use define_key (assign up-to-two stroke key).
+    """Image processing: rotation
+    
+    This script shows how to get data from graph and  how to define_key.
     """
     menu = "&Plugins/&Demo"
     
@@ -54,10 +51,11 @@ class Plugin(Layer):
         """Rotate image with given angles and load to output window"""
         src = self.graph.selected_buffer
         angle = self.rotdeg.value
-        ## self.output["*warp*"] = ndi.rotate(src, angle) # ndi: another method of rotation
+        ## dst = ndi.rotate(src, angle) # ndi: another method of rotation
         h, w = src.shape
         M = cv2.getRotationMatrix2D((w/2, h/2), angle, scale=1)
-        self.output["*warp*"] = cv2.warpAffine(src, M, (w, h))
+        dst = cv2.warpAffine(src, M, (w, h))
+        self.output["*warp*"] = dst
 
 
 if __name__ == "__main__":
