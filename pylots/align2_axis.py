@@ -23,7 +23,7 @@ class Plugin(AlignInterface, Layer):
     def Init(self):
         AlignInterface.Init(self)
         
-        self.wobstep = LParam("Wobbler hex", (0x100,0x8000,0x100), self.default_wobstep, dtype=hex)
+        self.wobstep = LParam("Wobbler amp", (0x100,0x8000,0x100), self.default_wobstep, dtype=hex)
         self.layout("Settings", (
             self.wobstep,
             ),
@@ -46,10 +46,10 @@ class Plugin(AlignInterface, Layer):
     def align(self):
         if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
             if self.mode_selection('MAG'):
+                self.spot.focus()
+                self.shift.align()
                 try:
                     worg = self.wobbler
-                    self.spot.focus()
-                    self.shift.align()
                     self.wobbler = worg + self.wobstep.value
                     self.delay(self.default_wobsec)
                     return AlignInterface.align(self)

@@ -50,10 +50,10 @@ class Plugin(AlignInterface, Layer):
     def align(self):
         if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
             if self.mode_selection('MAG'):
+                self.spot.focus()
+                self.shift.align()
                 try:
                     worg = self.wobbler
-                    self.spot.focus()
-                    self.shift.align()
                     self.wobbler = (worg or 0) + self.wobstep.value
                     self.delay(self.default_wobsec)
                     return AlignInterface.align(self)
@@ -69,7 +69,7 @@ class Plugin(AlignInterface, Layer):
                     worg = self.wobbler
                     self.wobbler = (worg or 0) + self.wobstep.value
                     self.delay(self.default_wobsec)
-                    return AlignInterface.cal(self) # and AlignInterface.align(self)
+                    return AlignInterface.cal(self)
                 finally:
                     self.wobbler = worg
     

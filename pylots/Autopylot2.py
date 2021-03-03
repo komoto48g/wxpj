@@ -105,21 +105,14 @@ class Plugin(UserInterface, Layer):
                         "lmspot",
                         "lmshift",
                 )),
-                ("Measure", ItemData(self.tree, None, self.thread(self.calibrate_alpha_measure)),
+                ("FOCUS", ItemData(self.tree, None, self.thread(self.calibrate_alpha_measure)),
                     branches(
                         "alpha",
-                        "fl",
-                )),
-                ("Stage", ItemData(self.tree, None, self.thread(self.calibrate_beta_measure)),
-                    branches(
-                        "stage",
                         "ol",
+                        "fl",
+                        "stage",
                 )),
             )),
-            ## ("*Discipline*", (
-            ##     ("ht-axis", ItemData(self.tree, "align2_ht_axis", self.thread(self.call_subprocess))),
-            ##     ("anode-axis", ItemData(self.tree, "align2_anode_axis", self.thread(self.call_subprocess))),
-            ## ))
         ]
         self.tree.reset()
         ## self.tree.Expand(self.tree.get_item(None, "Calibrations"))
@@ -237,13 +230,6 @@ class Plugin(UserInterface, Layer):
     
     def calibrate_alpha_measure(self, evt):
         """Measurement of optically basic quantity"""
-        with self.thread:
-            with self.save_excursion(mmode='MAG'):
-                return all(None is not self.call_subprocess(v)
-                        for v in evt.children() if v.status == -1)
-    
-    def calibrate_beta_measure(self, evt):
-        """Calibratoin of OL/Stage"""
         with self.thread:
             with self.save_excursion(mmode='MAG'):
                 return all(None is not self.call_subprocess(v)

@@ -29,7 +29,7 @@ class Plugin(AlignInterface, Layer):
                 break
     
     default_wobstep = 100 # A2 voltage -100V
-    default_wobsec = 4.0
+    default_wobsec = 0.0
     
     spot = property(lambda self: self.parent.require('beam_spot'))
     shift = property(lambda self: self.parent.require('beam_shift'))
@@ -65,10 +65,10 @@ class Plugin(AlignInterface, Layer):
     def align(self):
         if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
             if self.mode_selection('MAG'):
+                self.spot.focus()
+                self.shift.align()
                 try:
                     worg = self.wobbler
-                    self.spot.focus()
-                    self.shift.align()
                     self.wobbler = (worg or 0) + self.wobstep.value
                     self.delay(self.default_wobsec)
                     return AlignInterface.align(self)
@@ -78,13 +78,13 @@ class Plugin(AlignInterface, Layer):
     def cal(self):
         if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
             with self.save_excursion(mmode='MAG'):
+                self.spot.focus()
+                self.shift.align()
                 try:
                     worg = self.wobbler
-                    self.spot.focus()
-                    self.shift.align()
                     self.wobbler = (worg or 0) + self.wobstep.value
                     self.delay(self.default_wobsec)
-                    return AlignInterface.cal(self) # and AlignInterface.align(self)
+                    return AlignInterface.cal(self)
                 finally:
                     self.wobbler = worg
     

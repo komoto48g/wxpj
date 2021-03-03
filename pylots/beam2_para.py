@@ -27,7 +27,7 @@ class Plugin(TemInterface, Layer):
     
     def Init(self):
         self.threshold = LParam("Threshold", (0.005, 0.05, 0.005), self.default_threshold)
-        self.wobstep = LParam("Wobbler hex", (0x100,0x10000,0x100), self.default_wobstep, dtype=hex)
+        self.wobstep = LParam("Wobbler amp", (0x100,0x10000,0x100), self.default_wobstep, dtype=hex)
         
         self.layout(None, (
             wxpj.Button(self, "Parallel focus", lambda v: self.focus(), icon='exe'),
