@@ -78,19 +78,20 @@ class Plugin(Layer):
                     art.angle = 90-angle
                     frame.axes.add_artist(art)
                     self.Arts.append(art)
-                    ## xy.append(art.center)
+                    ## xy.append(art.center) # いびつな端の円をとらえることがある
                     
-                    ## --> centr-of-mass: 強度重心をとる
                     r = int(min(ra,rb) /2)
                     nx, ny = int(cx), int(cy)
-                    
-                    h, w = src.shape
-                    ya, yb = max(0, ny-r), min(ny+r+1, h)
-                    xa, xb = max(0, nx-r), min(nx+r+1, w)
-                    
-                    buf = src[ya:yb, xa:xb] # crop around (cx,cy)
-                    dx, dy = edi.centroid(buf)
-                    x, y = frame.xyfrompixel(nx-r+dx, ny-r+dy)
-                    xy.append((x,y))
+                    try:
+                        ## centr-of-mass:crop around (cx,cy) 強度重心をとる
+                        h, w = src.shape
+                        ya, yb = max(0, ny-r), min(ny+r+1, h)
+                        xa, xb = max(0, nx-r), min(nx+r+1, w)
+                        buf = src[ya:yb, xa:xb]
+                        dx, dy = edi.centroid(buf)
+                        x, y = frame.xyfrompixel(nx-r+dx, ny-r+dy)
+                        xy.append((x,y))
+                    except Exception:
+                        pass
                     
             frame.markers = np.array(xy).T # scatter markers if any xy

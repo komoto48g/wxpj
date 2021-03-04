@@ -5,6 +5,8 @@
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 Contributer: Hirohumi IIjima <hiiijima@jeol.co.jp>,
 """
+from __future__ import (division, print_function,
+                        absolute_import, unicode_literals)
 from collections import OrderedDict
 import threading
 import time
@@ -915,7 +917,8 @@ deflector : deflector to offset beam (shift or tilt)
     
     def Init(self):
         self.threshold = LParam("Threshold", (0.005, 0.05, 0.005), self.default_threshold)
-        self.wobstep = LParam("Wobbler hex", (0x100,0x1000,0x100), self.default_wobstep, dtype=hex)
+        self.wobstep = LParam("Wobbler amp", (0x100,0x1000,0x100), self.default_wobstep, dtype=hex)
+        self.wobsec = LParam("Wobbler sec", (0, 1, 0.1), self.default_wobsec)
         
         self.layout(None, (
             wxpj.Button(self, "{}".format(self.caption),
@@ -928,6 +931,7 @@ deflector : deflector to offset beam (shift or tilt)
             
             self.threshold, (),
             self.wobstep, (),
+            self.wobsec, (),
             ),
             row=2, show=1, type='vspin', cw=-1, lw=-1, tw=40,
         )
@@ -935,11 +939,13 @@ deflector : deflector to offset beam (shift or tilt)
     def set_current_session(self, session):
         self.threshold.value = session.get('threshold')
         self.wobstep.value = session.get('wobstep')
+        self.wobsec.value = session.get('wobsec')
     
     def get_current_session(self):
         return {
             'threshold': self.threshold.value,
             'wobstep': self.wobstep.value,
+            'wobsec': self.wobsec.value,
         }
     
     @property
@@ -981,7 +987,7 @@ deflector : deflector to offset beam (shift or tilt)
                     return
                 
                 self.wobbler = worg + wstep
-                self.delay(self.default_wobsec)
+                self.delay(self.wobsec.value)
                 P1,_p,_q = self.detect_beam_center() # [w,r1]
                 if P1 is None:
                     print("- wobbler step out of range; {:#x}".format(wstep))
@@ -994,7 +1000,7 @@ deflector : deflector to offset beam (shift or tilt)
                 P2,_p,_q = self.detect_beam_center() # [w,r2]
                 
                 self.wobbler = worg
-                self.delay(self.default_wobsec)
+                self.delay(self.wobsec.value)
                 O2,_p,_q = self.detect_beam_center() # [o,r2]
                 
                 if O2 is None or P2 is None:

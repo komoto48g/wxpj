@@ -19,8 +19,8 @@ class Plugin(Layer):
     menu = "&Plugins/&Pragmas"
     
     def Init(self):
-        self.index = LParam("page", (-1,1024,1), -1)
-        self.index.bind(lambda lp: self.selected_view.select(lp.value))
+        self.page = LParam("page", (-1,1000,1), -1)
+        self.page.bind(lambda lp: self.selected_view.select(lp.value))
         
         self.choice = wxpj.Choice(self, size=(60,-1),
             choices=['FFT',
@@ -31,7 +31,7 @@ class Plugin(Layer):
         )
         self.choice.Select(0)
         
-        self.score = LParam("spot", (0.01, 5, 0.01), 0.50)
+        self.score = LParam("spot", (0.1, 5, 0.1), 1.0)
         
         self.grid = wxpj.Choice(self, label="grid [mm]", size=(140,-1),
             handler=lambda v: self.calc_mag(),
@@ -48,12 +48,12 @@ class Plugin(Layer):
         
         self.layout("Evaluate step by step", (
             wxpj.Button(self, "1. Show",
-                lambda v: self.selected_view.select(self.index.value), icon='help', size=size,
+                lambda v: self.show_page(), icon='help', size=size,
                 tip="Select frame buffer.\n"
-                    "(index -1 means the last frame)"),
-            self.index,
+                    "(page -1 means the last frame)"),
+            self.page,
             
-            wxpj.Button(self, "2. Test",
+            wxpj.Button(self, "2. Eval",
                 lambda v: self.testrun(), icon='help', size=size,
                 tip="Select evaluation method\n"
                     "  :FFT evaluates using FFT method. Use when grid is small\n"
@@ -61,18 +61,22 @@ class Plugin(Layer):
                     "  :Cor evaluates using Cor (pattern matching) method. Use when grid is large"),
             self.choice,
             
-            wxpj.Button(self, "3. Find",
-                lambda v: self.run(), icon='help', size=size,
+            wxpj.Button(self, "3. Mark",
+                lambda v: self.calc_mark(), icon='help', size=size,
                 tip="Set paramter of socre at percentile.\n"
-                    "This also runs the fitting procedure using `lccf2` algorithm.\n"
                     "  :score is the ratio [%] to maximum count for extracting white spots"),
             self.score,
+            
+            wxpj.Button(self, "4. Go",
+                lambda v: self.run(), icon='help', size=size,
+                tip="Run the fitting procedure.\n"),
+            None,
             ),
             row=2, show=1, type='vspin', tw=40, lw=0,
         )
         self.layout(None, (
-            wxpj.Button(self, "Run ALL",
-                lambda v: (self.testrun() and self.run()), icon='help', size=size,
+            wxpj.Button(self, "Run",
+                lambda v: self.run_all(), icon='->', size=size,
                 tip="Run above (1-2-3) step by step.\n"
                     "Before calculating Mags, check unit length [mm/pixel]"),
                     
@@ -94,56 +98,57 @@ class Plugin(Layer):
     lccf = property(lambda self: self.parent.require('lccf2'))
     ldc = property(lambda self: self.parent.require('ld_cgrid'))
     
+    def get_result(self):
+        if self.choice.Selection < 2:
+            name = "*result of fft*"
+        else:
+            name = "*result of matching*"
+        return self.selected_view.find_frame(name)
+    
+    def show_page(self):
+        self.page.range = (-1, len(self.selected_view))
+        return self.selected_view.select(self.page.value)
+    
     def testrun(self, frame=None):
         if not frame:
-            frames = self.selected_view.all_frames
-            if not frames:
-                print(self.message("- The target view has no frames"))
-                return
-            frame = frames[self.index.value]
+            frame = self.selected_view.find_frame(self.page.value) # Index error?
+        
+        if not self.get_result() and self.page.value != -1:
+            ## A new frame (*result*) is to be loaded ahead of stacks
+            ## so we need to put forward the page counter (no problem when -1)
+            self.page.value += 1
         
         if self.choice.Selection < 2:
-            nop = "*result of fft*" not in frame.parent
-            result = self.test_fft(frame, crossline=self.choice.Selection==1)
+            return self.test_fft(frame, crossline=self.choice.Selection==1)
         else:
-            nop = "*result of matching*" not in frame.parent
-            result = self.test_cor(frame)
-        
-        if nop and self.index.value != -1:
-            self.index.value += 1
-        return result
+            return self.test_cor(frame)
     
     def run(self, frame=None):
         if not frame:
-            if self.choice.Selection < 2:
-                name = "*result of fft*"
-            else:
-                name = "*result of matching*"
-            if name not in self.selected_view:
-                self.message("- No results found: testrun may have not been run yet.")
-                return
-            frame = self.selected_view.find_frame(name)
-            
-        elif not frame.name.startswith("*result of"):
-            self.message("- Selected frame must not be a result of *fft* or *cor*")
-            return
-        
-        del frame.markers
-        
+            frame = self.show_page()
+        self.message("\b @ldc...")
+        self.ldc.reset_params(backcall=None)
+        self.ldc.thread.Start(self.calc_fit, frame)
+    
+    def run_all(self, frame=None):
+        result = self.testrun(frame)
+        frame = self.calc_mark(result)
+        self.run(frame)
+    
+    def calc_mark(self, frame=None):
+        if not frame:
+            frame = self.get_result()
         self.message("\b @lccf...")
         self.lgbt.thresh.value = np.percentile(frame.buffer, 100-self.score.value)
         self.lccf.run(frame)
-        
-        self.message("\b @ldc...")
-        self.ldc.reset_params(backcall=None)
-        self.ldc.thread.Start(self.calc_fit, frame) # ここから子スレッド IN
-        
-    def calc_fit(self, frame):
+        return frame
+    
+    def calc_fit(self, frame=None):
         self.ldc.run(frame)
         self.ldc.run(frame) # 計算 x2 回目
         self.ldc.Show()
-        
-        frame.update_attributes(parameters=self.parameters[:-1]) # set-attr except the last text
+        if frame:
+            frame.update_attributes(parameters=self.parameters[:-1]) # set-attr except the last text
         
         g = self.ldc.grid_params[0].value
         g0 = eval(self.grid.Value)
@@ -243,8 +248,12 @@ class Plugin(Layer):
 
 
 if __name__ == "__main__":
+    import glob
+    
     app = wx.App()
     frm = wxpj.Frame(None)
     frm.load_plug(__file__, show=1, docking=4)
+    for path in glob.glob(r"C:/usr/home/workspace/images/*.bmp"):
+        frm.load_buffer(path)
     frm.Show()
     app.MainLoop()

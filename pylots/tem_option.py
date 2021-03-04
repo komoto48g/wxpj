@@ -1,5 +1,11 @@
 #! python
 # -*- coding: utf-8 -*-
+"""Editor's collection of TEM
+
+Author: Kazuya O'moto <komoto@jeol.co.jp>
+"""
+from __future__ import (division, print_function,
+                        absolute_import, unicode_literals)
 import os
 import wx
 from mwx import LParam
