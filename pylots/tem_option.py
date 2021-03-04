@@ -94,12 +94,17 @@ class Plugin(TemInterface, Layer):
             return
         TemInterface.camerasys = v.String
     
+    wildcards = [
+        "INI file (*.ini)|*.ini",
+         "ALL files (*.*)|*.*",
+    ]
+    
     def set_config(self, path=None):
         if self.thread.is_active:
             self.pause("Please stop thread [C-g] before changing configuration.")
             return
         if path is None:
-            with wx.FileDialog(self, wildcard="INI file (*.ini)|*.ini") as dlg:
+            with wx.FileDialog(self, wildcard='|'.join(self.wildcards)) as dlg:
                 if dlg.ShowModal() != wx.ID_OK:
                     return
                 path = dlg.Path

@@ -18,9 +18,9 @@ class Plugin(TemInterface, Layer):
     
     default_wobstep = 0x800
     
-    para = property(lambda self: self.parent.require('beam2_para'))
     spot = property(lambda self: self.parent.require('beam_spot'))
-    shift = property(lambda self: self.parent.require('beam_shift'))
+    ## para = property(lambda self: self.parent.require('beam2_para'))
+    ## shift = property(lambda self: self.parent.require('beam_shift'))
     cla = property(lambda self: self.parent.require('align2_clapt'))
     
     def Init(self):
@@ -115,8 +115,7 @@ class Plugin(TemInterface, Layer):
         with self.thread:
             with self.save_restriction(SAAPT=0):
                 with self.save_excursion(spot=0, alpha=-1, mmode='MAG'):
-                    ## self.cla.align()
-                    ## self.spot.focus(1)
-                    ## self.delay(4)
-                    self.para.focus()
+                    self.cla.align()
+                    self.spot.focus(1)
+                    ## self.para.focus()
                     return self.cal()

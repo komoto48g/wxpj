@@ -33,6 +33,7 @@ class Plugin(AlignInterface, Layer):
     
     spot = property(lambda self: self.parent.require('beam_spot'))
     shift = property(lambda self: self.parent.require('beam_shift'))
+    pla = property(lambda self: self.parent.require('align_pla'))
     
     ## 照射系 Spot には依存しないとする
     conf_arg = property(lambda self: self.illumination.Alpha)
@@ -46,6 +47,7 @@ class Plugin(AlignInterface, Layer):
         if self.apt_selection('CLAPT'):
             if self.mode_selection('MAG'):
                 with self.save_restriction(CL3=None, SAAPT=0):
+                    self.pla.index = (0x8000, 0x8000) # neutralize
                     self.spot.focus(-0.25) # for histerisis loop back
                     self.delay(1)
                     self.spot.focus() # center

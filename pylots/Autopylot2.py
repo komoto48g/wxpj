@@ -82,23 +82,24 @@ class Plugin(UserInterface, Layer):
                         "pla",
                         "clapt_mag",
                         "saapt_mag",
-                        "axis",
-                        "stig",
-                        "para",
                         "comp2",
                         "iscomp2",
                         "ishift",
+                        "axis",
+                        "stig",
+                        "para",
                 )),
                 ("DIFF", ItemData(self.tree, None, self.thread(self.calibrate_alpha_diff)),
                     branches(
                         "diffspot",
-                        "diffstig",
                         "tilt",
                         "clapt_diff",
                         "saapt_diff",
                         "comp1",
                         "iscomp1",
                         "itilt",
+                        "diffstig",
+                        "alpha",
                 )),
                 ("LOWMAG", ItemData(self.tree, None, self.thread(self.calibrate_alpha_lowmag)),
                     branches(
@@ -107,7 +108,6 @@ class Plugin(UserInterface, Layer):
                 )),
                 ("FOCUS", ItemData(self.tree, None, self.thread(self.calibrate_alpha_measure)),
                     branches(
-                        "alpha",
                         "ol",
                         "fl",
                         "stage",
@@ -159,7 +159,10 @@ class Plugin(UserInterface, Layer):
                 self.restore_session(flags)
     
     def set_current_session(self, session):
-        self.tree.set_flags(session)  # reload 時は zip 長さが合わないので以下を追加する
+        try:
+            self.tree.set_flags(session)  # reload 時は zip 長さが合わないので以下を追加する
+        except Exception as e:
+            print(e)
         self.restore_session(session) # [0]-Calibrations 以降の拡張プラグインを復元する
         self.tree.reset()
     

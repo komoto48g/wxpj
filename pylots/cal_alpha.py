@@ -7,7 +7,7 @@ import wxpyJemacs as wxpj
 
 class Plugin(TemInterface, Layer):
     """Plugin of measurement
-    Calibrate alpha angle for each spot:alpha
+    Calibrate angle for each spot:alpha
     """
     menu = None #"&Maintenance/&Measure"
     category = "Measurement"

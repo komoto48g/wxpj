@@ -31,10 +31,10 @@ class Plugin(AlignInterface, Layer):
             self.delay(1)
     
     spot = property(lambda self: self.parent.require('beam_spot'))
-    ## shift = property(lambda self: self.parent.require('beam_shift'))
+    shift = property(lambda self: self.parent.require('beam_shift'))
     pla = property(lambda self: self.parent.require('align_pla'))
     
-    ## ÆŽËŒnƒ‚[ƒh‹¤’Ê
+    ## ç…§å°„ç³»ã«ä¾å­˜ã—ãªã„
     conf_arg = 0
     
     @property
@@ -54,13 +54,14 @@ class Plugin(AlignInterface, Layer):
             with self.save_excursion(mmode='MAG'):
                 d, p, q = self.detect_beam_diameter()
                 if d:
-                    ## Reccord SAAPT size, normalizing by ƒÓ100um
+                    ## Reccord SAAPT size, normalizing by Ó±00um
                     ## >>> saadia = self.config['beta'] * (self.SAAPT.dia /100) # [um]
                     self.config['beta'] = d * self.mag_unit / (self.SAAPT.dia /100) # [um]
                 return AlignInterface.cal(self)
     
     def execute(self):
         with self.thread:
-            with self.save_excursion(spot=0, alpha=-1, mmode='MAG'):
-                with self.save_restriction(CL3=0xffff, SAAPT=1):
+            with self.save_restriction(CL3=0xffff, SAAPT=1):
+                with self.save_excursion(spot=0, alpha=-1, mmode='MAG'):
+                    self.delay(2)
                     return self.cal()

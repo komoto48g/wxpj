@@ -25,7 +25,6 @@ class Plugin(CompInterface, Layer):
             self.para.focus() # para で合わせるべし ! #20210219 Note 参照
             self.diffspot.focus() # DIFF-Focus をきちんと合わせること !
             ## self.spot.focus()
-            ## self.pla.index = (0x8000, 0x8000) # neutralize
             self.pla.align()
             return CompInterface.cal(self)
     

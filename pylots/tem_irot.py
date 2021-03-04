@@ -51,7 +51,7 @@ class Plugin(TemInterface, Layer):
         NI = 0
         for s in tags:
             lp = self.tem.foci[s]
-            NI += lp.value / lp.max * self.Tem.LENS_NIMAX[s]
+            NI += lp.value / lp.max * self.Tem.LENS_NIMAX[s] # !!! Ustar 補正を入れ忘れているよ
         return self.environ.j2deg * NI
     
     def update_stdrot(self):

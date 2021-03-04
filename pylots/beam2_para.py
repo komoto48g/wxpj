@@ -24,6 +24,7 @@ class Plugin(TemInterface, Layer):
     
     spot = property(lambda self: self.parent.require('beam_spot'))
     shift = property(lambda self: self.parent.require('beam_shift'))
+    cla = property(lambda self: self.parent.require('align2_clapt'))
     
     def Init(self):
         self.threshold = LParam("Threshold", (0.005, 0.05, 0.005), self.default_threshold)
@@ -201,6 +202,7 @@ class Plugin(TemInterface, Layer):
         with self.thread:
             with self.save_excursion(mmode='MAG'):
                 with self.save_restriction(CLAPT=3, SAAPT=0):
+                    self.cla.align()
                     for a in self.for_each_alpha():
                         self.imaging.Mag = mags_apriori[a]
                         self.spot.focus(0.5)
