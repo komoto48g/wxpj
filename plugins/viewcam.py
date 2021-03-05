@@ -21,7 +21,7 @@ class Plugin(Layer):
     cameraman = property(lambda self: self.parent.require(self.camerasys))
     
     def Init(self):
-        self.viewer = Layer.Thread()
+        self.viewer = Layer.Thread(self)
         
         self.button = wxpj.ToggleButton(self, "View camera", icon='cam',
             handler=lambda v: self.viewer.Start(self.run) if v.IsChecked() else self.viewer.Stop())

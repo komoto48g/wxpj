@@ -190,7 +190,8 @@ class pyJemacs(Framebase):
         res, mis = self.eval_results(f)
         
         paths = [attr['pathname'] for attr in res.values()]
-        self.load_buffer(paths, target)
+        if paths:
+            self.load_buffer(paths, target)
         
         for name, attr in res.items():
             frame = target.find_frame(name) # no muti-page tiff ?

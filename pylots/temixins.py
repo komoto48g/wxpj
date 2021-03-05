@@ -964,7 +964,7 @@ deflector : deflector to offset beam (shift or tilt)
     
     def cal(self, step=None):
         """Adjust X-comp-ratio and Y-comp-ratio"""
-        step = step or 0x80
+        step = step or 0x100
         return all([self.cal_comp(0, step),
                     self.cal_comp(1, step),])
     

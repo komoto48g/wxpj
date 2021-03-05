@@ -19,6 +19,7 @@ class Plugin(CompInterface, Layer):
     
     deflector = property(lambda self: self.parent.require('beam_tilt'))
     pla = property(lambda self: self.parent.require('align_pla'))
+    saad = property(lambda self: self.parent.require('align2_saapt_diff'))
     
     def cal(self):
         with self.save_excursion(mmode='DIFF'):
@@ -26,9 +27,10 @@ class Plugin(CompInterface, Layer):
             self.diffspot.focus() # DIFF-Focus をきちんと合わせること !
             ## self.spot.focus()
             self.pla.align()
-            return CompInterface.cal(self)
+            return CompInterface.cal(self, step=0x200)
     
     def execute(self):
         with self.thread:
-            with self.save_excursion(mmode='DIFF'):
-                return all([self.cal() for a in self.for_each_alpha()])
+            with self.save_restriction(CLAPT=1, SAAPT=1):
+                with self.save_excursion(mmode='DIFF'):
+                    return all([self.cal() for a in self.for_each_alpha()])

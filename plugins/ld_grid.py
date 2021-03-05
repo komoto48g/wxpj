@@ -91,7 +91,7 @@ class Plugin(Layer):
         lambda self: self.grid_params + self.ratio_params + self.dist_params)
     
     def Init(self):
-        self.thread = Layer.Thread()
+        self.thread = Layer.Thread(self)
         
         x = 5e-3
         self.dist_params = (

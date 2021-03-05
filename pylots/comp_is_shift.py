@@ -34,13 +34,17 @@ class Plugin(CompInterface, Layer):
     deflector = property(lambda self: self.parent.require('beam_tilt'))
     ## deflector = property(lambda self: self.parent.require('align_pla'))
     
+    def Init(self):
+        CompInterface.Init(self)
+        self.__index = self.conf_table
+    
     @property
     def conf_table(self):
         return self.config[self.conf_key][0]
     
     def cal(self):
         with self.save_excursion(mmode='DIFF'):
-            self.index = [0x8000, 0x8000] # 中点に初期化して開始する
+            ## self.index = [0x8000, 0x8000] # neutralize :reload
             self.spot.focus()
             return CompInterface.cal(self)
     

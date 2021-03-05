@@ -11,6 +11,7 @@ import openpyxl as pxl
 import configparser
 import time
 import sys
+import os
 import wx
 import numpy as np
 
@@ -116,15 +117,17 @@ class ConfigData(object):
             np.set_printoptions(**opt)
     ## save_config = save
     
-    def export(self, keys, xlpath, r=3, c=3, verbose=True):
+    def export(self, keys, r=3, c=3, verbose=True):
         """Export configurations of the given `section
         """
+        ## xlpath = "config-report.xlsx"
+        name, _ext = os.path.splitext(os.path.basename(self.path))
+        xlpath = "config-report-{}.xlsx".format(name)
         if verbose:
-            if wx.MessageBox("Exporting configration to excel file...", "Export",
+            if wx.MessageBox("Exporting configration to excel file {!r}".format(xlpath),
                 style=wx.YES_NO|wx.ICON_INFORMATION) != wx.YES:
                     return
         try:
-            ## print("Exporting to {!r}:{}".format(xlpath, keys))
             wbook = pxl.load_workbook(xlpath)
             for key in keys:
                 xlwrite(wbook[key], self.data[key], r, c)

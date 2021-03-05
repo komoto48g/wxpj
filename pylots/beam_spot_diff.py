@@ -16,7 +16,6 @@ class Plugin(SpotInterface, Layer):
     
     para = property(lambda self: self.parent.require('beam2_para'))
     pla = property(lambda self: self.parent.require('align_pla'))
-    cla = property(lambda self: self.parent.require('align2_clapt'))
     
     @property
     def factor(self):

@@ -170,16 +170,14 @@ class Plugin(UserInterface, Layer):
         return self.tree.get_flags()
     
     def report_cal(self):
-        return self.config.export(xlpath="config-report.xlsx",
-            keys = (
+        return self.config.export((
                 'cl3spot', 'cl3sens',
                 'cl3para', 'cl3dia',
                 'beamshift', 'beamtilt',
                 'alpha',
                 'fl-focus',
                 ## 'ol-focus',
-                ),
-            )
+            ))
     
     ## --------------------------------
     ## MAG/DIFF Calibration procs

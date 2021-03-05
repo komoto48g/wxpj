@@ -58,7 +58,6 @@ class Plugin(TemInterface, Layer):
     def update_stdrot(self):
         v = self.calc_imrot(self.Tem.IL_LENSES)
         self.config[self.conf_key] = v
-        
         if self.lowmagp:
             self.rot_lowmag.value = "{:8.2f}".format(v)
         else:
