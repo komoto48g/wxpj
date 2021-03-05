@@ -41,9 +41,9 @@ class Plugin(TemInterface, Layer):
                 doc="Signal/Noize threshold [counts/pixel/s]"
                     "\n typ.value is 20/s (1/0.05s)")
         
-        self.delay_param = LParam("Exposure delay", (0, 1, 0.1), self.default_delay,
+        self.delay_param = LParam("delay time", (0, 1, 0.1), self.default_delay,
             handler=lambda p: setq(default_delay=p.value),
-                doc="Delay time before exposing when setting TEM lens/defl [s]"
+                doc="Delay time [s] before exposing till afterglow vanishes"
                     "\n typ.value is 0.5s")
         
         self.camera_selector = wxpj.Choice(self, "Camera",
@@ -61,12 +61,13 @@ class Plugin(TemInterface, Layer):
             readonly=1, size=(162,-1), icon='file')
         
         self.layout(None, (
+            self.parent.su.accv_param,
             self.noise_param,
             self.delay_param,
             self.camera_selector,
             self.config_selector,
             ),
-            row=1, show=1, type='vspin', lw=90, tw=50, cw=-1
+            row=1, show=1, type='vspin', style='btn', lw=80, tw=50, cw=-1
         )
     
     def set_current_session(self, session):
@@ -95,8 +96,9 @@ class Plugin(TemInterface, Layer):
         TemInterface.camerasys = v.String
     
     wildcards = [
-        "INI file (*.ini)|*.ini",
-         "ALL files (*.*)|*.*",
+        "CONFIG (*.config)|*.config",
+         "INI file (*.ini)|*.ini",
+          "ALL files (*.*)|*.*",
     ]
     
     def set_config(self, path=None):
@@ -112,10 +114,13 @@ class Plugin(TemInterface, Layer):
             wx.MessageBox("- No such file: {!r}".format(path),
                 caption=self.__module__, style=wx.ICON_WARNING)
             return
+        
         TemInterface.configure(path)
         if self.config:
             self.config_selector.Value = os.path.basename(self.config.path)
             self.config_selector.btn.SetToolTip(self.config.path)
+            self.parent.su.accv_param.std_value = self.Tem.ACC_V  # 回転角 U* 補正のベース
+            self.parent.su.accv_param.reset(self.config['acc_v']) # ターゲット加速電圧
 
 
 if __name__ == "__main__":

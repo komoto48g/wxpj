@@ -64,7 +64,10 @@ def version():
 class pyJemacs(Framebase):
     """the Frontend of Graph and Plug manager
     """
-    environ = Environ(300e3) # 300kV HT constants
+    su = property(lambda self: self.require('startup'))
+    
+    env = Environ(300e3) # default 300kV HT constants (to be reset by user)
+    
     new_buffer_name = "{acq_datetime:%Y%m%d-%H%M%S}-{annotation}"
     
     def About(self):
@@ -88,7 +91,7 @@ class pyJemacs(Framebase):
         
         HOME = sys.path[0]
         
-        if HOME[-4:] == '.exe': # ~/dist/*.exe (py2exe environ)
+        if HOME[-4:] == '.exe': # ~/dist/*.exe (py2exe)
             HOME = os.path.dirname(os.path.dirname(HOME))
             if HOME not in sys.path:
                 sys.path += [ HOME ] # adds root for loading plugins

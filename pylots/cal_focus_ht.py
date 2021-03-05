@@ -72,7 +72,7 @@ class Plugin(TemInterface, Layer):
                     
                     zs = (z2-z1) / (x2-x1) # [um/V] -> config
                     
-                    cc = zs * self.environ.acc_v / self.environ.cstar * 1e-3 # [mm]
+                    cc = zs * self.env.acc_v / self.env.cstar * 1e-3 # [mm]
                     print("$(cc) = {:g} mm".format((cc)))
                     
                     self.config[self.conf_key] = zs

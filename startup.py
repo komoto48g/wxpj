@@ -18,7 +18,7 @@ class Plugin(Layer):
     category = "Option"
     
     def Init(self):
-        self.accv_param = Param("Acc.Voltage", (100e3, 200e3, 300e3), 300e3,
+        self.accv_param = Param("Acc.Voltage", (100e3, 200e3, 300e3), 300e3, dtype=int,
             handler=self.set_htv,
                 doc="Acceleration voltage [V]")
         
@@ -74,7 +74,7 @@ class Plugin(Layer):
             self.unit_param.std_value = frame.parent.unit
     
     def set_htv(self, p):
-        self.parent.environ.__init__(p.value)
+        self.parent.env.__init__(p.value)
     
     def set_localunit(self, p):
         target = self.selected_view

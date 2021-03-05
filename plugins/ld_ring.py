@@ -43,18 +43,18 @@ class Model(object):
     nGrid = 10 # 逆格子グリッド
     Index = 2  # fitting ring index (default 3rd ring)
     
-    environ = property(lambda self: self.owner.parent.environ) # Environ of wxpj
+    env = property(lambda self: self.owner.parent.env)
     
     @property
     def Angles(self):
-        le = self.environ.elambda
+        le = self.env.elambda
         ds = calc_fcc_spacings(a=4.080e-10, N=self.nGrid)
         return sorted(le / ds)[:20]
     
     def __init__(self, parent):
         self.owner = parent
         
-        ## le = self.environ.elambda
+        ## le = self.env.elambda
         ## ds = calc_fcc_spacings(a=4.080e-10, N=self.nGrid)
         ## self.Angles = sorted(le / ds)[:20]
     

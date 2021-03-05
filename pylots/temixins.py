@@ -22,6 +22,7 @@ import editor as edi
 
 from pyJeol import pyJem2 as pj
 from pyJeol.pyJem2 import TEM, EOsys, HTsys, Filter, Stage # to be referred from pylots
+from pyJeol.temisc import Environ
 
 print("$(pj) = {!r}".format((pj)))
 
@@ -33,11 +34,6 @@ class TemInterface(object):
     This class is supposed to be mixied-in the Plugin.
     Otherwise, the `parent should be given explicitly.
     """
-    ## message = print # to be overrided
-    
-    ## environ = Environ(300e3)
-    environ = property(lambda self: self.parent.environ)
-    
     camerasys = 'JeolCamera'
     ## camerasys = 'RigakuCamera'
     
@@ -66,6 +62,12 @@ class TemInterface(object):
     thread.greenflag = threading.Event()
     thread.greenflag.set()
     
+    env = property(lambda self: self.parent.env)
+    
+    ustar_sqrt = 1
+    config_tem_mag = None
+    config_tem_lowmag = None
+    
     @property
     def config(self):
         """configuration (mode-specific)"""
@@ -80,7 +82,7 @@ class TemInterface(object):
         return self.config_tem_mag
     
     @staticmethod
-    def configure(path="config.ini"):
+    def configure(path):
         Tem = None
         Aperture = pj.Aperture
         
@@ -100,18 +102,18 @@ class TemInterface(object):
             
             if config['apt_extype']:
                 Aperture = pj.ApertureEx
-        else:
-            print("- TemInterface:error: No such file: {!r}".format(path))
-            TemInterface.config_tem_mag = None
-            TemInterface.config_tem_lowmag = None
         
         ## Extracted Tem info are inherited to `pj` globals
         if Tem:
             Aperture.APERTURES.update(Tem.APERTURES) # ID が関係するので上書きではなく更新
-            
             pj.Illumination.MODES = OrderedDict(Tem.ILLUMINATION_MODES) # 他のはオーバーライド
             pj.Imaging.MODES = OrderedDict(Tem.IMAGING_MODES)
             pj.Omega.MODES = OrderedDict(Tem.OMEGA_MODES)
+            
+            ## U* - corrected quantity e.g. j2deg
+            basenv = Environ(Tem.ACC_V)
+            env = Environ(config['acc_v']) # cf. self.parent.env (see tem_option)
+            TemInterface.ustar_sqrt = np.sqrt(env.ustar / basenv.ustar)
         
         TemInterface.pj = pj # just for debug, include pj in self namespace
         TemInterface.Tem = Tem
@@ -127,6 +129,13 @@ class TemInterface(object):
         TemInterface.OLAPT = Aperture('OLA')
         TemInterface.Gonio = pj.Stage()
         TemInterface.OmegaFilter = pj.Filter()
+    
+    def calc_imrot(self, tags):
+        NI = 0
+        for s in tags:
+            lp = self.tem.foci[s]
+            NI += lp.value / lp.max * self.Tem.LENS_NIMAX[s]
+        return self.env.j2deg * NI * self.ustar_sqrt
     
     @property
     def mag_unit(self):
@@ -337,7 +346,7 @@ class TemInterface(object):
     ## --------------------------------
     ## cached_src = property(lambda self: self.camera.cached_image) # to be deprecated
     
-    default_delay = 0.50 # delay time before exposing when setting TEM condition
+    default_delay = 0.50 # delay time before exposing (till afterglow vanishes)
     
     signal_level = 100 # [counts/pixel/s] > 10/0.1s
     noise_level = 20 # [counts/pixel/s] < 1/0.05s
@@ -436,7 +445,7 @@ class TemInterface(object):
         return None, p, q
 
 
-TemInterface.configure()
+TemInterface.configure("config.ini")
 
 
 ## --------------------------------
