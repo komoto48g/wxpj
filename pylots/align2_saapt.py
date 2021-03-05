@@ -34,7 +34,7 @@ class Plugin(AlignInterface, Layer):
     shift = property(lambda self: self.parent.require('beam_shift'))
     pla = property(lambda self: self.parent.require('align_pla'))
     
-    ## 照射系に依存しない
+    ## 照射系モード共通
     conf_arg = 0
     
     @property
@@ -54,7 +54,7 @@ class Plugin(AlignInterface, Layer):
             with self.save_excursion(mmode='MAG'):
                 d, p, q = self.detect_beam_diameter()
                 if d:
-                    ## Reccord SAAPT size, normalizing by ӱ00um
+                    ## Reccord SAAPT size, normalizing by φ100um
                     ## >>> saadia = self.config['beta'] * (self.SAAPT.dia /100) # [um]
                     self.config['beta'] = d * self.mag_unit / (self.SAAPT.dia /100) # [um]
                 return AlignInterface.cal(self)
