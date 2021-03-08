@@ -370,9 +370,8 @@ class TemInterface(object):
         self.delay(1)
         return self.cameraman.capture().astype(np.float32)
     
-    def detect_ellipse(self, frmin=None, frmax=None, ksize=13, delays=None, cache=True):
+    def detect_ellipse(self, ksize=13, delays=None, cache=True):
         """Detect ellipse pattern in captured `src image
-        frmin/frmax : min/max threshold ratio (to src.shape)
         ksize : size of blur window
        delays : delay [s] till afterglow vanishes
         cache : previously cached buffer to integrate
@@ -392,7 +391,7 @@ class TemInterface(object):
             src += cache
             cache = True
         
-        ellipses = edi.find_ellipses(src, frmin, frmax, ksize, sortby='size')
+        ellipses = edi.find_ellipses(src, ksize=ksize, sortby='size')
         if ellipses:
             el = ellipses[0]
             p, q = edi.calc_ellipse(src, el) # S/N count density p:inside, q:outside,
@@ -403,7 +402,7 @@ class TemInterface(object):
                 self.handler('detect-noborder', args)
             else:
                 if p/t < self.signal_level and cache:
-                    return self.detect_ellipse(frmin, frmax, ksize, delays=None, cache=src)
+                    return self.detect_ellipse(ksize, delays=None, cache=src)
                 self.handler('detect-beam', args)
         else:
             p = q = src.sum() / src.size # averaged count

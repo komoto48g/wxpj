@@ -17,7 +17,7 @@ import wx
 import mwx
 import cv2
 import numpy as np
-from numpy import pi
+from numpy import pi,nan,inf
 from scipy import ndimage as ndi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 from matplotlib import pyplot as plt
