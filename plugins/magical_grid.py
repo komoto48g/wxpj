@@ -75,15 +75,15 @@ class Plugin(Layer):
             row=2, show=1, type='vspin', tw=40, lw=0,
         )
         self.layout(None, (
-            wxpj.Button(self, "Run",
-                lambda v: self.run_all(), icon='->', size=size,
-                tip="Run above (1-2-3) step by step.\n"
-                    "Before calculating Mags, check unit length [mm/pixel]"),
-                    
             wxpj.Button(self, "check unit",
-                lambda v: self.parent.require('startup').Show(), icon='v',
+                lambda v: self.parent.su.Show(), icon='v',
                 tip="Check unit length [mm/pixel]\n"
                     "See the startup option where globalunit can be set to calc mags."),
+            
+            wxpj.Button(self, "Run",
+                lambda v: self.run_all(), icon='->',
+                tip="Run above (1-2-3) step by step.\n"
+                    "Before calculating Mags, check unit length [mm/pixel]"),
             ),
             row=2,
         )
@@ -93,6 +93,7 @@ class Plugin(Layer):
             ),
             row=1, show=1, tw=50, vspacing=4,
         )
+        self.lgbt.ksize.value = 5 # default blur window size
     
     lgbt = property(lambda self: self.parent.require('lgbt'))
     lccf = property(lambda self: self.parent.require('lccf2'))

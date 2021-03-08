@@ -217,5 +217,4 @@ class Plugin(Layer):
 
 if __name__ == "__main__":
     model = Model(None)
-    params = 100, 0, 0, 0
-    print(*enumerate(model.basegrid(params)), sep='\n')
+    print(*enumerate(model.basegrid((100, 0, 0, 0))), sep='\n')

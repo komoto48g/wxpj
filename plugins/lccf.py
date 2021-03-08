@@ -5,9 +5,9 @@ from __future__ import (division, print_function,
 import wx
 import cv2
 import numpy as np
-from matplotlib import patches
 from mwx import LParam
 from mwx.graphman import Layer
+from matplotlib import patches
 
 
 def find_circles(src, rmin=10, rmax=1000):
@@ -15,20 +15,19 @@ def find_circles(src, rmin=10, rmax=1000):
     ## ▲ src は上書きされるので後で使うときは注意する
     c, contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
-    ## detect enclosing circles [(nx,ny), c]
+    ## Detect enclosing circles
     circles = [cv2.minEnclosingCircle(v) for v in contours]
     
-    ## check: draw contours directly on image (! img is src)
+    ## check: draw contours directly on image (img is src)
     ## img = cv2.drawContours(src.copy(), contours, -1, 255, 1) # linetype=-1 => 塗りつぶし
     
     ## 外接円の半径が (rmin, rmax) 以内にあるものを (x,y,r) リストにして返す
     ## ただし，画像の端にある円 (dr := tol * radius 以内) は除外する
-    tol = 0.75
     h, w = src.shape
     isinside = lambda p,dr: dr < p[0] < w-dr and dr < p[1] < h-dr
     distance = lambda p: np.hypot(p[0]-w/2, p[1]-h/2) # 位置で昇順ソート
     
-    ls = [(c,r) for c,r in circles if rmin < r < rmax and isinside(c, r*tol)]
+    ls = [(c,r) for c,r in circles if rmin < r < rmax and isinside(c, r*0.75)]
     return sorted(ls, key=lambda v: distance(v[0]))
 
 
@@ -70,7 +69,7 @@ class Plugin(Layer):
         del self.Arts
         
         ## Search center of circles
-        src = self.lgbt.calc(frame, **kwargs) # --> output
+        src = self.lgbt.calc(frame, **kwargs)
         circles = find_circles(src, int(self.rmin), int(self.rmax))
         self.message("found {} circles".format(len(circles)))
         
@@ -79,9 +78,10 @@ class Plugin(Layer):
             if len(circles) > N:
                 self.message("\b is too many, chopped (< {})".format(N))
                 circles = circles[:N]
+            
             xy = []
-            for (nx,ny),r in circles:
-                x, y = frame.xyfrompixel(nx, ny)
+            for (cx,cy),r in circles:
+                x, y = frame.xyfrompixel(cx, cy)
                 r *= frame.unit
                 
                 ## 不特定多数の円を描画する
