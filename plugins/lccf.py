@@ -10,7 +10,11 @@ from mwx.graphman import Layer
 from matplotlib import patches
 
 
-def find_circles(src, rmin=10, rmax=1000):
+def find_circles(src, rmin=10, rmax=1000, tol=0.75):
+    """Find circle with radius (rmin, rmax) excluding
+    circles at the edges of the image (within dr: = tol * radius)
+  retval -> list of (c:=(x,y), r) sorted by pos
+    """
     ## Finds contours in binary image
     ## ▲ src は上書きされるので後で使うときは注意する
     c, contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -21,14 +25,12 @@ def find_circles(src, rmin=10, rmax=1000):
     ## check: draw contours directly on image (img is src)
     ## img = cv2.drawContours(src.copy(), contours, -1, 255, 1) # linetype=-1 => 塗りつぶし
     
-    ## 外接円の半径が (rmin, rmax) 以内にあるものを (x,y,r) リストにして返す
-    ## ただし，画像の端にある円 (dr := tol * radius 以内) は除外する
     h, w = src.shape
-    isinside = lambda p,dr: dr < p[0] < w-dr and dr < p[1] < h-dr
     distance = lambda p: np.hypot(p[0]-w/2, p[1]-h/2) # 位置で昇順ソート
+    isinside = lambda p,dr: dr < p[0] < w-dr and dr < p[1] < h-dr # 画像の端にある円を除く
     
-    ls = [(c,r) for c,r in circles if rmin < r < rmax and isinside(c, r*0.75)]
-    return sorted(ls, key=lambda v: distance(v[0]))
+    return sorted([(c,r) for c,r in circles if rmin < r < rmax and isinside(c, r*tol)],
+                    key=lambda v: distance(v[0]))
 
 
 class Plugin(Layer):
@@ -38,14 +40,19 @@ class Plugin(Layer):
     category = "Basic Tools"
     unloadable = False
     
+    lgbt = property(lambda self: self.parent.require('lgbt'))
+    
     def Init(self):
-        self.params = (
-            LParam("rmin", (0,1000,1), 20),
-            LParam("rmax", (0,1000,1), 500),
-        )
-        self.layout("blur-threshold", self.lgbt.params, show=0, cw=0, lw=40, tw=40)
-        self.layout("radii", self.params, cw=0, lw=40, tw=48)
+        self.rmin = LParam("rmin", (0,1000,1), 20)
+        self.rmax = LParam("rmax", (0,1000,1), 500)
         
+        self.layout("blur-threshold", self.lgbt.params, show=0, cw=0, lw=40, tw=40)
+        self.layout("radii", [
+            self.rmin,
+            self.rmax
+            ],
+            cw=0, lw=40, tw=48
+        )
         btn1 = wx.Button(self, label="+Bin", size=(40,22))
         btn1.Bind(wx.EVT_BUTTON, lambda v: self.lgbt.calc(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
         btn1.SetToolTip("S-Lbutton to estimate threshold using Otsu algorithm")
@@ -55,11 +62,6 @@ class Plugin(Layer):
         btn2.SetToolTip("S-Lbutton to estimate threshold using Otsu algorithm")
         
         self.layout(None, [btn1, btn2], row=2)
-    
-    lgbt = property(lambda self: self.parent.require('lgbt'))
-    
-    rmin = property(lambda self: self.params[0])
-    rmax = property(lambda self: self.params[1])
     
     maxcount = 256 # 選択する点の数を制限する
     

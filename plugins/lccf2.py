@@ -10,23 +10,25 @@ from matplotlib import patches
 import editor as edi
 
 
-def find_ellipses(src, rmin=2, rmax=1000):
+def find_ellipses(src):
+    """Find ellipses
+    楕円検出を行うため，5 点以上のコンターが必要．小さいスポットは除外される
+    小さいスポットを検出するためにはぼかし量を大きくすればよい
+    
+  retval -> list of (c:=(x,y), r:=(ra<rb), angle) sorted by pos
+    """
     ## Finds contours in binary image
     ## ▲ src は上書きされるので後で使うときは注意する
     c, contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     ## Detect enclosing rectangles
     ## There should be at least 5 points to fit the ellipse
-    ##   楕円検出を行うため，5 点以上のコンターが必要．小さいスポットは除外される
-    ##   小さいスポットを検出するためにはぼかし量を大きくすればよい
     ellipses = [cv2.fitEllipse(v) for v in contours if len(v) > 4]
     
     h, w = src.shape
     distance = lambda p: np.hypot(p[0]-w/2, p[1]-h/2) # 位置で昇順ソート
     
-    ls = [(c,r,a) for c,r,a in ellipses if rmin < r[0] < rmax
-                                       and rmin < r[1] < rmax]
-    return sorted(ls, key=lambda v: distance(v[0]))
+    return sorted([(c,r,a) for c,r,a in ellipses], key=lambda v: distance(v[0]))
 
 
 class Plugin(Layer):
@@ -35,6 +37,8 @@ class Plugin(Layer):
     menu = "&Plugins/&Basic Tools"
     category = "Basic Tools"
     unloadable = False
+    
+    lgbt = property(lambda self: self.parent.require('lgbt'))
     
     def Init(self):
         self.layout("blur-threshold", self.lgbt.params, show=0, cw=0, lw=40, tw=40)
@@ -49,8 +53,6 @@ class Plugin(Layer):
         
         self.layout(None, [btn1, btn2], row=2)
     
-    lgbt = property(lambda self: self.parent.require('lgbt'))
-    
     maxcount = 256 # 選択する点の数を制限する
     maxratio = 5.0 # ひずみの大きい楕円は除外する
     
@@ -64,13 +66,13 @@ class Plugin(Layer):
         circles = find_ellipses(src)
         self.message("found {} circles".format(len(circles)))
         
+        h, w = src.shape
         if circles:
             N = self.maxcount
             if len(circles) > N:
                 self.message("\b is too many, chopped (< {})".format(N))
                 circles = circles[:N]
             
-            h, w = src.shape
             xy = []
             for (cx,cy), (ra,rb), angle in circles:
                 if 0 < cx < w and 0 < cy < h and rb/ra < self.maxratio:
@@ -83,19 +85,8 @@ class Plugin(Layer):
                     frame.axes.add_artist(art)
                     self.Arts.append(art)
                     
+                    ## 検出した楕円の中心を記録する．強度の偏りは考慮しない
                     x, y = art.center
                     xy.append((x,y))
                     
-                    ## r = int(min(ra,rb) /2)
-                    ## nx, ny = int(cx), int(cy)
-                    ## try:
-                    ##     ## centr-of-mass:crop around (cx,cy) 強度重心をとる
-                    ##     ya, yb = max(0, ny-r), min(ny+r+1, h)
-                    ##     xa, xb = max(0, nx-r), min(nx+r+1, w)
-                    ##     buf = src[ya:yb, xa:xb]
-                    ##     dx, dy = edi.centroid(buf)
-                    ##     x, y = frame.xyfrompixel(nx-r+dx, ny-r+dy)
-                    ##     xy.append((x,y))
-                    ## except Exception:
-                    ##     pass
             frame.markers = np.array(xy).T # scatter markers if any xy

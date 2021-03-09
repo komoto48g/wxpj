@@ -142,14 +142,19 @@ class Plugin(Layer):
     category = "Basic Tools"
     unloadable = False
     
+    lgbt = property(lambda self: self.parent.require('lgbt'))
+    
     def Init(self):
-        self.params = (
-            LParam("rmin", (0,2000,1), 50),
-            LParam("rmax", (0,2000,1), np.nan),
-        )
-        self.layout("blur-threshold", self.lgbt.params, show=0, cw=0, lw=40, tw=40)
-        self.layout("radii", self.params, cw=0, lw=36, tw=48)
+        self.rmin = LParam("rmin", (0,2000,1), 50)
+        self.rmax = LParam("rmax", (0,2000,1), np.nan)
         
+        self.layout("blur-threshold", self.lgbt.params, show=0, cw=0, lw=40, tw=40)
+        self.layout("radii", [
+            self.rmin,
+            self.rmax
+            ],
+            cw=0, lw=36, tw=48
+        )
         btn = wx.Button(self, label="+Execute", size=(64,22))
         btn.Bind(wx.EVT_BUTTON, lambda v: self.run(shift=wx.GetKeyState(wx.WXK_SHIFT)))
         btn.SetToolTip("S-Lbutton to enter recusive centering")
@@ -158,14 +163,7 @@ class Plugin(Layer):
         
         self.layout(None, [btn, self.chkplt], row=2, type='vspin', tw=22)
     
-    lgbt = property(lambda self: self.parent.require('lgbt'))
-    
-    rmin = property(lambda self: self.params[0])
-    rmax = property(lambda self: self.params[1])
-    
-    maxloop = 4 # 探索ループの回数制限 maximum loop
-    
-    def run(self, frame=None, shift=0):
+    def run(self, frame=None, shift=0, maxloop=4):
         if not frame:
             frame = self.selected_view.frame
         
@@ -180,7 +178,7 @@ class Plugin(Layer):
         
         ## Search center and fit with model (twice at least)
         src = frame.buffer
-        for i in range(self.maxloop):
+        for i in range(maxloop):
             buf, center, fitting_curve, = find_ring_center(src, center, lo=int(self.rmin))
             ## print("center =", center)
         

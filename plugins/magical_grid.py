@@ -18,6 +18,10 @@ class Plugin(Layer):
     """
     menu = "&Plugins/&Pragmas"
     
+    lgbt = property(lambda self: self.parent.require('lgbt'))
+    lccf = property(lambda self: self.parent.require('lccf2'))
+    ldc = property(lambda self: self.parent.require('ld_cgrid'))
+    
     def Init(self):
         self.page = LParam("page", (-1,1000,1), -1)
         self.page.bind(lambda lp: self.selected_view.select(lp.value))
@@ -31,7 +35,7 @@ class Plugin(Layer):
         )
         self.choice.Select(0)
         
-        self.score = LParam("spot", (0.1, 5, 0.1), 1.0)
+        self.score = LParam("score", (0.1, 10, 0.1), 1.0)
         
         self.grid = wxpj.Choice(self, label="grid [mm]", size=(140,-1),
             handler=lambda v: self.calc_mag(),
@@ -94,10 +98,6 @@ class Plugin(Layer):
             row=1, show=1, tw=50, vspacing=4,
         )
         self.lgbt.ksize.value = 5 # default blur window size
-    
-    lgbt = property(lambda self: self.parent.require('lgbt'))
-    lccf = property(lambda self: self.parent.require('lccf2'))
-    ldc = property(lambda self: self.parent.require('ld_cgrid'))
     
     def get_result(self):
         if self.choice.Selection < 2:

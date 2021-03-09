@@ -114,7 +114,7 @@ class Plugin(Layer):
         self.btn = wx.Button(self, label="+Execute", size=(80,22))
         self.btn.Bind(wx.EVT_BUTTON,
             lambda v: self.thread.Start(self.run, skip=wx.GetKeyState(wx.WXK_SHIFT)))
-            
+        
         self.btn.SetToolTip("S-Lbutton to skip estimating grid params")
         
         self.order = LParam("order", (0,6,1), 3)

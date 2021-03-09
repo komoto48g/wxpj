@@ -17,6 +17,9 @@ class Plugin(Layer):
     category = "Pragmas"
     caption = "Grid"
     
+    lccf = property(lambda self: self.parent.require('lccf'))
+    ld = property(lambda self: self.parent.require('ld_grid'))
+    
     def Init(self):
         self.chkfit = wx.CheckBox(self, label="fit")
         self.chkfit.Value = True
@@ -31,9 +34,6 @@ class Plugin(Layer):
             ),
             row=3
         )
-    
-    lccf = property(lambda self: self.parent.require('lccf'))
-    ld = property(lambda self: self.parent.require('ld_grid'))
     
     def show_setting(self, force=0):
         b = force or not self.ld.IsShown()

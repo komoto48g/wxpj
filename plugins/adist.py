@@ -23,6 +23,8 @@ class Plugin(Layer):
     """
     menu = "&Plugins"
     
+    grid = property(lambda self: self.parent.require('ld_grid'))
+    
     def Init(self):
         self.dist_params = self.grid.dist_params
         self.ratio_params = self.grid.ratio_params
@@ -33,8 +35,6 @@ class Plugin(Layer):
         btn = wx.Button(self, label="Execute", size=(80,22))
         btn.Bind(wx.EVT_BUTTON, lambda v: self.run())
         self.layout(None, [btn])
-    
-    grid = property(lambda self: self.parent.require('ld_grid'))
     
     def run(self, frame=None):
         if not frame:

@@ -41,9 +41,6 @@ class Plugin(Layer):
     sigma = property(lambda self: self.params[1])
     thresh = property(lambda self: self.params[2])
     
-    ## cutoff_hi = property(lambda self: self.cutoff_params[0])
-    ## cutoff_lo = property(lambda self: self.cutoff_params[1])
-    
     def calc(self, frame=None, otsu=0, invert=0, show=1):
         """Blur by Gaussian window and binarize
        otsu : True when using Otsu's algorithm
