@@ -194,7 +194,7 @@ class Plugin(Layer):
             ## 近傍にあるピーク位置 (±n) をぼかして (k,k) 検出する
             if not skip:
                 k = 5
-                n = 13
+                n = 5
                 src = cv2.GaussianBlur(frame.buffer, (k,k), 0)
                 nx, ny = frame.xytopixel(x, y)
                 nx, ny = self.find_near_maximum(src, nx, ny, n, times=2)

@@ -29,13 +29,13 @@ class Plugin(Layer):
         self.choice = wxpj.Choice(self, size=(60,-1),
             choices=['FFT',
                      'FFT+',
-                     'Cor'
+                     'Cor',
                      ],
             readonly=1,
         )
         self.choice.Select(0)
         
-        self.score = LParam("score", (0.1, 10, 0.1), 1.0)
+        self.score = LParam("score", (0.01, 10, 0.01), 1.0)
         
         self.grid = wxpj.Choice(self, label="grid [mm]", size=(140,-1),
             handler=lambda v: self.calc_mag(),
@@ -126,7 +126,8 @@ class Plugin(Layer):
     
     def run(self, frame=None):
         if not frame:
-            frame = self.show_page()
+            if self.choice.Selection == 2:
+                frame = self.show_page()
         self.message("\b @ldc...")
         self.ldc.reset_params(backcall=None)
         self.ldc.thread.Start(self.calc_fit, frame)
@@ -134,6 +135,8 @@ class Plugin(Layer):
     def run_all(self, frame=None):
         result = self.testrun(frame)
         frame = self.calc_mark(result)
+        if self.choice.Selection == 2:
+            self.show_page()
         self.run(frame)
     
     def calc_mark(self, frame=None):
@@ -150,7 +153,9 @@ class Plugin(Layer):
         self.ldc.Show()
         if frame:
             frame.update_attributes(parameters=self.parameters[:-1]) # set-attr except the last text
-        
+        self.calc_mag()
+    
+    def calc_mag(self):
         g = self.ldc.grid_params[0].value
         g0 = eval(self.grid.Value)
         if self.choice.Selection < 2:
@@ -208,12 +213,12 @@ class Plugin(Layer):
         src = fftshift(fft2(src))
         buf = np.log(1 + abs(src)) # log intensity
         
-        ## background subt. processing (default)
+        ## background subst. processing (default)
         if 1:
-            self.message("\b @polar-transform")
+            self.message("\b @subst")
             rmax = w/2
             buf = cv2.linearPolar(buf, (w/2, h/2), rmax, cv2.WARP_FILL_OUTLIERS)
-            buf -= sum(buf) / h # バックグラウンド(ぽい)強度を引いてみる
+            buf -= sum(buf) / h # バックグラウンド(ぽい)強度を引いてみる (中央も 0 になるので注意)
             
             self.message("\b @remap")
             X, Y = np.meshgrid(
@@ -225,9 +230,12 @@ class Plugin(Layer):
             buf = cv2.remap(buf.astype(np.float32), map_r, map_t,
                             cv2.INTER_CUBIC, cv2.WARP_FILL_OUTLIERS)
             
+            ## 確認
+            ## self.output.load(buf, name="*remap*", localunit=1/w)
+            
         dst = np.exp(buf) - 1 # log --> exp で戻す
         
-        ## 十紋形切ちょんぱマスク (to be option)
+        ## 十紋形切ちょんぱマスク (option)
         if crossline:
             d = int(h * 0.001)
             i, j = h//2, w//2
@@ -235,16 +243,18 @@ class Plugin(Layer):
             dst[i-d:i+d+1,:] = 0
             
         ## force the central spot be white (default)
-        if 1:
-            d = 4
-            i, j = h//2, w//2
-            y, x = np.ogrid[-d:d+1,-d:d+1]     # index arrays
-            m = np.where(np.hypot(y,x) <= d)   # mask submatrix
-            dst[m[0]+i-d,m[1]+j-d] = dst.max() # apply to the center +-d
+        ## if 0:
+        ##     d = 2
+        ##     i, j = h//2, w//2
+        ##     y, x = np.ogrid[-d:d+1,-d:d+1]     # index arrays
+        ##     m = np.where(np.hypot(y,x) <= d)   # mask submatrix
+        ##     dst[m[0]+i-d,m[1]+j-d] = dst.max() # apply to the center +-d
+        
+        ## dst[h//2, w//2] = dst.max() # apply to the center +-d
         
         ## <uint8> 逆空間 論理スケール [ru/pixel] に変換する
         ## do not cuts hi/lo: 強度重心を正しくとるためには飽和しないようにする
-        dst = edi.imconv(dst, hi=0.0)
+        ## dst = edi.imconv(dst, hi=0)
         return frame.parent.load(dst, name="*result of fft*", pos=0, localunit=1/w/frame.unit)
 
 

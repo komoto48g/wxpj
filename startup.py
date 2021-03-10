@@ -92,6 +92,7 @@ class Plugin(Layer):
     def setup_all(self):
         cuts = self.cuts_param.value
         unit = self.unit_param.value
+        self.unit_param.std_value = unit
         
         for target in self.parent.graphic_windows:
             target.score_percentile = cuts

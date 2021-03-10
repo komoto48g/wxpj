@@ -5,6 +5,7 @@ from __future__ import (division, print_function,
 import wx
 import cv2
 import numpy as np
+from numpy import pi,cos,sin
 from mwx.graphman import Layer
 from matplotlib import patches
 import editor as edi
@@ -14,6 +15,7 @@ def find_ellipses(src):
     """Find ellipses
     楕円検出を行うため，5 点以上のコンターが必要．小さいスポットは除外される
     小さいスポットを検出するためにはぼかし量を大きくすればよい
+    画像の端にある円を除く
     
   retval -> list of (c:=(x,y), r:=(ra<rb), angle) sorted by pos
     """
@@ -28,7 +30,8 @@ def find_ellipses(src):
     h, w = src.shape
     distance = lambda p: np.hypot(p[0]-w/2, p[1]-h/2) # 位置で昇順ソート
     
-    return sorted([(c,r,a) for c,r,a in ellipses], key=lambda v: distance(v[0]))
+    return sorted([(c,r,a) for c,r,a in ellipses if 0 < c[0] < w and 0 < c[1] < h],
+                    key=lambda v: distance(v[0]))
 
 
 class Plugin(Layer):
@@ -66,16 +69,16 @@ class Plugin(Layer):
         circles = find_ellipses(src)
         self.message("found {} circles".format(len(circles)))
         
-        h, w = src.shape
         if circles:
             N = self.maxcount
             if len(circles) > N:
                 self.message("\b is too many, chopped (< {})".format(N))
                 circles = circles[:N]
             
+            h, w = src.shape
             xy = []
             for (cx,cy), (ra,rb), angle in circles:
-                if 0 < cx < w and 0 < cy < h and rb/ra < self.maxratio:
+                if rb/ra < self.maxratio:
                     ## 不特定多数の円を描画する
                     art = patches.Circle((0,0), 0, color='r', ls='dotted', lw=1, fill=0)
                     art.center = frame.xyfrompixel(cx, cy)
@@ -86,7 +89,32 @@ class Plugin(Layer):
                     self.Arts.append(art)
                     
                     ## 検出した楕円の中心を記録する．強度の偏りは考慮しない
-                    x, y = art.center
-                    xy.append((x,y))
+                    ## xy.append(art.center)
+                    
+                    r = int(max(ra,rb)/2) # max radius enclosing the area cf. cv2.minEnclosingCircle
+                    nx, ny = int(cx), int(cy)
+                    xa, xb = max(0, nx-r), min(nx+r+1, w)
+                    ya, yb = max(0, ny-r), min(ny+r+1, h)
+                    buf = frame.buffer[ya:yb, xa:xb] # not src!
+                    
+                    ## local maximum
+                    dy, dx = np.unravel_index(buf.argmax(), buf.shape)
+                    xy.append(frame.xyfrompixel(nx-r+dx, ny-r+dy))
+                    
+                    ## centroid
+                    ## dx, dy = calc_masked_centroid(buf.copy(), ra, rb, angle)
+                    ## xy.append(frame.xyfrompixel(nx-r+dx, ny-r+dy))
                     
             frame.markers = np.array(xy).T # scatter markers if any xy
+
+
+## def calc_masked_centroid(buf, ra, rb, angle):
+##     h, w = buf.shape
+##     y, x = np.ogrid[-h/2:h/2, -w/2:w/2]
+##     yo, xo = 0, 0
+##     t = angle * pi/180
+##     xx = (x-xo) * cos(t) + (y-yo)*sin(t)
+##     yy = (x-xo) *-sin(t) + (y-yo)*cos(t)
+##     mask = np.hypot(xx/ra*2, yy/rb*2) > 1 # 楕円の短径 ra/2 < 長径 rb/2
+##     buf[mask] = 0
+##     return edi.centroid(buf)

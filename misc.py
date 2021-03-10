@@ -137,7 +137,7 @@ class ConfigData(object):
         except PermissionError as e:
             if wx.MessageBox("Please close {!r}. Press [OK] to continue.".format(xlpath),
                 caption=str(e), style=wx.OK|wx.CANCEL|wx.ICON_WARNING) == wx.OK:
-                    return self.export(keys, xlpath, r, c, verbose=0)
+                    return self.export(keys, r, c, verbose=0)
 
 
 def count_down(seconds):
@@ -176,7 +176,7 @@ if __name__ == "__main__":
     import mwx
     
     config = ConfigData("pylots/config.ini", section='TEM')
-    ## config.export('beamshift', 'config.xlsx')
+    ## config.export('beamshift')
     mwx.deb()
     
     print(time.strftime("%Y/%m/%d %H:%M:%S %z"))
