@@ -27,7 +27,7 @@ class Plugin(TemInterface, Layer):
     cla = property(lambda self: self.parent.require('align2_clapt'))
     
     def Init(self):
-        self.threshold = LParam("Threshold", (0.005, 0.05, 0.005), self.default_threshold)
+        self.threshold = LParam("Threshold", (0.001, 0.01, 0.001), self.default_threshold)
         self.wobstep = LParam("Wobbler amp", (0x100,0x10000,0x100), self.default_wobstep, dtype=hex)
         
         self.layout(None, (
@@ -99,7 +99,7 @@ class Plugin(TemInterface, Layer):
             try:
                 h, w = self.camera.shape
                 xo, ys = self.spot.conf_table
-                step = h / ys * 0.05
+                step = h / ys * 0.1 # stride of index ratio to the image size
                 
                 org = xj = self.index
                 if xj < xo:

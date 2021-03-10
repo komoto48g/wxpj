@@ -60,6 +60,7 @@ class Plugin(AlignInterface, Layer):
                 with self.save_restriction(PLA=None):
                     self.diffspot.focus(0.25) # Do always set quarter-open beam
                     self.para.focus()
+                    self.delay()
                     self.pla.align()
                     return AlignInterface.cal(self)
     
