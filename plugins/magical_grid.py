@@ -35,7 +35,7 @@ class Plugin(Layer):
         )
         self.choice.Select(0)
         
-        self.score = LParam("score", (0.01, 10, 0.01), 1.0)
+        self.score = LParam("score", (0.05, 10, 0.05), 0.1)
         
         self.grid = wxpj.Choice(self, label="grid [mm]", size=(140,-1),
             handler=lambda v: self.calc_mag(),
@@ -67,8 +67,8 @@ class Plugin(Layer):
             
             wxpj.Button(self, "3. Mark",
                 lambda v: self.calc_mark(), icon='help', size=size,
-                tip="Set paramter of socre at percentile.\n"
-                    "  :score is the ratio [%] to maximum count for extracting white spots"),
+                tip="Set paramter of socre at percentile (:COR only).\n"
+                    "score is the ratio [%] to maximum count for extracting spots"),
             self.score,
             
             wxpj.Button(self, "4. Go",
@@ -99,7 +99,8 @@ class Plugin(Layer):
         )
         self.lgbt.ksize.value = 5 # default blur window size
     
-    def get_result(self):
+    @property
+    def res(self):
         if self.choice.Selection < 2:
             name = "*result of fft*"
         else:
@@ -112,9 +113,9 @@ class Plugin(Layer):
     
     def testrun(self, frame=None):
         if not frame:
-            frame = self.selected_view.find_frame(self.page.value) # Index error?
+            frame = self.selected_view.find_frame(self.page.value)
         
-        if not self.get_result() and self.page.value != -1:
+        if not self.res and self.page.value != -1:
             ## A new frame (*result*) is to be loaded ahead of stacks
             ## so we need to put forward the page counter (no problem when -1)
             self.page.value += 1
@@ -126,8 +127,7 @@ class Plugin(Layer):
     
     def run(self, frame=None):
         if not frame:
-            if self.choice.Selection == 2:
-                frame = self.show_page()
+            frame = self.show_page()
         self.message("\b @ldc...")
         self.ldc.reset_params(backcall=None)
         self.ldc.thread.Start(self.calc_fit, frame)
@@ -139,12 +139,19 @@ class Plugin(Layer):
             self.show_page()
         self.run(frame)
     
+    ## --------------------------------
+    ## calc functions
+    ## --------------------------------
+    
     def calc_mark(self, frame=None):
         if not frame:
-            frame = self.get_result()
+            frame = self.res
         self.message("\b @lccf...")
-        self.lgbt.thresh.value = np.percentile(frame.buffer, 100-self.score.value)
-        self.lccf.run(frame)
+        if self.score.value is np.nan:
+            self.lccf.run(frame, otsu=1) # nan の場合は otsu を使用する
+        else:
+            self.lgbt.thresh.value = np.percentile(frame.buffer, 100-self.score.value)
+            self.lccf.run(frame, otsu=0)
         return frame
     
     def calc_fit(self, frame=None):
@@ -152,13 +159,13 @@ class Plugin(Layer):
         self.ldc.run(frame) # 計算 x2 回目
         self.ldc.Show()
         if frame:
-            frame.update_attributes(parameters=self.parameters[:-1]) # set-attr except the last text
+            frame.update_attributes(parameters=self.parameters[:-1]) # except the last text
         self.calc_mag()
     
     def calc_mag(self):
         g = self.ldc.grid_params[0].value
         g0 = eval(self.grid.Value)
-        if self.choice.Selection < 2:
+        if self.choice.Selection < 2: # FFT
             res = ("grid = {:g} mm".format(1/g),
                    "Mag = {:,.0f} [fft]".format(1/g/g0))
         else:
@@ -166,6 +173,10 @@ class Plugin(Layer):
                    "Mag = {:,.0f} [cor]".format(g/g0))
         self.text.Value = '\n'.join(res)
         print(*res)
+    
+    ## --------------------------------
+    ## test functions
+    ## --------------------------------
     
     ## def test_corr(self, frame):
     ##     src = frame.buffer
@@ -182,7 +193,7 @@ class Plugin(Layer):
         src = frame.buffer
         h, w = src.shape
         
-        d = h//10           # 特徴点を選んで ROI をとりたいところだが，
+        d = h//8            # 特徴点を選んで ROI をとりたいところだが，
         i, j = h//2, w//2   # ld_cgrid を使うので，画像の中心であることが必須．
         temp = src[i-d:i+d, j-d:j+d] # とりあえずの真ん中らへんをテキトーに ROI る
         
@@ -199,21 +210,19 @@ class Plugin(Layer):
         src = frame.roi
         h, w = src.shape
         
-        ## 2**n - squared ROI
-        if 1:
-            ## nn = (1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192)
-            ## k = np.searchsorted(nn, min(h,w), 'right')
-            ## n = nn[k-1]//2
-            n = pow(2, int(np.log2(min(h,w)))-1)
-            i, j = h//2, w//2
-            src = src[i-n:i+n,j-n:j+n]
-            h, w = src.shape
+        ## resize to 2**N squared ROI
+        n = pow(2, int(np.log2(min(h,w)))-1)
+        i, j = h//2, w//2
+        src = src[i-n:i+n,j-n:j+n]
+        
+        h, w = src.shape
+        i, j = h//2, w//2
         
         self.message("processing fft... @log")
         src = fftshift(fft2(src))
         buf = np.log(1 + abs(src)) # log intensity
         
-        ## background subst. processing (default)
+        ## background subst.
         if 1:
             self.message("\b @subst")
             rmax = w/2
@@ -229,7 +238,6 @@ class Plugin(Layer):
             map_t = ((pi + np.arctan2(Y, X)) * h/2/pi)
             buf = cv2.remap(buf.astype(np.float32), map_r, map_t,
                             cv2.INTER_CUBIC, cv2.WARP_FILL_OUTLIERS)
-            
             ## 確認
             ## self.output.load(buf, name="*remap*", localunit=1/w)
             
@@ -250,13 +258,12 @@ class Plugin(Layer):
         ##     m = np.where(np.hypot(y,x) <= d)   # mask submatrix
         ##     dst[m[0]+i-d,m[1]+j-d] = dst.max() # apply to the center +-d
         
-        ## dst[h//2, w//2] = dst.max() # apply to the center +-d
-        
         ## <uint8> 逆空間 論理スケール [ru/pixel] に変換する
         ## do not cuts hi/lo: 強度重心を正しくとるためには飽和しないようにする
         ## dst = edi.imconv(dst, hi=0)
         return frame.parent.load(dst, name="*result of fft*", pos=0, localunit=1/w/frame.unit)
-
+        ## return self.test_cor(
+        ##     frame.parent.load(dst, name="*result of fft*", pos=0, localunit=1/w/frame.unit))
 
 if __name__ == "__main__":
     import glob

@@ -203,15 +203,13 @@ class Plugin(Layer):
             self.calc()
     
     def find_near_grid(self, x, y):
-        j = np.hypot(x,y).argmin() # nearest point to the center
-        dx = x - x[j]
-        dy = y - y[j]
-        dx[j] = dy[j] = 1e3 # dummy to escape argmin
-        dd = np.hypot(dx,dy)
-        k = dd.argmin() # 中心に最も近い点から，次に近い点
-        grid = dd[k]
-        tilt = np.arctan(dy[k]/dx[k]) * 180/pi
-        for lp,v in zip(self.grid_params, (grid,tilt,x[j],y[j])): # set parameters
+        dx = np.diff(x)
+        dy = np.diff(y)
+        dl = np.hypot(dx,dy) # 近接スポットの距離のうち最小のやつを求める
+        j = dl.argmin()
+        g = dl[j]
+        t = np.arctan(dy[j]/dx[j]) * 180/pi
+        for lp,v in zip(self.grid_params, (g, t, x[j], y[j])):
             lp.value = v
 
 
