@@ -24,17 +24,15 @@ class Plugin(Layer):
         self.layout(None, [self.plot], expand=2, border=0)
         
         @self.handler.bind('pane_shown')
-        def show(*args):
-            for win in self.parent.graphic_windows:
-                self.plot.attach(win)
+        def attach(*v):
+            self.plot.attach(*self.parent.graphic_windows)
             self.plot.linplot(self.parent.selected_view.frame)
         
         @self.handler.bind('pane_removed')
         @self.handler.bind('pane_closed')
         @self.handler.bind('pane_hidden')
-        def hide(*args):
-            for win in self.parent.graphic_windows:
-                self.plot.detach(win)
+        def detach(*v):
+            self.plot.detach(*self.parent.graphic_windows)
 
 
 if __name__ == "__main__":

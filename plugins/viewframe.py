@@ -227,12 +227,14 @@ class Plugin(Layer):
         self.attach(self.output, "output")
     
     def attach(self, target, caption):
-        lc = CheckList(self, target)
-        self.nb.AddPage(lc, caption)
+        if target not in [lc.Target for lc in self.all_pages]:
+            lc = CheckList(self, target)
+            self.nb.AddPage(lc, caption)
     
     def detach(self, target):
-        self.nb.DeletePage(next((k
-            for k,lc in enumerate(self.all_pages) if target is lc.Target), -1))
+        for k,lc in enumerate(self.all_pages):
+            if target is lc.Target:
+                self.nb.DeletePage(k)
     
     def show_page(self, target):
         self.nb.SetSelection(next((k
