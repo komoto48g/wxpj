@@ -27,7 +27,7 @@ class Plugin(CompInterface, Layer):
             self.diffspot.focus() # DIFF-Focus をきちんと合わせること !
             ## self.spot.focus()
             self.pla.align()
-            return CompInterface.cal(self, step=0x200)
+            return CompInterface.cal(self, step=0x100)
     
     def execute(self):
         with self.thread:

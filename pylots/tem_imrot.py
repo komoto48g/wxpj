@@ -47,14 +47,6 @@ class Plugin(TemInterface, Layer):
             row=3, show=1,
         )
     
-    ## def calc_imrot(self, tags):
-    ##     NI = 0
-    ##     for s in tags:
-    ##         lp = self.tem.foci[s]
-    ##         NI += lp.value / lp.max * self.Tem.LENS_NIMAX[s]
-    ##     ## return self.env.j2deg * NI # !!! Ustar 補正を入れ忘れているよ
-    ##     return self.j2deg_ustar * NI
-    
     def update_stdrot(self):
         v = self.calc_imrot(self.Tem.IL_LENSES)
         self.config[self.conf_key] = v
