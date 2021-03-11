@@ -42,13 +42,12 @@ class Plugin(Layer):
             ),
             row=1, expand=0, type='vspin', style='btn', lw=66, tw=60, cw=-1
         )
-        ## self.graph.handler.bind("frame_shown", self.on_unit_notify)
+        
         for win in self.parent.graphic_windows:
             win.handler.bind("frame_shown", self.on_unit_notify)
             win.handler.bind("canvas_focus_set", self.on_unit_notify)
     
     def Destroy(self):
-        ## self.graph.handler.unbind("frame_shown", self.on_unit_notify)
         for win in self.parent.graphic_windows:
             win.handler.unbind("frame_shown", self.on_unit_notify)
             win.handler.unbind("canvas_focus_set", self.on_unit_notify)

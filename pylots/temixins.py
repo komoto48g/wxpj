@@ -774,9 +774,6 @@ class AlignInterface(TemInterface):
         ## i = self.illumination.Alpha
         self.config[self.conf_key][self.conf_arg] = v * self.conf_factor
     
-    ## def neutralize(self):
-    ##     self.index = (0x8000, 0x8000)
-    
     def align(self, pos=None, power=1):
         if pos is None:
             h, w = self.camera.shape

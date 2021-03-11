@@ -22,22 +22,19 @@ class Plugin(Layer):
     def Init(self):
         self.plot = LineProfile(self, log=self.message, size=(300,200))
         self.layout(None, [self.plot], expand=2, border=0)
-        self.Draw(1)
-    
-    def Destroy(self):
-        self.Draw(0)
-        self.plot.Destroy()
-        return Layer.Destroy(self)
-    
-    def Draw(self, show=True):
-        if show:
+        
+        @self.handler.bind('pane_shown')
+        def show(*args):
             for win in self.parent.graphic_windows:
                 self.plot.attach(win)
             self.plot.linplot(self.parent.selected_view.frame)
-        else:
+        
+        @self.handler.bind('pane_removed')
+        @self.handler.bind('pane_closed')
+        @self.handler.bind('pane_hidden')
+        def hide(*args):
             for win in self.parent.graphic_windows:
                 self.plot.detach(win)
-        return Layer.Draw(self, show)
 
 
 if __name__ == "__main__":
