@@ -96,12 +96,6 @@ class pyJemacs(Framebase):
             if HOME not in sys.path:
                 sys.path += [ HOME ] # adds root for loading plugins
             
-        ## Adds local path for loading local siteinit
-        ## `__file__' is the first argument of the command
-        ## home = os.path.dirname(os.path.abspath(__file__))
-        ## if home not in sys.path:
-        ##     sys.path.append(home)
-        
         icon = os.path.join(HOME, "Jun.ico")
         if os.path.exists(icon):
             self.SetIcon(wx.Icon(icon, wx.BITMAP_TYPE_ICO))
@@ -109,18 +103,6 @@ class pyJemacs(Framebase):
         self.nfront = NotifyFront(self)
         self.notify = self.nfront.notify
         ## self.notify.start() # do not start here; do after setting 'host:port:online'
-        
-        @self.handler.bind('frame_cached')
-        def cache(frame):
-            frame.update_attributes(
-                illumination = dict(self.notify.illumination_info),
-                     imaging = dict(self.notify.imaging_info),
-                       omega = dict(self.notify.omega_info),
-                         eos = dict(self.notify.eos_info),
-                      filter = dict(self.notify.filter_info),
-            )
-            frame.annotation = self.notify.modestr
-            frame.name = self.new_buffer_name.format(**frame.attributes)
         
         self.menubar["&File"][-4:-4] = [
             (100, "&Notifyee\tF11", "Notify logger", wx.ITEM_CHECK,

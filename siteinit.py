@@ -107,9 +107,8 @@ def init_frame(self):
     self.define_key('C-x s', self.save_session)
     self.define_key('C-x S-s', self.save_session_as)
     
-    self.define_key('M-right', lambda v: other_window(v, 1), doc="focus to next window")
-    self.define_key('M-left', lambda v: other_window(v,-1), doc="focus to prev window")
-    
+    @self.define_key('M-right', dir=1, doc="focus to next window")
+    @self.define_key('M-left', dir=-1, doc="focus to prev window")
     def other_window(v, dir):
         """Set focus to next/prev displayed window"""
         ls = [w for w in self.graphic_windows if w.IsShownOnScreen()]
@@ -122,6 +121,18 @@ def init_frame(self):
     
     self.define_key('pageup', lambda v: self.selected_view.OnPageUp(v), doc="previous page")
     self.define_key('pagedown', lambda v: self.selected_view.OnPageDown(v), doc="next page")
+    
+    @self.handler.bind('frame_cached')
+    def cache(frame):
+        frame.update_attributes(
+            illumination = dict(self.notify.illumination_info),
+                 imaging = dict(self.notify.imaging_info),
+                   omega = dict(self.notify.omega_info),
+                     eos = dict(self.notify.eos_info),
+                  filter = dict(self.notify.filter_info),
+        )
+        frame.annotation = self.notify.modestr
+        frame.name = self.new_buffer_name.format(**frame.attributes)
     
     ## --------------------------------
     ## Shell starutp
