@@ -70,7 +70,7 @@ class Plugin(UserInterface, Layer):
             ("Settings", [
                 ("SYS", ItemData(self.tree, "tem_option", None)),
                 ("TEM", ItemData(self.tree, "tem_control", None)),
-                ("ROT", ItemData(self.tree, "tem_irot", None)),
+                ("ROT", ItemData(self.tree, "tem_imrot", None)),
             ]),
             ("Calibrations", (
                 ("MAG", ItemData(self.tree, None, self.thread(self.calibrate_alpha_mag)),

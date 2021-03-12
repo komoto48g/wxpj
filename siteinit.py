@@ -103,6 +103,7 @@ def init_frame(self):
     ## --------------------------------
     ## global keymap
     ## --------------------------------
+    
     self.define_key('C-x o', self.load_session)
     self.define_key('C-x s', self.save_session)
     self.define_key('C-x S-s', self.save_session_as)
@@ -122,6 +123,9 @@ def init_frame(self):
     self.define_key('pageup', lambda v: self.selected_view.OnPageUp(v), doc="previous page")
     self.define_key('pagedown', lambda v: self.selected_view.OnPageDown(v), doc="next page")
     
+    ## self.new_buffer_name = "{acq_datetime:%Y%m%d-%H%M%S}-{annotation},bin{binning}-{exposure}s"
+    self.new_buffer_name = "{acq_datetime:%Y%m%d-%H%M%S}-{annotation}"
+    
     @self.handler.bind('frame_cached')
     def cache(frame):
         frame.update_attributes(
@@ -129,14 +133,20 @@ def init_frame(self):
                  imaging = dict(self.notify.imaging_info),
                    omega = dict(self.notify.omega_info),
                      eos = dict(self.notify.eos_info),
+                      ht = dict(self.notify.ht_info),
+                     apt = dict(self.notify.apt_info),
+                   gonio = dict(self.notify.gonio_info),
                   filter = dict(self.notify.filter_info),
+                 modestr = self.notify.modestr, # joined substr
         )
-        frame.annotation = self.notify.modestr
+        ## frame.annotation = self.notify.modestr
+        frame.annotation = "{0},bin{binning}-{exposure}s".format(self.notify.modestr, **frame.attributes)
         frame.name = self.new_buffer_name.format(**frame.attributes)
     
     ## --------------------------------
     ## Shell starutp
     ## --------------------------------
+    
     self.inspector.shell.Execute(SHELLSTARTUP)
     debut.init_spec(self.inspector)
 

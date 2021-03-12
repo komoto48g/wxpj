@@ -68,8 +68,6 @@ class pyJemacs(Framebase):
     
     env = Environ(300e3) # default 300kV HT constants (to be reset by user)
     
-    new_buffer_name = "{acq_datetime:%Y%m%d-%H%M%S}-{annotation}"
-    
     def About(self):
         try:
             from wx.adv import AboutDialogInfo, AboutBox #! phoenix
@@ -95,10 +93,11 @@ class pyJemacs(Framebase):
             HOME = os.path.dirname(os.path.dirname(HOME))
             if HOME not in sys.path:
                 sys.path += [ HOME ] # adds root for loading plugins
-            
-        icon = os.path.join(HOME, "Jun.ico")
-        if os.path.exists(icon):
-            self.SetIcon(wx.Icon(icon, wx.BITMAP_TYPE_ICO))
+        
+        try:
+            self.SetIcon(wx.Icon(os.path.join(HOME, "Jun.ico"), wx.BITMAP_TYPE_ICO))
+        except Exception:
+            pass
         
         self.nfront = NotifyFront(self)
         self.notify = self.nfront.notify

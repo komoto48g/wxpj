@@ -110,10 +110,13 @@ class Plugin(TemInterface, Layer):
                 if dlg.ShowModal() != wx.ID_OK:
                     return
                 path = dlg.Path
+        
         if not os.path.exists(path):
             wx.MessageBox("- No such file: {!r}".format(path),
                 caption=self.__module__, style=wx.ICON_WARNING)
             return
+        
+        path = os.path.relpath(path, os.getcwd())
         
         TemInterface.configure(path)
         if self.config:

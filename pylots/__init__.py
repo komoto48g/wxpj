@@ -7,9 +7,10 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
-from .temixins import (TEM, TemInterface, SpotInterface,
-                      AlignInterface, StigInterface, CompInterface,
-                      DataLogger)
+from .temixins import (DataLogger, TemInterface, SpotInterface,
+                       AlignInterface, StigInterface, CompInterface)
+from pyJeol import pyJem2 as pmpj # Poor man's pyJem package (not a PyJEM)
+from pyJeol.pyJem2 import TEM, Filter, Stage # to be referred from pylots
 
 __version__ = "0.0"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
@@ -54,7 +55,7 @@ class UserInterface(TemInterface):
     @property
     def selected_aperture(self):
         info = self.Aperture.Info # pmpj:Aperture.Info is always being notified
-        name = info['id_name']    # get currently selected aperture plugin
+        name = info['curid_name'] # get currently selected aperture plugin
         
         ## if name == 'CLA2': return self.clapt2 is NotImplemented
         if name == 'CLA': return self.clapt

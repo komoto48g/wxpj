@@ -37,7 +37,8 @@ class TemInterface(object):
     camerasys = 'JeolCamera'
     ## camerasys = 'RigakuCamera'
     
-    cameraman = property(lambda self: self.parent.require(self.camerasys))
+    ## cameraman = property(lambda self: self.parent.require(self.camerasys))
+    
     @property
     def cameraman(self):
         name = self.camerasys
@@ -48,6 +49,7 @@ class TemInterface(object):
         return plug
     
     ## camera = property(lambda self: self.cameraman.camera or self.cameraman.connect())
+    
     @property
     def camera(self):
         if not self.cameraman:
@@ -63,7 +65,6 @@ class TemInterface(object):
     thread.greenflag.set()
     
     env = property(lambda self: self.parent.env)
-    
     ustar_sqrt = 1
     config_tem_mag = None
     config_tem_lowmag = None
