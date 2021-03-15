@@ -47,7 +47,7 @@ class Plugin(Layer):
     
     def rotate(self, evt):
         """Rotate image with given angles and load to output window"""
-        src = self.graph.selected_buffer
+        src = self.graph.buffer
         angle = self.rotdeg.value
         h, w = src.shape
         M = cv2.getRotationMatrix2D((w/2, h/2), angle, scale=1)

@@ -94,10 +94,9 @@ class pyJemacs(Framebase):
             if HOME not in sys.path:
                 sys.path += [ HOME ] # adds root for loading plugins
         
-        try:
-            self.SetIcon(wx.Icon(os.path.join(HOME, "Jun.ico"), wx.BITMAP_TYPE_ICO))
-        except Exception:
-            pass
+        icon = os.path.join(HOME, "Jun.ico")
+        if os.path.exists(icon):
+            self.SetIcon(wx.Icon(icon, wx.BITMAP_TYPE_ICO))
         
         self.nfront = NotifyFront(self)
         self.notify = self.nfront.notify

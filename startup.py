@@ -95,7 +95,8 @@ class Plugin(Layer):
         
         for target in self.parent.graphic_windows:
             target.score_percentile = cuts
-            target.unit = unit # reset globalunit (localunits remain, however)
+            if unit is not np.nan:
+                target.unit = unit # reset globalunit (localunits remain, however)
             for frame in target.all_frames:
                 if unit is np.nan:
                     frame.unit = None # remove localunits if none

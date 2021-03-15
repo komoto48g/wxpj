@@ -148,7 +148,7 @@ class Plugin(Layer):
             frame = self.res
         self.message("\b @lccf...")
         if self.score.value is np.nan:
-            self.lccf.run(frame, otsu=1) # nan の場合は otsu を使用する
+            self.lccf.run(frame, otsu=1)
         else:
             self.lgbt.thresh.value = np.percentile(frame.buffer, 100-self.score.value)
             self.lccf.run(frame, otsu=0)
