@@ -42,16 +42,17 @@ class Plugin(Layer):
             ),
             row=1, expand=0, type='vspin', style='btn', lw=66, tw=60, cw=-1
         )
-        
-        for win in self.parent.graphic_windows:
-            win.handler.bind("frame_shown", self.on_unit_notify)
-            win.handler.bind("canvas_focus_set", self.on_unit_notify)
     
-    def Destroy(self):
-        for win in self.parent.graphic_windows:
-            win.handler.unbind("frame_shown", self.on_unit_notify)
-            win.handler.unbind("canvas_focus_set", self.on_unit_notify)
-        return Layer.Destroy(self)
+    def Activate(self, show):
+        Layer.Activate(self, show)
+        if show:
+            for win in self.parent.graphic_windows:
+                win.handler.bind("frame_shown", self.on_unit_notify)
+                win.handler.bind("canvas_focus_set", self.on_unit_notify)
+        else:
+            for win in self.parent.graphic_windows:
+                win.handler.unbind("frame_shown", self.on_unit_notify)
+                win.handler.unbind("canvas_focus_set", self.on_unit_notify)
     
     def set_current_session(self, session):
         self.accv_param.value = session.get('accv')
@@ -93,15 +94,15 @@ class Plugin(Layer):
         unit = self.unit_param.value
         self.unit_param.std_value = unit
         
-        for target in self.parent.graphic_windows:
-            target.score_percentile = cuts
-            if unit is not np.nan:
-                target.unit = unit # reset globalunit (localunits remain, however)
-            for frame in target.all_frames:
-                if unit is np.nan:
-                    frame.unit = None # remove localunits if none
-                frame.update_buffer() # update buffer cuts of floor/ceiling
-            target.draw()
+        target = self.selected_view
+        target.score_percentile = cuts
+        if unit is not np.nan:
+            target.unit = unit # reset globalunit (localunits remain, however)
+        for frame in target.all_frames:
+            if unit is np.nan:
+                frame.unit = None # remove localunits if none
+            frame.update_buffer() # update buffer cuts of floor/ceiling
+        target.draw()
 
 
 if __name__ == '__main__':

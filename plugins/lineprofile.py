@@ -23,15 +23,12 @@ class Plugin(Layer):
         self.plot = LineProfile(self, log=self.message, size=(300,200))
         self.layout(None, [self.plot], expand=2, border=0)
         
-        @self.handler.bind('pane_shown')
-        def attach(*v):
+    def Activate(self, show):
+        Layer.Activate(self, show)
+        if show:
             self.plot.attach(*self.parent.graphic_windows)
             self.plot.linplot(self.parent.selected_view.frame)
-        
-        @self.handler.bind('pane_removed')
-        @self.handler.bind('pane_closed')
-        @self.handler.bind('pane_hidden')
-        def detach(*v):
+        else:
             self.plot.detach(*self.parent.graphic_windows)
 
 
