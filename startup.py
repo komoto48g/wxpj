@@ -48,11 +48,11 @@ class Plugin(Layer):
         if show:
             for win in self.parent.graphic_windows:
                 win.handler.bind("frame_shown", self.on_unit_notify)
-                win.handler.bind("canvas_focus_set", self.on_unit_notify)
+                win.handler.bind("frame_selected", self.on_unit_notify)
         else:
             for win in self.parent.graphic_windows:
                 win.handler.unbind("frame_shown", self.on_unit_notify)
-                win.handler.unbind("canvas_focus_set", self.on_unit_notify)
+                win.handler.unbind("frame_selected", self.on_unit_notify)
     
     def set_current_session(self, session):
         self.accv_param.value = session.get('accv')
