@@ -91,14 +91,11 @@ def init_frame(self):
     self.load_plug(viewframe)
     self.load_plug(viewfft)
     
-    if 0:
-        from pyJeol.legacy import cmdl, cntf
-        cmdl.HOST = cntf.HOST = 'localhost'
-        cmdl.OFFLINE = True
-    
-    from pyJeol import legacy
-    legacy.cmdl.open() # open request port
-    self.notify.start() # open notify port
+    from pyJeol.legacy import cmdl, cntf
+    ## cmdl.HOST = cntf.HOST = 'localhost'
+    ## cmdl.OFFLINE = True
+    cmdl.open()
+    self.notify.start()
     
     ## --------------------------------
     ## global keymap

@@ -478,6 +478,7 @@ if __name__ == '__main__':
     app = wx.App()
     frm = pyJemacs(None)
     try:
+        sys.path.insert(0, '')
         si = __import__('siteinit')
         print("Executing {!r}".format(si.__file__))
         si.init_frame(frm)
