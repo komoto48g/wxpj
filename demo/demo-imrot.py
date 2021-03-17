@@ -31,17 +31,22 @@ class Plugin(Layer):
             ),
             row=3, expand=0, type="vspin", lw=32, cw=12, tw=60
         )
+        self.parent.define_key('C-x r', self.rotate)
+        self.graph.handler.bind('line_draw', self.calc_rotdeg)
+        self.calc_rotdeg(self.graph.frame)
     
-    def Activate(self, show):
-        if show:
-            self.parent.define_key('C-x r', self.rotate)
-            self.graph.handler.bind('line_draw', self.calc_rotdeg)
-            self.calc_rotdeg(self.graph.frame)
-        else:
-            self.graph.handler.unbind('line_draw', self.calc_rotdeg)
-            self.parent.define_key('C-x r', None)
+    ## def Activate(self, show):
+    ##     if show:
+    ##         self.parent.define_key('C-x r', self.rotate)
+    ##         self.graph.handler.bind('line_draw', self.calc_rotdeg)
+    ##         self.calc_rotdeg(self.graph.frame)
+    ##     else:
+    ##         self.graph.handler.unbind('line_draw', self.calc_rotdeg)
+    ##         self.parent.define_key('C-x r', None)
     
     def Destroy(self):
+        self.graph.handler.unbind('line_draw', self.calc_rotdeg)
+        self.parent.define_key('C-x r', None)
         return Layer.Destroy(self)
     
     def calc_rotdeg(self, frame):

@@ -262,9 +262,6 @@ class Plugin(Layer):
             'unit': self.unit_selector.value,
         }
     
-    def Destroy(self):
-        return Layer.Destroy(self)
-    
     ## --------------------------------
     ## Camera Interface
     ## --------------------------------

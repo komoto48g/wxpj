@@ -49,9 +49,6 @@ class Plugin(wxpj.Layer):
         self.graph.axes.add_artist(self.circ)
         self.Arts.append(self.circ)
     
-    def Destroy(self):
-        return wxpj.Layer.Destroy(self)
-    
     def test_imconv(self):
         src = self.graph.buffer
         self.output["*result of imconv*"] = imconv(src, self.hi.value, self.lo.value)
