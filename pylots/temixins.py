@@ -14,17 +14,14 @@ import os
 import wx
 import numpy as np
 from numpy import pi,cos,sin
-from mwx import Param, LParam
+from mwx import LParam
 from mwx.graphman import Thread
+from pyJeol import pyJem2 as pj # pmpj: Poor man's pyJem package (not a PyJEM)
+from pyJeol.pyJem2 import TEM, EOsys, HTsys, Filter, Stage # to be referred from pylots
+from pyJeol.temisc import Environ
 from misc import ConfigData
 import wxpyJemacs as wxpj
 import editor as edi
-
-from pyJeol import pyJem2 as pj
-from pyJeol.pyJem2 import TEM, EOsys, HTsys, Filter, Stage # to be referred from pylots
-from pyJeol.temisc import Environ
-
-print("$(pj) = {!r}".format((pj)))
 
 
 class TemInterface(object):
@@ -37,23 +34,14 @@ class TemInterface(object):
     camerasys = 'JeolCamera'
     ## camerasys = 'RigakuCamera'
     
-    ## cameraman = property(lambda self: self.parent.require(self.camerasys))
-    
-    @property
-    def cameraman(self):
-        name = self.camerasys
-        plug = self.parent.get_plug(name)
-        if plug is None:
-            self.parent.load_plug(name, show=1)
-            plug = self.parent.get_plug(name)
-        return plug
-    
-    ## camera = property(lambda self: self.cameraman.camera or self.cameraman.connect())
+    cameraman = property(lambda self: self.parent.require(self.camerasys))
     
     @property
     def camera(self):
         if not self.cameraman:
-            print("- Not found the camera system {}".format(self.camerasys))
+            print("- No camera system installed {!r}".format(self.camerasys))
+            return
+        
         cam = self.cameraman.camera
         if not cam:
             print("trying to connect to the camera of {}".format(self.cameraman))
@@ -65,6 +53,7 @@ class TemInterface(object):
     thread.greenflag.set()
     
     env = property(lambda self: self.parent.env)
+    
     ustar_sqrt = 1
     config_tem_mag = None
     config_tem_lowmag = None

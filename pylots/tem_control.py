@@ -97,10 +97,11 @@ class Plugin(TemInterface, Layer):
     ##     return Layer.Destroy(self)
     
     def Activate(self, show):
-        print("$(show) = {!r}".format((show)))
+        foci = self.tem.foci
         if show:
             for name in "CL3 OLC OLF OM1 FLC FLF".split():
-                self.tem.foci[name].bind(self.tem.foci.write) # bind -> WR:Enabled
+                foci[name].bind(foci.write) # WR:Enabled
+                foci[name].flag = 1
             
             self.parent.notify.handler.bind("lens_notify", self.on_lens_notify)
             self.parent.notify.handler.bind("imaging_info", self.on_imaging_notify)
@@ -111,7 +112,8 @@ class Plugin(TemInterface, Layer):
                 print("- tem controler failed to get TEM info; {}.".format(e))
         else:
             for name in "CL3 OLC OLF OM1 FLC FLF".split():
-                self.tem.foci[name].unbind(self.tem.foci.write)
+                foci[name].unbind(foci.write) # WR:Disabled
+                foci[name].flag = 0
             
             self.parent.notify.handler.unbind("lens_notify", self.on_lens_notify)
             self.parent.notify.handler.unbind("imaging_info", self.on_imaging_notify)
