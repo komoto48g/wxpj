@@ -46,7 +46,7 @@ class Plugin(TemInterface, Layer):
         
         self.SetToolTip("Set the current value as the standard focus."
                         "\n To neutralize (return to the std-value),"
-                        " press M[iddle]button on label or textctrl.")
+                        "press Mbutton on label or textctrl.")
         
         self.layout(None, (
             self.cl_focus_param,
