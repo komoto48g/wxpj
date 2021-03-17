@@ -31,24 +31,30 @@ class Plugin(Layer):
             ),
             row=3, expand=0, type="vspin", lw=32, cw=12, tw=60
         )
-        self.parent.define_key('C-x r', self.rotate)
-        self.graph.handler.bind('line_draw', self.calc_rotdeg)
+    
+    def Activate(self, show):
+        Layer.Activate(self, show)
+        if show:
+            self.parent.define_key('C-x r', self.rotate)
+            self.graph.handler.bind('line_draw', self.calc_rotdeg)
+            self.calc_rotdeg(self.graph.frame)
+        else:
+            self.graph.handler.unbind('line_draw', self.calc_rotdeg)
+            self.parent.define_key('C-x r', None)
     
     def Destroy(self):
-        self.graph.handler.unbind('line_draw', self.calc_rotdeg)
-        self.parent.define_key('C-x r', None)
         return Layer.Destroy(self)
     
     def calc_rotdeg(self, frame):
         """Calc rotation angles of selector:line and display the value-"""
-        x, y = frame.selector
-        angle = np.arctan2(y[1]-y[0], x[1]-x[0]) * 180/pi
-        self.rotdeg.value = -angle
+        if frame:
+            x, y = frame.selector
+            self.rotdeg.value = np.arctan2(y[1]-y[0], x[1]-x[0]) * 180/pi
     
     def rotate(self, evt):
         """Rotate image with given angles and load to output window"""
         src = self.graph.buffer
-        angle = self.rotdeg.value
+        angle = -self.rotdeg.value
         h, w = src.shape
         M = cv2.getRotationMatrix2D((w/2, h/2), angle, scale=1)
         dst = cv2.warpAffine(src, M, (w, h))

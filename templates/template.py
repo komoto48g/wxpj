@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-02-26 11:03:43 +0900>
+Last updated: <2021-03-17 02:17:39 +0900>
      Version: 0.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -43,6 +43,9 @@ class Plugin(Layer):
             type='vspin',            # + style of Param; slider[*], [hv]spin, and choice are available
             cw=-1, lw=36, tw=30      # + and *w indicates width of Param; [c]ontrol, [l]abel, [t]ext
         )
+    
+    def Activate(self, show):
+        Layer.Activate(self, show)
     
     def Destroy(self):
         return Layer.Destroy(self)

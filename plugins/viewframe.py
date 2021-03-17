@@ -83,7 +83,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
         self.Bind(wx.EVT_MOTION, self.OnMotion)
         self.Bind(wx.EVT_LIST_COL_CLICK, self.OnSortItems)
         
-        self.context = { # This context is to be bound to the target handler
+        self.context = { # to be bound to the target handler
             None: {
                   'frame_shown' : [ None, self.on_frame_shown ],
                  'frame_hidden' : [ None, self.on_frame_hidden ],
