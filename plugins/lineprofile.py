@@ -24,7 +24,6 @@ class Plugin(Layer):
         self.layout(None, [self.plot], expand=2, border=0)
     
     def Activate(self, show):
-        Layer.Activate(self, show)
         if show:
             self.plot.attach(*self.parent.graphic_windows)
             self.plot.linplot(self.parent.selected_view.frame)

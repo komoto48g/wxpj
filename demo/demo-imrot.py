@@ -33,7 +33,6 @@ class Plugin(Layer):
         )
     
     def Activate(self, show):
-        Layer.Activate(self, show)
         if show:
             self.parent.define_key('C-x r', self.rotate)
             self.graph.handler.bind('line_draw', self.calc_rotdeg)

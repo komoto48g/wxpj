@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-03-17 02:17:39 +0900>
+Last updated: <2021-03-17 11:27:03 +0900>
      Version: 2.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -51,9 +51,6 @@ class Plugin(Layer):
             ),
             row=1, expand=0, show=0, type='vspin', cw=12, lw=36, tw=36,
         )
-    
-    def Activate(self, show):
-        Layer.Activate(self, show)
     
     def Destroy(self):
         return Layer.Destroy(self)

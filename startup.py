@@ -44,7 +44,6 @@ class Plugin(Layer):
         )
     
     def Activate(self, show):
-        Layer.Activate(self, show)
         if show:
             for win in self.parent.graphic_windows:
                 win.handler.bind("frame_shown", self.on_unit_notify)
