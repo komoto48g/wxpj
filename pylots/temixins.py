@@ -764,7 +764,7 @@ class AlignInterface(TemInterface):
         """Inverse matrix [bit/pix]"""
         m = self.conf_table.reshape(2,2)
         try:
-            a0 = self.config['rotation'] # base deg rotation angles of IL
+            a0 = self.config['rotation'] # std rotation angles of IL
             a = self.calc_imrot(self.Tem.IL_LENSES) # get present rotation
             t = (a - a0) * pi/180
             c = cos(t)
@@ -772,8 +772,7 @@ class AlignInterface(TemInterface):
             R = np.array(((c, -s), (s, c)))
             Ri = np.array(((c, s), (-s, c)))
             m = np.dot(R, np.dot(M, Ri))
-        except Exception:
-            # no config[self.conf_key] found
+        except KeyError:
             pass
         return np.linalg.inv(m)
     
@@ -793,6 +792,11 @@ class AlignInterface(TemInterface):
             raise
     
     def cal(self, step=None, maxiter=3):
+        try:
+            self.config['rotation'] = self.calc_imrot(self.Tem.IL_LENSES) # set std rotation angles of IL
+        except KeyError:
+            pass
+        
         h, w = self.camera.shape
         m = self.conf_table
         ys = np.hypot(m[0], m[2])   # [pix/bit]

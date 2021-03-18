@@ -5,7 +5,7 @@ from __future__ import (division, print_function,
 import wx
 import cv2
 import numpy as np
-from numpy import pi
+from numpy import pi,nan
 from numpy.fft import fft2,fftshift
 from mwx import LParam
 from mwx.graphman import Layer
@@ -52,7 +52,7 @@ class Plugin(Layer):
         
         self.layout("Evaluate step by step", (
             wxpj.Button(self, "1. Show",
-                lambda v: self.show_page(), icon='help', size=size,
+                lambda v: self.selected_view.select(self.selected_frame), icon='help', size=size,
                 tip="Select frame buffer.\n"
                     "(page -1 means the last frame)"),
             self.page,
@@ -100,22 +100,26 @@ class Plugin(Layer):
         self.lgbt.ksize.value = 5 # default blur window size
     
     @property
-    def res(self):
+    def result_frame(self):
         if self.choice.Selection < 2:
             name = "*result of fft*"
         else:
             name = "*result of matching*"
         return self.selected_view.find_frame(name)
     
-    def show_page(self):
+    @property
+    def selected_frame(self):
         self.page.range = (-1, len(self.selected_view))
-        return self.selected_view.select(self.page.value)
+        if self.page.value is nan:
+            return self.selected_view.frame
+        return self.selected_view.find_frame(self.page.value)
     
     def testrun(self, frame=None):
+        """Evaluation using selected method (ref: choice.Selection)"""
         if not frame:
-            frame = self.selected_view.find_frame(self.page.value)
+            frame = self.selected_frame
         
-        if not self.res and self.page.value != -1:
+        if not self.result_frame and self.page.value >= 0:
             ## A new frame (*result*) is to be loaded ahead of stacks
             ## so we need to put forward the page counter (no problem when -1)
             self.page.value += 1
@@ -127,7 +131,7 @@ class Plugin(Layer):
     
     def run(self, frame=None):
         if not frame:
-            frame = self.show_page()
+            frame = self.selected_frame
         self.message("\b @ldc...")
         self.ldc.reset_params(backcall=None)
         self.ldc.thread.Start(self.calc_fit, frame)
@@ -136,6 +140,7 @@ class Plugin(Layer):
         result = self.testrun(frame)
         frame = self.calc_mark(result)
         if self.choice.Selection == 2:
+            frame = self.selected_view.select(self.selected_frame)
             self.show_page()
         self.run(frame)
     
@@ -145,9 +150,9 @@ class Plugin(Layer):
     
     def calc_mark(self, frame=None):
         if not frame:
-            frame = self.res
+            frame = self.result_frame
         self.message("\b @lccf...")
-        if self.score.value is np.nan:
+        if self.score.value is nan:
             self.lccf.run(frame, otsu=1)
         else:
             self.lgbt.thresh.value = np.percentile(frame.buffer, 100-self.score.value)
@@ -166,13 +171,15 @@ class Plugin(Layer):
         g = self.ldc.grid_params[0].value
         g0 = eval(self.grid.Value)
         if self.choice.Selection < 2: # FFT
-            res = ("grid = {:g} mm".format(1/g),
-                   "Mag = {:,.0f} [fft]".format(1/g/g0))
+            self.text.Value = ';\n'.join((
+                "Mag = {:,.0f} [fft]".format(1/g/g0),
+                "grid = {:g} mm".format(1/g),
+            ))
         else:
-            res = ("grid = {:g} mm".format(g),
-                   "Mag = {:,.0f} [cor]".format(g/g0))
-        self.text.Value = '\n'.join(res)
-        print(*res)
+            self.text.Value = ';\n'.join((
+                "Mag = {:,.0f} [cor]".format(g/g0),
+                "grid = {:g} mm".format(g),
+            ))
     
     ## --------------------------------
     ## test functions

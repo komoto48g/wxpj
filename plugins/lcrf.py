@@ -5,7 +5,7 @@ from __future__ import (division, print_function,
 import wx
 import cv2
 import numpy as np
-from numpy import pi,cos,sin
+from numpy import pi,cos,sin,inf
 from scipy import optimize
 from scipy import signal
 from mwx import LParam
@@ -146,7 +146,7 @@ class Plugin(Layer):
     
     def Init(self):
         self.rmin = LParam("rmin", (0,2000,1), 50)
-        self.rmax = LParam("rmax", (0,2000,1), np.nan)
+        self.rmax = LParam("rmax", (0,2000,1), inf)
         
         self.layout("blur-threshold", self.lgbt.params, show=0, cw=0, lw=40, tw=40)
         self.layout("radii", [

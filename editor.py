@@ -289,10 +289,6 @@ def calc_ellipse(src, ellipse):
     h, w = src.shape
     y, x = np.ogrid[-h/2:h/2, -w/2:w/2]
     yo, xo = cy-h/2, cx-w/2
-    ## t = (90 - angle) * pi/180
-    ## xx = (x-xo) * cos(t) - (y-yo)*sin(t)
-    ## yy = (x-xo) * sin(t) + (y-yo)*cos(t)
-    ## mask = np.hypot(yy/ra*2, xx/rb*2) < 1 # 楕円の短径 ra/2 < 長径 rb/2
     t = angle * pi/180
     xx = (x-xo) * cos(t) + (y-yo)*sin(t)
     yy = (x-xo) *-sin(t) + (y-yo)*cos(t)

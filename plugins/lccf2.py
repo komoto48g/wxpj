@@ -92,29 +92,28 @@ class Plugin(Layer):
                     ## xy.append(art.center)
                     
                     r = int(max(ra,rb)/2) # max radius enclosing the area cf. cv2.minEnclosingCircle
-                    nx, ny = int(cx), int(cy)
-                    xa, xb = max(0, nx-r), min(nx+r+1, w)
-                    ya, yb = max(0, ny-r), min(ny+r+1, h)
-                    buf = frame.buffer[ya:yb, xa:xb] # not src!
+                    x, y = int(cx), int(cy)
+                    xa = max(0, x-r)
+                    ya = max(0, y-r)
+                    buf = frame.buffer[ya:y+r+1, xa:x+r+1]
                     
                     ## local maximum
                     dy, dx = np.unravel_index(buf.argmax(), buf.shape)
-                    xy.append(frame.xyfrompixel(nx-r+dx, ny-r+dy))
+                    xy.append(frame.xyfrompixel(xa+dx, ya+dy))
                     
-                    ## centroid
-                    ## dx, dy = calc_masked_centroid(buf.copy(), ra, rb, angle)
-                    ## xy.append(frame.xyfrompixel(nx-r+dx, ny-r+dy))
+                    ## centroid of masked array
+                    ## buf = np.ma.masked_array(buf, mask_ellipse(ra, rb, angle))
+                    ## dx, dy = edi.centroid(buf)
+                    ## xy.append(frame.xyfrompixel(xa+dx, ya+dy))
                     
             frame.markers = np.array(xy).T # scatter markers if any xy
 
 
-## def calc_masked_centroid(buf, ra, rb, angle):
-##     h, w = buf.shape
-##     y, x = np.ogrid[-h/2:h/2, -w/2:w/2]
-##     yo, xo = 0, 0
-##     t = angle * pi/180
-##     xx = (x-xo) * cos(t) + (y-yo)*sin(t)
-##     yy = (x-xo) *-sin(t) + (y-yo)*cos(t)
-##     mask = np.hypot(xx/ra*2, yy/rb*2) > 1 # 楕円の短径 ra/2 < 長径 rb/2
-##     buf[mask] = 0
-##     return edi.centroid(buf)
+def mask_ellipse(ra, rb, angle):
+    r = int(max(ra, rb) /2) # max radius enclosing the area cf. cv2.minEnclosingCircle
+    y, x = np.ogrid[-r:r, -r:r]
+    yo, xo = 0, 0
+    t = angle * pi/180
+    xx = (x-xo) * cos(t) + (y-yo)*sin(t)
+    yy = (x-xo) *-sin(t) + (y-yo)*cos(t)
+    return np.hypot(xx/ra*2, yy/rb*2) > 1 # 楕円の短径 ra/2 < 長径 rb/2

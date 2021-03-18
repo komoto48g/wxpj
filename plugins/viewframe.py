@@ -54,7 +54,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
             ("med", 60),
             ("max", 50),
             ("min", 50),
-           #("annotation", 200),
+            ("annotation", 200),
         )
         for k,(name,w) in enumerate(self.alist):
             self.InsertColumn(k, name, width=w)
@@ -111,7 +111,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
           "{:.2f}".format(np.median(frame.buffer)),
             "{:g}".format(frame.buffer.max()),
             "{:g}".format(frame.buffer.min()),
-             #"{}".format(frame.annotation),
+              "{}".format(frame.annotation),
         )
         j = frame.index
         for k, v in enumerate(ls):
