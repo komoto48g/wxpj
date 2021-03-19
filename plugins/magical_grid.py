@@ -110,8 +110,8 @@ class Plugin(Layer):
     @property
     def selected_frame(self):
         self.page.range = (-1, len(self.selected_view))
-        if self.page.value is nan:
-            return self.selected_view.frame
+        ## if self.page.value is nan:
+        ##     return self.selected_view.frame
         return self.selected_view.find_frame(self.page.value)
     
     def testrun(self, frame=None):
@@ -151,6 +151,9 @@ class Plugin(Layer):
     def calc_mark(self, frame=None):
         if not frame:
             frame = self.result_frame
+            if not frame:
+                print(self.message("- No *result* frame"))
+                return
         self.message("\b @lccf...")
         if self.score.value is nan:
             self.lccf.run(frame, otsu=1)
@@ -171,15 +174,12 @@ class Plugin(Layer):
         g = self.ldc.grid_params[0].value
         g0 = eval(self.grid.Value)
         if self.choice.Selection < 2: # FFT
-            self.text.Value = ';\n'.join((
-                "Mag = {:,.0f} [fft]".format(1/g/g0),
-                "grid = {:g} mm".format(1/g),
-            ))
+            res = ("Mag = {:,.0f} [fft]".format(1/g/g0),
+                   "grid = {:g} mm".format(1/g))
         else:
-            self.text.Value = ';\n'.join((
-                "Mag = {:,.0f} [cor]".format(g/g0),
-                "grid = {:g} mm".format(g),
-            ))
+            res = ("Mag = {:,.0f} [cor]".format(g/g0),
+                   "grid = {:g} mm".format(g))
+        self.text.Value = ', '.join(res)
     
     ## --------------------------------
     ## test functions
@@ -269,8 +269,7 @@ class Plugin(Layer):
         ## do not cuts hi/lo: 強度重心を正しくとるためには飽和しないようにする
         ## dst = edi.imconv(dst, hi=0)
         return frame.parent.load(dst, name="*result of fft*", pos=0, localunit=1/w/frame.unit)
-        ## return self.test_cor(
-        ##     frame.parent.load(dst, name="*result of fft*", pos=0, localunit=1/w/frame.unit))
+
 
 if __name__ == "__main__":
     import glob

@@ -11,7 +11,7 @@ from matplotlib import patches
 import editor as edi
 
 
-def find_ellipses(src):
+def find_ellipses(src, tol=0.75):
     """Find ellipses
     楕円検出を行うため，5 点以上のコンターが必要．小さいスポットは除外される
     小さいスポットを検出するためにはぼかし量を大きくすればよい
@@ -24,14 +24,20 @@ def find_ellipses(src):
     c, contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     ## Detect enclosing rectangles
-    ## There should be at least 5 points to fit the ellipse
+    ## Note: there should be at least 5 points to fit the ellipse (c,r,a)
     ellipses = [cv2.fitEllipse(v) for v in contours if len(v) > 4]
     
     h, w = src.shape
-    distance = lambda p: np.hypot(p[0]-w/2, p[1]-h/2) # 位置で昇順ソート
     
-    return sorted([(c,r,a) for c,r,a in ellipses if 0 < c[0] < w and 0 < c[1] < h],
-                    key=lambda v: distance(v[0]))
+    def distance(v): # 位置で昇順ソートする
+        c = v[0]
+        return np.hypot(c[0]-w/2, c[1]-h/2)
+    
+    def isinside(c, r): # 画像の端にある円を除く
+        d = tol * max(r)
+        return d < c[0] < w-d and d < c[1] < h-d
+    
+    return sorted([(c,r,a) for c,r,a in ellipses if isinside(c,r)], key=distance)
 
 
 class Plugin(Layer):

@@ -191,7 +191,7 @@ class Plugin(Layer):
         self.init_grid(frame.axes)
         
         with self.thread:
-            ## 近傍にあるピーク位置 (±n) をぼかして (k,k) 検出する
+            ## 近傍にあるピーク位置をぼかして (k,k) 検出する
             if not skip:
                 k = 5
                 n = 5

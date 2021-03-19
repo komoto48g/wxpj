@@ -202,14 +202,32 @@ class Plugin(Layer):
                   ":res {:g}".format(np.sqrt(np.average(res)) / frame.unit))
             self.calc()
     
+    ## def find_near_grid(self, x, y):
+    ##     dx = np.diff(x)
+    ##     dy = np.diff(y)
+    ##     dl = np.hypot(dx,dy)
+    ##     j = dl.argmin() # 隣接スポット間の距離のうち最小のやつ
+    ##     g = dl[j]
+    ##     t = np.arctan(dy[j]/dx[j]) * 180/pi
+    ##     for lp,v in zip(self.grid_params, (g, t, x[0], y[0])):
+    ##         lp.value = v
+    ## 
     def find_near_grid(self, x, y):
-        dx = np.diff(x)
-        dy = np.diff(y)
-        dl = np.hypot(dx,dy) # 近接スポットの距離のうち最小のやつを求める
-        j = dl.argmin()
-        g = dl[j]
-        t = np.arctan(dy[j]/dx[j]) * 180/pi
-        for lp,v in zip(self.grid_params, (g, t, x[j], y[j])):
+        lx = []
+        ly = []
+        ld = []
+        for i in range(len(x)):
+            d = np.hypot(x-x[i], y-y[i])
+            d[i] = np.inf
+            j = d.argmin() # j-i 近接スポット間の距離のうち最小のやつ
+            ld.append(d[j])
+            lx.append(x[j] - x[i])
+            ly.append(y[j] - y[i])
+            
+        k = ld.index(np.median(ld))
+        g = ld[k]
+        t = np.arctan(ly[k]/lx[k]) * 180/pi
+        for lp,v in zip(self.grid_params, (g, t, x[0], y[0])):
             lp.value = v
 
 

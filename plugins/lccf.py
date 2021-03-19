@@ -26,11 +26,16 @@ def find_circles(src, rmin=10, rmax=1000, tol=0.75):
     ## img = cv2.drawContours(src.copy(), contours, -1, 255, 1) # linetype=-1 => 塗りつぶし
     
     h, w = src.shape
-    distance = lambda p: np.hypot(p[0]-w/2, p[1]-h/2) # 位置で昇順ソート
-    isinside = lambda p,dr: dr < p[0] < w-dr and dr < p[1] < h-dr # 画像の端にある円を除く
     
-    return sorted([(c,r) for c,r in circles if rmin < r < rmax and isinside(c, r*tol)],
-                    key=lambda v: distance(v[0]))
+    def distance(v): # 位置で昇順ソートする
+        c = v[0]
+        return np.hypot(c[0]-w/2, c[1]-h/2)
+    
+    def isinside(c, r): # 画像の端にある円を除く
+        d = tol * r
+        return rmin < r < rmax and d < c[0] < w-d and d < c[1] < h-d
+    
+    return sorted([(c,r) for c,r in circles if isinside(c,r)], key=distance)
 
 
 class Plugin(Layer):
