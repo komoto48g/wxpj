@@ -18,7 +18,7 @@ class Plugin(TemInterface, Layer):
     index = TEM.CL3
     wobbler = TEM.OL
     
-    default_threshold = 0.005 # wobbler 変更に対するビーム径の変化(率
+    default_threshold = 0.001 # wobbler 変更に対するビーム径の変化(率
     default_wobstep = 0x1000 # olstep = 0x1000 => OLdf=12um
     default_wobsec = 1.0
     
@@ -93,8 +93,7 @@ class Plugin(TemInterface, Layer):
         j = self.conf_key[0]
         self.index = self.config[j][i]
     
-    def cal(self):
-        maxiter = 3
+    def cal(self, maxiter=5):
         with self.save_excursion(mmode='MAG'):
             try:
                 h, w = self.camera.shape
@@ -201,7 +200,7 @@ class Plugin(TemInterface, Layer):
         ret = True
         with self.thread:
             with self.save_excursion(mmode='MAG'):
-                with self.save_restriction(CLAPT=3, SAAPT=0):
+                with self.save_restriction(CLAPT=2, SAAPT=0):
                     self.cla.align()
                     for a in self.for_each_alpha():
                         self.imaging.Mag = mags_apriori[a]

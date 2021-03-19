@@ -24,6 +24,7 @@ class Plugin(AlignInterface, Layer):
     def cal(self):
         with self.save_excursion(mmode='MAG'):
             self.spot.focus()
+            self.delay(1)
             return AlignInterface.cal(self)
     
     def execute(self):

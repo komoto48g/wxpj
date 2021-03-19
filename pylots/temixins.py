@@ -763,20 +763,20 @@ class AlignInterface(TemInterface):
     def M(self):
         """Inverse matrix [bit/pix]"""
         m = self.conf_table.reshape(2,2)
-        try:
-            a0 = self.config['rotation'] # std rotation angles of IL
-            a = self.calc_imrot(self.Tem.IL_LENSES) # get present rotation
-            t = (a - a0) * pi/180
-            c = cos(t)
-            s = sin(t)
-            R = np.array(((c, -s), (s, c)))
-            Ri = np.array(((c, s), (-s, c)))
-            m = np.dot(R, np.dot(M, Ri))
-        except KeyError:
-            pass
+        ## try:
+        ##     a0 = self.config['rotation'] # std rotation angles of IL
+        ##     a = self.calc_imrot(self.Tem.IL_LENSES) # get present rotation
+        ##     t = (a - a0) * pi/180
+        ##     c = cos(t)
+        ##     s = sin(t)
+        ##     R = np.array(((c, -s), (s, c)))
+        ##     Ri = np.array(((c, s), (-s, c)))
+        ##     m = np.dot(R, np.dot(m, Ri))
+        ## except KeyError:
+        ##     pass
         return np.linalg.inv(m)
     
-    def align(self, pos=None, power=10):
+    def align(self, pos=None, power=1):
         if pos is None:
             h, w = self.camera.shape
             pos = (w/2, h/2) # target position be the center of the screen
@@ -792,10 +792,11 @@ class AlignInterface(TemInterface):
             raise
     
     def cal(self, step=None, maxiter=3):
-        try:
-            self.config['rotation'] = self.calc_imrot(self.Tem.IL_LENSES) # set std rotation angles of IL
-        except KeyError:
-            pass
+        ## try:
+        ##     self.config['rotation'] = self.calc_imrot(self.Tem.IL_LENSES) # set std rotation angles of IL
+        ## except KeyError as e:
+        ##     print("$(e) = {!r}".format((e)))
+        ##     pass
         
         h, w = self.camera.shape
         m = self.conf_table
