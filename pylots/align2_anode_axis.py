@@ -85,7 +85,10 @@ class Plugin(AlignInterface, PylotItem):
                         worg = self.wobbler
                         self.wobbler = (worg or 0) + self.wobstep.value
                         self.delay(self.default_wobsec)
-                        return AlignInterface.cal(self) and AlignInterface.align(self)
+                        retval = AlignInterface.cal(self)
+                        if retval is True:
+                            AlignInterface.align(self)
+                        return retval
                     finally:
                         self.wobbler = worg
     

@@ -36,7 +36,10 @@ class Plugin(CompInterface, Layer):
     
     def Init(self):
         CompInterface.Init(self)
-        self.__index = self.conf_table
+        try:
+            self.__index = self.conf_table
+        except Exception as e:
+            print("$(e) = {!r}".format((e)))
     
     @property
     def conf_table(self):

@@ -162,7 +162,7 @@ class Plugin(UserInterface, Layer):
         try:
             self.tree.set_flags(session)  # reload 時は zip 長さが合わないので以下を追加する
         except Exception as e:
-            print(e)
+            print("$(e) = {!r}".format((e)))
         self.restore_session(session) # [0]-Calibrations 以降の拡張プラグインを復元する
         self.tree.reset()
     

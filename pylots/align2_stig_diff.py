@@ -37,7 +37,11 @@ class Plugin(StigInterface, Layer):
                     self.diffspot.focus(0.25)
                     self.para.focus()
                     self.pla.align()
-                    return StigInterface.cal(self)
+                    ## return StigInterface.cal(self)
+                    retval = StigInterface.cal(self)
+                    if retval is True:
+                        StigInterface.align(self)
+                    return retval
     
     def execute(self):
         with self.thread:

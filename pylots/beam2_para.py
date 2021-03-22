@@ -189,7 +189,8 @@ class Plugin(TemInterface, Layer):
                 self.set_para_beam((xj, p))
                 return False
             
-            except Exception:
+            except Exception as e:
+                print("$(e) = {!r}".format((e)))
                 self.index = org
                 raise
             finally:

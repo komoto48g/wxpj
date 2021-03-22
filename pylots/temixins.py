@@ -262,7 +262,7 @@ class TemInterface(object):
         for s in range(ns):
             self.message("spot={}, alpha={}".format(s, a))
             self.illumination.Spot = s
-            ## self.delay(1)
+            self.delay(1)
             self.thread.check()
             yield s
     
@@ -273,7 +273,7 @@ class TemInterface(object):
         for a in range(na):
             self.message("spot={}, alpha={}".format(s, a))
             self.illumination.Alpha = a
-            ## self.delay(1)
+            self.delay(1)
             self.thread.check()
             yield a
     
@@ -282,7 +282,7 @@ class TemInterface(object):
         for j, v in enumerate(self.imaging.Range):
             self.message("mag/cam: [{}] {:,d}".format(j, v))
             self.imaging.Mag = v
-            ## self.delay(1)
+            self.delay(1)
             self.thread.check()
             yield (j, v)
     
@@ -291,7 +291,7 @@ class TemInterface(object):
         for j, v in enumerate(self.omega.Range):
             self.message("dispersion: [{}] {:,d}".format(j, v))
             self.omega.Dispersion = v
-            ## self.delay(1)
+            self.delay(1)
             self.thread.check()
             yield (j, v)
     
@@ -836,7 +836,7 @@ class StigInterface(AlignInterface):
     
     def align(self):
         ## self.spot.focus(0.25)
-        maxiter = 3
+        maxiter = 5
         for i in range(maxiter):
             xo, yo = self.index
             c = self.eval_beam_roundness()

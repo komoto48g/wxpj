@@ -34,7 +34,11 @@ class Plugin(StigInterface, Layer):
                 with self.save_excursion(mmode='MAG'):
                     self.spot.focus(0.25)
                     self.shift.align()
-                    return StigInterface.cal(self)
+                    ## return StigInterface.cal(self)
+                    retval = StigInterface.cal(self)
+                    if retval is True:
+                        StigInterface.align(self)
+                    return retval
     
     def execute(self):
         with self.thread:
