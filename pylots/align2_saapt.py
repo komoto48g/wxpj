@@ -50,14 +50,15 @@ class Plugin(AlignInterface, Layer):
                    and AlignInterface.align(self)
     
     def cal(self):
-        if self.apt_selection('SAAPT'):
-            with self.save_excursion(mmode='MAG'):
-                d, p, q = self.detect_beam_diameter()
-                if d:
-                    ## Reccord SAAPT size, normalizing by φ100um
-                    ## >>> saadia = self.config['beta'] * (self.SAAPT.dia /100) # [um]
-                    self.config['beta'] = d * self.mag_unit / (self.SAAPT.dia /100) # [um]
-                return AlignInterface.cal(self)
+        with self.thread:
+            if self.apt_selection('SAAPT'):
+                with self.save_excursion(mmode='MAG'):
+                    d, p, q = self.detect_beam_diameter()
+                    if d:
+                        ## Reccord SAAPT size, normalizing by φ100um
+                        ## >>> saadia = self.config['beta'] * (self.SAAPT.dia /100) # [um]
+                        self.config['beta'] = d * self.mag_unit / (self.SAAPT.dia /100) # [um]
+                    return AlignInterface.cal(self)
     
     def execute(self):
         with self.thread:

@@ -59,11 +59,12 @@ class Plugin(AlignInterface, Layer):
                        and AlignInterface.align(self)
     
     def cal(self):
-        if self.apt_selection('CLAPT'):
-            with self.save_excursion(mmode='MAG'):
-                self.spot.focus(0.25) # Do always set quarter-open beam
-                self.shift.align()
-                return AlignInterface.cal(self)
+        with self.thread:
+            if self.apt_selection('CLAPT'):
+                with self.save_excursion(mmode='MAG'):
+                    self.spot.focus(0.25) # Do always set quarter-open beam
+                    self.shift.align()
+                    return AlignInterface.cal(self)
     
     def execute(self):
         with self.thread:

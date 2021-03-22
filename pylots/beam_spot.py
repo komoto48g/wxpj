@@ -42,16 +42,17 @@ class Plugin(SpotInterface, Layer):
         return (0.20 < d1/h < 0.30)
     
     def cal(self):
-        if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
-            with self.save_excursion(mmode='MAG'):
-                self.focus(0.1)
-                ret = SpotInterface.cal(self)
-                if ret is False:
-                    with self.save_excursion():
-                        if not self.find_beam(): # => beam lost
-                            return
-                    ret = SpotInterface.cal(self) # try once more, FAIL skips
-                return ret and self.certify()
+        with self.thread:
+            if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
+                with self.save_excursion(mmode='MAG'):
+                    self.focus(0.1)
+                    ret = SpotInterface.cal(self)
+                    if ret is False:
+                        with self.save_excursion():
+                            if not self.find_beam(): # => beam lost
+                                return
+                        ret = SpotInterface.cal(self) # try once more, FAIL skips
+                    return ret and self.certify()
     
     def execute(self):
         with self.thread:

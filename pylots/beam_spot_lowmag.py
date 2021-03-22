@@ -33,9 +33,10 @@ class Plugin(SpotInterface, Layer):
         if ys: self.config[k][i] = abs(ys) * self.factor
     
     def cal(self):
-        if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
-            with self.save_excursion(mmode='LOWMAG'):
-                return SpotInterface.cal(self)
+        with self.thread:
+            if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
+                with self.save_excursion(mmode='LOWMAG'):
+                    return SpotInterface.cal(self)
     
     def execute(self):
         with self.thread:

@@ -55,14 +55,15 @@ class Plugin(AlignInterface, Layer):
                        and AlignInterface.align(self)
     
     def cal(self):
-        if self.apt_selection('SAAPT'):
-            with self.save_excursion(mmode='DIFF'):
-                with self.save_restriction(PLA=None):
-                    self.diffspot.focus(0.25) # Do always set quarter-open beam
-                    self.para.focus()
-                    self.delay()
-                    self.pla.align()
-                    return AlignInterface.cal(self)
+        with self.thread:
+            if self.apt_selection('SAAPT'):
+                with self.save_excursion(mmode='DIFF'):
+                    with self.save_restriction(PLA=None):
+                        self.diffspot.focus(0.25) # Do always set quarter-open beam
+                        self.para.focus()
+                        self.delay()
+                        self.pla.align()
+                        return AlignInterface.cal(self)
     
     def execute(self):
         with self.thread:

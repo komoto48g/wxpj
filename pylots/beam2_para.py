@@ -94,7 +94,8 @@ class Plugin(TemInterface, Layer):
         self.index = self.config[j][i]
     
     def cal(self, maxiter=5):
-        with self.save_excursion(mmode='MAG'):
+        with self.thread,\
+          self.save_excursion(mmode='MAG'):
             try:
                 h, w = self.camera.shape
                 xo, ys = self.spot.conf_table

@@ -35,18 +35,19 @@ class Plugin(TemInterface, Layer):
         return self.config[self.conf_key][i] * r
     
     def cal(self):
-        if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
-            with self.save_excursion(mmode='DIFF'):
-                self.spot.focus()
-                self.diffspot.focus()
-                self.pla.align()
-                self.delay(2)
-                d, p, q = self.detect_beam_diameter()
-                if d:
-                    r = self.CLAPT.dia /100
-                    i = self.illumination.Selector
-                    self.config[self.conf_key][i] = d * self.cam_unit / r #= 2α[mrad]
-                    return True
+        with self.thread:
+            if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
+                with self.save_excursion(mmode='DIFF'):
+                    self.spot.focus()
+                    self.diffspot.focus()
+                    self.pla.align()
+                    self.delay(2)
+                    d, p, q = self.detect_beam_diameter()
+                    if d:
+                        r = self.CLAPT.dia /100
+                        i = self.illumination.Selector
+                        self.config[self.conf_key][i] = d * self.cam_unit / r #= 2α[mrad]
+                        return True
     
     def execute(self):
         with self.thread:

@@ -22,12 +22,13 @@ class Plugin(CompInterface, Layer):
     saad = property(lambda self: self.parent.require('align2_saapt_diff'))
     
     def cal(self):
-        with self.save_excursion(mmode='DIFF'):
-            self.para.focus() # para で合わせるべし ! #20210219 Note 参照
-            self.diffspot.focus() # DIFF-Focus をきちんと合わせること !
-            ## self.spot.focus()
-            self.pla.align()
-            return CompInterface.cal(self, step=0x100)
+        with self.thread:
+            with self.save_excursion(mmode='DIFF'):
+                self.para.focus() # para で合わせるべし ! #20210219 Note 参照
+                self.diffspot.focus() # DIFF-Focus をきちんと合わせること !
+                ## self.spot.focus()
+                self.pla.align()
+                return CompInterface.cal(self, step=0x100)
     
     def execute(self):
         with self.thread:

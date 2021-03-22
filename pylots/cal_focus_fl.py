@@ -55,32 +55,33 @@ class Plugin(TemInterface, Layer):
                 raise
     
     def cal(self):
-        if self.omega.Mode == 1:
-            h, w = self.camera.shape
-            ds = self.conf_table
-            ys = np.hypot(*ds) # [pix/bit]
-            step = h / ys * 0.1 # (config) 初期設定値をもとにステップを決める
-            try:
-                org = self.index
-                c, p, q = self.detect_beam_center()
-                if c is None:
-                    return
-                
-                for i in range(2):
-                    self.index = org + step
-                    u, p_, q_ = self.detect_beam_center()
-                    if u is None or p_/p < 0.8:
-                        step /= 2
-                    else: break
-                else: return
-                
-                m = (u - c) / step # [pix/bit]
-                
-                i = self.omega.Selector
-                self.config[self.conf_key][i] = m * self.disp_unit # [eV/bit]
-                return True
-            finally:
-                self.index = org
+        with self.thread:
+            if self.omega.Mode == 1:
+                h, w = self.camera.shape
+                ds = self.conf_table
+                ys = np.hypot(*ds) # [pix/bit]
+                step = h / ys * 0.1 # (config) 初期設定値をもとにステップを決める
+                try:
+                    org = self.index
+                    c, p, q = self.detect_beam_center()
+                    if c is None:
+                        return
+                    
+                    for i in range(2):
+                        self.index = org + step
+                        u, p_, q_ = self.detect_beam_center()
+                        if u is None or p_/p < 0.8:
+                            step /= 2
+                        else: break
+                    else: return
+                    
+                    m = (u - c) / step # [pix/bit]
+                    
+                    i = self.omega.Selector
+                    self.config[self.conf_key][i] = m * self.disp_unit # [eV/bit]
+                    return True
+                finally:
+                    self.index = org
     
     def execute(self):
         with self.thread:

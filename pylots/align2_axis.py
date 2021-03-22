@@ -57,17 +57,18 @@ class Plugin(AlignInterface, Layer):
                     self.wobbler = worg
     
     def cal(self):
-        if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
-            with self.save_excursion(mmode='MAG'):
-                self.spot.focus()
-                self.shift.align()
-                try:
-                    worg = self.wobbler
-                    self.wobbler = worg + self.wobstep.value
-                    self.delay(self.default_wobsec)
-                    return AlignInterface.cal(self) and AlignInterface.align(self)
-                finally:
-                    self.wobbler = worg
+        with self.thread:
+            if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
+                with self.save_excursion(mmode='MAG'):
+                    self.spot.focus()
+                    self.shift.align()
+                    try:
+                        worg = self.wobbler
+                        self.wobbler = worg + self.wobstep.value
+                        self.delay(self.default_wobsec)
+                        return AlignInterface.cal(self) and AlignInterface.align(self)
+                    finally:
+                        self.wobbler = worg
     
     def execute(self):
         with self.thread:

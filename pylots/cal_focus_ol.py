@@ -69,31 +69,32 @@ class Plugin(TemInterface, Layer):
                 raise
     
     def cal(self):
-        if self.apt_selection('SAAPT', 0):
-            with self.save_excursion(mmode='MAG'):
-                try:
-                    step = 0x1000
-                    org = self.index
-                    dt = self.get_tilt()
+        with self.thread:
+            if self.apt_selection('SAAPT', 0):
+                with self.save_excursion(mmode='MAG'):
+                    try:
+                        step = 0x1000
+                        org = self.index
+                        dt = self.get_tilt()
+                        
+                        x1 = self.index
+                        y1 = self.calc_disp()   # [um] image displacement
+                        z1 = min(y1 / dt) * 1e3 # [um] @min eliminates inf
+                        
+                        x2 = self.index = org + step
+                        y2 = self.calc_disp()
+                        z2 = min(y2 / dt) * 1e3 # [um] @min eliminates inf
+                        
+                        zs = (z2-z1) / (x2-x1) # [um/bit] -> config
+                        x0 = x1 - z1 / zs      # フォーカス推定値
+                        
+                        self.config[self.conf_key] = zs
+                        self.index = x0
+                        return True
                     
-                    x1 = self.index
-                    y1 = self.calc_disp()   # [um] image displacement
-                    z1 = min(y1 / dt) * 1e3 # [um] @min eliminates inf
-                    
-                    x2 = self.index = org + step
-                    y2 = self.calc_disp()
-                    z2 = min(y2 / dt) * 1e3 # [um] @min eliminates inf
-                    
-                    zs = (z2-z1) / (x2-x1) # [um/bit] -> config
-                    x0 = x1 - z1 / zs      # フォーカス推定値
-                    
-                    self.config[self.conf_key] = zs
-                    self.index = x0
-                    return True
-                
-                except Exception:
-                    self.index = org
-                    raise
+                    except Exception:
+                        self.index = org
+                        raise
     
     def execute(self):
         with self.thread:

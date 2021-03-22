@@ -43,10 +43,11 @@ class Plugin(CompInterface, Layer):
         return self.config[self.conf_key][0]
     
     def cal(self):
-        with self.save_excursion(mmode='DIFF'):
-            ## self.index = [0x8000, 0x8000] # neutralize :reload
-            self.spot.focus()
-            return CompInterface.cal(self)
+        with self.thread:
+            with self.save_excursion(mmode='DIFF'):
+                ## self.index = [0x8000, 0x8000] # neutralize :reload
+                self.spot.focus()
+                return CompInterface.cal(self)
     
     def execute(self):
         with self.thread:

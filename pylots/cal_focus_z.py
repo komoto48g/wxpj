@@ -78,38 +78,39 @@ class Plugin(TemInterface, Layer):
         return np.linalg.inv(m.reshape(2,2))
     
     def cal(self):
-        if self.apt_selection('SAAPT', 0):
-            with self.save_excursion(mmode='MAG'):
-                try:
-                    step = 10e3 / self.imaging.Mag # CCD:10mm/Mag -> step [um]
-                    
-                    org_x = self.Gonio.X
-                    org_y = self.Gonio.Y
-                    
-                    self.Gonio.X += step # get rid of backlash
-                    self.delay(2)
-                    self.Gonio.Y += step # X+ and Y+
-                    self.delay(2)
-                    src = self.capture()
-                    
-                    self.Gonio.X += step
-                    self.delay(2)
-                    src2 = self.capture()
-                    
-                    self.Gonio.Y += step
-                    self.delay(2)
-                    src3 = self.capture()
-                    
-                    m = np.vstack((
-                        edi.eval_shift(src, src2),
-                        edi.eval_shift(src2, src3))).T / step # [pix/um]
-                    
-                    ## normalized by the expected unit length per pixel [um/pix]
-                    self.config[self.conf_key][0] = m.flatten() * self.mag_unit
-                    return True
-                finally:
-                    self.Gonio.X = org_x
-                    self.Gonio.Y = org_y
+        with self.thread:
+            if self.apt_selection('SAAPT', 0):
+                with self.save_excursion(mmode='MAG'):
+                    try:
+                        step = 10e3 / self.imaging.Mag # CCD:10mm/Mag -> step [um]
+                        
+                        org_x = self.Gonio.X
+                        org_y = self.Gonio.Y
+                        
+                        self.Gonio.X += step # get rid of backlash
+                        self.delay(2)
+                        self.Gonio.Y += step # X+ and Y+
+                        self.delay(2)
+                        src = self.capture()
+                        
+                        self.Gonio.X += step
+                        self.delay(2)
+                        src2 = self.capture()
+                        
+                        self.Gonio.Y += step
+                        self.delay(2)
+                        src3 = self.capture()
+                        
+                        m = np.vstack((
+                            edi.eval_shift(src, src2),
+                            edi.eval_shift(src2, src3))).T / step # [pix/um]
+                        
+                        ## normalized by the expected unit length per pixel [um/pix]
+                        self.config[self.conf_key][0] = m.flatten() * self.mag_unit
+                        return True
+                    finally:
+                        self.Gonio.X = org_x
+                        self.Gonio.Y = org_y
     
     def execute(self):
         with self.thread:

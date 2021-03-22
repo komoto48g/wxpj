@@ -22,9 +22,10 @@ class Plugin(AlignInterface, Layer):
         return AlignInterface.align(self, *args, **kwargs)
     
     def cal(self):
-        self.index = (0x8000, 0x8000)
-        self.spot.focus()
-        return AlignInterface.cal(self)
+        with self.thread:
+            self.index = (0x8000, 0x8000)
+            self.spot.focus()
+            return AlignInterface.cal(self)
     
     def execute(self):
         with self.thread:

@@ -1,13 +1,12 @@
 #! python
 # -*- coding: utf-8 -*-
-## from mwx.graphman import Layer
-from pylots.Autopylot2 import PylotItem as Layer
 from pylots.temixins import TemInterface, TEM, Filter
+from pylots.Autopylot2 import PylotItem
 import wxpyJemacs as wxpj
 import editor as edi
 
 
-class Plugin(TemInterface, Layer):
+class Plugin(TemInterface, PylotItem):
     """Plugin of beam alignment
     Adjust beam-axis-HT-alignment [alpha]
     """
@@ -23,7 +22,7 @@ class Plugin(TemInterface, Layer):
     para = property(lambda self: self.parent.require('beam2_para'))
     
     def Init(self):
-        Layer.Init(self)
+        PylotItem.Init(self)
         
         self.layout("Manual calibration", (
             wxpj.Button(self, "Cal", lambda v: self.thread.Start(self.cal), icon='cal'),
@@ -54,31 +53,32 @@ class Plugin(TemInterface, Layer):
             self.wobbler = worg
     
     def cal(self):
-        if self.apt_selection('SAAPT', 0):
-            with self.save_excursion(mmode='MAG'):
-                try:
-                    step = 500
-                    dt = self.get_tilt()
-                    
-                    x1 = self.index = 0
-                    y1 = self.calc_disp()   # [um] image displacement
-                    z1 = min(y1 / dt) * 1e3 # [um] @min eliminates inf
-                    print("$(z1) = {!r}".format((z1)))
-                    
-                    x2 = self.index = -step
-                    y2 = self.calc_disp()
-                    z2 = min(y2 / dt) * 1e3 # [um] @min eliminates inf
-                    print("$(z2) = {!r}".format((z2)))
-                    
-                    zs = (z2-z1) / (x2-x1) # [um/V] -> config
-                    
-                    cc = zs * self.env.acc_v / self.env.cstar * 1e-3 # [mm]
-                    print("$(cc) = {:g} mm".format((cc)))
-                    
-                    self.config[self.conf_key] = zs
-                    return True
-                finally:
-                    self.index = None
+        with self.thread:
+            if self.apt_selection('SAAPT', 0):
+                with self.save_excursion(mmode='MAG'):
+                    try:
+                        step = 500
+                        dt = self.get_tilt()
+                        
+                        x1 = self.index = 0
+                        y1 = self.calc_disp()   # [um] image displacement
+                        z1 = min(y1 / dt) * 1e3 # [um] @min eliminates inf
+                        print("$(z1) = {!r}".format((z1)))
+                        
+                        x2 = self.index = -step
+                        y2 = self.calc_disp()
+                        z2 = min(y2 / dt) * 1e3 # [um] @min eliminates inf
+                        print("$(z2) = {!r}".format((z2)))
+                        
+                        zs = (z2-z1) / (x2-x1) # [um/V] -> config
+                        
+                        cc = zs * self.env.acc_v / self.env.cstar * 1e-3 # [mm]
+                        print("$(cc) = {:g} mm".format((cc)))
+                        
+                        self.config[self.conf_key] = zs
+                        return True
+                    finally:
+                        self.index = None
     
     def execute(self):
         with self.thread:

@@ -17,10 +17,11 @@ class Plugin(CompInterface, Layer):
     deflector = property(lambda self: self.parent.require('beam_shift'))
     
     def cal(self):
-        with self.save_excursion(mmode='MAG'):
-            ## self.olstd.focus() # OL-Focus をきちんと合わせること！
-            self.spot.focus()
-            return CompInterface.cal(self, step=0x100)
+        with self.thread:
+            with self.save_excursion(mmode='MAG'):
+                ## self.olstd.focus() # OL-Focus をきちんと合わせること！
+                self.spot.focus()
+                return CompInterface.cal(self, step=0x100)
     
     def execute(self):
         with self.thread:

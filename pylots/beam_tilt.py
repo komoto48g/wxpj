@@ -20,10 +20,11 @@ class Plugin(AlignInterface, Layer):
             return AlignInterface.align(self, *args, **kwargs)
     
     def cal(self):
-        with self.save_excursion(mmode='DIFF'):
-            self.spot.focus()
-            self.pla.align()
-            return AlignInterface.cal(self)
+        with self.thread:
+            with self.save_excursion(mmode='DIFF'):
+                self.spot.focus()
+                self.pla.align()
+                return AlignInterface.cal(self)
     
     def execute(self):
         with self.thread:

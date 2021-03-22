@@ -41,19 +41,20 @@ class Plugin(SpotInterface, Layer):
         if ys: self.config[self.conf_key][i,1] = abs(ys) * self.factor
     
     def cal(self):
-        if self.apt_selection('SAAPT'):
-            with self.save_excursion(mmode='DIFF'):
-                self.para.focus()
-                self.delay()
-                self.pla.align()
-                self.focus(0.1)
-                ret = SpotInterface.cal(self)
-                if ret is False:
-                    with self.save_excursion():
-                        if not self.find_beam(): # => beam lost
-                            return
-                    ret = SpotInterface.cal(self) # try once more, FAIL skips
-                return ret
+        with self.thread:
+            if self.apt_selection('SAAPT'):
+                with self.save_excursion(mmode='DIFF'):
+                    self.para.focus()
+                    self.delay()
+                    self.pla.align()
+                    self.focus(0.1)
+                    ret = SpotInterface.cal(self)
+                    if ret is False:
+                        with self.save_excursion():
+                            if not self.find_beam(): # => beam lost
+                                return
+                        ret = SpotInterface.cal(self) # try once more, FAIL skips
+                    return ret
     
     def execute(self):
         with self.thread:

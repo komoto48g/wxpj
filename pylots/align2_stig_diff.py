@@ -31,12 +31,13 @@ class Plugin(StigInterface, Layer):
                 return StigInterface.align(self)
     
     def cal(self):
-        if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
-            with self.save_excursion(mmode='DIFF'):
-                self.diffspot.focus(0.25)
-                self.para.focus()
-                self.pla.align()
-                return StigInterface.cal(self)
+        with self.thread:
+            if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
+                with self.save_excursion(mmode='DIFF'):
+                    self.diffspot.focus(0.25)
+                    self.para.focus()
+                    self.pla.align()
+                    return StigInterface.cal(self)
     
     def execute(self):
         with self.thread:
