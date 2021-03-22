@@ -224,7 +224,8 @@ class Plugin(Layer):
             lx.append(x[j] - x[i])
             ly.append(y[j] - y[i])
             
-        k = ld.index(np.median(ld))
+        ## k = ld.index(np.median(ld))
+        k = ld.index(np.percentile(ld, 50, interpolation='nearest'))
         g = ld[k]
         t = np.arctan(ly[k]/lx[k]) * 180/pi
         for lp,v in zip(self.grid_params, (g, t, x[0], y[0])):

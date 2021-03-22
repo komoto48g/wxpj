@@ -76,25 +76,12 @@ class Plugin(TemInterface, Layer):
             ),
             row=3, show=0, type=None, editable=0, lw=0, tw=40,
         )
-        
-        ## for name in "CL3 OLC OLF OM1 FLC FLF".split():
-        ##     self.tem.foci[name].bind(self.tem.foci.write) # bind -> WR:Enabled
-        ## 
-        ## self.parent.notify.handler.bind("lens_notify", self.on_lens_notify)
-        ## self.parent.notify.handler.bind("imaging_info", self.on_imaging_notify)
-        ## try:
-        ##     self.on_lens_notify(self.tem.lsys)
-        ##     self.on_imaging_notify(self.imaging.Info)
-        ## except Exception as e:
-        ##     print("- tem controler failed to get TEM info; {}.".format(e))
-    
-    ## def Destroy(self):
-    ##     for name in "CL3 OLC OLF OM1 FLC FLF".split():
-    ##         self.tem.foci[name].unbind(self.tem.foci.write)
-    ##     
-    ##     self.parent.notify.handler.unbind("lens_notify", self.on_lens_notify)
-    ##     self.parent.notify.handler.unbind("imaging_info", self.on_imaging_notify)
-    ##     return Layer.Destroy(self)
+        self.context = {
+            None : {
+                  "lens_notify" : [ None, self.on_lens_notify ],
+                 "imaging_info" : [ None, self.on_imaging_notify ],
+            },
+        }
     
     def Activate(self, show):
         foci = self.tem.foci
@@ -102,9 +89,7 @@ class Plugin(TemInterface, Layer):
             for name in "CL3 OLC OLF OM1 FLC FLF".split():
                 foci[name].bind(foci.write) # WR:Enabled
                 foci[name].flag = 1
-            
-            self.parent.notify.handler.bind("lens_notify", self.on_lens_notify)
-            self.parent.notify.handler.bind("imaging_info", self.on_imaging_notify)
+            self.parent.notify.handler.append(self.context)
             try:
                 self.on_lens_notify(self.tem.lsys)
                 self.on_imaging_notify(self.imaging.Info)
@@ -114,9 +99,7 @@ class Plugin(TemInterface, Layer):
             for name in "CL3 OLC OLF OM1 FLC FLF".split():
                 foci[name].unbind(foci.write) # WR:Disabled
                 foci[name].flag = 0
-            
-            self.parent.notify.handler.unbind("lens_notify", self.on_lens_notify)
-            self.parent.notify.handler.unbind("imaging_info", self.on_imaging_notify)
+            self.parent.notify.handler.remove(self.context)
     
     def set_current_session(self, session):
         self.ol_focus_param.std_value = session.get('ol')

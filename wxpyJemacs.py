@@ -121,7 +121,7 @@ class pyJemacs(Framebase):
             (),
         ]
         self.menubar.reset()
-        
+    
     def Destroy(self):
         self.nfront.Destroy()
         return Framebase.Destroy(self)
@@ -208,6 +208,8 @@ class pyJemacs(Framebase):
         ## ... の予定だが，面倒なので全部(上書き)吐き出す ...
         for frame in frames:
             fn, ext = os.path.splitext(frame.name)
+            if ext.lower() in ('dm3', 'img'): # extended file type
+                continue
             path = os.path.join(savedir, newfile.format(fn))
             self.save_buffer(path, frame)
         
@@ -231,11 +233,11 @@ class pyJemacs(Framebase):
     ## read/write buffers
     ## --------------------------------
     wildcards = [
-          "TIF file (*.tif)|*.tif",
-          "BMP file (*.bmp)|*.bmp",
-    "Gatan DM3 file (*.dm3)|*.dm3", # Gatan DM extension (read-only)
-   "Rigaku IMG file (*.img)|*.img", # Rigaku image file extension (read-only)
-           "All files (*.*)|*.*",
+              "TIF file (*.tif)|*.tif",
+              "BMP file (*.bmp)|*.bmp",
+        "Gatan DM3 file (*.dm3)|*.dm3", # Gatan DM extension (read-only)
+       "Rigaku IMG file (*.img)|*.img", # Rigaku image file extension (read-only)
+               "All files (*.*)|*.*",
     ]
     
     @staticmethod

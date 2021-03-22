@@ -42,16 +42,20 @@ class Plugin(Layer):
             ),
             row=1, expand=0, type='vspin', style='btn', lw=66, tw=60, cw=-1
         )
+        self.context = {
+            None : {
+                  "frame_shown" : [ None, self.on_unit_notify ],
+               "frame_selected" : [ None, self.on_unit_notify ],
+            },
+        }
     
     def Activate(self, show):
         if show:
             for win in self.parent.graphic_windows:
-                win.handler.bind("frame_shown", self.on_unit_notify)
-                win.handler.bind("frame_selected", self.on_unit_notify)
+                win.handler.append(self.context)
         else:
             for win in self.parent.graphic_windows:
-                win.handler.unbind("frame_shown", self.on_unit_notify)
-                win.handler.unbind("frame_selected", self.on_unit_notify)
+                win.handler.remove(self.context)
     
     def set_current_session(self, session):
         self.accv_param.value = session.get('accv')

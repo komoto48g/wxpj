@@ -166,20 +166,23 @@ class Plugin(Layer):
         self.ldc.run(frame)
         self.ldc.run(frame) # 計算 x2 回目
         self.ldc.Show()
-        if frame:
-            frame.update_attributes(parameters=self.parameters[:-1]) # except the last text
         self.calc_mag()
+        if frame:
+            frame.update_attributes(
+                parameters=self.parameters[:-1], # except the last text
+                annotation=self.text.Value.replace('\n', ', '),
+            )
     
     def calc_mag(self):
         g = self.ldc.grid_params[0].value
         g0 = eval(self.grid.Value)
         if self.choice.Selection < 2: # FFT
-            res = ("Mag = {:,.0f} [fft]".format(1/g/g0),
-                   "grid = {:g} mm".format(1/g))
+            res = ("Mag = {:6,.0f} [fft]".format(1/g/g0),
+                        "grid = {:g} mm".format(1/g))
         else:
-            res = ("Mag = {:,.0f} [cor]".format(g/g0),
-                   "grid = {:g} mm".format(g))
-        self.text.Value = ', '.join(res)
+            res = ("Mag = {:6,.0f} [cor]".format(g/g0),
+                        "grid = {:g} mm".format(g))
+        self.text.Value = '\n'.join(res)
     
     ## --------------------------------
     ## test functions

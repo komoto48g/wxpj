@@ -16,8 +16,7 @@ from mpl_toolkits.mplot3d import axes3d
 from matplotlib import pyplot as plt
 from matplotlib import patches
 from matplotlib import cm
-from PIL import Image
-from mwx import LParam
+## from PIL import Image
 import wxpyJemacs as wxpj
 
 
@@ -28,8 +27,8 @@ class Plugin(wxpj.Layer):
     menustr = "&Editor\tAlt+e"
     
     def Init(self):
-        self.hi = LParam("hi", (0, 10 ,0.005), 0)
-        self.lo = LParam("lo", (0, 10, 0.005), 0)
+        self.hi = wxpj.LParam("hi", (0, 10 ,0.005), 0)
+        self.lo = wxpj.LParam("lo", (0, 10, 0.005), 0)
         
         self.layout("truncation", (
             self.hi,
@@ -92,13 +91,14 @@ class Plugin(wxpj.Layer):
 ## --------------------------------
 ## Image conv/plot/view
 ## --------------------------------
-## refered from `dm3` extension libs
-## imread = wxpj.pyJemacs.read_buffer   # cf. np.asarray(Image.open(f))
-## imwrite = wxpj.pyJemacs.write_buffer # cf. Image.fromarray(buf).save(f)
 
 def imread(path):
-    buf, info = wxpj.pyJemacs.read_buffer(path)
+    buf, info = wxpj.pyJemacs.read_buffer(path) # cf. np.asarray(Image.open(f))
     return buf
+
+
+def imwrite(path, buf):
+    return wxpj.pyJemacs.write_buffer(path, buf) # cf. Image.fromarray(buf).save(f)
 
 
 def imtrunc(buf=None, hi=0, lo=0):

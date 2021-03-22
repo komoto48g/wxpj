@@ -7,15 +7,14 @@ import cv2
 import numpy as np
 from numpy import pi
 from scipy import ndimage as ndi
-from mwx import LParam
-from mwx.graphman import Layer
 import wxpyJemacs as wxpj
 
 
-class Plugin(Layer):
+class Plugin(wxpj.Layer):
     """Image processing: rotation
     
-    This script shows how to get data from graph and  how to define_key.
+    This script shows how to get data from graph,
+    and how to define event-action_and the keymap.
     """
     menu = "&Plugins/&Demo"
     
@@ -23,7 +22,7 @@ class Plugin(Layer):
         self.btn = wxpj.Button(self, "Rotate", self.rotate,
             tip="Try [C-x r] to execute this function instead of press button.")
         
-        self.rotdeg = LParam("[deg]", (-180,180, 1), 0, doc="angles to rotate:ccw")
+        self.rotdeg = wxpj.LParam("[deg]", (-180,180, 1), 0, doc="angles to rotate:ccw")
         
         self.layout(None, (
             self.btn,
@@ -31,23 +30,15 @@ class Plugin(Layer):
             ),
             row=3, expand=0, type="vspin", lw=32, cw=12, tw=60
         )
-        self.parent.define_key('C-x r', self.rotate)
-        self.graph.handler.bind('line_draw', self.calc_rotdeg)
-        self.calc_rotdeg(self.graph.frame)
     
-    ## def Activate(self, show):
-    ##     if show:
-    ##         self.parent.define_key('C-x r', self.rotate)
-    ##         self.graph.handler.bind('line_draw', self.calc_rotdeg)
-    ##         self.calc_rotdeg(self.graph.frame)
-    ##     else:
-    ##         self.graph.handler.unbind('line_draw', self.calc_rotdeg)
-    ##         self.parent.define_key('C-x r', None)
-    
-    def Destroy(self):
-        self.graph.handler.unbind('line_draw', self.calc_rotdeg)
-        self.parent.define_key('C-x r', None)
-        return Layer.Destroy(self)
+    def Activate(self, show):
+        if show:
+            self.graph.handler.bind('line_draw', self.calc_rotdeg)
+            self.parent.define_key('C-x r', self.rotate)
+            self.calc_rotdeg(self.graph.frame)
+        else:
+            self.graph.handler.unbind('line_draw', self.calc_rotdeg)
+            self.parent.define_key('C-x r', None)
     
     def calc_rotdeg(self, frame):
         """Calc rotation angles of selector:line and display the value-"""

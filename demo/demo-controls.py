@@ -5,14 +5,11 @@ from __future__ import (division, print_function,
 import wx
 import mwx
 import numpy as np
-from pprint import pprint
-from mwx import Param, LParam
-from mwx.graphman import Layer
 import wxpyJemacs as wxpj
 
 
-class Plugin(Layer):
-    """catalogue of wxpj
+class Plugin(wxpj.Layer):
+    """catalogue of widgets
     
     This script shows wxpj icons/widgets
     """
@@ -61,14 +58,14 @@ class Plugin(Layer):
             ),
             row=2, expand=0,
         )
-        self.LP =  LParam('L', (-1,1,0.01), 0, handler=print,
+        self.LP =  wxpj.LParam('L', (-1,1,0.01), 0, handler=print,
             doc="Linear param"
                 "\n In addition to direct key input to the textctrl,"
                 "\n [up][down][wheelup][wheeldown] keys can be used,"
                 "\n   with modifiers S- 2x, C- 4x, and M- 16x steps."
                 "\n [Mbutton] resets to the std. value if it exists.")
         
-        self.P = Param('U', (1,2,3, np.inf), handler=print)
+        self.P = wxpj.Param('U', (1,2,3, np.inf), handler=print)
         
         self.layout('Custom param controls', (
             self.LP,

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-03-17 11:27:03 +0900>
+Last updated: <2021-03-21 17:09:46 +0900>
      Version: 2.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -29,8 +29,6 @@ class Plugin(Layer):
     lgbt = property(lambda self: self.parent.require('template'))
     
     def Init(self):
-        Layer.Init(self)
-        
         self.layout(None, (
             self.lgbt.ksize, # reference of the lgbt param. (to be shared)
             

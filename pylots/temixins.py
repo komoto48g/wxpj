@@ -49,8 +49,6 @@ class TemInterface(object):
         return cam
     
     thread = Thread() # Common workerthread instance shared by pylot modules
-    thread.greenflag = threading.Event()
-    thread.greenflag.set()
     
     env = property(lambda self: self.parent.env)
     
@@ -262,10 +260,10 @@ class TemInterface(object):
         ns, na = self.illumination.Range
         a = self.illumination.Alpha
         for s in range(ns):
-            self.raise_chequer_flag()
             self.message("spot={}, alpha={}".format(s, a))
             self.illumination.Spot = s
-            self.delay(1)
+            ## self.delay(1)
+            self.thread.check()
             yield s
     
     def for_each_alpha(self):
@@ -273,63 +271,45 @@ class TemInterface(object):
         ns, na = self.illumination.Range
         s = self.illumination.Spot
         for a in range(na):
-            self.raise_chequer_flag()
             self.message("spot={}, alpha={}".format(s, a))
             self.illumination.Alpha = a
-            self.delay(1)
+            ## self.delay(1)
+            self.thread.check()
             yield a
     
     def for_each_mag(self):
         """Generates for each mag/cam (index, value)"""
         for j, v in enumerate(self.imaging.Range):
-            self.raise_chequer_flag()
             self.message("mag/cam: [{}] {:,d}".format(j, v))
             self.imaging.Mag = v
-            self.delay(1)
+            ## self.delay(1)
+            self.thread.check()
             yield (j, v)
     
     def for_each_disp(self):
         """Generates for each dispersion (index, value)"""
         for j, v in enumerate(self.omega.Range):
-            self.raise_chequer_flag()
             self.message("dispersion: [{}] {:,d}".format(j, v))
             self.omega.Dispersion = v
-            self.delay(1)
+            ## self.delay(1)
+            self.thread.check()
             yield (j, v)
     
-    def raise_chequer_flag(self):
-        """Wait green-flag or raise chequer-flag to interrupt the process"""
-        if not self.thread.greenflag.wait()\
-          or not self.thread.is_active:
-            self.thread.greenflag.set()
-            raise KeyboardInterrupt("Thread:terminated by user")
-    
     def pause(self, msg=""):
-        """Pause the process where this is called"""
-        try:
-            self.thread.greenflag.clear()
-            ## The thread.greenflag.wait returns immediately when it is True <- set
-            ## and blocks until the internal flag is True when it is False <- clear
-            if wx.MessageBox(msg + "\n"
-                "\n Press [OK] to continue."
-                "\n Press [CANCEL] to terminate the process.",
-                style = wx.OK|wx.CANCEL|wx.ICON_WARNING) != wx.OK:
-                    ## self.thread.Stop() --> 呼び出し側で行う
-                    return False
-            return True
-        finally:
-            self.thread.greenflag.set()
+        """Pause the process where called"""
+        return self.thread.pause(msg)
     
     def wait(self, sentinel, timeout=5):
         """Halt the thread and wait the notify `sentinel"""
         with self.thread:
             hook = self.parent.notify.handler.hook(sentinel,
-                    lambda v: self.thread.greenflag.set())
-            
-            self.thread.greenflag.clear() # halt the thread
-            self.thread.greenflag.wait(timeout) # wait the sentinel
-            self.thread.greenflag.set()
-            self.parent.notify.handler.unbind(sentinel, hook) # unhook in timeout
+                        lambda v: self.thread.flag.set())
+            try:
+                self.thread.flag.clear() # halt the thread
+                self.thread.flag.wait(timeout) # wait the sentinel
+            finally:
+                self.thread.flag.set() # let the thread go
+                self.parent.notify.handler.unbind(sentinel, hook) # unhook in timeout
     
     ## --------------------------------
     ## Functions for detecting beam
@@ -727,7 +707,7 @@ class AlignInterface(TemInterface):
     
     def Init(self):
         self.layout(None, (
-            wxpj.Button(self, "{}".format(self.caption or self.conf_key),
+            wxpj.Button(self, "{}".format(self.caption),
                 lambda v: self.thread.Start(self.align), icon='exe'),
             ),
         )

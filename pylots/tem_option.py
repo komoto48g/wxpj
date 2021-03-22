@@ -12,13 +12,6 @@ from mwx import LParam
 from mwx.graphman import Layer
 from pylots.temixins import TemInterface
 import wxpyJemacs as wxpj
-## import logging
-## 
-## logging ?? なぜか debshell のほうにパイプされるので使わない
-## logging.basicConfig(
-##     level = logging.WARNING,
-##    format = '%(filename)s:%(lineno)d: [%(threadName)s] %(message)s: %(asctime)s',
-## )
 
 ## setq = TemInterface.__dict__.update !! 'mappingproxy' object has no attribute 'update'
 def setq(**kwargs):
@@ -113,7 +106,7 @@ class Plugin(TemInterface, Layer):
         
         if not os.path.exists(path):
             wx.MessageBox("- No such file: {!r}".format(path),
-                caption=self.__module__, style=wx.ICON_WARNING)
+                self.__module__, style=wx.ICON_WARNING)
             return
         
         path = os.path.relpath(path, os.getcwd())

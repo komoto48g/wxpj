@@ -54,7 +54,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
             ("med", 60),
             ("max", 50),
             ("min", 50),
-            ("annotation", 200),
+            ("annotation", 240),
         )
         for k,(name,w) in enumerate(self.alist):
             self.InsertColumn(k, name, width=w)
