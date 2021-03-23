@@ -84,7 +84,8 @@ class Plugin(Layer):
             h, w = src.shape
             xy = []
             for (cx,cy), (ra,rb), angle in circles:
-                if rb/ra < self.maxratio:
+                print("$((cx,cy), (ra,rb), angle) = {!r}".format(((cx,cy), (ra,rb), angle)))
+                if ra and rb/ra < self.maxratio:
                     ## 不特定多数の円を描画する
                     art = patches.Circle((0,0), 0, color='r', ls='dotted', lw=1, fill=0)
                     art.center = frame.xyfrompixel(cx, cy)
@@ -104,7 +105,12 @@ class Plugin(Layer):
                     buf = frame.buffer[ya:y+r+1, xa:x+r+1]
                     
                     ## local maximum
-                    dy, dx = np.unravel_index(buf.argmax(), buf.shape)
+                    ## dy, dx = np.unravel_index(buf.argmax(), buf.shape)
+                    
+                    ## local maximum :averaged
+                    yy, xx = np.where(buf == np.amax(buf))
+                    dy, dx = np.average(yy), np.average(xx)
+                    
                     xy.append(frame.xyfrompixel(xa+dx, ya+dy))
                     
                     ## centroid of masked array

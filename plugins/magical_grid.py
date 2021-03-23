@@ -35,7 +35,7 @@ class Plugin(Layer):
         )
         self.choice.Select(0)
         
-        self.score = LParam("score", (0.05, 10, 0.05), 0.1)
+        self.score = LParam("score", (0.01, 10, 0.01), 0.1)
         
         self.grid = wxpj.Choice(self, label="grid [mm]", size=(140,-1),
             handler=lambda v: self.calc_mag(),
@@ -169,8 +169,8 @@ class Plugin(Layer):
         self.calc_mag()
         if frame:
             frame.update_attributes(
-                parameters=self.parameters[:-1], # except the last text
-                annotation=self.text.Value.replace('\n', ', '),
+                parameters = self.parameters[:-1], # except the last text
+                annotation = ', '.join(self.text.Value.splitlines()),
             )
     
     def calc_mag(self):
@@ -178,10 +178,10 @@ class Plugin(Layer):
         g0 = eval(self.grid.Value)
         if self.choice.Selection < 2: # FFT
             res = ("Mag = {:6,.0f} [fft]".format(1/g/g0),
-                        "grid = {:g} mm".format(1/g))
+                         "grid = {:g} mm".format(1/g))
         else:
             res = ("Mag = {:6,.0f} [cor]".format(g/g0),
-                        "grid = {:g} mm".format(g))
+                         "grid = {:g} mm".format(g))
         self.text.Value = '\n'.join(res)
     
     ## --------------------------------
