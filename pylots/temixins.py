@@ -200,11 +200,11 @@ class TemInterface(object):
             return True
     
     def save_excursion(self, **kwargs):
-        """Save optical mode settings temporarily"""
+        """Save optical mode settings temporarily :set_state"""
         return Excursion(self, **kwargs)
     
     def save_restriction(self, **kwargs):
-        """Save lens/def paramtres temporarily"""
+        """Save lens/def paramtres temporarily :set_param"""
         return Restriction(self, **kwargs)
     
     def get_state(self):

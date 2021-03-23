@@ -161,8 +161,8 @@ class Plugin(UserInterface, Layer):
     def set_current_session(self, session):
         try:
             self.tree.set_flags(session)  # reload 時は zip 長さが合わないので以下を追加する
-        except Exception as e:
-            print("$(e) = {!r}".format((e)))
+        except KeyError as e:
+            print(e)
         self.restore_session(session) # [0]-Calibrations 以降の拡張プラグインを復元する
         self.tree.reset()
     

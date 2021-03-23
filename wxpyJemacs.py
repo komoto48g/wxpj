@@ -177,9 +177,9 @@ class pyJemacs(Framebase):
             frame = target.find_frame(name) # no muti-page tiff ?
             if frame:
                 frame.update_attributes(attr)
-                
+        
         self.statusbar("{} files were imported, "
-                       "{} files are missing".format(len(res), len(mis)))
+                       "{} files are missing.".format(len(res), len(mis)))
     
     def export_frames(self, savedir=None, frames=None):
         """Save frames and the associated result file
@@ -201,33 +201,35 @@ class pyJemacs(Framebase):
         f = os.path.join(savedir, ".results")
         res, mis = self.eval_results(f)
         
-        ## newfile = "{:%Y%m%d-%H%M%S}-{{}}.tif".format(datetime.now())
-        newfile = "{}.tif"
-        
-        ## 重複ファイルのタイプスタンプを比較して出力する
-        ## ... の予定だが，面倒なので全部(上書き)吐き出す ...
-        for frame in frames:
+        for j,frame in enumerate(frames):
             fn, ext = os.path.splitext(frame.name)
-            if ext.lower() in ('dm3', 'img'): # extended file type
-                continue
-            path = os.path.join(savedir, newfile.format(fn))
-            self.save_buffer(path, frame)
+            if not ext:
+                self.message("Saving {!r} ({} of {} frames)".format(fn, j, len(frames)))
+                path = os.path.join(savedir, "{}.tif".format(fn))
+                self.save_buffer(path, frame)
+            
+        for frame in frames:
+            frame.update_attributes(
+                # * Describe information here you want to save as results
+                localunit = frame.unit,
+            )
+        new = OrderedDict((x.name, x.attributes) for x in frames)
+        
+        ## Note: `res' order may differ from that of new frames
+        ## So we take a few steps to update results to export
+        res.update(new) # res <-- new update
+        new.update(res) # then copy back res --> new keeping the new order
         
         ## in case of IO failure, save result file to temporary file
-        ## res order is fixed and may differ from the order of frames
         with open(f + ".tmp", 'w') as o:
-            for frame in frames:
-                frame.update_attributes(
-                    # * Describe information here you want to save *
-                    localunit = frame.unit,
-                )
-                res.update({frame.name : frame.attributes})
-            pprint(tuple(res.items()), stream=o)
+            pprint(tuple(new.items()), stream=o)
+        
         if os.path.exists(f):
             os.remove(f)
         os.rename(o.name, f) # $ mv(cat) .tmp .results
         
-        self.statusbar("{} files were exported.".format(len(res)))
+        self.statusbar("{} files were exported, "
+                       "{} files are ignored.".format(len(new), len(mis)))
     
     ## --------------------------------
     ## read/write buffers
