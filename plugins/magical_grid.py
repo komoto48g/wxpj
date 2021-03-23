@@ -240,14 +240,17 @@ class Plugin(Layer):
             buf -= sum(buf) / h # バックグラウンド(ぽい)強度を引いてみる (中央も 0 になるので注意)
             
             self.message("\b @remap")
-            X, Y = np.meshgrid(
-                np.arange(-w/2, w/2, dtype=np.float32),
-                np.arange(-h/2, h/2, dtype=np.float32),
-            )
-            map_r = w/rmax * np.hypot(Y, X)
-            map_t = ((pi + np.arctan2(Y, X)) * h/2/pi)
-            buf = cv2.remap(buf.astype(np.float32), map_r, map_t,
-                            cv2.INTER_CUBIC, cv2.WARP_FILL_OUTLIERS)
+            ## X, Y = np.meshgrid(
+            ##     np.arange(-w/2, w/2, dtype=np.float32),
+            ##     np.arange(-h/2, h/2, dtype=np.float32),
+            ## )
+            ## map_r = w/rmax * np.hypot(Y, X)
+            ## map_t = ((pi + np.arctan2(Y, X)) * h/2/pi)
+            ## buf = cv2.remap(buf.astype(np.float32), map_r, map_t,
+            ##                 cv2.INTER_CUBIC, cv2.WARP_FILL_OUTLIERS)
+            ## 
+            buf = cv2.linearPolar(buf, (w/2, h/2), rmax, cv2.WARP_INVERSE_MAP)
+            
             ## 確認
             ## self.output.load(buf, name="*remap*", localunit=1/w)
             
