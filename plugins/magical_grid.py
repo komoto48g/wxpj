@@ -220,7 +220,7 @@ class Plugin(Layer):
         src = frame.roi
         h, w = src.shape
         
-        ## resize to 2**N squared ROI
+        ## resize to a power of 2 squared ROI
         n = pow(2, int(np.log2(min(h,w)))-1)
         i, j = h//2, w//2
         src = src[i-n:i+n,j-n:j+n]

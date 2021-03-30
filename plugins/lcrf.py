@@ -31,11 +31,15 @@ class Model(object):
         print("\b"*72 + "point({}): residual {:g}".format(len(res), sum(res)), end=' ')
         return res
     
-    ## def modi2d(self, buf):
-    ##     h, w = buf.shape
-    ##     for j,x in enumerate(buf):
-    ##         y = (1 - j/h) * 2*pi               # yaxis (from 2pi to 0)
-    ##         buf[j] = np.roll(x, -int(self(y))) # roll anti-shift (to modify peak pos)
+    def mod2d(self, buf):
+        h, w = buf.shape
+        shift = [self(x) for x in np.arange(0,h)/h * 2*pi][::-1] # shift vector
+        axis = np.arange(0., w)
+        data = np.resize(0., (h,w))
+        for j,(x,v) in enumerate(zip(buf, shift)):
+            data[j] = np.roll(x, -int(v))
+            ## data[j] = np.interp(axis+v, axis, x)
+        return data
     
     def mod1d(self, buf):
         """Calculate line profile with modulation correction
@@ -43,14 +47,15 @@ class Model(object):
       retval -> 1d-array of modulated (+avr.) line profile
         """
         h, w = buf.shape
-        data = np.zeros(w)
-        for j,x in enumerate(buf):
-            y = (1 - j/h) * 2*pi              # yaxis (from 2pi to 0)
-            data += np.roll(x, -int(self(y))) # roll anti-shift (to modify peak pos)
+        ## data = np.zeros(w)
+        ## for j,x in enumerate(buf):
+        ##     y = (1 - j/h) * 2*pi              # yaxis (from 2pi to 0)
+        ##     data += np.roll(x, -int(self(y))) # roll anti-shift (to modify peak pos)
+        data = sum(self.mod2d(buf))
         return data / h
 
 
-def find_ring_center(src, center, lo, hi=None, N=128, tol=0.01):
+def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     """find center of ring pattern in buffer
     Polar 変換した後，角度セグメントに分割して相互相関をとる．
     theta = 0 を基準として，相対変位 [pixels] を計算する
@@ -67,14 +72,14 @@ def find_ring_center(src, center, lo, hi=None, N=128, tol=0.01):
     dst = cv2.linearPolar(src, (nx,ny), w, cv2.WARP_FILL_OUTLIERS)
     
     ## Mask X (radial) axis
-    hi = hi or w//2
+    lo = max(lo, 0)
+    hi = min(hi, w//2)
     dst[:,:lo] = 0
     dst[:,hi:] = 0
     
     ## Resize Y:angular axis (計算を軽くするためリサイズ)
     rdst = cv2.resize(dst[:,lo:hi].astype(np.float32), (hi-lo, N), interpolation=cv2.INTER_AREA)
     rdst -= rdst.mean()
-    ## rdst = cv2.GaussianBlur(rdst, (1,11), 0)
     
     temp = rdst[0][::-1] # template of corr; distr at theta = 0
     data = []
@@ -103,13 +108,8 @@ def find_ring_center(src, center, lo, hi=None, N=128, tol=0.01):
                 xx.append(x)
                 yy.append(y)
     
-    ## --------------------------------
-    ## Do fitting to model curve
-    ##   and calculate the total shifts
-    ## --------------------------------
     fitting_curve = Model(xx, yy)
-    
-    edi.plot(xx, yy, '+', X, fitting_curve(X))
+    ## edi.plot(xx, yy, '+', X, fitting_curve(X))
     
     a = fitting_curve.params[0] = 0 # :a=0 として(平均を基準とする)全体のオフセット量を評価する
     b = fitting_curve.params[1]
@@ -188,7 +188,7 @@ class Plugin(Layer):
         ## Search center and fit with model (twice at least)
         src = frame.buffer
         for i in range(maxloop):
-            buf, center, fitting_curve, = find_ring_center(src, center, lo=int(self.rmin))
+            buf, center, fitting_curve, = find_ring_center(src, center, self.rmin.value, self.rmax.value)
         self.fitting_curve = fitting_curve
         
         self.output.load(buf, name="*lin-polar*", localunit=1)
