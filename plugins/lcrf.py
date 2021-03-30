@@ -14,22 +14,43 @@ import editor as edi
 
 
 class Model(object):
-    params = [0,0,0,0,0]
+    def __init__(self, x, y):
+        params = [0.,] * 5
+        result = optimize.leastsq(self.residual, params, args=(x,y))
+        self.params = result[0]
     
     def __call__(self, x):
         a,b,c,d,e = self.params
-        return a + b * cos(x-c) + d * cos(2*(x-e))
+        x = np.array(x)
+        return a + b * cos(x-c) + d * cos(2*x-e)
+        ## return a + b * cos(x-c) + d * cos(2*(x-e))
     
     def residual(self, params, x, y):
         self.params = params
-        return (self(x) - y)**2
+        res = (self(x) - y)**2
+        print("\b"*72 + "point({}): residual {:g}".format(len(res), sum(res)), end=' ')
+        return res
     
-    def fit(self, x, y):
-        result = optimize.leastsq(self.residual, self.params, args=(x,y))
-        self.params = result[0]
+    ## def modi2d(self, buf):
+    ##     h, w = buf.shape
+    ##     for j,x in enumerate(buf):
+    ##         y = (1 - j/h) * 2*pi               # yaxis (from 2pi to 0)
+    ##         buf[j] = np.roll(x, -int(self(y))) # roll anti-shift (to modify peak pos)
+    
+    def mod1d(self, buf):
+        """Calculate line profile with modulation correction
+        buf : Polar-converted output buffer
+      retval -> 1d-array of modulated (+avr.) line profile
+        """
+        h, w = buf.shape
+        data = np.zeros(w)
+        for j,x in enumerate(buf):
+            y = (1 - j/h) * 2*pi              # yaxis (from 2pi to 0)
+            data += np.roll(x, -int(self(y))) # roll anti-shift (to modify peak pos)
+        return data / h
 
 
-def find_ring_center(src, center, lo, hi=None, N=128):
+def find_ring_center(src, center, lo, hi=None, N=128, tol=0.01):
     """find center of ring pattern in buffer
     Polar 変換した後，角度セグメントに分割して相互相関をとる．
     theta = 0 を基準として，相対変位 [pixels] を計算する
@@ -42,6 +63,7 @@ def find_ring_center(src, center, lo, hi=None, N=128):
     """
     h, w = src.shape
     nx, ny = center if center is not None else (w//2, h//2)
+    
     dst = cv2.linearPolar(src, (nx,ny), w, cv2.WARP_FILL_OUTLIERS)
     
     ## Mask X (radial) axis
@@ -49,10 +71,11 @@ def find_ring_center(src, center, lo, hi=None, N=128):
     dst[:,:lo] = 0
     dst[:,hi:] = 0
     
-    ## Resize Y (angular) axis (計算を軽くするためリサイズ)
-    buf = dst.astype(np.float32)
-    rdst = cv2.resize(buf[:,lo:hi], (hi-lo, N), interpolation=cv2.INTER_AREA)
+    ## Resize Y:angular axis (計算を軽くするためリサイズ)
+    rdst = cv2.resize(dst[:,lo:hi].astype(np.float32), (hi-lo, N), interpolation=cv2.INTER_AREA)
     rdst -= rdst.mean()
+    ## rdst = cv2.GaussianBlur(rdst, (1,11), 0)
+    
     temp = rdst[0][::-1] # template of corr; distr at theta = 0
     data = []
     for fr in rdst:
@@ -64,38 +87,33 @@ def find_ring_center(src, center, lo, hi=None, N=128):
     Y = np.array(data[::-1]) - (hi-lo)/2
     X = np.arange(0, 1, 1/len(Y)) * 2*pi
     
-    ## remove serges 急激な変化 (相関計算の結果のとび) を除外する
-    ## if 1:
+    ## remove leaps(1): 急激な変化 (相関計算の結果のとび) を除外する
+    ## if 0:
     ##     ym = np.mean(Y)
     ##     ys = np.std(Y)
-    ##     xy = [(x,y) for x,y in zip(X,Y) if -2*ys < y-ym < 2*ys]
-    ##     X, Y = np.array(xy).T
+    ##     xy = [(x,y) for x,y in zip(X,Y) if -ys < y-ym < ys]
+    ##     xx, yy = np.array(xy).T
     
-    ## remove serges (2) tol より小さいとびを許容する (画素サイズに比例)
-    tol = 0.02 * w
-    xx, yy = [X[0]], [Y[0]]
-    for x,y in zip(X[1:], Y[1:]):
-        if abs(y - yy[-1]) < tol:
-            xx.append(x)
-            yy.append(y)
+    ## remove leaps(2): tol より小さいとびを許容する (画素サイズに比例)
+    if 1:
+        tolr = max(5, tol * w/2) # default < 0.5% までなら許しちゃる
+        xx, yy = [X[0]], [Y[0]]
+        for x,y in zip(X[1:], Y[1:]):
+            if abs(y - yy[-1]) < tolr:
+                xx.append(x)
+                yy.append(y)
     
     ## --------------------------------
     ## Do fitting to model curve
     ##   and calculate the total shifts
     ## --------------------------------
+    fitting_curve = Model(xx, yy)
     
-    fitting_curve = Model()
-    fitting_curve.fit(xx, yy)
+    edi.plot(xx, yy, '+', X, fitting_curve(X))
     
-    ## print(fitting_curve.params) # ▲パラメータが大きくずれることがあるので注意
-    ## edi.plot(xx, yy, '+', X, fitting_curve(X))
-    
-    a = fitting_curve.params[0] #= 0 # :a=0 として(平均を基準とする)全体のオフセット量を評価する
+    a = fitting_curve.params[0] = 0 # :a=0 として(平均を基準とする)全体のオフセット量を評価する
     b = fitting_curve.params[1]
     c = fitting_curve.params[2] % (2*pi)
-    n = max(nx, ny)
-    if abs(a) > n or abs(b) > n: # ▲フィッティングパラメータ異常．推定に失敗
-        return find_ring_center(src, None, lo, hi, N)
     
     t = c+pi if b>0 else c # ---> 推定中心方向
     nx -= abs(b) * cos(t)
@@ -104,35 +122,22 @@ def find_ring_center(src, center, lo, hi=None, N=128):
     return dst, center, fitting_curve
 
 
-def find_radial_peaks(buf, rmod, lo, hi=None, pw=5):
+def find_radial_peaks(data):
     """Find radial peaks in Polar-converted buffer
-    
-    buf : Polar-converted output buffer
-   rmod : radial modulation function = fitting_curve
-     pw : peak width(s) to be found
+   data : Polar-converted output buffer
     """
-    h, w = buf.shape
-    data = np.zeros(w)
-    for j,x in enumerate(buf):
-        y = (1 - j/h) * 2*pi              # yaxis (from 2pi to 0)
-        data += np.roll(x, -int(rmod(y))) # roll anti-shift (to modify peak pos)
-    data /= h
+    ## Smooth with window (cf. signal.windows) and find local maximas
+    ## w = len(data)
+    ## lw = max(3, w//200)
+    ## window = np.hanning(lw)
+    ## ys = np.convolve(window/window.sum(), data, mode='same')
+    ## peaks = signal.argrelmax(ys)[0]
+    ## 
+    ys = data.copy()
+    peaks = signal.find_peaks_cwt(ys, widths=np.arange(3,4))
     
-    ## Smooth with window (cf. signal.windows) and find peaks in
-    lw = w // 200
-    if lw < 3:
-        lw = 3
-    window = np.hanning(lw)
-    rdist = np.convolve(window/window.sum(), data, mode='same')
-    
-    ## widths = [pw]
-    widths = np.array([pw])
-    peaks = signal.find_peaks_cwt(rdist, widths)
-    
-    hi = hi or np.hypot(h,w) // 2
-    peaks = [p for p in peaks if lo < p < hi # limit the range of searched radius
-                and rdist[p] > rdist.mean()] # and by threshold
-    return rdist, peaks
+    peaks = [p for p in peaks if ys[p] > ys.mean()] # filtered by threshold
+    return ys, np.array(peaks)
 
 
 class Plugin(Layer):
@@ -157,6 +162,11 @@ class Plugin(Layer):
         )
         btn = wx.Button(self, label="+Execute", size=(64,22))
         btn.Bind(wx.EVT_BUTTON, lambda v: self.run(shift=wx.GetKeyState(wx.WXK_SHIFT)))
+        
+        ## btn.Bind(wx.EVT_BUTTON, lambda v:
+        ##     self.thread.Start(self.run, shift=wx.GetKeyState(wx.WXK_SHIFT)))
+        ## self.thread = Layer.Thread(self)
+        
         btn.SetToolTip("S-Lbutton to enter recusive centering")
         
         self.chkplt = wx.CheckBox(self, label="rdist")
@@ -168,7 +178,6 @@ class Plugin(Layer):
             frame = self.selected_view.frame
         
         center = edi.centroid(frame.buffer)
-        ## center = None
         if shift:
             nx, ny = frame.xytopixel(frame.selector)
             if isinstance(nx, int): # for PY2
@@ -180,16 +189,18 @@ class Plugin(Layer):
         src = frame.buffer
         for i in range(maxloop):
             buf, center, fitting_curve, = find_ring_center(src, center, lo=int(self.rmin))
-            ## print("center =", center)
+        self.fitting_curve = fitting_curve
         
-        self.output.load(buf, name="*linpolar*", localunit=1)
+        self.output.load(buf, name="*lin-polar*", localunit=1)
         frame.selector = frame.xyfrompixel(center)
         
         ## Find peaks in radial distribution
-        rdist, peaks = find_radial_peaks(buf, fitting_curve, lo=int(self.rmin))
+        data = fitting_curve.mod1d(buf)
+        rdist, peaks = find_radial_peaks(data)
         
-        if self.chkplt.Value:
+        if self.chkplt.Value: # this should be called for MainThread
             edi.clf()
+            edi.plot(data)
             edi.plot(rdist)
             edi.plot(peaks, rdist[peaks], 'o')
         print("peaks =", peaks)

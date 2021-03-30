@@ -8,6 +8,26 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import numpy as np
 
+SHELLSTARTUP = """
+from __future__ import division, print_function
+from __future__ import unicode_literals
+from __future__ import absolute_import
+import sys
+import os
+import wx
+import mwx
+import cv2
+import numpy as np
+from numpy import pi,nan,inf
+from scipy import ndimage as ndi
+from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
+from matplotlib import pyplot as plt
+import siteinit as si
+import editor as edi
+edit = self.edit
+graph = self.graph
+output = self.output
+"""
 
 def init_spec(self):
     """Initialize self<Inspector> interface
@@ -38,7 +58,7 @@ def init_spec(self):
     ## --------------------------------
     ## Inspector's shell style
     ## --------------------------------
-    self.shell.set_style({
+    shell.set_style({
         "STC_STYLE_DEFAULT"     : "fore:#cccccc,back:#202020,face:MS Gothic,size:9",
         "STC_STYLE_CARETLINE"   : "fore:#ffffff,back:#012456,size:2",
         "STC_STYLE_LINENUMBER"  : "fore:#000000,back:#f0f0f0,size:9",
@@ -62,7 +82,9 @@ def init_spec(self):
         "STC_P_OPERATOR"        : "",
         "STC_P_NUMBER"          : "fore:#ffc080",
     })
-    self.shell.wrap(0)
+    shell.wrap(0)
+    
+    shell.Execute(SHELLSTARTUP)
 
 
 if __name__ == '__main__':
