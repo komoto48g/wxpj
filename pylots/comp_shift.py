@@ -33,5 +33,5 @@ class Plugin(CompInterface, Layer):
     def execute(self):
         with self.thread:
             with self.save_restriction(CLAPT=1, SAAPT=1):
-                with self.save_excursion(mmode='DIFF'):
+                with self.save_excursion(mmode='DIFF', mag=2000):
                     return all([self.cal() for a in self.for_each_alpha()])

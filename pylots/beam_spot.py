@@ -34,9 +34,6 @@ class Plugin(SpotInterface, Layer):
     
     def certify(self):
         h, w = self.camera.shape
-        ## self.focus(0)
-        ## d0,_p,_q = self.detect_beam_diameter()
-        ## valid = (d0/h < 0.05)
         self.focus(0.25)
         d1,_p,_q = self.detect_beam_diameter()
         return (0.20 < d1/h < 0.30)

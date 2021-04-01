@@ -45,7 +45,7 @@ class Plugin(StigInterface, Layer):
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(CL3=0xffff, SAAPT=0):
+            with self.save_restriction(CL3=0xffff, CLAPT=2, SAAPT=0):
                 with self.save_excursion(alpha=-1, mmode='MAG'):
                     self.cla.align()
                 with self.save_excursion(mmode='DIFF', mag=2000):

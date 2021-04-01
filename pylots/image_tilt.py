@@ -29,5 +29,5 @@ class Plugin(AlignInterface, Layer):
     
     def execute(self):
         with self.thread:
-            with self.save_excursion(mmode='DIFF'):
+            with self.save_excursion(mmode='DIFF', mag=2000):
                 return self.cal()

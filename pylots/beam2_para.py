@@ -1,5 +1,6 @@
 #! python
 # -*- coding: utf-8 -*-
+import numpy as np
 from mwx import LParam
 from mwx.graphman import Layer
 from pylots.temixins import TemInterface, TEM
@@ -196,16 +197,19 @@ class Plugin(TemInterface, Layer):
             finally:
                 self.wobbler = worg
     
+    ## alpha-specific mags given apriori▲
+    ## mags_apriori = np.array([50e3, 30e3, 20e3, 12e3, 10e3, 8e3, 8e3, 8e3,]) # for Z300FSC, 50um
+    mags_apriori = np.array([40e3, 20e3, 12e3, 8e3, 6e3, 5e3, 5e3, 5e3,]) # for Z300FSC, 50um
+    
     def execute(self):
-        ## alpha-specific mags given apriori▲
-        mags_apriori = [50e3, 30e3, 20e3, 12e3, 10e3, 8e3, 8e3, 8e3,]
         ret = True
         with self.thread:
             with self.save_excursion(mmode='MAG'):
-                with self.save_restriction(CLAPT=2, SAAPT=0):
+                ## with self.save_restriction(CLAPT=2, SAAPT=0):
+                with self.save_restriction(SAAPT=0):
                     self.cla.align()
                     for a in self.for_each_alpha():
-                        self.imaging.Mag = mags_apriori[a]
+                        self.imaging.Mag = self.mags_apriori[a]
                         self.spot.focus(0.5)
                         ret &= all([self.cal() for s in self.for_each_spot()])
         return ret
