@@ -209,7 +209,7 @@ class Plugin(Layer):
     """Property list of Grpah buffers
     """
     menu = "&File/&Extensions"
-    menustr = "&Buffer listbox\tAlt+b"
+    menustr = "&Buffer listbox\tCtrl+b"
     caption = "Property list"
     dockable = False
     unloadable = False

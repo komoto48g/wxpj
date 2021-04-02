@@ -14,7 +14,7 @@ class Plugin(Layer):
     """Plugins of startup settings
     """
     menu = "&File/&Options"
-    menustr = "&startup\tAlt+s"
+    menustr = "&startup"
     category = "Option"
     
     def Init(self):

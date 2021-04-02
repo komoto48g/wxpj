@@ -117,6 +117,6 @@ class Plugin(TemInterface, Layer):
             with self.save_restriction(SAAPT=0):
                 with self.save_excursion(spot=0, alpha=-1, mmode='MAG'):
                     self.cla.align()
-                    self.spot.focus(1)
+                    self.spot.focus(2)
                     ## self.para.focus()
                     return self.cal()

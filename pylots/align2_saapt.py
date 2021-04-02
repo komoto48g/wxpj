@@ -45,7 +45,7 @@ class Plugin(AlignInterface, Layer):
         if self.apt_selection('SAAPT'):
             if self.mode_selection('MAG'):
                 self.pla.index = (0x8000, 0x8000) # neutralize
-                self.spot.focus(1)
+                self.spot.focus(2)
                 return AlignInterface.align(self)\
                    and AlignInterface.align(self)
     

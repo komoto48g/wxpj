@@ -14,7 +14,7 @@ class Plugin(Layer):
     """Line profile of the currently selected buffers
     """
     menu = "&File/&Extensions"
-    menustr = "&Line profile\tAlt+l"
+    menustr = "&Line profile\tCtrl+l"
     caption = "Line profile"
     dockable = False
     unloadable = False

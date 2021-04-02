@@ -199,7 +199,7 @@ class Plugin(TemInterface, Layer):
     
     ## alpha-specific mags given apriori▲
     ## mags_apriori = np.array([50e3, 30e3, 20e3, 12e3, 10e3, 8e3, 8e3, 8e3,]) # for Z300FSC, 50um
-    mags_apriori = np.array([40e3, 20e3, 12e3, 8e3, 6e3, 5e3, 5e3, 5e3,]) # for Z300FSC, 50um
+    mags_apriori = np.array([40e3, 20e3, 12e3, 8e3, 6e3, 4e3, 4e3, 4e3,]) # for Z300FSC, 50um
     
     def execute(self):
         ret = True

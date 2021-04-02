@@ -21,7 +21,7 @@ class Plugin(Layer):
     長方形のリージョンは歪んだパターンになるので要注意
     """
     menu = "&File/&Functions"
-    menustr = "&FFT view\tAlt+f"
+    menustr = "&FFT view"
     caption = "FFT view"
     
     def Init(self):

@@ -5,6 +5,7 @@ from __future__ import (division, print_function,
 ## import time
 import wx
 import cv2
+import numpy as np
 from mwx import Param, LParam
 from mwx.graphman import Layer
 import wxpyJemacs as wxpj
@@ -45,14 +46,9 @@ class Plugin(Layer):
         )
     
     def set_current_session(self, session):
-        self.reset_params((
-            session.get('rate'),
-            session.get('size'),
-            session.get('camera'),
-        ))
-        ## self.rate_param.value = session.get('rate')
-        ## self.size_param.value = session.get('size')
-        ## self.camera_selector.value = session.get('camera')
+        self.rate_param.value = session.get('rate')
+        self.size_param.value = session.get('size')
+        self.camera_selector.value = session.get('camera')
     
     def get_current_session(self):
         return {
@@ -76,8 +72,23 @@ class Plugin(Layer):
                 H = self.size_param.value
                 W = H * w // h
                 dst = cv2.resize(src, (W, H), interpolation=cv2.INTER_AREA)
+                ## dst = cv2.cvtColor(dst, cv2.COLOR_GRAY2BGR)
+                
+                ## lines and circles with color:cyan #00c0c0
+                ## c = (192,192,0)
+                c = 255
+                cx, cy = W//2, H//2
+                
+                buf = np.resize(0, (H, W)).astype(dst.dtype)
+                cv2.line(buf, (0, cy), (W, cy), c, 1)
+                cv2.line(buf, (cx, 0), (cx, H), c, 1)
+                cv2.circle(buf, (cx, cy), cx//2, c, 1)
+                cv2.circle(buf, (cx, cy), cx//4, c, 1)
+                dst = cv2.bitwise_xor(buf, dst)
+                
                 cv2.imshow(title, dst)
                 cv2.waitKey(self.rate_param.value)
+                
                 if cv2.getWindowProperty(title, 0) < 0:
                     self.button.Value = False
                     self.viewer.Stop()

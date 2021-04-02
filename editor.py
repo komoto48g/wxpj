@@ -24,7 +24,7 @@ class Plugin(wxpj.Layer):
     """Plugin as testsuite for editors functions
     """
     menu = "&File/&Functions"
-    menustr = "&Editor\tAlt+e"
+    menustr = "&Editor"
     
     def Init(self):
         self.hi = wxpj.LParam("hi", (0, 10 ,0.005), 0)
