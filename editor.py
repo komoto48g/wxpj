@@ -233,6 +233,56 @@ def Corr(src, tmp):
         return signal.fftconvolve(src, tmp[::-1,::-1], mode='same')
 
 
+def linpolar(src, r0, r1, center=None):
+    """Linear-Polar transform
+    The area radiii [r0:r1] mapsto the same size of src image
+    
+    cf. cv2.linearPolar(src, (xc, yc), R, cv2.INTER_CUBIC)
+    """
+    h, w = src.shape
+    if center is None:
+        xc, yc = w//2, h//2
+    else:
+        xc, yc = center
+    
+    x = np.arange(w, dtype=np.float32) /w
+    y = np.arange(h, dtype=np.float32) * 2*pi /h
+    xx, yy = np.meshgrid(x, y)
+    
+    r = r0 + (r1-r0) * xx
+    map_x = xc + r * np.cos(yy)
+    map_y = yc + r * np.sin(yy)
+    dst = cv2.remap(src.astype(np.float32), map_x, map_y, cv2.INTER_CUBIC)
+    ## weight = r[0] * 2*pi /h
+    return dst
+
+
+def logpolar(src, r0, r1, center=None):
+    """Log-Polar transform
+    The area radii [r0:r1] of radius N/2 mapsto the same size of src image
+    
+    cf. cv2.logPolar(src, (nx,ny), M, cv2.INTER_CUBIC)
+    """
+    h, w = src.shape
+    if center is None:
+        xc, yc = w//2, h//2
+    else:
+        xc, yc = center
+    
+    x = np.arange(w, dtype=np.float32) /w
+    y = np.arange(h, dtype=np.float32) * 2*pi /h
+    xx, yy = np.meshgrid(x, y)
+    
+    rh0 = max(0, np.log(r0)) # < -inf
+    rh1 = np.log(r1)
+    r = np.exp(rh0 + (rh1-rh0) * xx)
+    map_x = xc + r * np.cos(yy)
+    map_y = yc + r * np.sin(yy)
+    dst = cv2.remap(src.astype(np.float32), map_x, map_y, cv2.INTER_CUBIC)
+    ## weight = r[0] * 2*pi /h
+    return dst
+
+
 ## --------------------------------
 ## Image analysis
 ##   find peaks, figures, etc.

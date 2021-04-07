@@ -1,6 +1,7 @@
 #! python
 # -*- coding: utf-8 -*-
 """The frontend of Graph and Plug manager
+
   Phase 1: Legacy (2015--2017) TEM control
   Phase 2: Phoenix (2018--2020) Integrated system for image analysis
   Phase 3: Analysis center phoenix (2020--)
@@ -29,7 +30,7 @@ if 'mwx' not in sys.modules:
     home = os.path.dirname(os.path.abspath(__file__))
     sys.path += [
         os.path.join(home, "nest/pj-2.5-py3.5.egg"),
-        os.path.join(home, "nest/mwxlib-0.30-py3.5.egg"),
+        os.path.join(home, "nest/mwxlib-0.40-py3.5.egg"),
     ]
 import mwx
 from mwx import Param, LParam
@@ -486,9 +487,14 @@ if __name__ == '__main__':
         si = __import__('siteinit')
         print("Executing {!r}".format(si.__file__))
         si.init_frame(frm)
+        
+        debut = __import__('debut')
+        print("Executing {!r}".format(debut.__file__))
+        debut.init_spec(self.inspector)
+        
     except Exception:
-        print("  Exception occurs in 'siteinit.py'... pass.\n")
         traceback.print_exc()
+        pass
     
     if session:
         print("Starting session {!r}".format(session))

@@ -24,16 +24,24 @@ from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 from matplotlib import pyplot as plt
 import siteinit as si
 import editor as edi
+plot = edi.plot
+mplot = edi.mplot
+splot = edi.splot
+imshow = edi.imshow
 edit = self.edit
 graph = self.graph
 output = self.output
 """
 
+
 def init_spec(self):
     """Initialize self<Inspector> interface
     """
-    np.set_printoptions(linewidth=256)
+    np.set_printoptions(linewidth=256) # default 75
+    
     shell = self.shell
+    shell.execute(SHELLSTARTUP)
+    shell.SHELLSTARTUP = SHELLSTARTUP
     
     @shell.define_key('C-tab')
     def insert_space_like_tab():
@@ -83,8 +91,6 @@ def init_spec(self):
         "STC_P_NUMBER"          : "fore:#ffc080",
     })
     shell.wrap(0)
-    
-    shell.Execute(SHELLSTARTUP)
 
 
 if __name__ == '__main__':

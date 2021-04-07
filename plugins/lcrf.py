@@ -32,6 +32,10 @@ class Model(object):
         return res
     
     def mod2d(self, buf):
+        """Calculate modulated image
+        buf : polar-transformed output buffer
+      retval -> 2D-array of modulated image
+        """
         h, w = buf.shape
         shift = [self(x) for x in np.arange(0,h)/h * 2*pi][::-1] # shift vector
         axis = np.arange(0., w)
@@ -42,9 +46,9 @@ class Model(object):
         return data
     
     def mod1d(self, buf):
-        """Calculate line profile with modulation correction
-        buf : Polar-converted output buffer
-      retval -> 1d-array of modulated (+avr.) line profile
+        """Calculate line profile averaged with modulation correction
+        buf : polar-transformed output buffer
+      retval -> 1D-array of modulated (+avr.) line profile
         """
         h, w = buf.shape
         ## data = np.zeros(w)
@@ -57,8 +61,11 @@ class Model(object):
 
 def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     """find center of ring pattern in buffer
-    Polar 変換した後，角度セグメントに分割して相互相関をとる．
-    theta = 0 を基準として，相対変位 [pixels] を計算する
+    
+    極座標変換した後，角度セグメントに分割して相互相関をとる．
+    center シフトを推定するために linear-polar を使用する．
+    theta = 0 を基準として，相対変位 [pixels] を計算する．
+    
     src : source buffer
  center : initial value of center positoin [nx,ny]
   lo-hi : masking size of radial axis
@@ -94,7 +101,7 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     
     ## remove leaps(1): 急激な変化 (相関計算の結果のとび) を除外する
     ## if 0:
-    ##     ym = np.mean(Y)
+    ##     ym = np.median(Y)
     ##     ys = np.std(Y)
     ##     xy = [(x,y) for x,y in zip(X,Y) if -ys < y-ym < ys]
     ##     xx, yy = np.array(xy).T
@@ -109,35 +116,29 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
                 yy.append(y)
     
     fitting_curve = Model(xx, yy)
+    
     ## edi.plot(xx, yy, '+', X, fitting_curve(X))
     
     a = fitting_curve.params[0] = 0 # :a=0 として(平均を基準とする)全体のオフセット量を評価する
     b = fitting_curve.params[1]
     c = fitting_curve.params[2] % (2*pi)
     
-    t = c+pi if b>0 else c # ---> 推定中心方向
+    t = c+pi if b>0 else c # 推定中心方向
     nx -= abs(b) * cos(t)
     ny += abs(b) * sin(t)
     center = (nx, ny)
     return dst, center, fitting_curve
 
 
-def find_radial_peaks(data):
-    """Find radial peaks in Polar-converted buffer
-   data : Polar-converted output buffer
-    """
-    ## Smooth with window (cf. signal.windows) and find local maximas
-    ## w = len(data)
-    ## lw = max(3, w//200)
-    ## window = np.hanning(lw)
-    ## ys = np.convolve(window/window.sum(), data, mode='same')
-    ## peaks = signal.argrelmax(ys)[0]
-    ## 
-    ys = data.copy()
-    peaks = signal.find_peaks_cwt(ys, widths=np.arange(3,4))
-    
-    peaks = [p for p in peaks if ys[p] > ys.mean()] # filtered by threshold
-    return ys, np.array(peaks)
+## def find_radial_peaks(data):
+##     """Find radial peaks in Polar-converted buffer
+##    data : Polar-converted output buffer
+##     """
+##     ys = data.copy()
+##     peaks = signal.find_peaks_cwt(ys, widths=np.arange(3,4))
+##     
+##     peaks = [p for p in peaks if ys[p] > ys.mean()] # filtered by threshold
+##     return ys, np.array(peaks)
 
 
 class Plugin(Layer):
@@ -160,13 +161,11 @@ class Plugin(Layer):
             ],
             cw=0, lw=36, tw=48
         )
+        
         btn = wx.Button(self, label="+Execute", size=(64,22))
         btn.Bind(wx.EVT_BUTTON, lambda v: self.run(shift=wx.GetKeyState(wx.WXK_SHIFT)))
-        
         ## btn.Bind(wx.EVT_BUTTON, lambda v:
         ##     self.thread.Start(self.run, shift=wx.GetKeyState(wx.WXK_SHIFT)))
-        ## self.thread = Layer.Thread(self)
-        
         btn.SetToolTip("S-Lbutton to enter recusive centering")
         
         self.chkplt = wx.CheckBox(self, label="rdist")
@@ -195,12 +194,14 @@ class Plugin(Layer):
         frame.selector = frame.xyfrompixel(center)
         
         ## Find peaks in radial distribution
-        data = fitting_curve.mod1d(buf)
-        rdist, peaks = find_radial_peaks(data)
+        rdist = fitting_curve.mod1d(buf)
+        
+        ## Find radial peaks in polar-converted buffer
+        peaks = signal.find_peaks_cwt(rdist, widths=np.arange(3,4))
+        peaks = [p for p in peaks if rdist[p] > rdist.mean()] # filtered by threshold
         
         if self.chkplt.Value: # this should be called for MainThread
             edi.clf()
-            edi.plot(data)
             edi.plot(rdist)
             edi.plot(peaks, rdist[peaks], 'o')
         print("peaks =", peaks)

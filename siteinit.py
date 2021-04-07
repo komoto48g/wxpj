@@ -3,44 +3,18 @@
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import sys
-import numpy as np
-import editor as edi
-import debut
 
-SHELLSTARTUP = """
-from __future__ import division, print_function
-from __future__ import unicode_literals
-from __future__ import absolute_import
-import sys
-import os
-import wx
-import mwx
-import cv2
-import numpy as np
-from numpy import pi,nan,inf
-from scipy import ndimage as ndi
-from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
-from matplotlib import pyplot as plt
-import siteinit as si
-import editor as edi
-edit = self.edit
-graph = self.graph
-output = self.output
-"""
 
 def init_frame(self):
     """Program settings of pyJemacs <Frame>
     """
     self.Editor = "C:/usr/home/bin/xyzzy/xyzzy.exe"
     
-    ## Note: edi can be accessed by si.edi from self
-    ## Here, methods art set as self localvars temporarily
-    self.imshow = edi.imshow
-    self.plot = edi.plot
-    self.mplot = edi.mplot
-    self.splot = edi.splot
-    
-    ## np.set_printoptions(linewidth=256) # default 75
+    ## import editor as edi
+    ## self.plot = edi.plot
+    ## self.mplot = edi.mplot
+    ## self.splot = edi.splot
+    ## self.imshow = edi.imshow
     
     ## Film/CCD [mm/pixel]
     ## 0.0820 mm/pixel - Jenoptik
@@ -54,8 +28,8 @@ def init_frame(self):
     
     ## matplotlib wxagg backend
     ## to restrict imshow sizes max typically < 24e6 (bytes)
-    self.graph.nbytes_threshold = 24e6
-    self.output.nbytes_threshold = 24e6
+    self.graph.nbytes_threshold = 20e6
+    self.output.nbytes_threshold = 20e6
     
     ## window layout
     self.histogram.modeline.Show()
@@ -64,10 +38,11 @@ def init_frame(self):
     ## Load plugins
     ## --------------------------------
     ## sys.path.append("C:/usr/home/workspace/PyJEM/PyJEM-1.0.2.1143")
-    sys.path.append(r"C:/usr/home/workspace/tem13/site-axima")
-    sys.path.append(r"C:/usr/home/workspace/tem13/site-axima-factory")
+    sys.path.append(r"C:/usr/home/workspace/tem13/site-aero")
+    sys.path.append(r"C:/usr/home/workspace/tem13/site-rigaku")
+    sys.path.append(r"C:/usr/home/workspace/tem13/site-factory")
     
-    self.load_plug(edi)
+    self.load_plug("editor")
     
     import startup as su
     self.load_plug(su)
@@ -139,23 +114,18 @@ def init_frame(self):
         ## frame.annotation = self.notify.modestr
         frame.annotation = "{0},bin{binning}-{exposure}s".format(self.notify.modestr, **frame.attributes)
         frame.name = self.new_buffer_name.format(**frame.attributes)
-    
-    ## --------------------------------
-    ## Shell starutp
-    ## --------------------------------
-    
-    self.inspector.shell.Execute(SHELLSTARTUP)
-    debut.init_spec(self.inspector)
-
 
 
 if __name__ == '__main__':
     import wx
+    import debut
     import wxpyJemacs as wxpj
     
     app = wx.App()
     frm = wxpj.Frame(None)
+    
     init_frame(frm)
+    debut.init_spec(frm.inspector)
     
     frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
     frm.load_buffer(u"C:/usr/home/workspace/images/sample_circ.bmp")

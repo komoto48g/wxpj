@@ -13,8 +13,8 @@ class Plugin(Layer):
     1. lcrf.run to find center of rings and the radial peaks
     2. ld_ring.run to calc the aspect ratio
     """
-    menu = "&Plugins/&Pragmas"
-    category = "Pragmas"
+    menu = "&Plugins/&Pragma Tools"
+    category = "Pragma Tools"
     caption = "Ring"
     
     lcrf = property(lambda self: self.parent.require('lcrf'))

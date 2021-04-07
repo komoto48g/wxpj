@@ -16,7 +16,7 @@ import editor as edi
 class Plugin(Layer):
     """Plugin for magcal
     """
-    menu = "&Plugins/&Pragmas"
+    menu = "&Plugins/&Pragma Tools"
     
     lgbt = property(lambda self: self.parent.require('lgbt'))
     lccf = property(lambda self: self.parent.require('lccf2'))
@@ -220,7 +220,7 @@ class Plugin(Layer):
         src = frame.roi
         h, w = src.shape
         
-        ## resize to a power of 2 squared ROI
+        ## resize to 2**N squared ROI
         n = pow(2, int(np.log2(min(h,w)))-1)
         i, j = h//2, w//2
         src = src[i-n:i+n,j-n:j+n]

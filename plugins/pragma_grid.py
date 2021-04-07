@@ -13,8 +13,8 @@ class Plugin(Layer):
     1. lccf.run to find contours of circles
     2. ld_grid.run to calc the aspect ratio
     """
-    menu = "&Plugins/&Pragmas"
-    category = "Pragmas"
+    menu = "&Plugins/&Pragma Tools"
+    category = "Pragma Tools"
     caption = "Grid"
     
     lccf = property(lambda self: self.parent.require('lccf'))
