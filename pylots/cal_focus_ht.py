@@ -10,7 +10,6 @@ class Plugin(TemInterface, PylotItem):
     """Plugin of beam alignment
     Adjust beam-axis-HT-alignment [alpha]
     """
-    menu = "&Maintenance/&Test"
     category = "*Discipline*"
     caption = "HT"
     conf_key = 'ht-focus'

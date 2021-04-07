@@ -10,7 +10,6 @@ class Plugin(AlignInterface, PylotItem):
     Adjust beam-axis-HT-alignment [alpha]
     * Calibration with Magnification 100k or more is preferable
     """
-    menu = "&Maintenance/&Test"
     category = "*Discipline*"
     caption = "HT-axis"
     conf_key = 'ht-beamaxis'

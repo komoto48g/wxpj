@@ -12,7 +12,7 @@ class Plugin(TemInterface, Layer):
     Adjust para-beam-focus [spot/alpha] using OL
     so that the beam diameter fluctuation gets minimum.
     """
-    menu = None #"&Maintenance/&1-Focus"
+    menu = None #"Maintenance/&1-Focus"
     category = "1-Focus Maintenance"
     caption = "Para"
     conf_key = ('cl3para', 'cl3dia')

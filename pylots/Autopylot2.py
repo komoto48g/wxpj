@@ -56,7 +56,7 @@ class PylotItem(Layer):
 class Plugin(UserInterface, Layer):
     """Plugin of Calibrations
     """
-    menu = "&Maintenance"
+    menu = "Maintenance"
     
     def Init(self):
         self.tree = TreeCtrl(self, size=(160,-1),

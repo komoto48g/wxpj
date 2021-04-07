@@ -10,7 +10,7 @@ import editor as edi
 class Plugin(TemInterface, Layer):
     """Plugin of Focus calibration
     """
-    menu = None #"&Maintenance/&Focus"
+    menu = None #"Maintenance/&Focus"
     category = "Focus"
     caption = "Stage"
     conf_key = 'stage'

@@ -9,7 +9,7 @@ class Plugin(AlignInterface, Layer):
     Calibrate SAA motion drive
     Note: beta (selected area size [um]) is also recorded in cal
     """
-    menu = None #"&Maintenance/Aperture"
+    menu = None #"Maintenance/Aperture"
     category = "Aperture Maintenance"
     caption = "SAAPT"
     conf_key = 'saapt'

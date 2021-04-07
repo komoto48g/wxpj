@@ -9,7 +9,7 @@ class Plugin(AlignInterface, Layer):
     Calibrate CLA motion drive in Large Area DIFF
     Note: The spot focus stride (1/4) must be fixed and *DO NOT CHANGE*
     """
-    menu = None #"&Maintenance/Aperture"
+    menu = None #"Maintenance/Aperture"
     category = "Aperture Maintenance"
     caption = "LADIFF"
     conf_key = 'ladiff'

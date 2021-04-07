@@ -8,7 +8,7 @@ class Plugin(SpotInterface, Layer):
     """Plugin of focus adjustment
     Calibrate spot-beam-focus [spot/alpha] and measure the Brightness sensitivity
     """
-    menu = None #"&Maintenance/&1-Focus"
+    menu = None #"Maintenance/&1-Focus"
     category = "1-Focus Maintenance"
     caption = "Spot"
     conf_key = ('cl3spot', 'cl3sens',)

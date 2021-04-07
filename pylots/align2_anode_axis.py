@@ -9,7 +9,6 @@ class Plugin(AlignInterface, PylotItem):
     """Plugin of beam alignment
     Adjust beam-axis-Anode-alignment [spot]
     """
-    menu = "&Maintenance/&Test"
     category = "*Discipline*"
     caption = "A2-axis"
     conf_key = 'a2-beamaxis'

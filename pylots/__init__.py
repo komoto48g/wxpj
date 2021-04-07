@@ -20,7 +20,7 @@ from pyJeol.pyJem2 import TEM, Filter, Stage # to be referred from pylots
 class UserInterface(TemInterface):
     """TEM Controller Interface complex
     """
-    menu = "&User"
+    menu = "User"
     
     lmspot = property(lambda self: self.parent.require('beam_spot_lowmag'))
     lmshift = property(lambda self: self.parent.require('beam_shift_lowmag'))

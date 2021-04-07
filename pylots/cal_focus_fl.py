@@ -10,7 +10,7 @@ import wxpyJemacs as wxpj
 class Plugin(TemInterface, Layer):
     """Plugin of Focus calibration
     """
-    menu = None #"&Maintenance/&Focus"
+    menu = None #"Maintenance/&Focus"
     category = "Focus"
     caption = "FL"
     conf_key = 'fl-focus'

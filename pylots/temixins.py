@@ -496,7 +496,7 @@ class SpotInterface(TemInterface):
     index : target lens
  conf_key : config key
     """
-    menu = None #"&Maintenance/&1-Focus"
+    menu = None #"Maintenance/&1-Focus"
     category = "Focus Maintenance"
     
     default_threshold = 0.05 # spot size ratio to the shape of image
@@ -702,7 +702,7 @@ class AlignInterface(TemInterface):
     * conf_arg : index (int or tuple) to withdraw value from conf_table matrix
     * conf_factor : factor [um/pix][mrad/pix] mul-commit and div-checkout
     """
-    menu = None #"&Maintenance/&Deflector"
+    menu = None #"Maintenance/&Deflector"
     category = "Deflector Maintenance"
     
     def Init(self):
@@ -829,7 +829,7 @@ class StigInterface(AlignInterface):
     index : target stigmator coil
  conf_key : config key
     """
-    menu = None #"&Maintenance/&Stigmator"
+    menu = None #"Maintenance/&Stigmator"
     category = "Stigmator Maintenance"
     
     threshold = 0.005 # to be less than 0.5% aspect ratio
@@ -901,7 +901,7 @@ class CompInterface(TemInterface):
  conf_key : config key
 deflector : deflector to offset beam (shift or tilt)
     """
-    menu = None #"&Maintenance/&Compensator"
+    menu = None #"Maintenance/&Compensator"
     category = "Compensation Maintenance"
     
     default_threshold = 0.005 # wobbler 変更に対するビーム位置の変化(率

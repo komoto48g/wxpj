@@ -9,7 +9,7 @@ class Plugin(TemInterface, Layer):
     """Plugin of measurement
     Calibrate angle for each spot:alpha
     """
-    menu = None #"&Maintenance/&Measure"
+    menu = None #"Maintenance/&Measure"
     category = "Measurement"
     caption = "Alpha"
     conf_key = 'alpha'

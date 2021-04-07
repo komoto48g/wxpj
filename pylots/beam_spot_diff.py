@@ -8,7 +8,7 @@ class Plugin(SpotInterface, Layer):
     """Plugin of focus adjustment
     Calibrate diff-focus [spot/alpha] and measure the DIFF-Focus sensitivity
     """
-    menu = None #"&Maintenance/&1-Focus"
+    menu = None #"Maintenance/&1-Focus"
     category = "1-Focus Maintenance"
     caption = "Diff-Spot"
     conf_key = 'diffspot'
