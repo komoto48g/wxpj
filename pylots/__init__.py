@@ -7,13 +7,14 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
+__version__ = "1.0"
+__author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
+
 from .temixins import (DataLogger, TemInterface, SpotInterface,
                        AlignInterface, StigInterface, CompInterface)
+
 from pyJeol import pyJem2 as pmpj # Poor man's pyJem package (not a PyJEM)
 from pyJeol.pyJem2 import TEM, Filter, Stage # to be referred from pylots
-
-__version__ = "0.0"
-__author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 
 
 class UserInterface(TemInterface):

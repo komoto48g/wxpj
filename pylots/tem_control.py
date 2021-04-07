@@ -87,17 +87,17 @@ class Plugin(TemInterface, Layer):
         foci = self.tem.foci
         if show:
             for name in "CL3 OLC OLF OM1 FLC FLF".split():
-                foci[name].bind(foci.write) # WR:Enabled
+                ## foci[name].bind(foci.write) # WR:Enabled
                 foci[name].flag = 1
             self.parent.notify.handler.append(self.context)
             try:
-                self.on_lens_notify(self.tem.lsys)
+                self.on_lens_notify(self.tem.foci)
                 self.on_imaging_notify(self.imaging.Info)
             except Exception as e:
                 print("- tem controler failed to get TEM info; {}.".format(e))
         else:
             for name in "CL3 OLC OLF OM1 FLC FLF".split():
-                foci[name].unbind(foci.write) # WR:Disabled
+                ## foci[name].unbind(foci.write) # WR:Disabled
                 foci[name].flag = 0
             self.parent.notify.handler.remove(self.context)
     

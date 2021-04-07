@@ -303,7 +303,7 @@ class TemInterface(object):
         """Halt the thread and wait the notify `sentinel"""
         with self.thread:
             hook = self.parent.notify.handler.hook(sentinel,
-                        lambda v: self.thread.flag.set())
+                                lambda v: self.thread.flag.set())
             try:
                 self.thread.flag.clear() # halt the thread
                 self.thread.flag.wait(timeout) # wait the sentinel
