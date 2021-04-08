@@ -16,7 +16,7 @@ class Plugin(wxpj.Layer):
     This script shows how to get data from graph,
     and how to define event-action_and the keymap.
     """
-    menu = "&Plugins/&Demo"
+    menu = "Plugins/&Demo"
     
     def Init(self):
         self.btn = wxpj.Button(self, "Rotate", self.rotate,

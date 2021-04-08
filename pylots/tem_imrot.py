@@ -14,7 +14,7 @@ import wxpyJemacs as wxpj
 class Plugin(TemInterface, Layer):
     """Imaging rotation angles in Tem.IL_LENSES
     """
-    menu = "&File/&Options"
+    menu = "File/Options"
     menustr = "&TEM ROT option"
     category = "Option"
     caption = "ROT"

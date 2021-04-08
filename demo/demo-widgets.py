@@ -13,7 +13,7 @@ class Plugin(wxpj.Layer):
     
     This script shows wxpj icons/widgets
     """
-    menu = "&Plugins/&Demo"
+    menu = "Plugins/&Demo"
     
     def Init(self):
         self.layout('Provided art images',

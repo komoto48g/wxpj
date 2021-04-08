@@ -522,7 +522,7 @@ class SpotInterface(TemInterface):
             ),
             row=3, show=1, type='vspin', cw=-1, lw=-1, tw=40,
         )
-        self.layout("Functions Test", (
+        self.layout("Function test", (
             wxpj.Button(self, ":Find", lambda v: self.thread.Start(self.find_beam)),
             wxpj.Button(self, ":Spot", lambda v: self.thread.Start(self.find_spot_beam)),
             wxpj.Button(self, ":plot", lambda v: self.logger.plot_data()),

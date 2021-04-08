@@ -95,7 +95,7 @@ class Model(object):
 class Plugin(Layer):
     """Distortion fitting of ring
     """
-    menu = "&Plugins/Measure &Distortion"
+    menu = "Plugins/Measure &Distortion"
     
     Fitting_model = Model
     fitting_params = property(

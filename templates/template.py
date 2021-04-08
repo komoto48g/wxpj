@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-03-21 17:11:38 +0900>
+Last updated: <2021-04-08 03:38:52 +0900>
      Version: 0.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -20,7 +20,7 @@ import wxpyJemacs as wxpj
 class Plugin(Layer):
     """Plugin template ver.0
     """
-    menu = "&Plugins/&Template"
+    menu = "Plugins/&Template"
     menustr = "&template ver.0"
     category = None
     caption = True

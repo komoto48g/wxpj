@@ -103,12 +103,12 @@ class pyJemacs(Framebase):
         self.notify = self.nfront.notify
         ## self.notify.start() # do not start here; do after setting 'host:port:online'
         
-        self.menubar["&File"][-4:-4] = [
+        self.menubar["File"][-4:-4] = [
             (100, "&Notifyee\tF11", "Notify logger", wx.ITEM_CHECK,
                 lambda v: self.nfront.Show(v.IsChecked()),
                 lambda v: v.Check(self.nfront.IsShown())),
         ]
-        self.menubar["&File"][6:6] = [ # insert menus for extenstion, option, etc.
+        self.menubar["File"][6:6] = [ # insert menus for extenstion, option, etc.
             (101, "&Import frames", "Import buffers and attributes", Icon('open'),
                 lambda v: self.import_frames()),
                 
@@ -116,9 +116,9 @@ class pyJemacs(Framebase):
                 lambda v: self.export_frames(),
                 lambda v: v.Enable(self.selected_view.frame is not None)),
             (),
-            ["&Extensions", []],
-            ["&Functions", []],
-            ["&Options", []],
+            ("Extensions", []),
+            ("Functions", []),
+            ("Options", []),
             (),
         ]
         self.menubar.reset()

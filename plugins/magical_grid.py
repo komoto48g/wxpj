@@ -16,7 +16,7 @@ import editor as edi
 class Plugin(Layer):
     """Plugin for magcal
     """
-    menu = "&Plugins/&Pragma Tools"
+    menu = "Plugins/&Pragma Tools"
     
     lgbt = property(lambda self: self.parent.require('lgbt'))
     lccf = property(lambda self: self.parent.require('lccf2'))

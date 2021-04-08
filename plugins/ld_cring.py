@@ -36,7 +36,7 @@ class Model(base.Model):
 class Plugin(base.Plugin):
     """Distortion fitting of ring (override) with fixed origin center
     """
-    menu = "&Plugins/Measure &Cetntral-dist"
+    menu = "Plugins/Measure &Cetntral-dist"
     
     Fitting_model = Model
     fitting_params = property(

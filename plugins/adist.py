@@ -21,8 +21,6 @@ def calc_aspect(u, r, t):
 class Plugin(Layer):
     """Adistortion
     """
-    menu = "&Plugins"
-    
     grid = property(lambda self: self.parent.require('ld_grid'))
     
     def Init(self):

@@ -208,7 +208,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
 class Plugin(Layer):
     """Property list of Grpah buffers
     """
-    menu = "&File/&Extensions"
+    menu = "File/Extensions"
     menustr = "&Buffer listbox\tCtrl+b"
     caption = "Property list"
     dockable = False

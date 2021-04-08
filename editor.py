@@ -23,7 +23,7 @@ import wxpyJemacs as wxpj
 class Plugin(wxpj.Layer):
     """Plugin as testsuite for editors functions
     """
-    menu = "&File/&Functions"
+    menu = "File/Functions"
     menustr = "&Editor"
     
     def Init(self):

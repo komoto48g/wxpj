@@ -144,7 +144,7 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
 class Plugin(Layer):
     """Center of Rings finder ver 1.0
     """
-    menu = "&Plugins/&Basic Tools"
+    menu = "Plugins/&Basic Tools"
     category = "Basic Tools"
     unloadable = False
     

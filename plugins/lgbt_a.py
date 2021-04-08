@@ -13,7 +13,7 @@ import editor as edi
 class Plugin(Layer):
     """Gaussian Blur and Threshold --adaptive
     """
-    menu = "&Plugins/&Basic Tools"
+    menu = "Plugins/&Basic Tools"
     category = "Basic Tools"
     
     def Init(self):

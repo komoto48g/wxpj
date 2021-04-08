@@ -13,7 +13,7 @@ import wxpyJemacs as wxpj
 class Plugin(Layer):
     """Plugins of startup settings
     """
-    menu = "&File/&Options"
+    menu = "File/Options"
     menustr = "&startup"
     category = "Option"
     

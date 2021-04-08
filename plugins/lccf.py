@@ -41,7 +41,7 @@ def find_circles(src, rmin=10, rmax=1000, tol=0.75):
 class Plugin(Layer):
     """Cetner of Circles finder
     """
-    menu = "&Plugins/&Basic Tools"
+    menu = "Plugins/&Basic Tools"
     category = "Basic Tools"
     unloadable = False
     

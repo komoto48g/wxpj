@@ -13,7 +13,7 @@ import editor as edi
 class Plugin(Layer):
     """Gaussian Blur and Threshold
     """
-    menu = "&Plugins/&Basic Tools"
+    menu = "Plugins/&Basic Tools"
     category = "Basic Tools"
     unloadable = False
     

@@ -43,7 +43,7 @@ def find_ellipses(src, tol=0.75):
 class Plugin(Layer):
     """Cetner of Circles finder ver.2
     """
-    menu = "&Plugins/&Basic Tools"
+    menu = "Plugins/&Basic Tools"
     category = "Basic Tools"
     unloadable = False
     
