@@ -52,6 +52,10 @@ class TemInterface(object):
     
     env = property(lambda self: self.parent.env)
     
+    default_saapt = property(lambda self: self.config.get('default_saapt', 1))
+    default_clapt = property(lambda self: self.config.get('default_clapt', 1))
+    default_acc_v = property(lambda self: self.config['acc_v'])
+    
     ustar_sqrt = 1
     config_tem_mag = None
     config_tem_lowmag = None
@@ -235,7 +239,7 @@ class TemInterface(object):
         saved = {}
         for k,v in kwargs.items():
             ## if k in self.Aperture.APERTURES: # CLA, SAA, and so on.
-            if k[-3:] == 'APT': # k ends with 'APT':supposed t to be a kind of Aperture
+            if k[-3:] == 'APT': # k ends with 'APT' is supposed to be a kind of Aperture
                 apt = getattr(self, k)
                 if apt.sel != v:
                     saved[k] = apt.sel

@@ -51,7 +51,7 @@ class Plugin(TemInterface, Layer):
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(CLAPT=2, SAAPT=0): # CLAPT:100um
+            with self.save_restriction(CLAPT=self.default_clapt, SAAPT=0): # CLAPT:100um
                 with self.save_excursion(mmode='MAG'):
                     self.cla.align()
                 with self.save_excursion(mmode='DIFF', mag=2000):

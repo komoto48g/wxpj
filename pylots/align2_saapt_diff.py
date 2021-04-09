@@ -67,6 +67,6 @@ class Plugin(AlignInterface, Layer):
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(CLAPT=1, SAAPT=1):
+            with self.save_restriction(CLAPT=1, SAAPT=self.default_saapt):
                 with self.save_excursion(spot=0, alpha=-1, mmode='DIFF', mag=2000):
                     return self.cal()

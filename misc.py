@@ -53,7 +53,7 @@ def _format_array(arr):
             )
 
 class ConfigData(object):
-    """Config paraser wraps for sharing data among plugins
+    """Config paraser wraps for sharing data:dict among plugins
     """
     def __init__(self, path, section):
         self.parser = configparser.ConfigParser()

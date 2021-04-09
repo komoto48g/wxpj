@@ -85,7 +85,7 @@ class Plugin(TemInterface, Layer):
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(SAAPT=1):
+            with self.save_restriction(SAAPT=self.default_saapt):
                 with self.save_excursion(mmode='MAG', kmode='Spectrum'):
                     self.delay(1)
                     return all([self.cal()
