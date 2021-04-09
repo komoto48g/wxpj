@@ -8,7 +8,7 @@ class Plugin(AlignInterface, Layer):
     """Plugin of beam alignment
     Calibrate SPOTA-alignment [alpha]
     """
-    caption = "SPOTA"
+    caption = "SPA"
     conf_key = 'spa'
     index = TEM.SPOTA
     

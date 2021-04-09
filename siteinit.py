@@ -10,12 +10,6 @@ def init_frame(self):
     """
     self.Editor = "C:/usr/home/bin/xyzzy/xyzzy.exe"
     
-    ## import editor as edi
-    ## self.plot = edi.plot
-    ## self.mplot = edi.mplot
-    ## self.splot = edi.splot
-    ## self.imshow = edi.imshow
-    
     ## Film/CCD [mm/pixel]
     ## 0.0820 mm/pixel - Jenoptik
     ## 0.0428 mm/pixel - FLASH 1181
@@ -37,7 +31,6 @@ def init_frame(self):
     ## --------------------------------
     ## Load plugins
     ## --------------------------------
-    ## sys.path.append("C:/usr/home/workspace/PyJEM/PyJEM-1.0.2.1143")
     sys.path.append(r"C:/usr/home/workspace/tem13/site-aero")
     sys.path.append(r"C:/usr/home/workspace/tem13/site-rigaku")
     sys.path.append(r"C:/usr/home/workspace/tem13/site-factory")

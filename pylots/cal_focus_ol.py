@@ -18,6 +18,7 @@ class Plugin(TemInterface, Layer):
     
     default_wobstep = 0x800
     
+    spot = property(lambda self: self.parent.require('beam_spot'))
     para = property(lambda self: self.parent.require('beam2_para'))
     
     def Init(self):
@@ -99,6 +100,7 @@ class Plugin(TemInterface, Layer):
     def execute(self):
         with self.thread:
             with self.save_restriction(SAAPT=0):
-                with self.save_excursion(spot=0, alpha=-1, mmode='MAG'):
-                    self.para.focus()
+                with self.save_excursion(spot=0, mmode='MAG'):
+                    #self.para.focus()
+                    self.spot.focus(1)
                     return self.cal()
