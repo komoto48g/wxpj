@@ -21,7 +21,6 @@ import wx
 import cv2
 import matplotlib
 import numpy as np
-from numpy import nan,inf # imported but unused :necessary to eval
 import scipy
 from PIL import Image
 from PIL import TiffImagePlugin # tiff extension for py2exe
@@ -130,78 +129,6 @@ class pyJemacs(Framebase):
     ## --------------------------------
     ## load/save frames and attributes 
     ## --------------------------------
-    
-    def load_file(self, path, target):
-        try:
-            self.import_frames(path, target)
-            return True
-        except:
-            pass
-        return Framebase.load_file(self, path, target)
-    
-    def load_buffer(self, paths=None, target=None):
-        """Load buffers (override) from paths to the target window
-        """
-        frames = Framebase.load_buffer(self, paths, target)
-        if frames:
-            savedir = os.path.dirname(frames[0].pathname)
-            f = os.path.join(savedir, '.results')
-            res, mis = self.read_attributes(f)
-            for frame in frames:
-                frame.update_attributes(res.get(frame.name))
-    
-    def save_buffer(self, path=None, frame=None):
-        """Save a buffer (override) of the frame to the path
-        """
-        frame = Framebase.save_buffer(self, path, frame)
-        if frame:
-            savedir = os.path.dirname(frame.pathname)
-            f = os.path.join(savedir, '.results')
-            res, mis =self.write_attributes(f, [frame])
-    
-    def read_attributes(self, f):
-        """Read attributes file `f(.results)"""
-        try:
-            res = OrderedDict()
-            mis = OrderedDict()
-            savedir = os.path.dirname(f)
-            with open(f) as i:
-                res.update(eval(i.read())) # restore (locals: datetime, nan, inf)
-                
-                for name, attr in tuple(res.items()):
-                    path = os.path.join(savedir, name)
-                    if not os.path.exists(path): # check & pop missing files
-                        ## print("- {!r} in the record is missing... pass".format(name))
-                        res.pop(name)
-                        mis.update({name:attr})
-                    else:
-                        attr.update(pathname=path)
-        except FileNotFoundError:
-            pass
-        except Exception as e:
-            print("- reading attr:", e)
-        finally:
-            return res, mis # finally raise no exceptions
-    
-    def write_attributes(self, f, frames):
-        """Write attributes file `f(.results)"""
-        try:
-            res, mis = self.read_attributes(f)
-            new = OrderedDict((x.name, x.attributes) for x in frames)
-            
-            ## res order may differ from that of new frames
-            ## so we take a few steps to update results to export
-            n = len(new)
-            res.update(new) # res updates to new info,
-            new.update(res) # then copy res back with keeping the new order
-            
-            with open(f, 'w') as o:
-                pprint(tuple(new.items()), stream=o)
-            
-        except Exception as e:
-            print("- writing attr:", e)
-        finally:
-            return new, mis
     
     def import_frames(self, f=None, target=None):
         """Load frames and the associated result file to the target window
