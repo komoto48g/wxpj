@@ -88,7 +88,6 @@ def init_frame(self):
     self.define_key('pageup', lambda v: self.selected_view.OnPageUp(v), doc="previous page")
     self.define_key('pagedown', lambda v: self.selected_view.OnPageDown(v), doc="next page")
     
-    ## self.new_buffer_name = "{acq_datetime:%Y%m%d-%H%M%S}-{annotation},bin{binning}-{exposure}s"
     self.new_buffer_name = "{acq_datetime:%Y%m%d-%H%M%S}-{annotation}"
     
     @self.handler.bind('frame_cached')
@@ -104,8 +103,11 @@ def init_frame(self):
                   filter = dict(self.notify.filter_info),
                  modestr = self.notify.modestr, # joined substr
         )
-        ## frame.annotation = self.notify.modestr
-        frame.annotation = "{0},bin{binning}-{exposure}s".format(self.notify.modestr, **frame.attributes)
+        ## frame.annotation = "{0},bin{binning}-{exposure}s".format(self.notify.modestr, **frame.attributes)
+        
+        frame.annotation = "{0},slit={filter[slit_width]}eV,bin{binning}-{exposure}s".format(
+            self.notify.modestr, **frame.attributes)
+        
         frame.name = self.new_buffer_name.format(**frame.attributes)
 
 

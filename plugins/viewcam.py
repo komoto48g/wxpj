@@ -65,6 +65,9 @@ class Plugin(Layer):
     def run(self):
         try:
             title = self.__module__
+            if not self.cameraman:
+                print(self.message("- Camera manager is not selected."))
+                return
             
             while self.viewer.is_active:
                 src = edi.imconv(self.cameraman.capture())

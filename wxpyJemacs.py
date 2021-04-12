@@ -128,109 +128,152 @@ class pyJemacs(Framebase):
         return Framebase.Destroy(self)
     
     ## --------------------------------
-    ## load/save frames and .results
+    ## load/save frames and attributes 
     ## --------------------------------
     
-    @staticmethod
-    def eval_results(f):
+    def load_file(self, path, target):
+        try:
+            self.import_frames(path, target)
+            return True
+        except:
+            pass
+        return Framebase.load_file(self, path, target)
+    
+    def load_buffer(self, paths=None, target=None):
+        """Load buffers (override) from paths to the target window
+        """
+        frames = Framebase.load_buffer(self, paths, target)
+        if frames:
+            savedir = os.path.dirname(frames[0].pathname)
+            f = os.path.join(savedir, '.results')
+            res, mis = self.read_attributes(f)
+            for frame in frames:
+                frame.update_attributes(res.get(frame.name))
+    
+    def save_buffer(self, path=None, frame=None):
+        """Save a buffer (override) of the frame to the path
+        """
+        frame = Framebase.save_buffer(self, path, frame)
+        if frame:
+            savedir = os.path.dirname(frame.pathname)
+            f = os.path.join(savedir, '.results')
+            res, mis =self.write_attributes(f, [frame])
+    
+    def read_attributes(self, f):
+        """Read attributes file `f(.results)"""
         try:
             res = OrderedDict()
             mis = OrderedDict()
+            savedir = os.path.dirname(f)
             with open(f) as i:
                 res.update(eval(i.read())) # restore (locals: datetime, nan, inf)
                 
-                savedir = os.path.dirname(f)
                 for name, attr in tuple(res.items()):
                     path = os.path.join(savedir, name)
                     if not os.path.exists(path): # check & pop missing files
-                        print("* {!r} in the record is missing... pass".format(name))
+                        ## print("- {!r} in the record is missing... pass".format(name))
                         res.pop(name)
-                        mis.update({name : attr})
+                        mis.update({name:attr})
                     else:
                         attr.update(pathname=path)
+        except FileNotFoundError:
+            pass
         except Exception as e:
-            print(e)
+            print("- reading attr:", e)
         finally:
-            return res, mis # raise no exceptions
+            return res, mis # finally raise no exceptions
     
-    def import_frames(self, savedir=None, target=None):
+    def write_attributes(self, f, frames):
+        """Write attributes file `f(.results)"""
+        try:
+            res, mis = self.read_attributes(f)
+            new = OrderedDict((x.name, x.attributes) for x in frames)
+            
+            ## res order may differ from that of new frames
+            ## so we take a few steps to update results to export
+            n = len(new)
+            res.update(new) # res updates to new info,
+            new.update(res) # then copy res back with keeping the new order
+            
+            with open(f, 'w') as o:
+                pprint(tuple(new.items()), stream=o)
+            
+        except Exception as e:
+            print("- writing attr:", e)
+        finally:
+            return new, mis
+    
+    def import_frames(self, f=None, target=None):
         """Load frames and the associated result file to the target window
         savedir/.results describes the list of frames and the attributes to load.
         """
         if not target:
             target = self.selected_view
         
-        if not savedir:
-            with wx.DirDialog(self, "Select a directory of frames to import",
-                defaultPath=os.getcwd()) as dlg:
+        if not f:
+            with wx.FileDialog(self, "Select path to import",
+                defaultFile=".results",
+                wildcard="Attributes file (*.results)|*.results",
+                style=wx.FD_OPEN|wx.FD_FILE_MUST_EXIST) as dlg:
                 if dlg.ShowModal() != wx.ID_OK:
                     return
-                savedir = dlg.Path
+                f = dlg.Path
         
-        f = os.path.join(savedir, ".results")
-        res, mis = self.eval_results(f)
-        
+        res, mis = self.read_attributes(f)
         paths = [attr['pathname'] for attr in res.values()]
-        if paths:
-            self.load_buffer(paths, target)
+        
+        ## self.load_buffer(paths, target)
+        Framebase.load_buffer(self, paths, target)
         
         for name, attr in res.items():
-            frame = target.find_frame(name) # no muti-page tiff ?
-            if frame:
-                frame.update_attributes(attr)
+            frame = target.find_frame(name)
+            frame.update_attributes(attr)
         
-        self.statusbar("{} files were imported, "
-                       "{} files are missing.".format(len(res), len(mis)))
+        self.statusbar(
+            "{} files were imported, "
+            "{} files are missing.".format(len(res), len(mis)))
     
-    def export_frames(self, savedir=None, frames=None):
+    def export_frames(self, f=None, frames=None):
         """Save frames and the associated result file
         savedir/.results describes the list of frames and the attributes to save.
         """
         if frames is None:
             frames = self.selected_view.all_frames
         
-        if not frames: # no frames, no return
+        if not frames:
             return
         
-        if not savedir:
-            with wx.DirDialog(self, "Select a directory of frames to export",
-                defaultPath=os.getcwd()) as dlg:
+        if not f:
+            with wx.FileDialog(self, "Select path to export",
+                defaultFile=".results",
+                wildcard="Attributes file (*.results)|*.results",
+                style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT) as dlg:
                 if dlg.ShowModal() != wx.ID_OK:
                     return
-                savedir = dlg.Path
-        
-        f = os.path.join(savedir, ".results")
-        res, mis = self.eval_results(f)
-        
-        for j,frame in enumerate(frames):
-            fn, ext = os.path.splitext(frame.name)
-            if not ext:
-                self.message("Saving {!r} ({} of {} frames)".format(fn, j, len(frames)))
-                path = os.path.join(savedir, "{}.tif".format(fn))
-                self.save_buffer(path, frame)
-            
+                f = dlg.Path
+        n = 0
+        savedir = os.path.dirname(f)
         for frame in frames:
-            frame.update_attributes(
-                # * Describe information here you want to save as results
-                localunit = frame.unit,
-            )
-        new = OrderedDict((x.name, x.attributes) for x in frames)
+            name = re.sub("[\\/:*?\"<>|]", '_', frame.name) # normal-basename
+            path = os.path.join(savedir, name)
+            if not os.path.exists(path):
+                if not path.endswith('.tif'):
+                    path += '.tif'
+                
+                ## self.save_buffer(path, frame)
+                Framebase.save_buffer(self, path, frame)
+                n += 1
+            
+            ## frame.update_attributes(
+            ##     ## * Describe information here you want to save ##
+            ##     localunit = frame.unit,
+            ## )
+        res, mis = self.write_attributes(f, frames)
         
-        ## Note: `res' order may differ from that of new frames
-        ## So we take a few steps to update results to export
-        res.update(new) # res <-- new update
-        new.update(res) # then copy back res --> new keeping the new order
-        
-        ## in case of IO failure, save result file to temporary file
-        with open(f + ".tmp", 'w') as o:
-            pprint(tuple(new.items()), stream=o)
-        
-        if os.path.exists(f):
-            os.remove(f)
-        os.rename(o.name, f) # $ mv(cat) .tmp .results
-        
-        self.statusbar("{} files were exported, "
-                       "{} files are ignored.".format(len(new), len(mis)))
+        self.statusbar(
+            "{} files were exported, "
+            "{} files were skipped, "
+            "{} files are missing.".format(n, len(frames)-n, len(mis)))
     
     ## --------------------------------
     ## read/write buffers

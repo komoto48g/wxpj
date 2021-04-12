@@ -87,10 +87,12 @@ class Plugin(TemInterface, Layer):
                         org_x = self.Gonio.X
                         org_y = self.Gonio.Y
                         
-                        self.Gonio.X += step # get rid of backlash
+                        self.Gonio.X += step # get rid of backlash X+
                         self.delay(2)
-                        self.Gonio.Y += step # X+ and Y+
+                        
+                        self.Gonio.Y += step # get rid of backlash Y+
                         self.delay(2)
+                        
                         src = self.capture()
                         
                         self.Gonio.X += step

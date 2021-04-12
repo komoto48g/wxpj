@@ -41,7 +41,8 @@ def init_spec(self):
     
     shell = self.shell
     shell.execute(SHELLSTARTUP)
-    shell.SHELLSTARTUP = SHELLSTARTUP
+    
+    shell.__class__.SHELLSTARTUP = SHELLSTARTUP
     
     @shell.define_key('C-tab')
     def insert_space_like_tab():
