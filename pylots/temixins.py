@@ -322,15 +322,15 @@ class TemInterface(object):
     noise_level = 20 # [counts/pixel/s] < 1/0.05s
     borderline = 2 # threshold border p/q
     
-    def delay(self, sec=None):
-        if sec is None:
-            sec = self.default_delay
-        time.sleep(sec) # [sec] wait for afterglow goes off
-    
     def is_signal(self, p, q):
         r = abs(p/q) # S/N ratio as inside/outside the boundary
         return (r > self.borderline * 5
             or (r > self.borderline and p > self.noise_level))
+    
+    def delay(self, sec=None):
+        if sec is None:
+            sec = self.default_delay
+        time.sleep(sec) # [sec] wait for afterglow goes off
     
     def capture(self):
         try:

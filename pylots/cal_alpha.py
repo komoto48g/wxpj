@@ -1,5 +1,6 @@
 #! python
 # -*- coding: utf-8 -*-
+from numpy import pi
 from mwx.graphman import Layer
 from pylots.temixins import TemInterface
 import wxpyJemacs as wxpj
@@ -42,11 +43,20 @@ class Plugin(TemInterface, Layer):
                     self.diffspot.focus()
                     self.pla.align()
                     self.delay(2)
-                    d, p, q = self.detect_beam_diameter()
-                    if d:
-                        r = self.CLAPT.dia /100
+                    ## d, p, q = self.detect_beam_diameter()
+                    el, p, q = self.detect_ellipse()
+                    if el:
+                        ra, rb = el[1]
+                        d = np.sqrt(ra * rb)            # avr. diameter [pix]
+                        r = self.CLAPT.dia /100         # CLA:100um-based ratio
                         i = self.illumination.Selector
                         self.config[self.conf_key][i] = d * self.cam_unit / r #= 2α[mrad]
+                        
+                        v = p * (pi/4 * ra * rb)        # total counts in ellipse
+                        S = pi/4 * self.CLAPT.dia ** 2  # size of aperture [um^2]
+                        j = self.illumination.Spot
+                        self.config['brightness'][j] = v / S
+                        
                         return True
     
     def execute(self):
