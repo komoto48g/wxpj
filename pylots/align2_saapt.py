@@ -52,7 +52,7 @@ class Plugin(AlignInterface, Layer):
     def cal(self):
         with self.thread:
             if self.apt_selection('SAAPT'):
-                with self.save_excursion(mmode='MAG'):
+                with self.save_excursion(mmode='MAG', mag=20e3):
                     d, p, q = self.detect_beam_diameter()
                     if d:
                         ## Reccord SAAPT size, normalizing by φ100um

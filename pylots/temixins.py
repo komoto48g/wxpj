@@ -41,7 +41,6 @@ class TemInterface(object):
         if not self.cameraman:
             print("- No camera system installed {!r}".format(self.camerasys))
             return
-        
         cam = self.cameraman.camera
         if not cam:
             print("trying to connect to the camera of {}".format(self.cameraman))
@@ -318,10 +317,7 @@ class TemInterface(object):
     ## --------------------------------
     ## Functions for detecting beam
     ## --------------------------------
-    ## cached_src = property(lambda self: self.camera.cached_image) # to be deprecated
-    
     default_delay = 0.50 # delay time before exposing (till afterglow vanishes)
-    
     signal_level = 100 # [counts/pixel/s] > 10/0.1s
     noise_level = 20 # [counts/pixel/s] < 1/0.05s
     borderline = 2 # threshold border p/q
@@ -371,20 +367,20 @@ class TemInterface(object):
             p, q = edi.calc_ellipse(src, el) # S/N count density p:inside, q:outside,
             args = (el, p/t, q/t)
             if p/t < self.noise_level:
-                self.handler('detect-nobeam', args)
+                self.camera.handler('detect-nobeam', args)
             elif abs(p/q) < self.borderline:
-                self.handler('detect-noborder', args)
+                self.camera.handler('detect-noborder', args)
             else:
                 if p/t < self.signal_level and cache:
                     return self.detect_ellipse(ksize, delays=None, cache=src)
-                self.handler('detect-beam', args)
+                self.camera.handler('detect-beam', args)
         else:
             p = q = src.sum() / src.size # averaged count
             args = (None, p/t, q/t)
             if p/t < self.noise_level:
-                self.handler('detect-nosignal', args)
+                self.camera.handler('detect-nosignal', args)
             else:
-                self.handler('detect-noellipse', args)
+                self.camera.handler('detect-noellipse', args)
         return args
     
     def detect_beam_center(self, border=None, **kwargs):

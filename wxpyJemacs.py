@@ -147,8 +147,8 @@ class pyJemacs(Framebase):
         
         if not f:
             with wx.FileDialog(self, "Select path to import",
-                defaultFile=self.ATTRIBUTES,
-                wildcard="Attributes file ({0})|*{0}".format(self.ATTRIBUTES),
+                defaultFile=self.ATTRIBUTESFILE,
+                wildcard="Attributes (*.results)|*.results",
                 style=wx.FD_OPEN|wx.FD_FILE_MUST_EXIST) as dlg:
                 if dlg.ShowModal() != wx.ID_OK:
                     return
@@ -177,8 +177,8 @@ class pyJemacs(Framebase):
         
         if not f:
             with wx.FileDialog(self, "Select path to export",
-                defaultFile=self.ATTRIBUTES,
-                wildcard="Attributes file ({0})|*{0}".format(self.ATTRIBUTES),
+                defaultFile=self.ATTRIBUTESFILE,
+                wildcard="Attributes (*.results)|*.results",
                 style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT) as dlg:
                 if dlg.ShowModal() != wx.ID_OK:
                     return

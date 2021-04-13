@@ -89,9 +89,6 @@ typenames_info = { # 0:maxcnt, (1;bins, 2:gains,
     "TVCAM_SCR_F" : ( 4096, ), # Focus screen
 }
 
-bins_list = (1,2,4)
-gains_list = np.arange(1, 10.1, 0.5)
-
 
 class Camera(object):
     """Jeol Camera (proxy of Detector)
@@ -101,6 +98,8 @@ class Camera(object):
     cont : camera controler
     """
     busy = 0
+    bins = (1,2,4)
+    gains = np.arange(1, 10.1, 0.5)
     
     def __init__(self, name, host):
         self.name = name
@@ -178,24 +177,24 @@ class Camera(object):
     @property
     def binning(self):
         ji = self.cont.get_detectorsetting()
-        return bins_list[ji.get('BinningIndex', self.__bin_index)]
+        return self.bins[ji.get('BinningIndex', self.__bin_index)]
     
     @binning.setter
     def binning(self, v):
-        if 0 < v <= bins_list[-1]:
-            j = np.searchsorted(bins_list, v)
+        if 0 < v <= self.bins[-1]:
+            j = np.searchsorted(self.bins, v)
             self.__bin_index = j
             self.cont.set_binningindex(int(j)) #<np.int64> crashes online▲
     
     @property
     def gain(self):
         ji = self.cont.get_detectorsetting()
-        return gains_list[ji.get('GainIndex', self.__gain_index)]
+        return self.gains[ji.get('GainIndex', self.__gain_index)]
     
     @gain.setter
     def gain(self, v):
-        if 0 < v <= gains_list[-1]:
-            j = np.searchsorted(gains_list, v)
+        if 0 < v <= self.gains[-1]:
+            j = np.searchsorted(self.gains, v)
             self.__gain_index = j
             self.cont.set_gainindex(int(j)) #<np.int64> crashes online▲
 
