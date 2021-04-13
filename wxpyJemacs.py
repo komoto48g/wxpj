@@ -130,17 +130,25 @@ class pyJemacs(Framebase):
     ## load/save frames and attributes 
     ## --------------------------------
     
+    def load_file(self, path, target):
+        try:
+            return self.import_frames(path, target)
+        except:
+            ## e = ("Unknown file type: {}\n"
+            ##      "Dropped to the target: {}".format(path, target))
+            ## wx.MessageBox(str(e), style=wx.ICON_ERROR)
+            return False
+    
     def import_frames(self, f=None, target=None):
-        """Load frames and the associated result file to the target window
-        savedir/.results describes the list of frames and the attributes to load.
+        """Load frames :ref to the Attributes file
         """
         if not target:
             target = self.selected_view
         
         if not f:
             with wx.FileDialog(self, "Select path to import",
-                defaultFile=".results",
-                wildcard="Attributes file (*.results)|*.results",
+                defaultFile=self.ATTRIBUTES,
+                wildcard="Attributes file ({0})|*{0}".format(self.ATTRIBUTES),
                 style=wx.FD_OPEN|wx.FD_FILE_MUST_EXIST) as dlg:
                 if dlg.ShowModal() != wx.ID_OK:
                     return
@@ -149,31 +157,28 @@ class pyJemacs(Framebase):
         res, mis = self.read_attributes(f)
         paths = [attr['pathname'] for attr in res.values()]
         
-        ## self.load_buffer(paths, target)
-        Framebase.load_buffer(self, paths, target)
+        frames = self.load_buffer(paths, target)
         
-        for name, attr in res.items():
-            frame = target.find_frame(name)
-            frame.update_attributes(attr)
+        for frame in frames:
+            frame.update_attributes(res.get(frame.name))
         
         self.statusbar(
             "{} files were imported, "
             "{} files are missing.".format(len(res), len(mis)))
+        return True
     
     def export_frames(self, f=None, frames=None):
-        """Save frames and the associated result file
-        savedir/.results describes the list of frames and the attributes to save.
+        """Save frames :ref to the Attributes file
         """
         if frames is None:
             frames = self.selected_view.all_frames
-        
-        if not frames:
-            return
+            if not frames:
+                return
         
         if not f:
             with wx.FileDialog(self, "Select path to export",
-                defaultFile=".results",
-                wildcard="Attributes file (*.results)|*.results",
+                defaultFile=self.ATTRIBUTES,
+                wildcard="Attributes file ({0})|*{0}".format(self.ATTRIBUTES),
                 style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT) as dlg:
                 if dlg.ShowModal() != wx.ID_OK:
                     return
@@ -186,21 +191,16 @@ class pyJemacs(Framebase):
             if not os.path.exists(path):
                 if not path.endswith('.tif'):
                     path += '.tif'
-                
-                ## self.save_buffer(path, frame)
-                Framebase.save_buffer(self, path, frame)
                 n += 1
-            
-            ## frame.update_attributes(
-            ##     ## * Describe information here you want to save ##
-            ##     localunit = frame.unit,
-            ## )
+                self.save_buffer(path, frame)
+                
         res, mis = self.write_attributes(f, frames)
         
         self.statusbar(
             "{} files were exported, "
             "{} files were skipped, "
             "{} files are missing.".format(n, len(frames)-n, len(mis)))
+        return True
     
     ## --------------------------------
     ## read/write buffers
