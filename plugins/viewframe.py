@@ -148,22 +148,20 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
         self.__dir = not self.__dir # toggle 0:ascend/1:descend
         
         def _eval(x):
-            try: return eval(x)
+            try: return eval(x.replace('*','')) # localunit* とか
             except: return x
         
         frames = self.Target.all_frames
         if frames:
+            frame = self.Target.frame
             la = sorted(self.all_items, key=lambda v: _eval(v[col]), reverse=self.__dir)
-            li = [int(x[0]) for x in la] # list of index is Id of all_frames
-            frames[:] = [frames[i] for i in li] # arange by Id to set new all_frames
+            frames[:] = [frames[int(c[0])] for c in la] # sort by new Id of items
             
-            for j, items in enumerate(la):
-                self.Select(j, False) # いったんすべての選択を解除し，
-                for k, v in enumerate(items[1:]): # id 以外 (name, shape,...) を更新する
-                    self.SetItem(j, k+1, v) # テキストだけを更新しているので Update より速い
-            
-            self.Target.select(
-                li.index(self.Target.frame.index)) # invokes [frame_shown]
+            for j,c in enumerate(la):
+                self.Select(j, False)        # 1, deselect all items,
+                for k,v in enumerate(c[1:]): # 2, except for id(0), update text:str
+                    self.SetItem(j, k+1, v)
+            self.Target.select(frame) # invokes [frame_shown] to select the item
     
     def OnSelectAllItems(self, evt):
         for j in range(self.ItemCount):
