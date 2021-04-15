@@ -44,7 +44,7 @@ class Plugin(AlignInterface, Layer):
                               / (self.wobstep.value / self.default_wobstep))
     
     def align(self):
-        if self.apt_selection('CLA') and self.apt_selection('SAA', 0):
+        if self.aptsel(CLA=True, SAA=0):
             if self.mode_selection('MAG'):
                 self.spot.focus()
                 self.shift.align()
@@ -58,7 +58,7 @@ class Plugin(AlignInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('CLA') and self.apt_selection('SAA', 0):
+            if self.aptsel(CLA=True, SAA=0):
                 with self.save_excursion(mmode='MAG'):
                     self.spot.focus()
                     self.shift.align()

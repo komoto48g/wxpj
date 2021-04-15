@@ -43,7 +43,7 @@ class Plugin(AlignInterface, Layer):
         return self.camera.pixel_unit * self.APT.dia /100
     
     def align(self):
-        if self.apt_selection('CLA'):
+        if self.aptsel(CLA=True):
             if self.mode_selection('DIFF'):
                 with self.save_restriction(IL1=None):
                     self.diffspot.focus() # center pos
@@ -56,7 +56,7 @@ class Plugin(AlignInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('CLA'):
+            if self.aptsel(CLA=True):
                 with self.save_excursion(mmode='DIFF'):
                     with self.save_restriction(PLA=None):
                         self.diffspot.focus(0.25) # Do always set quarter-open beam

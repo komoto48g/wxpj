@@ -34,7 +34,7 @@ class Plugin(SpotInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('CLA') and self.apt_selection('SAA', 0):
+            if self.aptsel(CLA=True, SAA=0):
                 with self.save_excursion(mmode='LOWMAG'):
                     return SpotInterface.cal(self)
     

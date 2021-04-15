@@ -23,7 +23,7 @@ class Plugin(StigInterface, Layer):
         return self.cam_unit / (self.CLA.dia /100)
     
     def align(self):
-        if self.apt_selection('CLA') and self.apt_selection('SAA', 0):
+        if self.aptsel(CLA=True, SAA=0):
             if self.mode_selection('DIFF'):
                 self.diffspot.focus(0.25)
                 self.para.focus()
@@ -32,7 +32,7 @@ class Plugin(StigInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('CLA') and self.apt_selection('SAA', 0):
+            if self.aptsel(CLA=True, SAA=0):
                 with self.save_excursion(mmode='DIFF'):
                     self.diffspot.focus(0.25)
                     self.para.focus()

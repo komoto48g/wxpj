@@ -71,7 +71,7 @@ class Plugin(TemInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('SAA', 0):
+            if self.aptsel(SAA=0):
                 with self.save_excursion(mmode='MAG'):
                     try:
                         step = 0x1000

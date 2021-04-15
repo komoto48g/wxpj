@@ -42,7 +42,7 @@ class Plugin(SpotInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('SAA'):
+            if self.aptsel(SAA=True):
                 with self.save_excursion(mmode='DIFF'):
                     self.para.focus()
                     self.delay()

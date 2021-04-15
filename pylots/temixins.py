@@ -170,24 +170,20 @@ class TemInterface(object):
     ##         return func(self, *args, **kwargs)
     ##     return _f
     
-    def apt_selection(self, name, v=True):
-        apt = getattr(self, name)
-        if type(v) is int and apt.sel == v:
-            return True
-        if (apt.sel and v) or (not apt.sel and not v):
-            return True
-        if v:
+    def aptsel(self, **kwargs):
+        return all(self.apt_selection(k,v) for k,v in kwargs.items())
+    
+    def apt_selection(self, k, v=True):
+        apt = getattr(self, k)
+        if v and not apt.sel:
             if self.pause("Please set one of {}.".format(apt.name)):
-                ## if not apt.sel:
-                ##     self.message("Any of {} is not selected.".format(apt.name))
-                return self.apt_selection(name, v)
+                return self.apt_selection(k, v)
             raise Exception("cancelled by user")
-        else:
+        if not v and apt.sel:
             if self.pause("Please get rid of {}.".format(apt.name)):
-                ## if apt.sel:
-                ##     self.message("One of {} remain selected.".format(apt.name))
-                return self.apt_selection(name, v)
+                return self.apt_selection(k, v)
             raise Exception("cancelled by user")
+        return True
     
     def mode_selection(self, mmode, verbose=True):
         """Check mag mode.
@@ -203,11 +199,11 @@ class TemInterface(object):
             return True
     
     def save_excursion(self, **kwargs):
-        """Save optical mode settings temporarily :set_state"""
+        """Save optical mode settings :set_state temporarily"""
         return Excursion(self, **kwargs)
     
     def save_restriction(self, **kwargs):
-        """Save lens/def paramtres temporarily :set_param"""
+        """Save lens/def paramtres :set_param temporarily"""
         return Restriction(self, **kwargs)
     
     def get_state(self):
@@ -237,7 +233,7 @@ class TemInterface(object):
     def set_param(self, **kwargs):
         saved = {}
         for k,v in kwargs.items():
-            if k[-3:] == 'APT': # k ends with 'APT' is supposed to be a kind of Aperture
+            if k in self.Aperture.APERTURES:
                 apt = getattr(self, k)
                 if apt.sel != v:
                     saved[k] = apt.sel

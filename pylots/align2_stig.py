@@ -22,7 +22,7 @@ class Plugin(StigInterface, Layer):
         return self.mag_unit / (self.CLA.dia /100)
     
     def align(self):
-        if self.apt_selection('CLA') and self.apt_selection('SAA', 0):
+        if self.aptsel(CLA=True, SAA=0):
             if self.mode_selection('MAG'):
                 self.spot.focus(0.25)
                 self.shift.align()
@@ -30,7 +30,7 @@ class Plugin(StigInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('CLA') and self.apt_selection('SAA', 0):
+            if self.aptsel(CLA=True, SAA=0):
                 with self.save_excursion(mmode='MAG'):
                     self.spot.focus(0.25)
                     self.shift.align()

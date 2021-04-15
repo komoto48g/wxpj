@@ -42,7 +42,7 @@ class Plugin(AlignInterface, Layer):
         return self.mag_unit
     
     def align(self):
-        if self.apt_selection('SAA'):
+        if self.aptsel(SAA=True):
             if self.mode_selection('MAG'):
                 self.pla.index = (0x8000, 0x8000) # neutralize
                 self.spot.focus(2)
@@ -51,7 +51,7 @@ class Plugin(AlignInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('SAA'):
+            if self.aptsel(SAA=True):
                 with self.save_excursion(mmode='MAG', mag=20e3):
                     d, p, q = self.detect_beam_diameter()
                     if d:
