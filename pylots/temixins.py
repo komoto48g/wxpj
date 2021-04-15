@@ -362,20 +362,20 @@ class TemInterface(object):
             p, q = edi.calc_ellipse(src, el) # S/N count density p:inside, q:outside,
             args = (el, p/t, q/t)
             if p/t < self.noise_level:
-                self.camera.handler('detect-nobeam', args)
+                self.cameraman.handler('detect-nobeam', args)
             elif abs(p/q) < self.borderline:
-                self.camera.handler('detect-noborder', args)
+                self.cameraman.handler('detect-noborder', args)
             else:
                 if p/t < self.signal_level and cache:
                     return self.detect_ellipse(ksize, delays=None, cache=src)
-                self.camera.handler('detect-beam', args)
+                self.cameraman.handler('detect-beam', args)
         else:
             p = q = src.sum() / src.size # averaged count
             args = (None, p/t, q/t)
             if p/t < self.noise_level:
-                self.camera.handler('detect-nosignal', args)
+                self.cameraman.handler('detect-nosignal', args)
             else:
-                self.camera.handler('detect-noellipse', args)
+                self.cameraman.handler('detect-noellipse', args)
         return args
     
     def detect_beam_center(self, border=None, **kwargs):
