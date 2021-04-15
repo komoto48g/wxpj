@@ -17,8 +17,18 @@ A package for TEM control
 How to install
 --------------
 
-pyJemacs_noarch_cp35_#date.7z を解凍して適当な場所に置く．
-7z が別途必要です．
+0. Install PY35 
+
+標準 CPython をインストールしてください．
+
+Anaconda の古いやつだと wxPython のインストールがコケるみたいです．
+ていうか Anaconda くっそ重いし，バージョン管理でコケるし．推奨はしません．
+
+<!-- pyJemacs_noarch_cp35_#date.7z を解凍して適当な場所に置く．7z が別途必要です．-->
+
+*1. Clone wxpj from Git site
+
+$ git clone http://dl-box.jeol.co.jp/gitbucket/git/komoto/wxpj.git
 
 **To setup environment necessary to work, do pip install,**
 

@@ -115,9 +115,9 @@ class TemInterface(object):
         TemInterface.omega = pj.Omega()
         TemInterface.tem = pj.TEM()
         
-        TemInterface.CLAPT = Aperture('CLA')
-        TemInterface.SAAPT = Aperture('SAA')
-        TemInterface.OLAPT = Aperture('OLA')
+        TemInterface.CLA = Aperture('CLA')
+        TemInterface.SAA = Aperture('SAA')
+        TemInterface.OLA = Aperture('OLA')
         TemInterface.Gonio = pj.Stage()
         TemInterface.OmegaFilter = pj.Filter()
     
@@ -237,7 +237,6 @@ class TemInterface(object):
     def set_param(self, **kwargs):
         saved = {}
         for k,v in kwargs.items():
-            ## if k in self.Aperture.APERTURES: # CLA, SAA, and so on.
             if k[-3:] == 'APT': # k ends with 'APT' is supposed to be a kind of Aperture
                 apt = getattr(self, k)
                 if apt.sel != v:

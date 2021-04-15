@@ -31,13 +31,13 @@ class Plugin(TemInterface, Layer):
     
     @property
     def conf_table(self):
-        r = self.CLAPT.dia /100
+        r = self.CLA.dia /100
         i = self.illumination.Selector
         return self.config[self.conf_key][i] * r
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
+            if self.apt_selection('CLA') and self.apt_selection('SAA', 0):
                 with self.save_excursion(mmode='DIFF'):
                     self.spot.focus()
                     self.diffspot.focus()
@@ -48,12 +48,12 @@ class Plugin(TemInterface, Layer):
                     if el:
                         ra, rb = el[1]
                         d = np.sqrt(ra * rb)            # avr. diameter [pix]
-                        r = self.CLAPT.dia /100         # CLA:100um-based ratio
+                        r = self.CLA.dia /100         # CLA:100um-based ratio
                         i = self.illumination.Selector
                         self.config[self.conf_key][i] = d * self.cam_unit / r #= 2α[mrad]
                         
                         v = p * (pi/4 * ra * rb)        # total counts in ellipse
-                        S = pi/4 * self.CLAPT.dia ** 2  # size of aperture [um^2]
+                        S = pi/4 * self.CLA.dia ** 2  # size of aperture [um^2]
                         j = self.illumination.Spot
                         self.config['brightness'][j] = v / S
                         
@@ -61,7 +61,7 @@ class Plugin(TemInterface, Layer):
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(CLAPT=self.default_clapt, SAAPT=0): # CLAPT:100um
+            with self.save_restriction(CLA=self.default_clapt, SAA=0): # CLA:100um
                 with self.save_excursion(mmode='MAG'):
                     self.cla.align()
                 with self.save_excursion(mmode='DIFF', mag=2000):

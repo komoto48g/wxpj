@@ -64,7 +64,7 @@ class Plugin(TemInterface, Layer):
         lambda self,v: self.set_para_beam(v))
     
     def get_para_beam(self):
-        r = self.CLAPT.dia /100
+        r = self.CLA.dia /100
         i = self.illumination.Selector
         j, k = self.conf_key
         xp = self.config[j][i]
@@ -72,7 +72,7 @@ class Plugin(TemInterface, Layer):
         return xp, yp
     
     def set_para_beam(self, v):
-        r = self.CLAPT.dia /100
+        r = self.CLA.dia /100
         i = self.illumination.Selector
         j, k = self.conf_key
         xp, yp = v
@@ -144,7 +144,7 @@ class Plugin(TemInterface, Layer):
                     o2 = self.eval_diameter() # [o,x2]
                     
                     if o2 is None or p2 is None:
-                        ## CLAPT が大きすぎるか，倍率が高すぎるため，検出不能
+                        ## CLA が大きすぎるか，倍率が高すぎるため，検出不能
                         self.imaging.Mag /= 2
                         continue
                     
@@ -205,8 +205,8 @@ class Plugin(TemInterface, Layer):
         ret = True
         with self.thread:
             with self.save_excursion(mmode='MAG'):
-                ## with self.save_restriction(SAAPT=0):
-                with self.save_restriction(CLAPT=self.default_clapt, SAAPT=0):
+                ## with self.save_restriction(SAA=0):
+                with self.save_restriction(CLA=self.default_clapt, SAA=0):
                     self.cla.align()
                     for a in self.for_each_alpha():
                         self.imaging.Mag = self.mags_apriori[a]

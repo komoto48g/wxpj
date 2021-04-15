@@ -40,11 +40,11 @@ class Plugin(AlignInterface, Layer):
     
     @property
     def conf_factor(self):
-        return (self.mag_unit / (self.CLAPT.dia /100)
+        return (self.mag_unit / (self.CLA.dia /100)
                               / (self.wobstep.value / self.default_wobstep))
     
     def align(self):
-        if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
+        if self.apt_selection('CLA') and self.apt_selection('SAA', 0):
             if self.mode_selection('MAG'):
                 self.spot.focus()
                 self.shift.align()
@@ -58,7 +58,7 @@ class Plugin(AlignInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
+            if self.apt_selection('CLA') and self.apt_selection('SAA', 0):
                 with self.save_excursion(mmode='MAG'):
                     self.spot.focus()
                     self.shift.align()
@@ -75,6 +75,6 @@ class Plugin(AlignInterface, Layer):
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(SAAPT=0):
+            with self.save_restriction(SAA=0):
                 with self.save_excursion(mmode='MAG'):
                     return all(self.cal() for a in self.for_each_alpha())

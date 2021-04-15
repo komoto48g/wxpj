@@ -11,10 +11,10 @@ class Plugin(AlignInterface, Layer):
     """
     menu = None #"Maintenance/Aperture"
     category = "Aperture Maintenance"
-    caption = "SAAPT"
+    caption = "SAA"
     conf_key = 'saapt'
     
-    APT = property(lambda self: self.SAAPT)
+    APT = property(lambda self: self.SAA)
     
     @property
     def index(self):
@@ -42,7 +42,7 @@ class Plugin(AlignInterface, Layer):
         return self.mag_unit
     
     def align(self):
-        if self.apt_selection('SAAPT'):
+        if self.apt_selection('SAA'):
             if self.mode_selection('MAG'):
                 self.pla.index = (0x8000, 0x8000) # neutralize
                 self.spot.focus(2)
@@ -51,18 +51,18 @@ class Plugin(AlignInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('SAAPT'):
+            if self.apt_selection('SAA'):
                 with self.save_excursion(mmode='MAG', mag=20e3):
                     d, p, q = self.detect_beam_diameter()
                     if d:
-                        ## Reccord SAAPT size, normalizing by φ100um
-                        ## >>> saadia = self.config['beta'] * (self.SAAPT.dia /100) # [um]
-                        self.config['beta'] = d * self.mag_unit / (self.SAAPT.dia /100) # [um]
+                        ## Reccord SAA size, normalizing by φ100um
+                        ## >>> saadia = self.config['beta'] * (self.SAA.dia /100) # [um]
+                        self.config['beta'] = d * self.mag_unit / (self.SAA.dia /100) # [um]
                     return AlignInterface.cal(self)
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(CL3=0xffff, CLAPT=1, SAAPT=self.default_saapt):
+            with self.save_restriction(CL3=0xffff, CLA=1, SAA=self.default_saapt):
                 with self.save_excursion(spot=0, alpha=-1, mmode='MAG'):
                     self.delay(2)
                     return self.cal()

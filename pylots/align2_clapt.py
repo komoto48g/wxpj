@@ -11,10 +11,10 @@ class Plugin(AlignInterface, Layer):
     """
     menu = None #"Maintenance/Aperture"
     category = "Aperture Maintenance"
-    caption = "CLAPT"
+    caption = "CLA"
     conf_key = 'clapt'
     
-    APT = property(lambda self: self.CLAPT)
+    APT = property(lambda self: self.CLA)
     
     @property
     def index(self):
@@ -44,9 +44,9 @@ class Plugin(AlignInterface, Layer):
         return self.camera.pixel_unit * self.APT.dia /100
     
     def align(self):
-        if self.apt_selection('CLAPT'):
+        if self.apt_selection('CLA'):
             if self.mode_selection('MAG'):
-                with self.save_restriction(CL3=None, SAAPT=0):
+                with self.save_restriction(CL3=None, SAA=0):
                     self.pla.index = (0x8000, 0x8000) # neutralize
                     self.spot.focus(-0.25) # for histerisis loop back
                     self.delay(1)
@@ -60,7 +60,7 @@ class Plugin(AlignInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('CLAPT'):
+            if self.apt_selection('CLA'):
                 with self.save_excursion(mmode='MAG'):
                     self.spot.focus(0.25) # Do always set quarter-open beam
                     self.shift.align()
@@ -68,6 +68,6 @@ class Plugin(AlignInterface, Layer):
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(SAAPT=0):
+            with self.save_restriction(SAA=0):
                 with self.save_excursion(spot=0, mmode='MAG'):
                     return all(self.cal() for a in self.for_each_alpha())

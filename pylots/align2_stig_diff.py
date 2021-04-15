@@ -20,10 +20,10 @@ class Plugin(StigInterface, Layer):
     
     @property
     def conf_factor(self):
-        return self.cam_unit / (self.CLAPT.dia /100)
+        return self.cam_unit / (self.CLA.dia /100)
     
     def align(self):
-        if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
+        if self.apt_selection('CLA') and self.apt_selection('SAA', 0):
             if self.mode_selection('DIFF'):
                 self.diffspot.focus(0.25)
                 self.para.focus()
@@ -32,7 +32,7 @@ class Plugin(StigInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
+            if self.apt_selection('CLA') and self.apt_selection('SAA', 0):
                 with self.save_excursion(mmode='DIFF'):
                     self.diffspot.focus(0.25)
                     self.para.focus()
@@ -45,7 +45,7 @@ class Plugin(StigInterface, Layer):
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(CL3=0xffff, CLAPT=2, SAAPT=0):
+            with self.save_restriction(CL3=0xffff, CLA=2, SAA=0):
                 with self.save_excursion(alpha=-1, mmode='MAG'):
                     self.cla.align()
                 with self.save_excursion(mmode='DIFF', mag=2000):

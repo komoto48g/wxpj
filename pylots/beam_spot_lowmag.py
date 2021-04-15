@@ -16,7 +16,7 @@ class Plugin(SpotInterface, Layer):
     
     @property
     def factor(self):
-        return self.mag_unit / (self.CLAPT.dia /100)
+        return self.mag_unit / (self.CLA.dia /100)
     
     def get_spot_beam(self):
         i = (self.illumination.Spot, 0) # <spot> 列の任意の要素をとる
@@ -34,13 +34,13 @@ class Plugin(SpotInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('CLAPT') and self.apt_selection('SAAPT', 0):
+            if self.apt_selection('CLA') and self.apt_selection('SAA', 0):
                 with self.save_excursion(mmode='LOWMAG'):
                     return SpotInterface.cal(self)
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(SAAPT=0):
+            with self.save_restriction(SAA=0):
                 with self.save_excursion(mmode='LOWMAG'):
                     return all([None is not self.cal()
                         for s in self.for_each_spot()])

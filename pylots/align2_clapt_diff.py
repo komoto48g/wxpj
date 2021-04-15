@@ -14,7 +14,7 @@ class Plugin(AlignInterface, Layer):
     caption = "LADIFF"
     conf_key = 'ladiff'
     
-    APT = property(lambda self: self.CLAPT)
+    APT = property(lambda self: self.CLA)
     
     @property
     def index(self):
@@ -43,7 +43,7 @@ class Plugin(AlignInterface, Layer):
         return self.camera.pixel_unit * self.APT.dia /100
     
     def align(self):
-        if self.apt_selection('CLAPT'):
+        if self.apt_selection('CLA'):
             if self.mode_selection('DIFF'):
                 with self.save_restriction(IL1=None):
                     self.diffspot.focus() # center pos
@@ -56,7 +56,7 @@ class Plugin(AlignInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('CLAPT'):
+            if self.apt_selection('CLA'):
                 with self.save_excursion(mmode='DIFF'):
                     with self.save_restriction(PLA=None):
                         self.diffspot.focus(0.25) # Do always set quarter-open beam
@@ -66,6 +66,6 @@ class Plugin(AlignInterface, Layer):
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(SAAPT=0):
+            with self.save_restriction(SAA=0):
                 with self.save_excursion(alpha=-1, mmode='DIFF', mag=2000):
                     return all(self.cal() for a in self.for_each_alpha())

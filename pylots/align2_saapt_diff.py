@@ -14,7 +14,7 @@ class Plugin(AlignInterface, Layer):
     caption = "SADIFF"
     conf_key = 'sadiff'
     
-    APT = property(lambda self: self.SAAPT)
+    APT = property(lambda self: self.SAA)
     
     @property
     def index(self):
@@ -43,7 +43,7 @@ class Plugin(AlignInterface, Layer):
         return self.camera.pixel_unit * self.APT.dia /100
     
     def align(self):
-        if self.apt_selection('SAAPT'):
+        if self.apt_selection('SAA'):
             if self.mode_selection('DIFF'):
                 with self.save_restriction(IL1=None):
                     self.diffspot.focus() # center pos
@@ -56,7 +56,7 @@ class Plugin(AlignInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('SAAPT'):
+            if self.apt_selection('SAA'):
                 with self.save_excursion(mmode='DIFF'):
                     with self.save_restriction(PLA=None):
                         self.diffspot.focus(0.25) # Do always set quarter-open beam
@@ -67,6 +67,6 @@ class Plugin(AlignInterface, Layer):
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(CLAPT=1, SAAPT=self.default_saapt):
+            with self.save_restriction(CLA=1, SAA=self.default_saapt):
                 with self.save_excursion(spot=0, alpha=-1, mmode='DIFF', mag=2000):
                     return self.cal()

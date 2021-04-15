@@ -19,9 +19,9 @@ class Plugin(SpotInterface, Layer):
     
     @property
     def factor(self):
-        ## return self.cam_unit / (self.SAAPT.dia /100)
-        if self.SAAPT.sel:
-            return self.cam_unit / (self.SAAPT.dia /100)
+        ## return self.cam_unit / (self.SAA.dia /100)
+        if self.SAA.sel:
+            return self.cam_unit / (self.SAA.dia /100)
         
         dia = self.para.conf_table[1] # para:cl3dia
         beta = self.config['beta'] # saadia:100
@@ -42,7 +42,7 @@ class Plugin(SpotInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('SAAPT'):
+            if self.apt_selection('SAA'):
                 with self.save_excursion(mmode='DIFF'):
                     self.para.focus()
                     self.delay()
@@ -58,7 +58,7 @@ class Plugin(SpotInterface, Layer):
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(CLAPT=1, SAAPT=self.default_saapt):
+            with self.save_restriction(CLA=1, SAA=self.default_saapt):
                 with self.save_excursion(spot=0, alpha=2, mmode='DIFF', mag=2000):
                     return all([None is not self.cal()
                         for cam in self.for_each_mag()])

@@ -53,7 +53,7 @@ class Plugin(TemInterface, PylotItem):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('SAAPT', 0):
+            if self.apt_selection('SAA', 0):
                 with self.save_excursion(mmode='MAG'):
                     try:
                         step = 500
@@ -81,7 +81,7 @@ class Plugin(TemInterface, PylotItem):
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(SAAPT=0):
+            with self.save_restriction(SAA=0):
                 with self.save_excursion(spot=0, alpha=-1, mmode='MAG'):
                     self.para.focus()
                     return self.cal()

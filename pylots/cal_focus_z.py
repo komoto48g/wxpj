@@ -79,7 +79,7 @@ class Plugin(TemInterface, Layer):
     
     def cal(self):
         with self.thread:
-            if self.apt_selection('SAAPT', 0):
+            if self.apt_selection('SAA', 0):
                 with self.save_excursion(mmode='MAG'):
                     try:
                         step = 10e3 / self.imaging.Mag # CCD:10mm/Mag -> step [um]
@@ -116,7 +116,7 @@ class Plugin(TemInterface, Layer):
     
     def execute(self):
         with self.thread:
-            with self.save_restriction(SAAPT=0):
+            with self.save_restriction(SAA=0):
                 with self.save_excursion(spot=0, alpha=-1, mmode='MAG'):
                     #self.cla.align()
                     #self.spot.focus(2)
