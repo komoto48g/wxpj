@@ -117,7 +117,7 @@ class Plugin(TemInterface, Layer):
     def execute(self):
         with self.thread:
             with self.save_restriction(SAA=0):
-                with self.save_excursion(spot=0, alpha=-1, mmode='MAG'):
+                with self.save_excursion(spot=0, mmode='MAG'):
                     #self.cla.align()
                     #self.spot.focus(2)
                     ## self.para.focus()

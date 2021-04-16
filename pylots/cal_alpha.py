@@ -1,5 +1,6 @@
 #! python
 # -*- coding: utf-8 -*-
+import numpy as np
 from numpy import pi
 from mwx.graphman import Layer
 from pylots.temixins import TemInterface
@@ -47,15 +48,16 @@ class Plugin(TemInterface, Layer):
                     el, p, q = self.detect_ellipse()
                     if el:
                         ra, rb = el[1]
-                        d = np.sqrt(ra * rb)            # avr. diameter [pix]
-                        r = self.CLA.dia /100         # CLA:100um-based ratio
+                        d = np.sqrt(ra * rb)    # avr. diameter [pix]
+                        r = self.CLA.dia /100   # CLA:100um-based ratio
                         i = self.illumination.Selector
                         self.config[self.conf_key][i] = d * self.cam_unit / r #= 2α[mrad]
                         
-                        v = p * (pi/4 * ra * rb)        # total counts in ellipse
-                        S = pi/4 * self.CLA.dia ** 2  # size of aperture [um^2]
+                        v = p * (pi/4 * ra * rb)    # total counts in ellipse
+                        S = pi/4 * self.CLA.dia**2  # size of aperture [um^2]
                         j = self.illumination.Spot
                         self.config['brightness'][j] = v / S
+                        print("Spot={}, Alpha={}, v/S = {:g} /um^2".format(j, self.illumination.Alpha, v/S))
                         
                         return True
     

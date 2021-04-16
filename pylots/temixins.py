@@ -51,9 +51,9 @@ class TemInterface(object):
     
     env = property(lambda self: self.parent.env)
     
-    default_saapt = property(lambda self: self.config.get('default_saapt', 1))
-    default_clapt = property(lambda self: self.config.get('default_clapt', 1))
-    default_acc_v = property(lambda self: self.config['acc_v'])
+    default_saapt = property(lambda self: self.config.data.get('default_saapt', 1))
+    default_clapt = property(lambda self: self.config.data.get('default_clapt', 1))
+    default_acc_v = property(lambda self: self.config.data['acc_v'])
     
     ustar_sqrt = 1
     config_tem_mag = None
