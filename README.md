@@ -21,12 +21,12 @@ How to install
 
 標準 CPython をインストールしてください．
 
-Anaconda の古いやつだと wxPython のインストールがコケるみたいです．
-ていうか Anaconda くっそ重いし，バージョン管理でコケるし．推奨はしません．
+    `Anaconda の古いやつだと wxPython のインストールがコケるみたいです．
+    ていうか Anaconda バージョン管理でコケるし，くっそ重いし，推奨はしません．`
 
 <!-- pyJemacs_noarch_cp35_#date.7z を解凍して適当な場所に置く．7z が別途必要です．-->
 
-*1. Clone wxpj from Git site
+1. Clone wxpj from Git site
 
 $ git clone http://dl-box.jeol.co.jp/gitbucket/git/komoto/wxpj.git
 
@@ -64,3 +64,9 @@ $ python wxpyjemacs.py -suser --pyjem=None
         Launch wxpyJemacs with --pyjem=0(=offline), 1(=online), or 2(=online with TEM3)
         The defalut switch is --pyjem=None, that means no PyJEMs to be involved.
         ▲アプリケーション起動後に PYJEM を含むプラグインを組み込むことは一切できません
+
+
+使用条件など
+------------
+
+[LICENSE](./LICENSE) を参照してください。
