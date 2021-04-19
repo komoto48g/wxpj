@@ -348,7 +348,7 @@ class Plugin(Layer):
         return buf
     
     def capture_ex(self, evt=None):
-        """Capture imaage and load to the target window
+        """Capture image and load to the target window
         """
         buf = self.capture()
         if buf is not None:

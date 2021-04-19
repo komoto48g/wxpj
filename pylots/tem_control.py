@@ -15,7 +15,7 @@ import wxpyJemacs as wxpj
 class Plugin(TemInterface, Layer):
     """TEM Controller Interface complex
     """
-    menu = "File/Options"
+    menu = "Maintenance/Options"
     menustr = "&TEM MAG Control"
     category = "Option"
     caption = "TEM"

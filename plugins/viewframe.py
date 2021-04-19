@@ -168,10 +168,10 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
             self.Select(j)
     
     def OnLoadItems(self, evt):
-        self.parent.parent.import_frames(target=self.Target)
+        self.parent.parent.import_index(target=self.Target)
     
     def OnSaveItems(self, evt):
-        self.parent.parent.export_frames(
+        self.parent.parent.export_index(
             frames=[self.Target.all_frames[j] for j in self.selected_items])
     
     ## --------------------------------
@@ -206,7 +206,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
 class Plugin(Layer):
     """Property list of Grpah buffers
     """
-    menu = "File/Extensions"
+    menu = "Plugins/Extensions"
     menustr = "&Buffer listbox\tCtrl+b"
     caption = "Property list"
     dockable = False

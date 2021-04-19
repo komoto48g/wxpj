@@ -19,9 +19,9 @@ import os
 import re
 import wx
 import cv2
-import matplotlib
 import numpy as np
 import scipy
+import matplotlib
 from PIL import Image
 from PIL import TiffImagePlugin # tiff extension for py2exe
 if 'mwx' not in sys.modules:
@@ -39,15 +39,13 @@ from mwx.graphman import Graph
 from mwx.graphman import Frame as Framebase
 from pyJeol.plugman import NotifyFront
 from pyJeol.temisc import Environ
-from pyDM3reader import DM3lib # Gatan DM3 extention for py2exe
-import pyJeol
-import pyGatan
+from pyDM3reader import DM3lib
 import wx.lib.mixins.listctrl # for py2exe
 import wx.lib.platebtn as pb
 
 __version__ = "3.0"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
-__copyright__ = "Copyright (c) 2020-2021"
+__copyright__ = "Copyright (c) 2018-2021"
 
 def version():
     return '\n  '.join((
@@ -107,14 +105,8 @@ class pyJemacs(Framebase):
                 lambda v: self.nfront.Show(v.IsChecked()),
                 lambda v: v.Check(self.nfront.IsShown())),
         ]
-        self.menubar["File"][6:6] = [ # insert menus for extenstion, option, etc.
-            (101, "&Import frames", "Import buffers and attributes", Icon('open'),
-                lambda v: self.import_frames()),
-                
-            (102, "&Export frames", "Export buffers and attributes", Icon('saveas'),
-                lambda v: self.export_frames(),
-                lambda v: v.Enable(self.selected_view.frame is not None)),
-            (),
+        ## self.menubar["File"][9:9] = [ # insert menus for extenstion, option, etc.
+        self.menubar["Plugins"] += [ # insert menus for extenstion, option, etc.
             ("Extensions", []),
             ("Functions", []),
             ("Options", []),
@@ -125,82 +117,6 @@ class pyJemacs(Framebase):
     def Destroy(self):
         self.nfront.Destroy()
         return Framebase.Destroy(self)
-    
-    ## --------------------------------
-    ## load/save frames and attributes 
-    ## --------------------------------
-    
-    def load_file(self, path, target):
-        try:
-            return self.import_frames(path, target)
-        except:
-            ## e = ("Unknown file type: {}\n"
-            ##      "Dropped to the target: {}".format(path, target))
-            ## wx.MessageBox(str(e), style=wx.ICON_ERROR)
-            return False
-    
-    def import_frames(self, f=None, target=None):
-        """Load frames :ref to the Attributes file
-        """
-        if not target:
-            target = self.selected_view
-        
-        if not f:
-            with wx.FileDialog(self, "Select path to import",
-                defaultFile=self.ATTRIBUTESFILE,
-                wildcard="Attributes (*.results)|*.results",
-                style=wx.FD_OPEN|wx.FD_FILE_MUST_EXIST) as dlg:
-                if dlg.ShowModal() != wx.ID_OK:
-                    return
-                f = dlg.Path
-        
-        res, mis = self.read_attributes(f)
-        paths = [attr['pathname'] for attr in res.values()]
-        
-        frames = self.load_buffer(paths, target)
-        
-        for frame in frames:
-            frame.update_attributes(res.get(frame.name))
-        
-        self.statusbar(
-            "{} files were imported, "
-            "{} files are missing.".format(len(res), len(mis)))
-        return True
-    
-    def export_frames(self, f=None, frames=None):
-        """Save frames :ref to the Attributes file
-        """
-        if frames is None:
-            frames = self.selected_view.all_frames
-            if not frames:
-                return
-        
-        if not f:
-            with wx.FileDialog(self, "Select path to export",
-                defaultFile=self.ATTRIBUTESFILE,
-                wildcard="Attributes (*.results)|*.results",
-                style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT) as dlg:
-                if dlg.ShowModal() != wx.ID_OK:
-                    return
-                f = dlg.Path
-        n = 0
-        savedir = os.path.dirname(f)
-        for frame in frames:
-            name = re.sub("[\\/:*?\"<>|]", '_', frame.name) # normal-basename
-            path = os.path.join(savedir, name)
-            if not os.path.exists(path):
-                if not path.endswith('.tif'):
-                    path += '.tif'
-                n += 1
-                self.save_buffer(path, frame)
-                
-        res, mis = self.write_attributes(f, frames)
-        
-        self.statusbar(
-            "{} files were exported, "
-            "{} files were skipped, "
-            "{} files are missing.".format(n, len(frames)-n, len(mis)))
-        return True
     
     ## --------------------------------
     ## read/write buffers
@@ -460,7 +376,7 @@ if __name__ == '__main__':
         
         debut = __import__('debut')
         print("Executing {!r}".format(debut.__file__))
-        debut.init_spec(self.inspector)
+        debut.init_spec(self.inspector.shell)
         
     except Exception:
         traceback.print_exc()

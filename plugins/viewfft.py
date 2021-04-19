@@ -20,7 +20,7 @@ class Plugin(Layer):
     FFT src (graph.buffer) to dst (output.buffer)
     長方形のリージョンは歪んだパターンになるので要注意
     """
-    menu = "File/Functions"
+    menu = "Plugins/Functions"
     menustr = "&FFT view"
     caption = "FFT view"
     

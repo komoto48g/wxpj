@@ -23,7 +23,7 @@ def setq(**kwargs):
 class Plugin(TemInterface, Layer):
     """Plugins of optional TEM settings
     """
-    menu = "File/Options"
+    menu = "Maintenance/Options"
     menustr = "&TEM Option"
     category = "Option"
     caption = "SYS"

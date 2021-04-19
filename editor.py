@@ -1,6 +1,6 @@
 #! python
 # -*- coding: utf-8 -*-
-"""Editor's collection of wxpj code
+"""Editor's collection of wxpj
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -23,7 +23,7 @@ import wxpyJemacs as wxpj
 class Plugin(wxpj.Layer):
     """Plugin as testsuite for editors functions
     """
-    menu = "File/Functions"
+    menu = "Plugins/Functions"
     menustr = "&Editor"
     
     def Init(self):

@@ -1,6 +1,6 @@
 #! python
 # -*- coding: utf-8 -*-
-"""Editor's collection of wxpj miscellaneous functions
+"""Editor's collection of wxpj miscellaneous utility
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """

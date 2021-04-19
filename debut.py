@@ -6,12 +6,17 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
+from six.moves import builtins
+import mwx
 import numpy as np
+import editor as edi
+
+builtins.plot = edi.plot
+builtins.mplot = edi.mplot
+builtins.splot = edi.splot
+builtins.imshow = edi.imshow
 
 SHELLSTARTUP = """
-from __future__ import division, print_function
-from __future__ import unicode_literals
-from __future__ import absolute_import
 import sys
 import os
 import wx
@@ -21,28 +26,22 @@ import numpy as np
 from numpy import pi,nan,inf
 from scipy import ndimage as ndi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
-from matplotlib import pyplot as plt
 import siteinit as si
-import editor as edi
-plot = edi.plot
-mplot = edi.mplot
-splot = edi.splot
-imshow = edi.imshow
-edit = self.edit
-graph = self.graph
-output = self.output
+try:
+    graph = self.graph
+    output = self.output
+except Exception as e:
+    print(e)
 """
 
 
-def init_spec(self):
-    """Initialize self<Inspector> interface
+def init_spec(shell):
+    """Initialize shell and the environs
     """
     np.set_printoptions(linewidth=256) # default 75
     
-    shell = self.shell
     shell.execute(SHELLSTARTUP)
-    
-    shell.__class__.SHELLSTARTUP = SHELLSTARTUP
+    shell._InspectorShell__startup = init_spec # for this clone
     
     @shell.define_key('C-tab')
     def insert_space_like_tab():
@@ -64,9 +63,6 @@ def init_spec(self):
                 shell.Replace(p-1, p, '')
             else: break
     
-    ## --------------------------------
-    ## Inspector's shell style
-    ## --------------------------------
     shell.set_style({
         "STC_STYLE_DEFAULT"     : "fore:#cccccc,back:#202020,face:MS Gothic,size:9",
         "STC_STYLE_CARETLINE"   : "fore:#ffffff,back:#012456,size:2",
@@ -94,13 +90,14 @@ def init_spec(self):
     shell.wrap(0)
 
 
+def deb(*args):
+    """Dive into the process, from your diving point.
+    
+    In addtion to init_spec:startup funtion (defined above),
+    this also executes default startup script ($PYTHONSTARTUP:~/.py)
+    """
+    mwx.deb(*args, startup=init_spec, execStartupScript=True)
+
+
 if __name__ == '__main__':
-    import wx
-    import mwx
-    app = wx.App()
-    inspector = mwx.MinidebFrame(None)
-    inspector.Unbind(wx.EVT_CLOSE)
-    init_spec(inspector)
-    inspector.Show()
-    inspector.shell.SetFocus()
-    app.MainLoop()
+    deb()

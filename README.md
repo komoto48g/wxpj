@@ -1,7 +1,7 @@
 wxpj
 ===============
 
-A package for TEM control
+A package for Image analysis and TEM control
 
 私の環境では以下のバージョンで動作しています．
 
@@ -18,42 +18,50 @@ How to install
 --------------
 
 0. Install PY35 
-
 標準 CPython をインストールしてください．
 
-    `Anaconda の古いやつだと wxPython のインストールがコケるみたいです．
-    ていうか Anaconda バージョン管理でコケるし，くっそ重いし，推奨はしません．`
+    Anaconda の古いやつだと wxPython のインストールがコケるみたいです．
+    Anaconda バージョン管理でコケることがあるので推奨しません．
 
-<!-- pyJemacs_noarch_cp35_#date.7z を解凍して適当な場所に置く．7z が別途必要です．-->
-
-1. Clone wxpj from Git site
-
-$ git clone http://dl-box.jeol.co.jp/gitbucket/git/komoto/wxpj.git
+1. Install python packages 
 
 **To setup environment necessary to work, do pip install,**
 
 Currently required environs: PY35
-
+```
 $ python -m pip install -U pip setuptools  
 $ pip install scipy==1.2.3 pillow matplotlib opencv-python==3.4.5.20 wxpython==4.0.7 pywin32  
 $ pip install PyJEM-1.0.2.1143.zip httplib2  
+```
 
     !! PYJEM 機能を使用するためには PY <= 3.5 (以下) をインストールしてください．
     !! 別途，TemExternal のインストールが必要です．
+
+<!--
+2. Get wxpj from db
+
+pyJemacs_noarch_cp35_#date.7z を解凍して適当な場所に置く．7z が別途必要です．
+-->
+
+2. Clone wxpj from Git site
+```
+$ git clone http://dl-box.jeol.co.jp/gitbucket/git/komoto/wxpj.git
+```
 
 
 How to execute wxpyJemacs
 -------------------------
 
-### 1a バイナリ実行の場合
+<!--
+### バイナリ実行の場合
 $ pJ.cmd
 
     バイナリパッケージは実行に必要なランタイムをすべて含んでいますが，
     Windows 10 64bit (AMD64) でビルドされているため，その他の OS では実行できません．
     (たぶん OpenCV の dll バージョンが合わないため)
+-->
 
-
-### 1b スクリプト実行の場合
+### スクリプト実行の場合
 $ python wxpyjemacs.py -suser --pyjem=None
 
     -sxxx: xxx セッションで開始します
