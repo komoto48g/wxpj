@@ -41,7 +41,7 @@ def init_spec(shell):
     np.set_printoptions(linewidth=256) # default 75
     
     shell.execute(SHELLSTARTUP)
-    shell._InspectorShell__startup = init_spec # for this clone
+    shell._InspectorShell__startup = init_spec # for this clone startup
     
     @shell.define_key('C-tab')
     def insert_space_like_tab():

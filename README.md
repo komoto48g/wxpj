@@ -97,15 +97,20 @@ Additional notes about how to deploy this on a live system
 ## Built With
 
 * [pyDM3reader] - Python DM3 Reader (originated from ImageJ plugin)
+    porting PY2 to 3 by komoto
 
 * [pyGatan] - Leginon のサイトにある Python 2.7 用スクリプトを Python 3 で動くように修正したもの
+    by hiijima
 
-* [pyJeol.egg] (未公開) JEOL legacy TEM package です．主に次のモジュールで構成されます．
+* [pyJeol] (egg only) JEOL legacy TEM package です．主に次のモジュールで構成されます．
     - pyJem: PyJEM wrapper
     - pyJem2: Poor man's PyJEM
     - plugman: JEOL TEM Notify manager
 
-* [mwxlib.egg] (未公開) 自作の汎用 wxpython package です．
+* [mwxlib] (egg only) 自作の汎用 wxpython package です．以下のモジュールで構成されます．
+    - framework: the framework
+    - graphman: graph manager
+    - matplot2/g/lg: wrapper of matplotlib
 
 
 ## Contributing
