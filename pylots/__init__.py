@@ -13,8 +13,8 @@ __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 from .temixins import (DataLogger, TemInterface, SpotInterface,
                        AlignInterface, StigInterface, CompInterface)
 
-from pyJeol import pyJem2 as pmpj # Poor man's pyJem package (not a PyJEM)
-from pyJeol.pyJem2 import TEM, Filter, Stage # to be referred from pylots
+## from pyJeol import pyJem2 as pmpj # Poor man's pyJem package (not a PyJEM)
+## from pyJeol.pyJem2 import TEM, Filter, Stage
 
 
 class UserInterface(TemInterface):

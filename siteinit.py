@@ -35,14 +35,8 @@ def init_frame(self):
     ## --------------------------------
     ## Load plugins
     ## --------------------------------
-    sys.path.append(r"C:/usr/home/workspace/tem13/site-aero")
-    sys.path.append(r"C:/usr/home/workspace/tem13/site-rigaku")
-    sys.path.append(r"C:/usr/home/workspace/tem13/site-factory")
-    
     self.load_plug("editor")
-    
-    import startup as su
-    self.load_plug(su)
+    self.load_plug("startup")
     
     from plugins import lgbt, lccf, lcrf, lccf2
     self.load_plug(lgbt)

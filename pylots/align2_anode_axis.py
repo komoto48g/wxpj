@@ -1,7 +1,8 @@
 #! python
 # -*- coding: utf-8 -*-
 from mwx import LParam
-from pylots.temixins import AlignInterface, TEM, HTsys
+from pyJeol.pyJem2 import HTsys
+from pylots.temixins import AlignInterface, TEM
 from pylots.Autopylot2 import PylotItem
 
 
@@ -13,7 +14,6 @@ class Plugin(AlignInterface, PylotItem):
     caption = "A2-axis"
     conf_key = 'a2-beamaxis'
     index = TEM.GUNA2
-    ## wobbler = HTsys.A2
     
     @property
     def wobbler(self):

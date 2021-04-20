@@ -1,6 +1,7 @@
 #! python
 # -*- coding: utf-8 -*-
-from pylots.temixins import TemInterface, TEM, Filter
+from pyJeol.pyJem2 import Filter
+from pylots.temixins import TemInterface, TEM
 from pylots.Autopylot2 import PylotItem
 import wxpyJemacs as wxpj
 import editor as edi

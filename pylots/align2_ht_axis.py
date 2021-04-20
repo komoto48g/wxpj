@@ -1,7 +1,8 @@
 #! python
 # -*- coding: utf-8 -*-
 from mwx import LParam
-from pylots.temixins import AlignInterface, TEM, Filter
+from pyJeol.pyJem2 import Filter
+from pylots.temixins import AlignInterface, TEM
 from pylots.Autopylot2 import PylotItem
 
 

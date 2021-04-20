@@ -376,7 +376,7 @@ if __name__ == '__main__':
         
         debut = __import__('debut')
         print("Executing {!r}".format(debut.__file__))
-        debut.init_spec(self.inspector.shell)
+        debut.init_spec(frm.inspector.shell)
         
     except Exception:
         traceback.print_exc()

@@ -17,7 +17,7 @@ from numpy import pi,cos,sin
 from mwx import LParam
 from mwx.graphman import Thread
 from pyJeol import pyJem2 as pj # pmpj: Poor man's pyJem package (not a PyJEM)
-from pyJeol.pyJem2 import TEM, EOsys, HTsys, Filter, Stage # to be referred from pylots
+from pyJeol.pyJem2 import TEM   # pmpj.TEM class referred from pylots
 from pyJeol.temisc import Environ
 from misc import ConfigData
 import wxpyJemacs as wxpj
