@@ -34,36 +34,43 @@ except Exception as e:
     print(e)
 """
 
+np.set_printoptions(linewidth=256) # default 75
 
-def init_spec(shell):
+
+def init_spec(self):
     """Initialize shell and the environs
     """
-    np.set_printoptions(linewidth=256) # default 75
+    self._InspectorShell__startup = init_spec # for this clone startup
+    self.execute(SHELLSTARTUP)
     
-    shell.execute(SHELLSTARTUP)
-    shell._InspectorShell__startup = init_spec # for this clone startup
-    
-    @shell.define_key('C-tab')
+    @self.define_key('C-tab')
     def insert_space_like_tab():
-        """タブの気持ちになって半角スペースを入力する"""
-        shell.eat_white_forward()
-        _text, lp = shell.CurLine
+        """タブの気持ちになって半角スペースを前向きに入力する
+        Enter half-width spaces forward as if feeling like a tab
+        """
+        self.eat_white_forward()
+        
+        _text, lp = self.CurLine
         n = lp % 4
-        shell.write(' ' * (4-n))
+        self.write(' ' * (4-n))
     
-    @shell.define_key('C-S-tab')
+    @self.define_key('C-S-tab')
     def delete_backward_space_like_tab():
-        """SHIFT+タブの気持ちになって半角スペースを消す"""
-        shell.eat_white_forward()
-        _text, lp = shell.CurLine
+        """シフト+タブの気持ちになって半角スペースを後ろ向きに消す
+        Delete half-width spaces backward as if feeling like a shift+tab
+        """
+        self.eat_white_forward()
+        
+        _text, lp = self.CurLine
         n = lp % 4 or 4
         for i in range(n):
-            p = shell.cur
-            if shell.preceding_char == ' ' and p != shell.bol:
-                shell.Replace(p-1, p, '')
-            else: break
+            p = self.cur
+            if self.preceding_char == ' ' and p != self.bol:
+                self.Replace(p-1, p, '')
+            else:
+                break
     
-    shell.set_style({
+    self.set_style({
         "STC_STYLE_DEFAULT"     : "fore:#cccccc,back:#202020,face:MS Gothic,size:9",
         "STC_STYLE_CARETLINE"   : "fore:#ffffff,back:#012456,size:2",
         "STC_STYLE_LINENUMBER"  : "fore:#000000,back:#f0f0f0,size:9",
@@ -87,17 +94,21 @@ def init_spec(shell):
         "STC_P_OPERATOR"        : "",
         "STC_P_NUMBER"          : "fore:#ffc080",
     })
-    shell.wrap(0)
+    self.wrap(0)
 
 
-def deb(*args):
+def dive(*args):
     """Dive into the process, from your diving point.
     
     In addtion to init_spec:startup funtion (defined above),
     this also executes default startup script ($PYTHONSTARTUP:~/.py)
     """
-    mwx.deb(*args, startup=init_spec, execStartupScript=True)
+    mwx.deb(*args, startup=init_spec, execStartupScript=True,
+        introText = """
+        Anything one man can imagine, other man can make real.
+        --- Jules Verne (1828--1905)
+        """)
 
 
 if __name__ == '__main__':
-    deb()
+    dive()
