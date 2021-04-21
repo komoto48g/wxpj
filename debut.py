@@ -40,7 +40,6 @@ np.set_printoptions(linewidth=256) # default 75
 def init_spec(self):
     """Initialize shell and the environs
     """
-    self._InspectorShell__startup = init_spec # for this clone startup
     self.execute(SHELLSTARTUP)
     
     @self.define_key('C-tab')
