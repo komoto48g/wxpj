@@ -48,12 +48,12 @@ class Plugin(AlignInterface, Layer):
             if self.mode_selection('MAG'):
                 with self.save_restriction(CL3=None, SAA=0):
                     self.pla.index = (0x8000, 0x8000) # neutralize
-                    self.spot.focus(-0.25) # for histerisis loop back
-                    self.delay(1)
-                    self.spot.focus() # center
-                    self.delay()
-                    self.shift.align()
-                    self.delay()
+                    ## self.spot.focus(-0.25) # for histerisis loop back
+                    ## self.delay(1)
+                    ## self.spot.focus() # center
+                    ## self.delay()
+                    ## self.shift.align()
+                    ## self.delay()
                     self.spot.focus(0.25) # Do always set quarter-open beam
                     return AlignInterface.align(self)\
                        and AlignInterface.align(self)

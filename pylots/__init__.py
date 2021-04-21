@@ -1,7 +1,6 @@
 #! python
 # -*- coding: utf-8 -*-
-"""Editor's collection of Tem algorithms of Mixin (interface) class
-For the main implementaion, refer to `temixins' module
+"""Editor's collection of TEM user interface
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -12,9 +11,6 @@ __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 
 from .temixins import (DataLogger, TemInterface, SpotInterface,
                        AlignInterface, StigInterface, CompInterface)
-
-## from pyJeol import pyJem2 as pmpj # Poor man's pyJem package (not a PyJEM)
-## from pyJeol.pyJem2 import TEM, Filter, Stage
 
 
 class UserInterface(TemInterface):

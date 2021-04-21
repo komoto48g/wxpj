@@ -9,7 +9,7 @@ from __future__ import (division, print_function,
 from mwx import LParam
 from mwx.graphman import Layer
 from pyJeol import FLHex, OLHex
-from pylots.temixins import TemInterface
+from pylots.temixins import TemInterface, TEM
 import wxpyJemacs as wxpj
 
 
@@ -57,23 +57,24 @@ class Plugin(TemInterface, Layer):
             ),
             row=1, type='spin', style='btn', lw=60, tw=50,
         )
+        foci = TEM.foci
         self.layout("Standard Focus", (
             wxpj.Button(self, "Brightness", size=(70,-1)),
-            self.tem.foci['CL3'],
+            foci['CL3'],
             (),
             wxpj.Button(self, "OL:Std/F", self.on_update_olstdf, size=(70,-1),
                 tip="Set the current value as the standard focus of MAG mode"),
-            self.tem.foci['OLC'],
-            self.tem.foci['OLF'],
+            foci['OLC'],
+            foci['OLF'],
             
             wxpj.Button(self, "OM:Std/F", self.on_update_omstdf, size=(70,-1),
                 tip="Set the current value as the standard focus of LOWMAG mode"),
-            self.tem.foci['OM1'],
-            self.tem.foci['OM2'],
+            foci['OM1'],
+            foci['OM2'],
             
             wxpj.Button(self, "FL:Std/F", self.on_update_flstdf, size=(70,-1)),
-            self.tem.foci['FLC'],
-            self.tem.foci['FLF'],
+            foci['FLC'],
+            foci['FLF'],
             ),
             row=3, show=0, type=None, editable=0, lw=0, tw=40,
         )
@@ -85,14 +86,14 @@ class Plugin(TemInterface, Layer):
         }
     
     def Activate(self, show):
-        foci = self.tem.foci
+        foci = TEM.foci
         if show:
             for name in "CL3 OLC OLF OM1 FLC FLF".split():
                 ## foci[name].bind(foci.write) # WR:Enabled
                 foci[name].flag = 1
             self.parent.notify.handler.append(self.context)
             try:
-                self.on_lens_notify(self.tem.foci)
+                self.on_lens_notify(foci)
                 self.on_imaging_notify(self.imaging.Info)
             except Exception as e:
                 print("- tem controler failed to get TEM info; {}.".format(e))
@@ -130,10 +131,12 @@ class Plugin(TemInterface, Layer):
         self.fl_focus_param.std_value = self.tem.FL # save current value as std/f
     
     def on_lens_notify(self, argv):
-        self.cl_focus_param.value = self.tem.foci['CL3'].value # ref: not read
-        self.ol_focus_param.value = self.tem.foci['OL'].value
-        self.om_focus_param.value = self.tem.foci['OM'].value
-        self.fl_focus_param.value = self.tem.foci['FL'].value
+        foci = TEM.foci # ref only, no reading
+        self.cl_focus_param.value = foci['CL3'].value
+        self.om_focus_param.value = foci['OM1'].value
+        self.ol_focus_param.value = OLHex(foci['OLC'].value, foci['OLF'].value).value
+        self.fl_focus_param.value = FLHex(foci['FLC'].value, foci['FLF'].value).value
+        
     
     def on_imaging_notify(self, argv):
         lowmagp = (argv['mode'] == 2)

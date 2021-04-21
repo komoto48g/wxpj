@@ -35,10 +35,9 @@ class Plugin(CompInterface, Layer):
     
     def Init(self):
         CompInterface.Init(self)
-        try:
+        
+        if self.config: # the config might be missing when plugging in
             self.__index = self.conf_table
-        except Exception as e:
-            print("$(e) = {!r}".format((e)))
     
     @property
     def conf_table(self):

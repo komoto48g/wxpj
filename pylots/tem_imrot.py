@@ -12,7 +12,7 @@ import wxpyJemacs as wxpj
 
 
 class Plugin(TemInterface, Layer):
-    """Imaging rotation angles in Tem.IL_LENSES
+    """Imaging rotation angles in IL_LENSES
     """
     menu = "Maintenance/Options"
     menustr = "&TEM ROT option"
@@ -47,8 +47,8 @@ class Plugin(TemInterface, Layer):
         This method also should be called from Alignment plugins
         """
         v = self.calc_imrot(self.Tem.IL_LENSES)
-        self.config[self.conf_key] = v
         if self.lowmagp:
             self.rot_lowmag.value = "{:8.2f}".format(v)
         else:
             self.rot_mag.value = "{:8.2f}".format(v)
+        self.config[self.conf_key] = v

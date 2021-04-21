@@ -1,6 +1,6 @@
 #! python
 # -*- coding: utf-8 -*-
-"""Editor's collection of Tem algorithms of Mixins (interfaces) class
+"""Editor's collection of TEM algorithm Mixins class
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 Contributer: Hirohumi IIjima <hiiijima@jeol.co.jp>,
@@ -106,7 +106,6 @@ class TemInterface(object):
             env = Environ(config['acc_v']) # cf. self.parent.env (see tem_option)
             TemInterface.ustar_sqrt = np.sqrt(env.ustar / basenv.ustar)
         
-        ## TemInterface.pj = pj # just for debug, include pj in self namespace
         TemInterface.Tem = Tem
         TemInterface.Aperture = Aperture
         
@@ -538,8 +537,8 @@ class SpotInterface(TemInterface):
     ## (cl3spot, cl3sens) for MAG,LOWMAG
     ## (il1spot, il1sens) for DIFF
     
-    ## virtual property: get_spot_beam --> (xo, ys)
-    ## virtual function: set_spot_beam <-- (xo, ys)
+    ## virtual: get_spot_beam -> (xo, ys)
+    ## virtual: set_spot_beam <- (xo, ys)
     
     conf_table = property(
         lambda self: self.get_spot_beam(),
@@ -564,6 +563,12 @@ class SpotInterface(TemInterface):
         h, w = self.camera.shape
         xo, ys = self.conf_table
         self.index = xo + stride * h / ys
+    
+    def calc_stride(self):
+        h, w = self.camera.shape
+        xo, ys = self.conf_table
+        stride = ys / h * (self.index - xo)
+        return stride
     
     def cal(self, step=None, maxiter=3):
         self.logger.clear_data()
