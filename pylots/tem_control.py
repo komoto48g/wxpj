@@ -8,6 +8,7 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 from mwx import LParam
 from mwx.graphman import Layer
+from pyJeol import FLHex, OLHex
 from pylots.temixins import TemInterface
 import wxpyJemacs as wxpj
 
@@ -22,14 +23,14 @@ class Plugin(TemInterface, Layer):
     
     def Init(self):
         def setf(**kwargs):
-            ## Note: [setf = self.tem.__dict__.update] gives no effect on property.
             for k,v in kwargs.items():
-                setattr(self.tem, k, v)
+                ## setattr(self.tem, k, v)
+                self.tem[k] = v
         
         self.cl_focus_param = LParam("Brightness", (0, 0xffff, 1), dtype=hex,
             handler=lambda p: setf(CL3=p.value))
         
-        self.ol_focus_param = LParam("OL-Focus", (0, self.pj.OLHex.maxval, 1), dtype=hex,
+        self.ol_focus_param = LParam("OL-Focus", (0, OLHex.maxval, 1), dtype=hex,
             handler=lambda p: setf(OL=p.value),
             updater=lambda p: setf(OL=p.std_value),
                 doc="Reset to the standard focus value (MAG mode only)")
@@ -39,7 +40,7 @@ class Plugin(TemInterface, Layer):
             updater=lambda p: setf(OM=p.std_value),
                 doc="Reset to the standard focus value (LOWMAG mode only)")
         
-        self.fl_focus_param = LParam("FL-Focus", (0, self.pj.FLHex.maxval, 1), dtype=hex,
+        self.fl_focus_param = LParam("FL-Focus", (0, FLHex.maxval, 1), dtype=hex,
             handler=lambda p: setf(FL=p.value),
             updater=lambda p: setf(FL=p.std_value),
                 doc="Reset to the standard focus value")
@@ -129,10 +130,10 @@ class Plugin(TemInterface, Layer):
         self.fl_focus_param.std_value = self.tem.FL # save current value as std/f
     
     def on_lens_notify(self, argv):
-        self.cl_focus_param.value = self.tem.CL3
-        self.ol_focus_param.value = self.tem.OL
-        self.om_focus_param.value = self.tem.OM
-        self.fl_focus_param.value = self.tem.FL
+        self.cl_focus_param.value = self.tem.foci['CL3'].value # ref: not read
+        self.ol_focus_param.value = self.tem.foci['OL'].value
+        self.om_focus_param.value = self.tem.foci['OM'].value
+        self.fl_focus_param.value = self.tem.foci['FL'].value
     
     def on_imaging_notify(self, argv):
         lowmagp = (argv['mode'] == 2)

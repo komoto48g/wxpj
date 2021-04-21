@@ -377,7 +377,9 @@ if __name__ == '__main__':
         debut = __import__('debut')
         print("Executing {!r}".format(debut.__file__))
         debut.init_spec(frm.inspector.shell)
-        frm.inspector.shell._Nautilus__startup = debut.init_spec
+        
+        ## frm.inspector.shell._Nautilus__startup = debut.init_spec
+        frm.inspector.shell.handler.bind('shell_cloned', debut.init_spec)
         
     except Exception:
         traceback.print_exc()

@@ -15,13 +15,13 @@ import wx
 import numpy as np
 from numpy import pi,cos,sin
 from mwx import LParam
-from mwx.graphman import Thread
+from pyJeol import Environ
 from pyJeol import pyJem2 as pj # pmpj: Poor man's pyJem package (not a PyJEM)
-from pyJeol.pyJem2 import TEM   # pmpj.TEM class referred from pylots
-from pyJeol.temisc import Environ
 from misc import ConfigData
 import wxpyJemacs as wxpj
 import editor as edi
+
+TEM = pj.TEM # TEM class referred from pylots
 
 
 class TemInterface(object):
@@ -47,7 +47,7 @@ class TemInterface(object):
             cam = self.cameraman.connect()
         return cam
     
-    thread = Thread() # Common workerthread instance shared by pylot modules
+    thread = wxpj.Layer.Thread() # Common workerthread instance shared by pylot modules
     
     env = property(lambda self: self.parent.env)
     
@@ -106,7 +106,7 @@ class TemInterface(object):
             env = Environ(config['acc_v']) # cf. self.parent.env (see tem_option)
             TemInterface.ustar_sqrt = np.sqrt(env.ustar / basenv.ustar)
         
-        TemInterface.pj = pj # just for debug, include pj in self namespace
+        ## TemInterface.pj = pj # just for debug, include pj in self namespace
         TemInterface.Tem = Tem
         TemInterface.Aperture = Aperture
         
