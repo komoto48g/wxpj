@@ -15,6 +15,8 @@ class Plugin(StigInterface, Layer):
     
     diffspot = property(lambda self: self.parent.require('beam_spot_diff'))
     para = property(lambda self: self.parent.require('beam2_para'))
+    spot = property(lambda self: self.parent.require('beam_spot'))
+    shift = property(lambda self: self.parent.require('beam_shift'))
     pla = property(lambda self: self.parent.require('align_pla'))
     cla = property(lambda self: self.parent.require('align2_clapt'))
     
@@ -47,6 +49,8 @@ class Plugin(StigInterface, Layer):
         with self.thread:
             with self.save_restriction(CL3=0xffff, CLA=2, SAA=0):
                 with self.save_excursion(alpha=-1, mmode='MAG'):
+                    self.spot.focus() # center
+                    self.shift.align()
                     self.cla.align()
                 with self.save_excursion(mmode='DIFF', mag=2000):
                     return all(self.cal() for a in self.for_each_alpha())

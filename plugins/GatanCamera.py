@@ -144,7 +144,7 @@ class Plugin(Layer):
         }
     
     ## --------------------------------
-    ## Camera Interface
+    ## Camera Attribtues
     ## --------------------------------
     camera = None
     
@@ -219,12 +219,14 @@ class Plugin(Layer):
     def acquire(self):
         """Acquire image with no dark subtraction"""
         try:
-            ## self.message("Acquiring...")
             if self.camera is None:
                 self.connect()
-            return self.camera.cache()
+            try:
+                return self.camera.cache()
+            except Exception:
+                pass
         except Exception as e:
-            print(self.message(e))
+            print(self.message("- Failed to acquire image: {!r}".format(e)))
     
     def capture(self):
         """Capture image
@@ -240,6 +242,7 @@ class Plugin(Layer):
     def capture_ex(self, evt=None):
         """Capture image and load to the target window
         """
+        self.message("Capturing image...")
         buf = self.capture()
         if buf is not None:
             frame = self.graph.load(buf,

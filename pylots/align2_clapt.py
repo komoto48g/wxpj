@@ -49,7 +49,7 @@ class Plugin(AlignInterface, Layer):
                 with self.save_restriction(CL3=None, SAA=0):
                     self.pla.index = (0x8000, 0x8000) # neutralize
                     ## self.spot.focus(-0.25) # for histerisis loop back
-                    ## self.delay(1)
+                    ## self.delay()
                     ## self.spot.focus() # center
                     ## self.delay()
                     ## self.shift.align()

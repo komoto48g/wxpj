@@ -74,3 +74,5 @@ class UserInterface(TemInterface):
     stage = property(lambda self: self.parent.require('cal_focus_z'))
     ol = property(lambda self: self.parent.require('cal_focus_ol'))
     fl = property(lambda self: self.parent.require('cal_focus_fl'))
+    
+    control = property(lambda self: self.parent.require('tem_control'))

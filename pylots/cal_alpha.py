@@ -18,6 +18,7 @@ class Plugin(TemInterface, Layer):
     
     diffspot = property(lambda self: self.parent.require('beam_spot_diff'))
     spot = property(lambda self: self.parent.require('beam_spot'))
+    shift = property(lambda self: self.parent.require('beam_shift'))
     pla = property(lambda self: self.parent.require('align_pla'))
     cla = property(lambda self: self.parent.require('align2_clapt'))
     
@@ -65,6 +66,8 @@ class Plugin(TemInterface, Layer):
         with self.thread:
             with self.save_restriction(CLA=self.default_clapt, SAA=0): # CLA:100um
                 with self.save_excursion(mmode='MAG'):
+                    self.spot.focus()
+                    self.shift.align()
                     self.cla.align()
                 with self.save_excursion(mmode='DIFF', mag=2000):
                     return all([self.cal()

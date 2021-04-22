@@ -207,6 +207,8 @@ class Plugin(TemInterface, Layer):
             with self.save_excursion(mmode='MAG'):
                 ## with self.save_restriction(SAA=0):
                 with self.save_restriction(CLA=self.default_clapt, SAA=0):
+                    self.spot.focus()
+                    self.shift.align()
                     self.cla.align()
                     for a in self.for_each_alpha():
                         self.imaging.Mag = self.mags_apriori[a]
