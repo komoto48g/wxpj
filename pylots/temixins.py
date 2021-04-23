@@ -47,7 +47,7 @@ class TemInterface(object):
             cam = self.cameraman.connect()
         return cam
     
-    thread = wxpj.Layer.Thread() # Common workerthread instance shared by pylot modules
+    thread = wxpj.Thread() # Common workerthread instance shared by pylot modules
     
     env = property(lambda self: self.parent.env)
     

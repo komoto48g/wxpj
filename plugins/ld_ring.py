@@ -9,7 +9,7 @@ import numpy as np
 from numpy import pi,exp,cos,sin
 from scipy import optimize
 from mwx import LParam
-from mwx.graphman import Layer
+from mwx.graphman import Layer, Thread
 
 
 def calc_dist(u, D, d):
@@ -102,7 +102,7 @@ class Plugin(Layer):
         lambda self: self.grid_params + self.ratio_params)
     
     def Init(self):
-        self.thread = Layer.Thread(self)
+        self.thread = Thread(self)
         
         x = 5e-3
         self.dist_params = (

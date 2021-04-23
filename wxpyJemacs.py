@@ -33,9 +33,7 @@ if 'mwx' not in sys.modules:
     ]
 import mwx
 from mwx import Param, LParam
-from mwx.graphman import Icon
-from mwx.graphman import Layer
-from mwx.graphman import Graph
+from mwx.graphman import Icon, Thread, Layer, Graph
 from mwx.graphman import Frame as Framebase
 from pyJeol.plugman import NotifyFront
 from pyJeol.temisc import Environ

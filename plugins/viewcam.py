@@ -7,7 +7,7 @@ import wx
 import cv2
 import numpy as np
 from mwx import Param, LParam
-from mwx.graphman import Layer
+from mwx.graphman import Layer, Thread
 import wxpyJemacs as wxpj
 import editor as edi
 
@@ -22,7 +22,7 @@ class Plugin(Layer):
     cameraman = property(lambda self: self.parent.require(self.camerasys))
     
     def Init(self):
-        self.viewer = Layer.Thread(self)
+        self.viewer = Thread(self)
         
         self.button = wxpj.ToggleButton(self, "View camera", icon='cam',
             handler=lambda v: self.viewer.Start(self.run) if v.IsChecked() else self.viewer.Stop())
