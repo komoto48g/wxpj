@@ -15,7 +15,7 @@ import editor as edi
 class Plugin(Layer):
     """Plugins of camera viewer
     """
-    menu = "Camera"
+    menu = "Plugins/Cameras"
     menustr = "Camera &viewer"
     
     camerasys = property(lambda self: self.camera_selector.value)

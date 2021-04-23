@@ -209,7 +209,7 @@ class Camera(object):
 class Plugin(Layer):
     """Rigaku camera manager
     """
-    menu = "Camera"
+    menu = "Plugins/Cameras"
     menustr = "&Rigaku camera ver.2"
     
     def Init(self):
