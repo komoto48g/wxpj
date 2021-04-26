@@ -288,11 +288,3 @@ class Plugin(Layer):
         
         self.parent.handler('frame_cached', frame)
         self.message("dark ref saved to {!r}".format(f))
-
-
-if __name__ == "__main__":
-    app = wx.App()
-    frm = wxpj.Frame(None)
-    frm.load_plug(__file__, show=1, docking=4)
-    frm.Show()
-    app.MainLoop()

@@ -95,12 +95,12 @@ class Plugin(Layer):
 ## --------------------------------
 
 def imread(path):
-    buf, info = wxpj.pyJemacs.read_buffer(path) # cf. np.asarray(Image.open(f))
+    buf, info = wxpj.Frame.read_buffer(path) # cf. np.asarray(Image.open(f))
     return buf
 
 
 def imwrite(path, buf):
-    return wxpj.pyJemacs.write_buffer(path, buf) # cf. Image.fromarray(buf).save(f)
+    return wxpj.Frame.write_buffer(path, buf) # cf. Image.fromarray(buf).save(f)
 
 
 def imtrunc(buf=None, hi=0, lo=0):
@@ -476,6 +476,7 @@ if __name__ == "__main__":
     print(find_local_extremum2d(z, True))
     print(find_local_extremum2d(z, False))
     print()
+    
     ## fig = plt.figure()
     ## ax = fig.add_subplot(111, projection='3d')
     ## x, y = np.mgrid[-1:1:3j,-1:1:3j]
@@ -494,13 +495,12 @@ if __name__ == "__main__":
     plot(xx, p(xx), x, y)
 
 
-if __name__ == "__main__":
-    import wxpyJemacs as wxpj
-    import wx
-    
-    app = wx.App()
-    frm = wxpj.Frame(None)
-    frm.load_plug(__file__, show=1, docking=4)
-    frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
-    frm.Show()
-    app.MainLoop()
+## if __name__ == "__main__":
+##     import wx
+##     
+##     app = wx.App()
+##     frm = wxpj.Frame(None)
+##     frm.load_plug(__file__, show=1, docking=4)
+##     frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
+##     frm.Show()
+##     app.MainLoop()

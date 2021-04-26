@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-04-08 02:28:27 +0900>
+Last updated: <2021-04-26 17:41:39 +0900>
      Version: 2.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -10,7 +10,7 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
 import cv2
-from wxpyJemacs import Layer
+from wxpyJemacs import Layer, Frame
 import wxpyJemacs as wxpj
 
 
@@ -44,8 +44,7 @@ class Plugin(Layer):
             wxpj.Button(self, "4. ALL",
                 lambda v: (self.run(), self.run_blur(), self.run_med()), icon='phoenix',
                 tip="Press to run all blurs above\n"
-                    "This example shows how wxpj (c) plain wizard enables instruction\n"
-                    "Check it out! have fun.")
+                    "This example shows how to give plain instruction.")
             ),
             row=1, expand=0, show=0, type='vspin', cw=12, lw=36, tw=36,
         )
@@ -68,7 +67,7 @@ class Plugin(Layer):
 
 if __name__ == "__main__":
     app = wx.App()
-    frm = wxpj.Frame(None)
+    frm = Frame(None)
     frm.load_plug(__file__, show=1, docking=4)
     frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
     frm.Show()

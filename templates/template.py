@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-04-21 17:25:25 +0900>
+Last updated: <2021-04-26 17:40:54 +0900>
      Version: 0.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -11,10 +11,8 @@ from __future__ import (division, print_function,
 import wx
 import mwx
 import cv2
-import numpy as np
 from mwx import LParam
-from wxpyJemacs import Layer
-import wxpyJemacs as wxpj
+from wxpyJemacs import Layer, Frame
 
 
 class Plugin(Layer):
@@ -54,7 +52,7 @@ class Plugin(Layer):
 
 if __name__ == "__main__":
     app = wx.App()
-    frm = wxpj.Frame(None)
+    frm = Frame(None)
     frm.load_plug(__file__, show=1, docking=4)
     frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
     frm.Show()
