@@ -28,7 +28,7 @@ if 'mwx' not in sys.modules:
     ## Add eggs in the nest to the path
     home = os.path.dirname(os.path.abspath(__file__))
     sys.path += [
-        os.path.join(home, "nest/pj-2.5-py3.5.egg"),
+        os.path.join(home, "nest/pj-0.30-py3.5.egg"),
         os.path.join(home, "nest/mwxlib-0.40-py3.5.egg"),
     ]
 import mwx
