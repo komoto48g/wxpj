@@ -5,10 +5,12 @@ from __future__ import (division, print_function,
 import wx
 import mwx
 import numpy as np
+from mwx import Param, LParam
+from mwx.graphman import Layer, Icon, Frame
 import wxpyJemacs as wxpj
 
 
-class Plugin(wxpj.Layer):
+class Plugin(Layer):
     """catalogue of widgets
     
     This script shows wxpj icons/widgets
@@ -17,11 +19,11 @@ class Plugin(wxpj.Layer):
     
     def Init(self):
         self.layout('Provided art images',
-            (wxpj.Button(self, k, icon=k, size=(80,-1)) for k in sorted(wxpj.Icon.provided_arts)),
+            (wxpj.Button(self, k, icon=k, size=(80,-1)) for k in sorted(Icon.provided_arts)),
             row=6, show=0
         )
         self.layout('Custom images',
-            (wxpj.Button(self, k, icon=k, size=(80,-1)) for k in sorted(wxpj.Icon.custom_images)),
+            (wxpj.Button(self, k, icon=k, size=(80,-1)) for k in sorted(Icon.custom_images)),
             row=6, show=0
         )
         self.layout('Custom controls', (
@@ -58,14 +60,14 @@ class Plugin(wxpj.Layer):
             ),
             row=2, expand=0,
         )
-        self.LP =  wxpj.LParam('L', (-1,1,0.01), 0, handler=print,
+        self.LP =  LParam('L', (-1,1,0.01), 0, handler=print,
             doc="Linear param"
                 "\n In addition to direct key input to the textctrl,"
                 "\n [up][down][wheelup][wheeldown] keys can be used,"
                 "\n   with modifiers S- 2x, C- 4x, and M- 16x steps."
                 "\n [Mbutton] resets to the std. value if it exists.")
         
-        self.P = wxpj.Param('U', (1,2,3, np.inf), handler=print)
+        self.P = Param('U', (1,2,3, np.inf), handler=print)
         
         self.layout('Custom param controls', (
             self.LP,
@@ -95,7 +97,7 @@ class Plugin(wxpj.Layer):
 
 if __name__ == "__main__":
     app = wx.App()
-    frm = wxpj.Frame(None)
+    frm = Frame(None)
     frm.load_plug("__debug__")
     frm.load_plug(__file__, show=1)
     frm.Show()

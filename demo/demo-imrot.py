@@ -7,10 +7,12 @@ import cv2
 import numpy as np
 from numpy import pi
 from scipy import ndimage as ndi
+from mwx import LParam
+from mwx.graphman import Layer, Icon, Frame
 import wxpyJemacs as wxpj
 
 
-class Plugin(wxpj.Layer):
+class Plugin(Layer):
     """Image processing: rotation
     
     This script shows how to get data from graph,
@@ -22,7 +24,7 @@ class Plugin(wxpj.Layer):
         self.btn = wxpj.Button(self, "Rotate", self.rotate,
             tip="Try [C-x r] to execute this function instead of press button.")
         
-        self.rotdeg = wxpj.LParam("[deg]", (-180,180, 1), 0, doc="angles to rotate:ccw")
+        self.rotdeg = LParam("[deg]", (-180,180, 1), 0, doc="angles to rotate:ccw")
         
         self.layout(None, (
             self.btn,
@@ -59,7 +61,7 @@ class Plugin(wxpj.Layer):
 
 if __name__ == "__main__":
     app = wx.App()
-    frm = wxpj.Frame(None)
+    frm = Frame(None)
     frm.load_plug("__debug__")
     frm.load_plug(__file__, show=1)
     frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")

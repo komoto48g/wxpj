@@ -27,9 +27,9 @@ These instructions will get you a copy of the project up and running on your loc
         !! 別途，TemExternal のインストールが必要です．
     
     標準 CPython をインストールしてください．
-    
-        Anaconda の古いやつだと wxPython のインストールがコケます．
-        Anaconda バージョン管理でコケることがあるので推奨しません．
+        
+        !! Anaconda の古いやつだと wxPython のインストールがコケます．
+        !! Anaconda はバージョン管理でコケることがあるので推奨しません．
 
 ### Installing
 
@@ -49,7 +49,7 @@ pyJemacs_noarch_cp35_#date.7z を解凍して適当な場所に置く．7z が�
 -->
 
 2. Clone wxpj from Git site
-    ```
+    ```社内専用
     $ git clone http://dl-box.jeol.co.jp/gitbucket/git/komoto/wxpj.git
     ```
 
@@ -64,11 +64,11 @@ $ py -3.5 wxpyjemacs.py --pyjem=None -suser
         Launch wxpyJemacs with --pyjem=0(=offline), 1(=online), or 2(=online with TEM3)
         The defalut switch is --pyjem=None, that means no PyJEMs to be involved.
         
-        ▲ TEM3.online を宣言しない場合，
+        ▲ TEM3:online を宣言しない場合，
         アプリケーション起動後に TEM3 を含むプラグインを組み込むことは一切できません
         
-        ▲ TEM3.online を宣言した場合，
-        DnD, CnP などの Windows shell ex はすべて使用不可になります．
+        ▲ TEM3:online を宣言した場合，
+        DnD, CnP などの Windows shell ex はすべて使用不可になりますので注意してください．
     
     -sxxx: xxx セッションで開始します
         セッションとは，プロジェクトファイル的なやつで，
@@ -77,10 +77,8 @@ $ py -3.5 wxpyjemacs.py --pyjem=None -suser
 
 ### バイナリ実行の場合
 
-*** 現在バイナリ版はリリースしていません***
-```
-$ pJ.cmd
-```
+    *** 現在バイナリ版はリリースしていません***
+
     バイナリパッケージは実行に必要なランタイムをすべて含んでいますが，
     Windows 10 64bit (AMD64) 以外の OS では実行できません．
     (たぶん OpenCV の dll バージョンが合わないため)
@@ -107,7 +105,7 @@ Additional notes about how to deploy this on a live system
     - pyJem2: Poor man's PyJEM
     - plugman: JEOL TEM Notify manager
 
-* [mwxlib] (egg only) 自作の汎用 wxpython package です．以下のモジュールで構成されます．
+* [mwxlib] (egg only) 自作の汎用 matplotlib/wx package です．以下のモジュールで構成されます．
     - framework: the framework
     - graphman: graph manager
     - matplot2/g/lg: wrapper of matplotlib

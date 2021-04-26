@@ -1,6 +1,15 @@
-memo
 *.jssn
 *.ssn
 *.pyo
 *.pyc
+*.db
+*.spec
 __pycache__/
+Makefile
+setup.py
+setup_exe.py
+bin/
+pyJeol/
+pyGatan/
+pyDM3reader/
+*.egg-info/

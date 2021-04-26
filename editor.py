@@ -17,18 +17,20 @@ from matplotlib import pyplot as plt
 from matplotlib import patches
 from matplotlib import cm
 ## from PIL import Image
+from mwx import LParam
+from mwx.graphman import Layer
 import wxpyJemacs as wxpj
 
 
-class Plugin(wxpj.Layer):
+class Plugin(Layer):
     """Plugin as testsuite for editors functions
     """
     menu = "Plugins/Functions"
     menustr = "&Editor"
     
     def Init(self):
-        self.hi = wxpj.LParam("hi", (0, 10 ,0.005), 0)
-        self.lo = wxpj.LParam("lo", (0, 10, 0.005), 0)
+        self.hi = LParam("hi", (0, 10 ,0.005), 0)
+        self.lo = LParam("lo", (0, 10, 0.005), 0)
         
         self.layout("truncation", (
             self.hi,
