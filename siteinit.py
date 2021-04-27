@@ -6,13 +6,18 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
-import sys
 
 
 def init_frame(self):
     """Program settings of pyJemacs <Frame>
     """
     self.Editor = "C:/usr/home/bin/xyzzy/xyzzy.exe"
+    
+    ## 標準加速電圧の設定
+    from pyJeol.temisc import Environ
+    
+    self.env = Environ(300e3)
+    self.su = self.require('startup')
     
     ## Film/CCD [mm/pixel]
     ## 0.0820 mm/pixel - Jenoptik

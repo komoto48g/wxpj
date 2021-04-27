@@ -1,15 +1,13 @@
-#! python
-# -*- coding: utf-8 -*-
-"""Editor's collection of wxpj miscellaneous utility
+## ! python
+## -*- coding: utf-8 -*-
+"""Editor's collection of TEM config utility
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
-from datetime import timedelta
 import openpyxl as pxl
 import configparser
-import time
 import sys
 import os
 import wx
@@ -84,10 +82,10 @@ class ConfigData(object):
             keys = [keys]
         
         self.parser.read(self.path)
+        
         entry = self.parser[self.section]
         for t in keys or entry:
             self.data[t] = _eval_array(entry[t])
-    ## load_config = load
     
     def save(self, keys=None, verbose=True):
         """Save configurations of the given `section
@@ -115,12 +113,10 @@ class ConfigData(object):
             self.parser.write(open(self.path, 'w'))
         finally:
             np.set_printoptions(**opt)
-    ## save_config = save
     
     def export(self, keys, r=3, c=3, verbose=True):
         """Export configurations of the given `section
         """
-        ## xlpath = "config-report.xlsx"
         name, _ext = os.path.splitext(os.path.basename(self.path))
         xlpath = "config-report-{}.xlsx".format(name)
         if verbose:
@@ -140,50 +136,8 @@ class ConfigData(object):
                     return self.export(keys, r, c, verbose=0)
 
 
-def count_down(seconds):
-    for d in range(int(seconds),0,-1):
-        s = "wait.. {}".format(timedelta(seconds=d))
-        print("\b"*80, s[:80], sep='', end='')
-        sys.stdout.flush()
-        time.sleep(1)
-    print("")
-
-
-class progress_counter(object):
-    def __init__(self, max_count=None):
-        self.max_count = max_count # None means endless count
-        self.duration = 0
-        self.count = 0
-        self.tm_start = time.time()
-    
-    def __call__(self, message=''):
-        self.count += 1
-        self.duration = time.time() - self.tm_start
-        dt = timedelta(seconds=int(self.duration))
-        if self.max_count:
-            p = self.count / self.max_count
-            s = " {:2.0%} elapses {}".format(p, dt)
-        else:
-            p = 0
-            s = " elapses {}".format(dt)
-        s += ' ' + message
-        print("\b" * 80, s[:80], sep='', end='')
-        sys.stdout.flush()
-        return p < 1
-
-
-if __name__ == "__main__":
-    import mwx
-    
-    config = ConfigData("pylots/config.ini", section='TEM')
-    ## config.export('beamshift')
-    mwx.deb()
-    
-    print(time.strftime("%Y/%m/%d %H:%M:%S %z"))
-    count_down(3)
-    
-    count = progress_counter(10)
-    print("progressing...", end='')
-    while count():
-        time.sleep(1)
-    print()
+## if __name__ == "__main__":
+##     import mwx
+##     
+##     config = ConfigData("pylots/pylots.config", section='TEM')
+##     mwx.deb()

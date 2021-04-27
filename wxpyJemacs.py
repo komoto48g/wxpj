@@ -37,7 +37,6 @@ from mwx.controls import Button, ToggleButton, TextCtrl, Choice
 from mwx.graphman import Icon, Thread, Layer, Graph
 from mwx.graphman import Frame as Framebase
 from pyJeol.plugman import NotifyFront
-from pyJeol.temisc import Environ
 from pyDM3reader import DM3lib
 import wx.lib.mixins.listctrl # for py2exe
 import wx.lib.platebtn as pb
@@ -61,10 +60,6 @@ def version():
 class pyJemacs(Framebase):
     """the Frontend of Graph and Plug manager
     """
-    su = property(lambda self: self.require('startup'))
-    
-    env = Environ(300e3) # default 300kV HT constants (to be reset by user)
-    
     def About(self):
         try:
             from wx.adv import AboutDialogInfo, AboutBox #! phoenix
