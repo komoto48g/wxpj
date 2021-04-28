@@ -101,7 +101,7 @@ Additional notes about how to deploy this on a live system
     by hiijima
 
 * [pyJeol] (egg only) JEOL legacy TEM package です．主に次のモジュールで構成されます．
-    - pyJem: PyJEM wrapper
+    - pyJem: Facade of PyJEM
     - pyJem2: Poor man's PyJEM
     - plugman: JEOL TEM Notify manager
 

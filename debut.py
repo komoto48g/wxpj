@@ -38,7 +38,7 @@ np.set_printoptions(linewidth=256) # default 75
 
 
 def init_spec(self):
-    """Initialize shell and the environs
+    """Initialize shell/editor and the environs
     """
     self.execute(SHELLSTARTUP)
     
@@ -98,9 +98,9 @@ def init_spec(self):
 
 def dive(*args):
     """Dive into the process, from your diving point.
-    
-    In addtion to init_spec:startup funtion (defined above),
-    this also executes default startup script ($PYTHONSTARTUP:~/.py)
+To Divers:
+    This executes your startup script ($PYTHONSTARTUP:~/.py).
+    Then, call spec (post-startup function defined above),
     """
     mwx.deb(*args, startup=init_spec, execStartupScript=True,
         introText = """

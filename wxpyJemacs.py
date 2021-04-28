@@ -211,8 +211,7 @@ if __name__ == '__main__':
         print("  PyJEM is supported under Python 3.5... sorry")
     
     ## --------------------------------
-    ## Start main process
-    ## Execute startup file and session
+    ## Start main process with siteinit
     ## --------------------------------
     app = wx.App()
     frm = pyJemacs(None)
