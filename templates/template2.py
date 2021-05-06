@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-04-26 17:41:39 +0900>
+Last updated: <2021-04-26 18:00:31 +0900>
      Version: 2.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -10,11 +10,10 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
 import cv2
-from wxpyJemacs import Layer, Frame
 import wxpyJemacs as wxpj
 
 
-class Plugin(Layer):
+class Plugin(wxpj.Layer):
     """Plugin template ver.2
     """
     menu = "Plugins/&Template"
@@ -50,7 +49,7 @@ class Plugin(Layer):
         )
     
     def Destroy(self):
-        return Layer.Destroy(self)
+        return wxpj.Layer.Destroy(self)
     
     def run(self):
         k = self.lgbt.ksize.value
@@ -67,7 +66,7 @@ class Plugin(Layer):
 
 if __name__ == "__main__":
     app = wx.App()
-    frm = Frame(None)
+    frm = wxpj.Frame(None)
     frm.load_plug(__file__, show=1, docking=4)
     frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
     frm.Show()

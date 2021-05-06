@@ -8,7 +8,7 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
 import mwx
-from pyJeol.temcon import ItemData, TreeCtrl
+from pylots.temcon import ItemData, TreeCtrl
 from pylots import UserInterface
 from mwx.graphman import Layer
 import wxpyJemacs as wxpj

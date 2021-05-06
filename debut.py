@@ -40,7 +40,7 @@ np.set_printoptions(linewidth=256) # default 75
 def init_spec(self):
     """Initialize shell/editor and the environs
     """
-    self.execute(SHELLSTARTUP)
+    self.Execute(SHELLSTARTUP)
     
     @self.define_key('C-tab')
     def insert_space_like_tab():
@@ -87,6 +87,7 @@ def init_spec(self):
         "STC_P_STRINGEOL"       : "fore:#808080",
         "STC_P_WORD"            : "fore:#80a0ff",
         "STC_P_WORD2"           : "fore:#ff80ff",
+        "STC_P_WORD3"           : "fore:#ff0000,back:#ffff00", # custom style for search word
         "STC_P_DEFNAME"         : "fore:#e0c080,bold",
         "STC_P_CLASSNAME"       : "fore:#e0c080,bold",
         "STC_P_DECORATOR"       : "fore:#e08040",

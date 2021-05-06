@@ -1,15 +1,29 @@
 *.jssn
 *.ssn
-*.pyo
-*.pyc
 *.db
-*.spec
-__pycache__/
+*.l
+*.txt
+*.lnk
+
 Makefile
+exclude_files
 setup.py
 setup_exe.py
+
 bin/
 pyJeol/
 pyGatan/
 pyDM3reader/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Distribution / packaging
+build/
+dist/
+lib/
+lib64/
 *.egg-info/
+*.egg
+MANIFEST

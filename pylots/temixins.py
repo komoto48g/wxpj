@@ -17,7 +17,7 @@ from numpy import pi,cos,sin
 from mwx import LParam
 from pyJeol import Environ
 from pyJeol import pyJem2 as pj # pmpj: Poor man's pyJem package (not a PyJEM)
-from misc import ConfigData
+from pylots.temconfig import ConfigData
 import wxpyJemacs as wxpj
 import editor as edi
 
@@ -84,12 +84,12 @@ class TemInterface(object):
             TemInterface.config_tem_lowmag = ConfigData(path, section='TEM-LOWMAG')
             
             ## Extract Tem info from default section like,
-            ## >>> from pyJeol.em import JEM_P1181 as Tem
+            ## >>> from pyJeol.jem import JEM_P1181 as Tem
             config = TemInterface.config_tem_mag
             try:
                 Tem = __import__(config['tem'])
             except ImportError:
-                Tem = __import__("pyJeol.em.{}".format(config['tem']), fromlist=["pyJeol.em"])
+                Tem = __import__("pyJeol.jem.{}".format(config['tem']), fromlist=["pyJeol.jem"])
             
             if config['apt_extype']:
                 Aperture = pj.ApertureEx
@@ -102,9 +102,9 @@ class TemInterface(object):
             pj.Omega.MODES = OrderedDict(Tem.OMEGA_MODES)
             
             ## U* - corrected quantity e.g. j2deg
-            basenv = Environ(Tem.ACC_V)
-            env = Environ(config['acc_v']) # cf. self.parent.env (see tem_option)
-            TemInterface.ustar_sqrt = np.sqrt(env.ustar / basenv.ustar)
+            base = Environ(Tem.ACC_V)
+            env = Environ(config['acc_v'])
+            TemInterface.ustar_sqrt = np.sqrt(env.ustar / base.ustar)
         
         TemInterface.Tem = Tem
         TemInterface.Aperture = Aperture
