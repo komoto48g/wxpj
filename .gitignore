@@ -4,16 +4,15 @@
 *.l
 *.txt
 *.lnk
-
 Makefile
 exclude_files
 setup.py
 setup_exe.py
-
 bin/
 pyJeol/
 pyGatan/
 pyDM3reader/
+pyDM4reader/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

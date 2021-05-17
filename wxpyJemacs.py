@@ -38,6 +38,7 @@ from mwx.graphman import Thread, Layer, Graph
 from mwx.graphman import Frame as Framebase
 from pyJeol.plugman import NotifyFront
 from pyDM3reader import DM3lib
+from pyDM4reader import dm4reader as DM4lib
 import wx.lib.mixins.listctrl # for py2exe
 import wx.lib.platebtn as pb
 
@@ -131,6 +132,15 @@ class pyJemacs(Framebase):
             dmf = DM3lib.DM3(path)
             ## return dmf.image # PIL Image file
             return dmf.imagedata, {'header':dmf.info}
+        
+        if path[-4:] == '.dm4':
+            dmf = DM4lib.DM4File.open(path)
+            tags = dmf.read_directory()
+            data = tags.named_subdirs['ImageList'].unnamed_subdirs[1].named_subdirs['ImageData']
+            w = dmf.read_tag_data(data.named_subdirs['Dimensions'].unnamed_tags[0])
+            h = dmf.read_tag_data(data.named_subdirs['Dimensions'].unnamed_tags[1])
+            buf = dmf.read_tag_data(data.named_tags['Data'])
+            return np.asarray(buf, dtype=np.uint16).reshape(h,w), {'header':data}
         
         if path[-4:] == '.img':
             with open(path, 'rb') as i:
