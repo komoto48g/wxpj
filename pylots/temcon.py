@@ -9,7 +9,7 @@ from __future__ import (division, print_function,
 import copy
 import wx
 import mwx
-from mwx.graphman import Icon
+from mwx.controls import Icon
 from mwx.framework import CtrlInterface, TreeList
 
 
@@ -67,10 +67,8 @@ callback : a function which is called from menu
                 self.update_status(ret)
                 owner.statusline("\b {}".format(self.status))
             return ret
-        except Exception as e:
+        except Exception:
             self.update_status(-3)
-        finally:
-            pass
     
     def control_panel(self):
         """Get owner's plugin (as control panel) if exists, None otherwise."""

@@ -32,9 +32,9 @@ if 'mwx' not in sys.modules:
         os.path.join(home, "nest/mwxlib-0.40-py3.5.egg"),
     ]
 import mwx
-from mwx import Param, LParam
-from mwx import Button, ToggleButton, TextCtrl, Choice
-from mwx.graphman import Icon, Thread, Layer, Graph
+from mwx.controls import Param, LParam
+from mwx.controls import Icon, Button, ToggleButton, TextCtrl, Choice
+from mwx.graphman import Thread, Layer, Graph
 from mwx.graphman import Frame as Framebase
 from pyJeol.plugman import NotifyFront
 from pyDM3reader import DM3lib

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-04-26 17:40:54 +0900>
+Last updated: <2021-05-14 17:58:45 +0900>
      Version: 0.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -11,11 +11,10 @@ from __future__ import (division, print_function,
 import wx
 import mwx
 import cv2
-from mwx import LParam
-from wxpyJemacs import Layer, Frame
+import wxpyJemacs as wxpj
 
 
-class Plugin(Layer):
+class Plugin(wxpj.Layer):
     """Plugin template ver.0
     """
     menu = "Plugins/&Template"
@@ -28,7 +27,7 @@ class Plugin(Layer):
     unloadable = True
     
     def Init(self):
-        self.ksize = LParam("ksize", (1,99,2), 13, doc="kernel window size")
+        self.ksize = wxpj.LParam("ksize", (1,99,2), 13, doc="kernel window size")
         
         self.btn = wx.Button(self, label="Run", size=(-1,22))
         self.btn.Bind(wx.EVT_BUTTON, lambda v: self.run())
@@ -41,7 +40,7 @@ class Plugin(Layer):
         )
     
     def Destroy(self):
-        return Layer.Destroy(self)
+        return wxpj.Layer.Destroy(self)
     
     def run(self):
         k = self.ksize.value
@@ -52,7 +51,7 @@ class Plugin(Layer):
 
 if __name__ == "__main__":
     app = wx.App()
-    frm = Frame(None)
+    frm = wxpj.Frame(None)
     frm.load_plug(__file__, show=1, docking=4)
     frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
     frm.Show()
