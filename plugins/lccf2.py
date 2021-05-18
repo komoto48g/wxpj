@@ -21,7 +21,11 @@ def find_ellipses(src, tol=0.75):
     """
     ## Finds contours in binary image
     ## ▲ src は上書きされるので後で使うときは注意する
-    c, contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    try:
+        ## opencv <= 3.4.5
+        c, contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    except:
+        contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     ## Detect enclosing rectangles
     ## Note: there should be at least 5 points to fit the ellipse (c,r,a)
