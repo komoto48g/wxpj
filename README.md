@@ -9,49 +9,57 @@ These instructions will get you a copy of the project up and running on your loc
 
 私の環境では以下のバージョンで動作しています．
     
-    <Python 3.5.4 (v3.5.4:3f56838, Aug  8 2017, 02:17:05) [MSC v.1900 64 bit (AMD64)]>
-        wx.version(selected) 4.0.7.post2 msw (phoenix) wxWidgets 3.0.5
-        scipy/numpy version 1.2.1/1.18.1
-        matplotlib verison 3.0.3
-        Image verison 7.0.0
-        cv2 verison 3.4.5
-        mwx 0.20
+    <Python 3.8.6 (tags/v3.8.6:db45529, Sep 23 2020, 15:52:53) [MSC v.1927 64 bit (AMD64)]>
+      wx.version(selected) 4.1.1 msw (phoenix) wxWidgets 3.1.5
+      scipy/numpy version 1.6.0/1.20.1
+      matplotlib verison 3.4.2
+      Image verison 8.1.0
+      cv2 verison 4.5.1
+      mwx 0.40
 
 ### Prerequisites
 
 0. Install PY35
 
-    Currently required environs: PY35.
-        
-        !! PYJEM 機能を使用するためには PY <= 3.5 (以下) をインストールしてください．
-        !! 別途，TemExternal のインストールが必要です．
+    Currently required environs: PY35
+    (標準 CPython をインストールしてください)
     
-    標準 CPython をインストールしてください．
-        
-        !! Anaconda の古いやつだと wxPython のインストールがコケます．
-        !! Anaconda はバージョン管理でコケることがあるので推奨しません．
+    - PYJEM 機能を使用するために PY <= 3.5 (以下) をインストールしてください．
+    - 別途，TemExternal のインストールが必要です．
+    - Anaconda の古いやつだと wxPython のインストールがコケます．
+    - Anaconda はバージョン管理でよくずっコケるので推奨しません．
 
 ### Installing
 
 1. Install packages
 
-    To setup environment necessary to work, do pip install.
+    - To setup environment necessary to work, do pip install.
+      (コマンドプロンプトを起動して以下のコマンドを順番に実行します)
     ```
-    $ python -m pip install -U pip setuptools
-    $ pip install scipy==1.2.3 pillow matplotlib opencv-python==3.4.5.20 wxpython==4.0.7 pywin32
-    $ pip install PyJEM-1.0.2.1143.zip httplib2
+    $ py -3.5 -m pip install -U pip
+    $ py -3.5 -m pip install scipy==1.2.3 opencv-python==3.4.5.20 pillow matplotlib wxpython==4.0.7
+    $ py -3.5 -m pip install pywin32 openpyxl flake8 httplib2
+    ```
+    - 社内からインストールする場合プロキシが見つからない為に失敗するかもしれません．
+      その場合はまず次の設定を行ってください
+    ```
+    $ set HTTPS_PROXY=http://i-net.jeol.co.jp:80
+    $ set HTTP_PROXY=http://i-net.jeol.co.jp:80
     ```
 
-<!--
-2. Get wxpj from db
+2. Download wxpj from Git site
+    社内レポジトリサーバーからダウンロードして，適当なところに展開してください
+    [wxpj@GitBucket](http://dl-box.jeol.co.jp/gitbucket/komoto/wxpj)
 
-pyJemacs_noarch_cp35_#date.7z を解凍して適当な場所に置く．7z が別途必要です．
--->
-
-2. Clone wxpj from Git site
-    ```社内専用
-    $ git clone http://dl-box.jeol.co.jp/gitbucket/git/komoto/wxpj.git
+3. Download PyJEM from DB
+    社内 ノーツデータベースから PYJEM をダウンロードして，同じディレクトリにコピーしてください（展開は不要）
+    **インストーラではなく，PyJEM-1.0.2.1143.zip を使用します．**
+    [PyJEM-1.0.2.1143.zip@NotesOffice](Notes://NotesOffice/4925805700077587/DD11EF58D84D230E4925646F003E2CF8/162DB45516A951F4492580570007AA5D)
     ```
+    $ py -3.5 -m pip install PyJEM-1.0.2.1143.zip
+    ```
+
+準備は以上です
 
 
 ## How to execute wxpyJemacs
@@ -61,6 +69,7 @@ pyJemacs_noarch_cp35_#date.7z を解凍して適当な場所に置く．7z が�
 $ py -3.5 wxpyjemacs.py --pyjem=None -suser
 ```
     --pyjem: pyjem 拡張の使用を宣言します
+    
         Launch wxpyJemacs with --pyjem=0(=offline), 1(=online), or 2(=online with TEM3)
         The defalut switch is --pyjem=None, that means no PyJEMs to be involved.
         
@@ -71,17 +80,17 @@ $ py -3.5 wxpyjemacs.py --pyjem=None -suser
         DnD, CnP などの Windows shell ex はすべて使用不可になりますので注意してください．
     
     -sxxx: xxx セッションで開始します
+    
         セッションとは，プロジェクトファイル的なやつで，
         プラグイン拡張，ウィンドウレイアウト，バッファとかをおーざっぱに保持します
 
-
+<!--
 ### バイナリ実行の場合
-
     *** 現在バイナリ版はリリースしていません***
-
     バイナリパッケージは実行に必要なランタイムをすべて含んでいますが，
     Windows 10 64bit (AMD64) 以外の OS では実行できません．
     (たぶん OpenCV の dll バージョンが合わないため)
+-->
 
 
 ## Deployment
@@ -94,8 +103,10 @@ Additional notes about how to deploy this on a live system
 
 ## Built With
 
-* [pyDM3reader] - Python DM3 Reader (originated from ImageJ plugin)
-    porting PY2 to 3 by komoto
+* [pyDM4reader] - Python DM4 Reader (https://github.com/jamesra/dm4reader)
+
+* [pyDM3reader] - Python DM3 Reader (https://github.com/komoto48g/pyDM3reader)
+    元々は ImageJ plugin で Greg Jefferis 氏によって python 化されたやつの porting PY2 to 3 by komoto
 
 * [pyGatan] - Leginon のサイトにある Python 2.7 用スクリプトを Python 3 で動くように修正したもの
     by hiijima
