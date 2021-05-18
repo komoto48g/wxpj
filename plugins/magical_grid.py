@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 from numpy import pi,nan
 from numpy.fft import fft2,fftshift
-from mwx import LParam
+from mwx.controls import LParam
 from mwx.graphman import Layer
 import wxpyJemacs as wxpj
 import editor as edi
@@ -33,7 +33,7 @@ class Plugin(Layer):
                      ],
             readonly=1,
         )
-        self.choice.Select(0)
+        self.choice.Selection = 0
         
         self.score = LParam("score", (0.01, 10, 0.01), 0.1)
         
@@ -44,7 +44,7 @@ class Plugin(Layer):
                      '2.04e-7' # Au single 100
                      ],
             tip="Set grid length [mm/grid] to calculate Mag.")
-        self.grid.Select(0)
+        self.grid.Selection = 0
         
         self.text = wxpj.TextCtrl(self, size=(140,40), style=wx.TE_READONLY|wx.TE_MULTILINE)
         

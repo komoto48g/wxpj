@@ -8,7 +8,7 @@ import numpy as np
 from numpy import pi,cos,sin,inf
 from scipy import optimize
 from scipy import signal
-from mwx import LParam
+from mwx.controls import LParam
 from mwx.graphman import Layer
 import editor as edi
 

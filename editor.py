@@ -17,7 +17,7 @@ from matplotlib import pyplot as plt
 from matplotlib import patches
 from matplotlib import cm
 ## from PIL import Image
-from mwx import LParam
+from mwx.controls import LParam
 from mwx.graphman import Layer
 import wxpyJemacs as wxpj
 

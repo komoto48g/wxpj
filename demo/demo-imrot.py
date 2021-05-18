@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 from numpy import pi
 ## from scipy import ndimage as ndi
-from mwx import LParam
+from mwx.controls import LParam
 from mwx.graphman import Layer, Frame
 import wxpyJemacs as wxpj
 

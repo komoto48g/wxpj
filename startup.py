@@ -8,8 +8,7 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import numpy as np 
 import wx
-from mwx import Param
-from mwx import LParam
+from mwx.controls import Param, LParam
 from mwx.graphman import Layer
 import wxpyJemacs as wxpj
 

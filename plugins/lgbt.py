@@ -5,7 +5,7 @@ from __future__ import (division, print_function,
 import wx
 import cv2
 import numpy as np
-from mwx import LParam
+from mwx.controls import LParam
 from mwx.graphman import Layer
 import editor as edi
 

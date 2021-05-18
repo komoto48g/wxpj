@@ -13,7 +13,7 @@ import os
 import wx
 import numpy as np
 from PIL import Image
-from mwx import Param, LParam
+from mwx.controls import Param, LParam
 from mwx.graphman import Layer
 from pyGatan import gatan
 import wxpyJemacs as wxpj

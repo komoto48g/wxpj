@@ -14,7 +14,7 @@ import os
 import wx
 import numpy as np
 from numpy import pi,cos,sin
-from mwx import LParam
+from mwx.controls import LParam
 from pyJeol import Environ
 from pyJeol import pyJem2 as pj # pmpj: Poor man's pyJem package (not a PyJEM)
 from pylots.temconfig import ConfigData

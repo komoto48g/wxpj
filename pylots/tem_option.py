@@ -8,7 +8,7 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import os
 import wx
-from mwx import LParam
+from mwx.controls import LParam
 from mwx.graphman import Layer
 from pylots.temixins import TemInterface
 import wxpyJemacs as wxpj

@@ -7,7 +7,7 @@ import wx
 import numpy as np
 from numpy import pi,exp,cos,sin
 from scipy import optimize
-from mwx import LParam
+from mwx.controls import LParam
 from mwx.graphman import Layer, Thread
 
 

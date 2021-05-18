@@ -5,9 +5,9 @@ from __future__ import (division, print_function,
 import wx
 import cv2
 import numpy as np
-from mwx import LParam
-from mwx.graphman import Layer
 from matplotlib import patches
+from mwx.controls import LParam
+from mwx.graphman import Layer
 
 
 def find_circles(src, rmin=10, rmax=1000, tol=0.75):

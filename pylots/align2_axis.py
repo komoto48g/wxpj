@@ -1,6 +1,6 @@
 #! python
 # -*- coding: utf-8 -*-
-from mwx import LParam
+from mwx.controls import LParam
 from mwx.graphman import Layer
 from pylots.temixins import AlignInterface, TEM
 

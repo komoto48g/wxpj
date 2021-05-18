@@ -6,7 +6,7 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
-from mwx import LParam
+from mwx.controls import LParam
 from mwx.graphman import Layer
 from pyJeol import FLHex, OLHex
 from pylots.temixins import TemInterface, TEM
