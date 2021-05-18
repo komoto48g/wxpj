@@ -121,6 +121,7 @@ class pyJemacs(Framebase):
               "TIF file (*.tif)|*.tif",
               "BMP file (*.bmp)|*.bmp",
         "Gatan DM3 file (*.dm3)|*.dm3", # Gatan DM extension (read-only)
+        "Gatan DM3 file (*.dm4)|*.dm3", # Gatan DM extension (read-only)
        "Rigaku IMG file (*.img)|*.img", # Rigaku image file extension (read-only)
                "All files (*.*)|*.*",
     ]
@@ -140,7 +141,7 @@ class pyJemacs(Framebase):
             w = dmf.read_tag_data(data.named_subdirs['Dimensions'].unnamed_tags[0])
             h = dmf.read_tag_data(data.named_subdirs['Dimensions'].unnamed_tags[1])
             buf = dmf.read_tag_data(data.named_tags['Data'])
-            return np.asarray(buf, dtype=np.uint16).reshape(h,w), {'header':data}
+            return np.asarray(buf, dtype=np.uint16).reshape(h,w), {'header':None}
         
         if path[-4:] == '.img':
             with open(path, 'rb') as i:
