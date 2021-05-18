@@ -3,6 +3,9 @@
 *.db
 *.l
 *.lnk
+*.pptx
+*.docx
+*.xlsx
 Makefile
 exclude_files
 setup.py
