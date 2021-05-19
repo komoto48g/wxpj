@@ -221,12 +221,20 @@ class TemInterface(object):
         if spot is not None: spot %= ns
         if alpha is not None: alpha %= na
         
-        self.illumination.Mode = imode
+        if imode is not None and imode != self.illumination.Name and imode != self.illumination.Mode:
+            self.illumination.Mode = imode
+            self.wait('illumination_info')
         self.illumination.Spot = spot
         self.illumination.Alpha = alpha
-        self.imaging.Mode = mmode
+        
+        if mmode is not None and mmode != self.imaging.Name and mmode != self.imaging.Mode:
+            self.imaging.Mode = mmode
+            self.wait('imaging_info')
         self.imaging.Mag = mag
-        self.omega.Mode = kmode
+        
+        if kmode is not None and kmode != self.omega.Name and kmode != self.omega.Mode:
+            self.omega.Mode = kmode
+            self.wait('omega_info')
         self.omega.Dispersion = disp
     
     def set_param(self, **kwargs):
@@ -237,12 +245,9 @@ class TemInterface(object):
                 if apt.sel != v:
                     saved[k] = apt.sel
                     apt.sel = v
-                    busy = wx.BusyInfo("Relax one moment please. Aperture drive is moving...")
-                    try:
-                        self.wait('aptsel end')
-                        self.delay(1)
-                    except Exception:
-                        self.delay(5)
+                    ## busy = wx.BusyInfo("Relax one moment please. Aperture drive is moving...")
+                    self.wait('aptsel end')
+                    self.delay(1)
             elif k == 'SLIT':
                 self.OmegaFilter.Slit = v
             elif k == 'ES':
@@ -299,6 +304,9 @@ class TemInterface(object):
     def wait(self, sentinel, timeout=5):
         """Halt the thread and wait the notify `sentinel"""
         with self.thread:
+            busy = wx.BusyInfo("Relax one moment please. "
+                               "{!r} sentinel is waiting...".format(sentinel))
+            
             hook = self.parent.notify.handler.hook(sentinel,
                                 lambda v: self.thread.flag.set())
             try:
@@ -422,7 +430,6 @@ class Excursion(object):
     
     def __enter__(self):
         self.saved = self.target.get_state()
-        ## self.saved = dict((k,v) for k,v in self.saved.items() if k in self.params)
         self.target.set_state(**self.params) # load
     
     def __exit__(self, t, v, tb):

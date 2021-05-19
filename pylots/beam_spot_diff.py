@@ -59,6 +59,6 @@ class Plugin(SpotInterface, Layer):
     def execute(self):
         with self.thread:
             with self.save_restriction(CLA=1, SAA=self.default_saapt):
-                with self.save_excursion(spot=0, alpha=2, mmode='DIFF', mag=2000):
+                with self.save_excursion(spot=0, alpha=2, mmode='DIFF'):
                     return all([None is not self.cal()
                         for cam in self.for_each_mag()])

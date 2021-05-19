@@ -58,7 +58,7 @@ class Plugin(TemInterface, Layer):
                         S = pi/4 * self.CLA.dia**2  # size of aperture [um^2]
                         j = self.illumination.Spot
                         self.config['brightness'][j] = v / S
-                        print("Spot={}, Alpha={}, v/S = {:g} /um^2".format(j, self.illumination.Alpha, v/S))
+                        print("Spot={}, Alpha={}, {:g} /um^2".format(j, self.illumination.Alpha, v/S))
                         
                         return True
     
