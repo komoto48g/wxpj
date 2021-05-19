@@ -2,7 +2,7 @@
 scipy==1.2.3
 opencv-python==3.4.5.20
 pillow
-matplotlib==3.0.3
+matplotlib
 wxpython==4.0.7
 pywin32
 openpyxl

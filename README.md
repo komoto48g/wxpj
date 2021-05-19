@@ -51,6 +51,12 @@ These instructions will get you a copy of the project up and running on your loc
     $ set HTTPS_PROXY=http://i-net.jeol.co.jp:80
     $ set HTTP_PROXY=http://i-net.jeol.co.jp:80
     ```
+    - You can also use this.
+      (これも使えます)
+    ```
+    $ py -3.5 -m pip install -U pip
+    $ py -3.5 -m pip install -r requirements.txt
+    ```
 
 2. Download wxpj from Git site
     社内レポジトリサーバーからダウンロードして，適当なところに展開してください
@@ -58,7 +64,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 3. Download PyJEM from DB
     社内 ノーツデータベースから *PyJEM-1.0.2.1143.zip* をダウンロードして，同じディレクトリにコピーしてください（展開は不要）
-    [Automation & PyJEM データベースのPyJEM & AutomationCenter導入](Notes://NotesOffice/4925805700077587/DD11EF58D84D230E4925646F003E2CF8/162DB45516A951F4492580570007AA5D)
+    [NotesLink](Notes://NotesOffice/4925805700077587/DD11EF58D84D230E4925646F003E2CF8/162DB45516A951F4492580570007AA5D)
+    *Automation & PyJEM - PyJEM & AutomationCenter導入*
     ```
     $ py -3.5 -m pip install PyJEM-1.0.2.1143.zip
     ```
@@ -77,11 +84,10 @@ $ py -3.5 wxpyjemacs.py --pyjem=None -suser
         Launch wxpyJemacs with --pyjem=0(=offline), 1(=online), or 2(=online with TEM3)
         The defalut switch is --pyjem=None, that means no PyJEMs to be involved.
 <!--
-        ▲ TEM3:online を宣言しない場合，
-        アプリケーション起動後に TEM3 を含むプラグインを組み込むことは一切できません
-        
-        ▲ TEM3:online を宣言した場合，
-        DnD, CnP などの Windows shell ex はすべて使用不可になりますので注意してください．
+▲ TEM3:online を宣言しない場合，
+アプリケーション起動後に TEM3 を含むプラグインを組み込むことは一切できません
+▲ TEM3:online を宣言した場合，
+DnD, CnP などの Windows shell ex はすべて使用不可になりますので注意してください．
 -->
     -sxxx: xxx セッションで開始します
     
@@ -90,10 +96,9 @@ $ py -3.5 wxpyjemacs.py --pyjem=None -suser
 
 <!--
 ### バイナリ実行の場合
-    *** 現在バイナリ版はリリースしていません***
-    バイナリパッケージは実行に必要なランタイムをすべて含んでいますが，
-    Windows 10 64bit (AMD64) 以外の OS では実行できません．
-    (たぶん OpenCV の dll バージョンが合わないため)
+バイナリパッケージは実行に必要なランタイムをすべて含んでいますが，
+Windows 10 64bit (AMD64) 以外の OS では実行できません．
+(たぶん OpenCV の dll バージョンが合わないため)
 -->
 
 
