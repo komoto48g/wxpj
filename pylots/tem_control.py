@@ -55,7 +55,7 @@ class Plugin(TemInterface, Layer):
             self.om_focus_param,
             self.fl_focus_param,
             ),
-            row=1, type='spin', style='btn', lw=60, tw=50,
+            row=1, type='spin', style='button', lw=60, tw=50,
         )
         foci = TEM.foci
         self.layout("Standard Focus", (

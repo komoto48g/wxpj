@@ -60,7 +60,7 @@ class Plugin(TemInterface, Layer):
             self.camera_selector,
             self.config_selector,
             ),
-            row=1, show=1, type='vspin', style='btn', lw=80, tw=50, cw=-1
+            row=1, show=1, type='vspin', style='button', lw=80, tw=50, cw=-1
         )
     
     def set_current_session(self, session):

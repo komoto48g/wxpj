@@ -42,7 +42,7 @@ class Plugin(Layer):
         self.layout("inverse FFT", (
             self.pix,
             ),
-            row=1, expand=1, show=0, type=None, style='chk', tw=32, h=20
+            row=1, expand=1, show=0, type=None, style='chkbox', tw=32, h=20
         )
         self.context = {
             None: {

@@ -43,7 +43,7 @@ class Plugin(Layer):
                 lambda v: self.setup_all(), icon='v',
                     tip="Set globalunit and cutoff conditions to all frames"),
             ),
-            row=1, expand=0, type='vspin', style='btn', lw=66, tw=60, cw=-1
+            row=1, expand=0, type='vspin', style='button', lw=66, tw=60, cw=-1
         )
         self.context = {
             None : {
