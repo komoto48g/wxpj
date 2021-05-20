@@ -88,6 +88,7 @@ class Plugin(UserInterface, Layer):
                         "axis",
                         "stig",
                         "para",
+                        "bright",
                 )),
                 ("DIFF", ItemData(self.tree, None, self.thread(self.calibrate_alpha_diff)),
                     branches(

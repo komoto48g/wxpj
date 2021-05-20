@@ -80,15 +80,17 @@ These instructions will get you a copy of the project up and running on your loc
 $ py -3.5 wxpyjemacs.py --pyjem=None -suser
 ```
     --pyjem: pyjem 拡張の使用を宣言します
-    
+
         Launch wxpyJemacs with --pyjem=0(=offline), 1(=online), or 2(=online with TEM3)
         The defalut switch is --pyjem=None, that means no PyJEMs to be involved.
+
 <!--
 ▲ TEM3:online を宣言しない場合，
 アプリケーション起動後に TEM3 を含むプラグインを組み込むことは一切できません
 ▲ TEM3:online を宣言した場合，
 DnD, CnP などの Windows shell ex はすべて使用不可になりますので注意してください．
 -->
+
     -sxxx: xxx セッションで開始します
     
         セッションとは，プロジェクトファイル的なやつで，

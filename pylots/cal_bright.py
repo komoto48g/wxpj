@@ -7,17 +7,15 @@ import wxpyJemacs as wxpj
 
 class Plugin(TemInterface, Layer):
     """Plugin of measurement
-    Calibrate alpha angle for each spot:alpha
+    Calibrate brightness for each spot
     """
     menu = None #"Maintenance/&Measure"
     category = "Measurement"
-    caption = "Alpha"
-    conf_key = 'alpha'
+    caption = "Brightness"
+    conf_key = 'brightness'
     
-    diffspot = property(lambda self: self.parent.require('beam_spot_diff'))
     spot = property(lambda self: self.parent.require('beam_spot'))
     shift = property(lambda self: self.parent.require('beam_shift'))
-    pla = property(lambda self: self.parent.require('align_pla'))
     cla = property(lambda self: self.parent.require('align2_clapt'))
     
     def Init(self):
@@ -29,25 +27,19 @@ class Plugin(TemInterface, Layer):
             row=3, show=1,
         )
     
-    @property
-    def conf_table(self):
-        r = self.CLA.dia /100
-        i = self.illumination.Selector
-        return self.config[self.conf_key][i] * r
-    
     def cal(self):
         with self.thread:
             if self.aptsel(CLA=True, SAA=0):
-                with self.save_excursion(mmode='DIFF'):
-                    self.spot.focus()
-                    self.diffspot.focus()
-                    self.pla.align()
+                with self.save_excursion(mmode='MAG'):
+                    self.spot.focus(0.5)
                     self.delay(2)
-                    d, p, q = self.detect_beam_diameter()
-                    if d:
-                        r = self.CLA.dia /100   # CLA:100um-based ratio
-                        i = self.illumination.Selector
-                        self.config[self.conf_key][i] = d * self.cam_unit / r #= 2α[mrad]
+                    el, p, q = self.detect_ellipse()
+                    if el:
+                        ra, rb = el[1]
+                        rho = p * ra * rb / self.CLA.dia**2 # counts/s/um^2
+                        j = self.illumination.Spot
+                        self.config[self.conf_key][j] = rho
+                        print("Spot={}, {:g} counts/s/um^2".format(j, rho))
                         return True
     
     def execute(self):
@@ -57,7 +49,7 @@ class Plugin(TemInterface, Layer):
                     self.spot.focus()
                     self.shift.align()
                     self.cla.align()
-                with self.save_excursion(mmode='DIFF', mag=2000):
+                    self.delay(2)
+                with self.save_excursion(mmode='MAG'):
                     return all([self.cal()
-                        for a in self.for_each_alpha()
                         for s in self.for_each_spot()])

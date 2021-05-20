@@ -71,6 +71,7 @@ class UserInterface(TemInterface):
     iscomp2 = property(lambda self: self.parent.require('comp_is_tilt'))
     
     alpha = property(lambda self: self.parent.require('cal_alpha'))
+    bright = property(lambda self: self.parent.require('cal_bright'))
     stage = property(lambda self: self.parent.require('cal_focus_z'))
     ol = property(lambda self: self.parent.require('cal_focus_ol'))
     fl = property(lambda self: self.parent.require('cal_focus_fl'))
