@@ -6,6 +6,7 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
+import sys
 
 
 def init_frame(self):
@@ -40,6 +41,9 @@ def init_frame(self):
     ## --------------------------------
     ## Load plugins
     ## --------------------------------
+    sys.path.append(r"C:\usr\home\workspace\tem13\gdk")
+    sys.path.append(r"C:\usr\home\workspace\tem13\gdk-aero")
+    
     self.load_plug("editor")
     self.load_plug("startup")
     
