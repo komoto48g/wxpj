@@ -19,10 +19,7 @@ These instructions will get you a copy of the project up and running on your loc
 ```
 ### Prerequisites
 
-![setup](image/net.png)
-<!--
-<img src=image/net.png width=600>
--->
+![setup](man/image/net.png)
 
 0. Install PY35
 
