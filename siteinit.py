@@ -41,7 +41,6 @@ def init_frame(self):
     ## --------------------------------
     ## Load plugins
     ## --------------------------------
-    sys.path.append(r"C:\usr\home\workspace\tem13\gdk")
     sys.path.append(r"C:\usr\home\workspace\tem13\gdk-aero")
     
     self.load_plug("editor")
