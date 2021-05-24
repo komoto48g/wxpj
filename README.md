@@ -57,12 +57,11 @@ These instructions will get you a copy of the project up and running on your loc
 
 2. Download wxpj from Git site
     社内レポジトリサーバーからダウンロードして，適当なところに展開してください
-    [wxpj@GitBucket](http://dl-box.jeol.co.jp/gitbucket/komoto/wxpj)
+    [wxpj](http://dl-box.jeol.co.jp/gitbucket/komoto/wxpj)
 
 3. Download PyJEM from DB
     社内 ノーツデータベースから *PyJEM-1.0.2.1143.zip* をダウンロードして，同じディレクトリにコピーしてください（展開は不要）
-    [NotesLink](Notes://NotesOffice/4925805700077587/DD11EF58D84D230E4925646F003E2CF8/162DB45516A951F4492580570007AA5D)
-    *Automation & PyJEM - PyJEM & AutomationCenter導入*
+    [Automation & PyJEM - PyJEM & AutomationCenter導入](Notes://NotesOffice/4925805700077587/DD11EF58D84D230E4925646F003E2CF8/162DB45516A951F4492580570007AA5D)
     ```
     $ py -3.5 -m pip install PyJEM-1.0.2.1143.zip
     ```
