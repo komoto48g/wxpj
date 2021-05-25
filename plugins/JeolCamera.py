@@ -85,8 +85,8 @@ hostnames = [
 typenames_info = { # 0:maxcnt, (1;bins, 2:gains,
          "camera" : (65535, ), # dummy for offline
         "TVCAM_U" : (65535, ), # Flash cam
-    "TVCAM_SCR_L" : ( 4096, ), # Large screen
-    "TVCAM_SCR_F" : ( 4096, ), # Focus screen
+    "TVCAM_SCR_L" : ( 4095, ), # Large screen
+    "TVCAM_SCR_F" : ( 4095, ), # Focus screen
 }
 
 
@@ -110,6 +110,7 @@ class Camera(object):
         self.__gain_index = 0
         self.cached_time = 0
         self.cached_image = None
+        self.cached_saturation = None
         self.max_count = typenames_info[self.name][0]
     
     def __del__(self):
@@ -149,6 +150,7 @@ class Camera(object):
             buf.resize(self.shape)
             self.cached_image = buf
             self.cached_time = time.time()
+            self.cached_saturation = (buf.max() == self.max_count)
             return buf
         finally:
             Camera.busy -= 1
