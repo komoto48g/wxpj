@@ -37,12 +37,13 @@ from mwx.controls import Icon, Button, ToggleButton, TextCtrl, Choice
 from mwx.graphman import Thread, Layer, Graph
 from mwx.graphman import Frame as Framebase
 from pyJeol.plugman import NotifyFront
+from pyJeol.temisc import Environ
 from pyDM3reader import DM3lib
 from pyDM4reader import dm4reader as DM4lib
 import wx.lib.mixins.listctrl # for py2exe
 import wx.lib.platebtn as pb
 
-__version__ = "3.0"
+__version__ = "0.30"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2021"
 
@@ -91,6 +92,10 @@ class pyJemacs(Framebase):
         if os.path.exists(icon):
             self.SetIcon(wx.Icon(icon, wx.BITMAP_TYPE_ICO))
         
+        ## Settings with default acc.v [V]
+        self.em = Environ(300e3)
+        
+        ## Notify process
         self.nfront = NotifyFront(self)
         self.notify = self.nfront.notify
         ## self.notify.start() # do not start here; do after setting 'host:port:online'

@@ -14,12 +14,6 @@ def init_frame(self):
     """
     self.Editor = "C:/usr/home/bin/xyzzy/xyzzy.exe"
     
-    ## 標準加速電圧の設定
-    from pyJeol.temisc import Environ
-    
-    self.env = Environ(300e3)
-    self.su = self.require('startup')
-    
     ## Film/CCD [mm/pixel]
     ## 0.0820 mm/pixel - Jenoptik
     ## 0.0428 mm/pixel - FLASH 1181
@@ -43,8 +37,11 @@ def init_frame(self):
     ## --------------------------------
     sys.path.append(r"C:\usr\home\workspace\tem13\gdk-aero")
     
-    self.load_plug("editor")
-    self.load_plug("startup")
+    self.edi = self.load_plug("editor")
+    self.su = self.require('startup')
+    
+    ## self.load_plug("editor")
+    ## self.load_plug("startup")
     
     from plugins import lgbt, lccf, lcrf, lccf2
     self.load_plug(lgbt)

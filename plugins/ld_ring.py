@@ -45,7 +45,7 @@ class Model(object):
     
     @property
     def Angles(self):
-        le = self.owner.parent.env.elambda
+        le = self.owner.parent.em.elambda
         ds = calc_fcc_spacings(a=4.080e-10, N=self.nGrid)
         return sorted(le / ds)[:20]
     
