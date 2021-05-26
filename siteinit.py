@@ -37,7 +37,7 @@ def init_frame(self):
     ## --------------------------------
     sys.path.append(r"C:\usr\home\workspace\tem13\gdk-aero")
     
-    self.edi = self.load_plug("editor")
+    self.edi = self.require("editor")
     self.su = self.require('startup')
     
     ## self.load_plug("editor")
