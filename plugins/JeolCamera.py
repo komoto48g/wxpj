@@ -82,7 +82,7 @@ hostnames = [
     '172.17.41.1',  # TEM server
 ]
 
-typenames_info = { # 0:maxcnt, (1;bins, 2:gains,
+typenames_info = { # 0:maxcnt, (pixel_size, bins, gains,
          "camera" : (65535, ), # dummy for offline
         "TVCAM_U" : (65535, ), # Flash cam
     "TVCAM_SCR_L" : ( 4095, ), # Large screen
