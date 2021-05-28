@@ -81,14 +81,14 @@ class pyJemacs(Framebase):
     def __init__(self, *args, **kwargs):
         Framebase.__init__(self, *args, **kwargs)
         
-        HOME = sys.path[0]
+        ## HOME = sys.path[0]
+        ## if HOME[-4:] == '.exe': # ~/dist/*.exe (py2exe)
+        ##     HOME = os.path.dirname(os.path.dirname(HOME))
+        ##     if HOME not in sys.path:
+        ##         sys.path += [ HOME ] # adds root for loading plugins
         
-        if HOME[-4:] == '.exe': # ~/dist/*.exe (py2exe)
-            HOME = os.path.dirname(os.path.dirname(HOME))
-            if HOME not in sys.path:
-                sys.path += [ HOME ] # adds root for loading plugins
-        
-        icon = os.path.join(HOME, "Jun.ico")
+        home = os.path.dirname(os.path.abspath(__file__))
+        icon = os.path.join(home, "Jun.ico")
         if os.path.exists(icon):
             self.SetIcon(wx.Icon(icon, wx.BITMAP_TYPE_ICO))
         
