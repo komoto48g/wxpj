@@ -41,9 +41,6 @@ def init_frame(self):
     self.edi = self.require("editor")
     self.su = self.require('startup')
     
-    ## self.load_plug("editor")
-    ## self.load_plug("startup")
-    
     from plugins import lgbt, lccf, lcrf, lccf2
     self.load_plug(lgbt)
     self.load_plug(lcrf)
@@ -100,7 +97,7 @@ def init_frame(self):
             illumination = dict(self.notify.illumination_info),
                  imaging = dict(self.notify.imaging_info),
                    omega = dict(self.notify.omega_info),
-                     eos = dict(self.notify.eos_info),
+                     eos = dict(self.notify.eos.Info),
                       ht = dict(self.notify.ht_info),
                      apt = dict(self.notify.apt_info),
                    gonio = dict(self.notify.gonio_info),
