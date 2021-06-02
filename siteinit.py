@@ -98,10 +98,10 @@ def init_frame(self):
                  imaging = dict(self.notify.imaging_info),
                    omega = dict(self.notify.omega_info),
                      eos = dict(self.notify.eos.Info),
-                      ht = dict(self.notify.ht_info),
-                     apt = dict(self.notify.apt_info),
-                   gonio = dict(self.notify.gonio_info),
-                  filter = dict(self.notify.filter_info),
+                      ht = dict(self.notify.hts.Info),
+                     apt = dict(self.notify.apsys.Info),
+                   gonio = dict(self.notify.gonio.Info),
+                  filter = dict(self.notify.efilter.Info),
                  modestr = self.notify.modestr, # joined substr
         )
         ## frame.annotation = "{0},bin{binning}-{exposure}s".format(self.notify.modestr, **frame.attributes)
