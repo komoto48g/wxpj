@@ -96,6 +96,15 @@ class Camera(object):
     name : name of selected camera
     host : localhost if offline (default) otherwise 172.17.41.1
     cont : camera controler
+    
+Camera property:
+  pixel_size : raw pixel size [u/pix]
+  pixel_unit : pixel (with binning) size [u/pix]
+    exposure : exposure time [s]
+     binning : binning number (typ. 1,2,4) in bins <list>
+        gain : gain number (1 -- 10) in gains <list>
+       shape : (h,w) height and width of image
+   max_count : the maximum count (used to check if saturated)
     """
     busy = 0
     bins = (1,2,4)
@@ -209,12 +218,19 @@ class DummyCamera(object):
         self.gain = 1
         self.binning = 1
         self.exposure = 0.05
+        self.cached_time = 0
+        self.cached_image = None
+        self.cached_saturation = None
         self.max_count = typenames_info[self.name][0]
     
     def cache(self):
         ## n = 2048 // self.binning
         ## return np.uint16(np.random.randn(n,n) * self.max_count)
-        return self.parent.graph.buffer
+        buf = self.parent.graph.buffer
+        self.cached_image = buf
+        self.cached_time = time.time()
+        self.cached_saturation = (buf.max() == self.max_count)
+        return buf
     
     pixel_size = 0.05
     pixel_unit = property(lambda self: self.pixel_size * self.binning)

@@ -94,12 +94,12 @@ def init_frame(self):
     @self.handler.bind('frame_cached')
     def cache(frame):
         frame.update_attributes(
-            illumination = dict(self.notify.illumination_info),
-                 imaging = dict(self.notify.imaging_info),
-                   omega = dict(self.notify.omega_info),
+            illumination = dict(self.notify.illumination.Info),
+                 imaging = dict(self.notify.imaging.Info),
+                   omega = dict(self.notify.omega.Info),
                      eos = dict(self.notify.eos.Info),
                       ht = dict(self.notify.hts.Info),
-                     apt = dict(self.notify.apsys.Info),
+                     apt = dict(self.notify.Apts.Info),
                    gonio = dict(self.notify.gonio.Info),
                   filter = dict(self.notify.efilter.Info),
                  modestr = self.notify.modestr, # joined substr
