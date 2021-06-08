@@ -23,15 +23,15 @@ class Plugin(Layer):
     def Init(self):
         self.accv_param = Param("Acc.Voltage", (100e3, 200e3, 300e3), 300e3, dtype=int,
             handler=self.set_htv,
-                doc="Acceleration voltage [V]")
+                tip="Acceleration voltage [V]")
         
         self.unit_param = LParam("unit/pixel", (0,1,1e-4), self.graph.unit,
             updater=self.set_localunit,
-                doc="Set localunit to the selected frame")
+                tip="Set localunit to the selected frame")
         
         self.cuts_param = LParam("cutoff [%]", (0,1,1e-2), self.graph.score_percentile,
             updater=self.set_cutoff,
-                doc="Set cutoff score percentiles of the current frame\n"
+                tip="Set cutoff score percentiles of the current frame\n"
                     "to cut the upper/lower limits given by the tolerances[%]")
         
         self.layout(None, (
