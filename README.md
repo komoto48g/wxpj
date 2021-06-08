@@ -21,58 +21,75 @@ These instructions will get you a copy of the project up and running on your loc
 
 ![setup](man/image/net.png)
 
-0. Install PY35
+### Installing
 
-    Currently required environs: PY35
-    (標準 CPython をインストールしてください)
+1. 適当なディレクトリ (Your-workdir) を作成し，この社内レポジトリ [wxpj](http://dl-box.jeol.co.jp/gitbucket/komoto/wxpj) から wxpj-master.zip をダウンロードして展開します．
+
+2. PyJEM は社内 ノーツデータベース [Automation & PyJEM - PyJEM & AutomationCenter導入](Notes://NotesOffice/4925805700077587/DD11EF58D84D230E4925646F003E2CF8/162DB45516A951F4492580570007AA5D)
+から *PyJEM-1.0.2.1143.zip* をダウンロードして，同じディレクトリにコピーしてください (zip のままで展開は不要)
+
+3.  セッション起動用のバッチファイルを作成しておきます．(絶対必要ではありませんがセッションファイルから起動するときにあると便利です)．
+pj.cmd という名前でテキストファイルを作成し，次のコマンドを書いておきます．
+```
+py -3.5 wxpj-master\wxpyJemacs.py --pyjem=1 -s%*
+```
+
+3. ディレクトリ構成は以下のようになります．
+```
+<your-workdir>
+    ├ pj.cmd
+    ├ wxpj-master
+    └ PyJEM-x.x.x.xxxx.zip
+```
+
+5. Install Python 3.5.4 for Windows
+    (https://www.python.org/downloads/release/python-354/)
+    
+    Currently required environs: PY35 (標準 CPython をインストールしてください)
     
     - PYJEM 機能を使用するために PY <= 3.5 (以下) をインストールしてください．
-    - 別途，TemExternal のインストールが必要です．
+    - TEM3 を使用する場合は 別途 TemExternal のインストールが必要です．
     - Anaconda の古いやつだと wxPython のインストールがコケます．
     - Anaconda はバージョン管理でよくずっコケるので推奨しません．
 
-### Installing
+<!--
+2. Install Git for Windows
+    (https://git-scm.com/)
+    
+    - This program is necessary for installing master modules from GitHub.
+-->
 
-1. Install packages
-
-    - To setup environment necessary to work, do pip install.
-      (コマンドプロンプトを起動して以下のコマンドを順番に実行します)
+6. Install packages
+    
+    - To setup wxpj, do pip install.
+      コマンドプロンプトを起動して以下のコマンドを順番に実行します ($ はプロンプトなので無視)
     ```
     $ py -3.5 -m pip install -U pip
-    $ py -3.5 -m pip install scipy==1.2.3 opencv-python==3.4.5.20 pillow matplotlib wxpython==4.0.7
-    $ py -3.5 -m pip install pywin32 openpyxl flake8 httplib2
+    $ py -3.5 -m pip install -r wxpj-mater/requirements.txt
+    $ py -3.5 -m pip install PyJEM-1.0.2.1143.zip
     ```
+    
     - 社内からインストールする場合プロキシが見つからない為に失敗するかもしれません．
       その場合はまず次の設定を行ってください
     ```
     $ set HTTPS_PROXY=http://i-net.jeol.co.jp:80
     $ set HTTP_PROXY=http://i-net.jeol.co.jp:80
     ```
-    - You can also use this.
-    ```
-    $ py -3.5 -m pip install -U pip
-    $ py -3.5 -m pip install -r requirements.txt
-    ```
-
-2. Download wxpj from Git site
-    社内レポジトリサーバーからダウンロードして，適当なところに展開してください
-    <!--[wxpj](http://dl-box.jeol.co.jp/gitbucket/komoto/wxpj) -->
-
-3. Download PyJEM from DB
-    社内 ノーツデータベースから *PyJEM-1.0.2.1143.zip* をダウンロードして，同じディレクトリにコピーしてください（展開は不要）
-    <!-- [Automation & PyJEM - PyJEM & AutomationCenter導入](Notes://NotesOffice/4925805700077587/DD11EF58D84D230E4925646F003E2CF8/162DB45516A951F4492580570007AA5D)-->
-    ```
-    $ py -3.5 -m pip install PyJEM-1.0.2.1143.zip
-    ```
+    
 
 準備は以上です
 
 
 ## How to execute wxpyJemacs
 
-### スクリプト実行の場合
+`wxpj-master/wxpyJemacs.py` をダブルクリックして起動します．
+終了するときにセッションを保存してください．セッションファイルの拡張子は `*.jssn` です．
+次回からは上で作成した `pj.cmd` にドロップすることで起動できます．
+また，拡張子の関連付け (`*.jssn <= pj.cmd`) をすればダブルクリックだけで起動できるようになります．
+
+コマンドプロンプトから起動するときは次のようにします．
 ```
-$ py -3.5 wxpyjemacs.py --pyjem=None -suser
+$ py -3.5 wxpyjemacs.py --pyjem=1 -suser
 ```
     --pyjem: pyjem 拡張の使用を宣言します
 
