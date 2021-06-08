@@ -35,19 +35,24 @@ class Plugin(Layer):
                     "to cut the upper/lower limits given by the tolerances[%]")
         
         self.layout(None, (
-            self.accv_param,
-            self.unit_param,
-            self.cuts_param,
-            (),
+            self.accv_param, (),
+            self.unit_param, (),
+            self.cuts_param, (),
+            
             wxpj.Button(self, "Apply ALL",
                 lambda v: self.setup_all(), icon='v',
                     tip="Set globalunit and cutoff conditions to all frames"),
+            
+            wxpj.Button(self, "Remove",
+                lambda v: self.del_localunit(), icon='x',
+                    tip="Remove localunit"),
             ),
-            row=1, expand=0, type='vspin', style='button', lw=66, tw=60, cw=-1
+            row=2, expand=0, type='vspin', style='button', lw=66, tw=60, cw=-1
         )
         self.context = {
             None : {
                   "frame_shown" : [ None, self.on_unit_notify ],
+                "frame_updated" : [ None, self.on_unit_notify ],
                "frame_selected" : [ None, self.on_unit_notify ],
             },
         }
@@ -87,6 +92,11 @@ class Plugin(Layer):
         if target.frame:
             target.frame.unit = self.unit_param.value
             target.draw()
+    
+    def del_localunit(self):
+        target = self.selected_view
+        if target.frame:
+            target.frame.unit = None
     
     def set_cutoff(self, p):
         target = self.selected_view

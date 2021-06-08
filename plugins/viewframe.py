@@ -10,6 +10,7 @@ from pprint import pformat
 import wx
 from wx import aui
 import numpy as np
+import mwx
 from mwx.graphman import Layer
 from mwx.framework import CtrlInterface
 from wx.lib.mixins.listctrl import CheckListCtrlMixin
@@ -223,7 +224,13 @@ class Plugin(Layer):
         self.layout(None, [self.nb], expand=2, border=0)
         self.attach(self.graph, "graph")
         self.attach(self.output, "output")
-    
+        
+        ## @mwx.connect(self.nb, wx.EVT_COMMAND_SET_FOCUS) # wxMSW only
+        @mwx.connect(self.nb, wx.EVT_CHILD_FOCUS)
+        def on_focus_set(v):
+            self.parent.select_view(self.nb.CurrentPage.Target)
+            v.Skip()
+        
     def attach(self, target, caption):
         if target not in [lc.Target for lc in self.all_pages]:
             lc = CheckList(self, target)

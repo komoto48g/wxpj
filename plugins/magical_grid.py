@@ -139,9 +139,6 @@ class Plugin(Layer):
     def run_all(self, frame=None):
         result = self.testrun(frame)
         frame = self.calc_mark(result)
-        ## if self.choice.Selection == 2:
-        ##     frame = self.selected_view.select(self.selected_frame)
-        ##     self.show_page()
         self.run(frame)
     
     ## --------------------------------
