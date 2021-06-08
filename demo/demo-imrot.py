@@ -24,7 +24,7 @@ class Plugin(Layer):
         self.btn = wxpj.Button(self, "Rotate", self.rotate,
             tip="Try [C-x r] to execute this function instead of press button.")
         
-        self.rotdeg = LParam("[deg]", (-180,180, 1), 0, doc="angles to rotate:ccw")
+        self.rotdeg = LParam("[deg]", (-180,180, 1), 0, tip="angles to rotate:ccw")
         
         self.layout(None, (
             self.btn,

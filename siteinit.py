@@ -7,6 +7,7 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import sys
+import os
 
 
 def init_frame(self):
@@ -35,8 +36,9 @@ def init_frame(self):
     ## --------------------------------
     ## Load plugins
     ## --------------------------------
-    sys.path.append(r"C:\usr\home\workspace\tem13\gdk-aero")
-    sys.path.append(r"C:\usr\home\workspace\tem13\gdk-data")
+    workdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.append(os.path.join(workdir, "gdk-aero"))
+    sys.path.append(os.path.join(workdir, "gdk-data"))
     
     self.edi = self.require("editor")
     self.su = self.require('startup')

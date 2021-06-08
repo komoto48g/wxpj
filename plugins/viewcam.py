@@ -27,8 +27,8 @@ class Plugin(Layer):
         self.button = wxpj.ToggleButton(self, "View camera", icon='cam',
             handler=lambda v: self.viewer.Start(self.run) if v.IsChecked() else self.viewer.Stop())
         
-        self.rate_param = LParam('rate', (100,500,100), 500, doc="refresh speed [ms] (>= 100ms)")
-        self.size_param = Param('size', (128,256,512,1024), 512, doc="resizing view window (<= 1k)")
+        self.rate_param = LParam('rate', (100,500,100), 500, tip="refresh speed [ms] (>= 100ms)")
+        self.size_param = Param('size', (128,256,512,1024), 512, tip="resizing view window (<= 1k)")
         
         self.camera_selector = wxpj.Choice(self,
                 choices=['JeolCamera', 'RigakuCamera'], readonly=1)

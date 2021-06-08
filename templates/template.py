@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-05-14 17:58:45 +0900>
+Last updated: <2021-06-08 17:19:13 +0900>
      Version: 0.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -27,7 +27,7 @@ class Plugin(wxpj.Layer):
     unloadable = True
     
     def Init(self):
-        self.ksize = wxpj.LParam("ksize", (1,99,2), 13, doc="kernel window size")
+        self.ksize = wxpj.LParam("ksize", (1,99,2), 13, tip="kernel window size")
         
         self.btn = wx.Button(self, label="Run", size=(-1,22))
         self.btn.Bind(wx.EVT_BUTTON, lambda v: self.run())
