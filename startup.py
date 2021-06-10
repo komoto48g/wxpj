@@ -67,11 +67,12 @@ class Plugin(Layer):
                 win.handler.remove(self.context)
     
     def set_current_session(self, session):
-        self.accv_param.value = session.get('accv')
-        self.unit_param.std_value = session.get('unit')
-        self.cuts_param.value = session.get('cuts')
-        self.setup_all()
-        self.set_htv(self.accv_param)
+        if session:
+            self.accv_param.value = session.get('accv')
+            self.unit_param.std_value = session.get('unit')
+            self.cuts_param.value = session.get('cuts')
+            self.setup_all()
+            self.set_htv(self.accv_param)
     
     def get_current_session(self):
         return {

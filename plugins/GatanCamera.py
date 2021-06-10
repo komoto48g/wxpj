@@ -131,10 +131,11 @@ class Plugin(Layer):
         )
     
     def set_current_session(self, session):
-        self.name_selector.value = session.get('name')
-        self.host_selector.value = session.get('host')
-        self.unit_selector.value = session.get('unit')
-        self.preset_dark()
+        if session:
+            self.name_selector.value = session.get('name')
+            self.host_selector.value = session.get('host')
+            self.unit_selector.value = session.get('unit')
+            self.preset_dark()
     
     def get_current_session(self):
         return {
