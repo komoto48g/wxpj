@@ -64,7 +64,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
             self.InsertItem(j, str(j))
             self.Update(frame) # update all --> 計算が入ると時間がかかる
         
-        self.handler.update({ # 親のキーバインドとかぶるときは，親の優先です
+        self.handler.update({
             0 : {
                             '*' : (0, lambda v: v.Skip()),
                'Lbutton dclick' : (0, self.OnShowItems), # --> frame_shown
@@ -84,7 +84,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
         self.Bind(wx.EVT_MOTION, self.OnMotion)
         self.Bind(wx.EVT_LIST_COL_CLICK, self.OnSortItems)
         
-        self.context = { # to be bound to the target handler
+        self.context = { # bound to the target
             None: {
                   'frame_shown' : [ None, self.on_frame_shown ],
                  'frame_hidden' : [ None, self.on_frame_hidden ],
