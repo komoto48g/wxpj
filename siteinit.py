@@ -62,10 +62,10 @@ def init_frame(self):
     self.load_plug(viewframe)
     self.load_plug(viewfft)
     
-    from pyJeol.legacy import cmdl, cntf
+    ## from pyJeol.legacy import cmdl, cntf
     ## cmdl.HOST = cntf.HOST = 'localhost'
     ## cmdl.OFFLINE = True
-    cmdl.open()
+    ## cmdl.open()
     self.notify.start()
     
     ## --------------------------------
