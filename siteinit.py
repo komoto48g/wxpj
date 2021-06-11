@@ -36,9 +36,9 @@ def init_frame(self):
     ## --------------------------------
     ## Load plugins
     ## --------------------------------
-    workdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    sys.path.append(os.path.join(workdir, "gdk-aero"))
-    sys.path.append(os.path.join(workdir, "gdk-data"))
+    rootdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.append(os.path.join(rootdir, "gdk-aero"))
+    sys.path.append(os.path.join(rootdir, "gdk-data"))
     
     self.edi = self.require("editor")
     self.su = self.require('startup')
