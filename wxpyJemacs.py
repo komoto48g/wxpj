@@ -14,6 +14,7 @@ from pprint import pprint
 import traceback
 import datetime # imported but unused :necessary to eval
 import getopt
+import glob
 import sys
 import os
 import re
@@ -27,10 +28,12 @@ from PIL import TiffImagePlugin # tiff extension for py2exe
 if 'mwx' not in sys.modules:
     ## Add eggs in the nest to the path
     home = os.path.dirname(os.path.abspath(__file__))
-    sys.path += [
-        os.path.join(home, "nest/pj-0.30-py3.5.egg"),
-        os.path.join(home, "nest/mwxlib-0.40-py3.5.egg"),
-    ]
+    for path in reversed(glob.glob(os.path.join(home, "nest/*.egg"))):
+        sys.path.append(path)
+    ## sys.path += [
+    ##     os.path.join(home, "nest/pj-0.30-py3.5.egg"),
+    ##     os.path.join(home, "nest/mwxlib-0.40-py3.5.egg"),
+    ## ]
 import mwx
 from mwx.controls import Icon, Button, ToggleButton, TextCtrl, Choice
 from mwx.controls import Param, LParam, ControlPanel
