@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-06-08 17:19:13 +0900>
+Last updated: <2021-06-15 01:05:38 +0900>
      Version: 0.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -19,8 +19,8 @@ class Plugin(wxpj.Layer):
     """
     menu = "Plugins/&Template"
     menustr = "&template ver.0"
-    category = None
-    caption = True
+    category = "Test"
+    caption = "temp.1"
     dockable = True
     editable = True
     reloadable = True
