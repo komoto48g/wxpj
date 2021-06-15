@@ -121,7 +121,7 @@ class Plugin(Layer):
             
         self.btn.SetToolTip("S-Lbutton to skip estimating near-max peak")
         
-        self.order = LParam("ring", (1,5,1), 3)
+        self.order = LParam("ring", (1,10,1), 3)
         
         self.text = wx.TextCtrl(self, size=(160,60), style=wx.TE_READONLY|wx.TE_MULTILINE)
         
