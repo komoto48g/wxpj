@@ -11,6 +11,7 @@ import wx
 from wx import aui
 import numpy as np
 import mwx
+from mwx.controls import Icon
 from mwx.graphman import Layer
 from mwx.framework import CtrlInterface
 from wx.lib.mixins.listctrl import CheckListCtrlMixin
@@ -27,6 +28,10 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
     @property
     def selected_items(self):
         return [j for j in range(self.ItemCount) if self.IsSelected(j)]
+    
+    @property
+    def focused_item(self):
+        return self.FocusedItem
     
     @property
     def all_items(self):
@@ -173,7 +178,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
     
     def OnSaveItems(self, evt):
         self.parent.parent.export_index(
-            frames=[self.Target.all_frames[j] for j in self.selected_items])
+            frames=[self.Target.all_frames[j] for j in self.selected_items] or None)
     
     ## --------------------------------
     ## Actions of Frame handler
@@ -231,6 +236,11 @@ class Plugin(Layer):
             self.parent.select_view(self.nb.CurrentPage.Target)
             v.Skip()
         
+        self.Menu[0:0] = [
+            (101, "&Edit annotation", "Edit annotation", Icon('edit'),
+                lambda v: self.ask()),
+            (),
+        ]
     def attach(self, target, caption):
         if target not in [lc.Target for lc in self.all_pages]:
             lc = CheckList(self, target)
@@ -244,6 +254,18 @@ class Plugin(Layer):
     def show_page(self, target):
         self.nb.SetSelection(next((k
             for k,lc in enumerate(self.all_pages) if target is lc.Target), -1))
+    
+    def ask(self, prompt='Enter an annotation'):
+        """Get response from the user using a dialog box."""
+        page = self.nb.CurrentPage
+        frames = page.Target.all_frames
+        if frames:
+            frame = frames[page.focused_item]
+            with wx.TextEntryDialog(self, prompt,
+                caption='Input Dialog', value=frame.annotation) as dlg:
+                if dlg.ShowModal() == wx.ID_OK:
+                    for j in page.selected_items:
+                        frames[j].annotation = dlg.Value
 
 
 if __name__ == "__main__":
