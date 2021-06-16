@@ -248,8 +248,8 @@ if __name__ == '__main__':
         frm.inspector.shell.handler.bind('shell_cloned', debut.init_spec)
         
     except Exception:
-        traceback.print_exc()
-        pass
+        ## traceback.print_exc()
+        raise
     
     if session:
         print("Starting session {!r}".format(session))

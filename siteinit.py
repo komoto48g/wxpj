@@ -90,8 +90,6 @@ def init_frame(self):
     self.define_key('pageup', lambda v: self.selected_view.OnPageUp(v), doc="previous page")
     self.define_key('pagedown', lambda v: self.selected_view.OnPageDown(v), doc="next page")
     
-    self.new_buffer_name = "{acq_datetime:%Y%m%d-%H%M%S}-{annotation}"
-    
     @self.handler.bind('frame_cached')
     def cache(frame):
         frame.update_attributes(
@@ -105,12 +103,13 @@ def init_frame(self):
                   filter = dict(self.notify.efilter.Info),
                  modestr = self.notify.modestr, # joined substr
         )
-        ## frame.annotation = "{0},bin{binning}-{exposure}s".format(self.notify.modestr, **frame.attributes)
+        ## frame.annotation = "{0},slit={filter[slit_width]}eV,bin{binning}-{exposure}s".format(
+        ##     self.notify.modestr, **frame.attributes)
+        ## frame.name = "{acq_datetime:%Y%m%d-%H%M%S}-{annotation}".format(**frame.attributes)
         
-        frame.annotation = "{0},slit={filter[slit_width]}eV,bin{binning}-{exposure}s".format(
-            self.notify.modestr, **frame.attributes)
-        
-        frame.name = self.new_buffer_name.format(**frame.attributes)
+        frame.name = "{acq_datetime:%Y%m%d-%H%M%S}-{mode},"\
+                     "slit={filter[slit_width]}eV,bin{binning}-{exposure}s".format(
+                     mode=self.notify.modestr, **frame.attributes)
 
 
 if __name__ == '__main__':
