@@ -43,8 +43,10 @@ from pyJeol.plugman import NotifyFront
 from pyJeol.temisc import Environ
 from pyDM3reader import DM3lib
 from pyDM4reader import dm4reader as DM4lib
-import wx.lib.mixins.listctrl # for py2exe
-import wx.lib.platebtn as pb
+from config import ConfigData
+
+## import wx.lib.mixins.listctrl # for py2exe
+## import wx.lib.platebtn as pb
 
 __version__ = "0.30"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
