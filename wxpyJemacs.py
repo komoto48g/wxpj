@@ -115,7 +115,6 @@ class pyJemacs(Framebase):
             ("Extensions", []),
             ("Functions", []),
             ("Options", []),
-            ("Cameras", []),
             (),
         ]
         self.menubar.reset()

@@ -88,7 +88,7 @@ class Camera(gatan.GatanSocket):
 class Plugin(Layer):
     """Gatan camera manager
     """
-    menu = "Plugins/Cameras"
+    menu = "Cameras"
     menustr = "&Gatan camera ver.2"
     
     def Init(self):

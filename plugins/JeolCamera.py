@@ -243,7 +243,7 @@ class DummyCamera(object):
 class Plugin(Layer):
     """Jeol camera manager
     """
-    menu = "Plugins/Cameras"
+    menu = "Cameras"
     menustr = "&Jeol camera ver.2"
     
     def Init(self):
