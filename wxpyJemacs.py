@@ -35,7 +35,7 @@ if 'mwx' not in sys.modules:
     ##     os.path.join(home, "nest/mwxlib-0.40-py3.5.egg"),
     ## ]
 import mwx
-from mwx.controls import Icon, Button, ToggleButton, TextCtrl, Choice
+from mwx.controls import Icon, Button, ToggleButton, TextCtrl, Choice, Gauge, Indicator
 from mwx.controls import Param, LParam, ControlPanel
 from mwx.graphman import Thread, Layer, Graph
 from mwx.graphman import Frame as Framebase
