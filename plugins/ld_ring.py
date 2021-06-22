@@ -185,13 +185,10 @@ class Plugin(Layer):
         self.init_grid(frame.axes)
         
         with self.thread:
-            ## 近傍にあるピーク位置をぼかして (k,k) 検出する
+            ## 近傍にあるピーク位置をぼかして検出する
             if not skip:
-                k = 3
-                n = 3
-                src = cv2.GaussianBlur(frame.buffer, (k,k), 0)
                 nx, ny = frame.xytopixel(x, y)
-                nx, ny = self.find_near_maximum(src, nx, ny, n, times=2)
+                nx, ny = self.find_near_maximum(frame.buffer, nx, ny, times=2)
                 x, y = frame.markers = frame.xyfrompixel(nx, ny)
             
             ## 最適グリッドパラメータの見積もり
@@ -212,8 +209,11 @@ class Plugin(Layer):
             
             ## frame.annotation = ', '.join(self.text.Value.splitlines()[:2])
     
-    def find_near_maximum(self, src, nx, ny, n, times):
+    def find_near_maximum(self, src, nx, ny, n=5, times=2):
         h, w = src.shape
+        k = h // 200
+        k += k%2 + 1
+        src = cv2.GaussianBlur(src, (k,k), 0)
         for x in range(times):
             pp = []
             for x, y in zip(nx, ny):
