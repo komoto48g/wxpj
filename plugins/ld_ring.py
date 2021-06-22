@@ -187,8 +187,8 @@ class Plugin(Layer):
         with self.thread:
             ## 近傍にあるピーク位置をぼかして (k,k) 検出する
             if not skip:
-                k = 5
-                n = 5
+                k = 3
+                n = 3
                 src = cv2.GaussianBlur(frame.buffer, (k,k), 0)
                 nx, ny = frame.xytopixel(x, y)
                 nx, ny = self.find_near_maximum(src, nx, ny, n, times=2)
