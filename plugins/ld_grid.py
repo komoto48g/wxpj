@@ -171,6 +171,7 @@ class Plugin(Layer):
     def run(self, frame=None, skip=False):
         if not frame:
             frame = self.selected_view.frame
+        del self.Arts
         
         x, y = frame.markers
         if not x.size:

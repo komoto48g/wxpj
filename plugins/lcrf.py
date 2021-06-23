@@ -8,6 +8,7 @@ import numpy as np
 from numpy import pi,cos,sin,inf
 from scipy import optimize
 from scipy import signal
+from matplotlib import patches
 from mwx.controls import LParam
 from mwx.graphman import Layer
 import editor as edi
@@ -151,30 +152,38 @@ class Plugin(Layer):
     lgbt = property(lambda self: self.parent.require('lgbt'))
     
     def Init(self):
-        self.rmin = LParam("rmin", (0,2000,1), 50)
-        self.rmax = LParam("rmax", (0,2000,1), inf)
-        
-        self.layout("blur-threshold", self.lgbt.params, show=0, cw=0, lw=40, tw=40)
-        self.layout("radii", [
-            self.rmin,
-            self.rmax
-            ],
-            cw=0, lw=36, tw=48
+        self.radii_params = (
+            LParam("rmin", (0,2048,1), 0),
+            LParam("rmax", (0,4096,1), inf),
         )
+        self.layout("blur-threshold", self.lgbt.params, show=0, cw=0, lw=40, tw=40)
+        self.layout("radii", self.radii_params, cw=0, lw=36, tw=48)
         
         btn = wx.Button(self, label="+Execute", size=(64,22))
         btn.Bind(wx.EVT_BUTTON, lambda v: self.run(shift=wx.GetKeyState(wx.WXK_SHIFT)))
-        ## btn.Bind(wx.EVT_BUTTON, lambda v:
-        ##     self.thread.Start(self.run, shift=wx.GetKeyState(wx.WXK_SHIFT)))
         btn.SetToolTip("S-Lbutton to enter recusive centering")
         
         self.chkplt = wx.CheckBox(self, label="rdist")
         
-        self.layout(None, [btn, self.chkplt], row=2, type='vspin', tw=22)
+        self.layout(None, (btn, self.chkplt), row=2, type='vspin', tw=22)
+    
+    rmin = property(lambda self: self.radii_params[0])
+    rmax = property(lambda self: self.radii_params[1])
+    
+    def set_current_session(self, session):
+        self.rmin.value = session.get('rmin')
+        self.rmax.value = session.get('rmax')
+    
+    def get_current_session(self):
+        return {
+            'rmin': self.rmin.value,
+            'rmax': self.rmax.value,
+        }
     
     def run(self, frame=None, shift=0, maxloop=4):
         if not frame:
             frame = self.selected_view.frame
+        del self.Arts
         
         center = edi.centroid(frame.buffer)
         if shift:
@@ -185,9 +194,11 @@ class Plugin(Layer):
                 center = nx[0], ny[0]
         
         ## Search center and fit with model (twice at least)
+        lo = self.rmin.value
+        hi = self.rmax.value
         src = frame.buffer
         for i in range(maxloop):
-            buf, center, fitting_curve, = find_ring_center(src, center, self.rmin.value, self.rmax.value)
+            buf, center, fitting_curve, = find_ring_center(src, center, lo, hi)
         self.fitting_curve = fitting_curve
         
         self.output.load(buf, name="*lin-polar*", localunit=1)
@@ -222,4 +233,8 @@ class Plugin(Layer):
         frame.markers = (x[oz][0:-1:3], y[oz][0:-1:3]) # scatter markers onto the arc
         
         ## サークル描画 (確認用)
-        self.Arts = self.selected_view.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75)
+        self.Arts = frame.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75)
+        self.Arts += [
+            frame.axes.add_patch(patches.Circle((xc, yc), lo*frame.unit, color='c', ls='--', lw=1/2, fill=0)),
+            frame.axes.add_patch(patches.Circle((xc, yc), hi*frame.unit, color='c', ls='--', lw=1/2, fill=0)),
+        ]

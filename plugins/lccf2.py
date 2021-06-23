@@ -45,7 +45,7 @@ def find_ellipses(src, tol=0.75):
 
 
 class Plugin(Layer):
-    """Cetner of Circles finder ver.2
+    """Cetner of Circles (Ellipses) finder ver.2
     """
     menu = "Plugins/&Basic Tools"
     category = "Basic Tools"
@@ -64,7 +64,7 @@ class Plugin(Layer):
         btn2.Bind(wx.EVT_BUTTON, lambda v: self.run(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
         btn2.SetToolTip("S-Lbutton to estimate threshold using Otsu algorithm")
         
-        self.layout(None, [btn1, btn2], row=2)
+        self.layout(None, (btn1, btn2), row=2)
     
     maxcount = 256 # 選択する点の数を制限する
     maxratio = 5.0 # ひずみの大きい楕円は除外する

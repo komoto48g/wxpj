@@ -52,16 +52,13 @@ class Plugin(Layer):
     lgbt = property(lambda self: self.parent.require('lgbt'))
     
     def Init(self):
-        self.rmin = LParam("rmin", (0,1000,1), 20)
-        self.rmax = LParam("rmax", (0,1000,1), 500)
-        
-        self.layout("blur-threshold", self.lgbt.params, show=0, cw=0, lw=40, tw=40)
-        self.layout("radii", [
-            self.rmin,
-            self.rmax
-            ],
-            cw=0, lw=40, tw=48
+        self.radii_params = (
+            LParam("rmin", (0,1000,1), 20),
+            LParam("rmax", (0,1000,1), 500),
         )
+        self.layout("blur-threshold", self.lgbt.params, show=0, cw=0, lw=40, tw=40)
+        self.layout("radii", self.radii_params, cw=0, lw=40, tw=48)
+        
         btn1 = wx.Button(self, label="+Bin", size=(40,22))
         btn1.Bind(wx.EVT_BUTTON, lambda v: self.lgbt.calc(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
         btn1.SetToolTip("S-Lbutton to estimate threshold using Otsu algorithm")
@@ -70,7 +67,20 @@ class Plugin(Layer):
         btn2.Bind(wx.EVT_BUTTON, lambda v: self.run(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
         btn2.SetToolTip("S-Lbutton to estimate threshold using Otsu algorithm")
         
-        self.layout(None, [btn1, btn2], row=2)
+        self.layout(None, (btn1, btn2), row=2)
+    
+    rmin = property(lambda self: self.radii_params[0])
+    rmax = property(lambda self: self.radii_params[1])
+    
+    def set_current_session(self, session):
+        self.rmin.value = session.get('rmin')
+        self.rmax.value = session.get('rmax')
+    
+    def get_current_session(self):
+        return {
+            'rmin': self.rmin.value,
+            'rmax': self.rmax.value,
+        }
     
     maxcount = 256 # 選択する点の数を制限する
     
@@ -81,9 +91,9 @@ class Plugin(Layer):
         
         ## Search center of circles
         src = self.lgbt.calc(frame, **kwargs)
-        circles = find_circles(src, int(self.rmin), int(self.rmax))
-        self.message("found {} circles".format(len(circles)))
+        circles = find_circles(src, self.rmin.value, self.rmax.value)
         
+        self.message("found {} circles".format(len(circles)))
         if circles:
             N = self.maxcount
             if len(circles) > N:

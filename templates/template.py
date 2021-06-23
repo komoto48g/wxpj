@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """template
 
-Last updated: <2021-06-15 01:05:38 +0900>
+Last updated: <2021-06-23 09:28:06 +0900>
      Version: 0.0
       Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -38,6 +38,14 @@ class Plugin(wxpj.Layer):
             type='vspin',            # + style of Param; slider[*], [hv]spin, and choice are available
             cw=-1, lw=36, tw=30      # + and *w indicates width of Param; [c]ontrol, [l]abel, [t]ext
         )
+    
+    def set_current_session(self, session):
+        self.ksize.value = session.get('ksize')
+    
+    def get_current_session(self):
+        return {
+            'ksize': self.ksize.value,
+        }
     
     def Destroy(self):
         return wxpj.Layer.Destroy(self)
