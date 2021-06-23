@@ -34,7 +34,7 @@ class Plugin(Layer):
         
         self.layout("blur-threshold", self.params, type='vspin', cw=0, lw=40, tw=40)
         self.layout("cutoff [%]", self.cutoff_params,
-                    row=1, show=0, type='vspin', cw=-1, lw=16, tw=44)
+                    row=1, show=0, visible=0, type='vspin', cw=-1, lw=16, tw=44)
         self.layout(None, [btn], row=2)
     
     ksize = property(lambda self: self.params[0])
