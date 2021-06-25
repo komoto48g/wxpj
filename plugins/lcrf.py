@@ -185,7 +185,10 @@ class Plugin(Layer):
             frame = self.selected_view.frame
         del self.Arts
         
-        center = edi.centroid(frame.buffer)
+        src = frame.buffer
+        h, w = src.shape
+        center = (w//2, h//2)
+        ## center = edi.centroid(src)
         if shift:
             nx, ny = frame.xytopixel(frame.selector)
             if isinstance(nx, int): # for PY2
@@ -196,7 +199,6 @@ class Plugin(Layer):
         ## Search center and fit with model (twice at least)
         lo = self.rmin.value
         hi = self.rmax.value
-        src = frame.buffer
         for i in range(maxloop):
             buf, center, fitting_curve, = find_ring_center(src, center, lo, hi)
         self.fitting_curve = fitting_curve
