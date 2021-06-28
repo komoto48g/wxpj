@@ -203,7 +203,11 @@ class Plugin(Layer):
                   ":res {:g}".format(np.sqrt(np.average(res)) / frame.unit))
             self.calc()
             
-            ## frame.annotation = ', '.join(self.text.Value.splitlines()[:2])
+            ## frame.annotation = ', '.join(self.text.Value.splitlines())
+            frame.update_attributes(
+                results = self.parameters,
+                annotation = ', '.join(self.text.Value.splitlines()),
+            )
     
     ## def find_near_grid(self, x, y):
     ##     dx = np.diff(x)
