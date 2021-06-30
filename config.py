@@ -4,7 +4,7 @@
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
-import openpyxl as pxl
+import win32com.client
 import configparser
 import sys
 import os
@@ -14,24 +14,38 @@ import numpy as np
 LITERAL_TYPE = str if sys.version_info >= (3,0) else (str,unicode)
 
 
-def xlread(worksheet, r=1, c=1):
-    """Read data from worksheet starting from cell(r,c)"""
-    ## values = list(worksheet.values)
-    ## return np.array([[eval(x) for x in row[c-1:]] for row in values[r-1:]])
-    try:
-        data = []
-        for row in worksheet.iter_rows(min_row=r, min_col=c):
-            data.append([cell.value for cell in row])
-    finally:
-        return np.array(data)
+class Excel(object):
+    """Excel COM object
 
-
-def xlwrite(worksheet, data, r=1, c=1):
-    """Write data to worksheet starting from cell(r,c)"""
-    for j,ln in enumerate(data):
-        for k,x in enumerate(ln):
-            cell = worksheet.cell(j+r, k+c)
-            cell.value = x
+Usage:
+    excel = Excel(xlpath)
+    ws = excel.book.Worksheets(name)
+    rng = ws.Range(ws.Cells(i,j), ws.Cells(k,l))
+    data = rng.Value # read
+    rng.Value = data # write
+    excel.book.Close()
+    excel.app.Quit()
+    """
+    def __init__(self, xlpath, show=True):
+        if xlpath:
+            xlpath = os.path.abspath(xlpath)
+            try:
+                ## get the active instance of Excel app on our system
+                self.app = win32com.client.GetActiveObject("Excel.Application")
+                self.book = self.app.Workbooks(xlpath)
+            except Exception:
+                ## create an instance of Excel app and open the book
+                try:
+                    self.app = win32com.client.gencache.EnsureDispatch("Excel.Application")
+                except Exception as e:
+                    print(e)
+                    self.app = win32com.client.Dispatch("Excel.Application")
+                self.book = self.app.Workbooks.Open(xlpath)
+        else:
+            ## create an instance of Excel app and create a book
+            self.app = win32com.client.gencache.EnsureDispatch("Excel.Application")
+            self.book = self.app.Workbooks.Add()
+        self.app.Visible = show
 
 
 def _eval_array(x):
@@ -116,23 +130,47 @@ class ConfigData(object):
         finally:
             np.set_printoptions(**opt)
     
+    @property
+    def xlpath(self):
+        xlname, _ext = os.path.splitext(os.path.basename(self.path))
+        xlpath = os.path.join(os.path.dirname(self.path),
+                             "config-report-{}.xlsx".format(xlname))
+        return xlpath
+    
     def export(self, keys, r=3, c=3, verbose=True):
         """Export configurations of the given `section
         """
-        name, _ext = os.path.splitext(os.path.basename(self.path))
-        xlpath = "config-report-{}.xlsx".format(name)
+        xlpath = self.xlpath
+        
         if verbose:
             if wx.MessageBox("Exporting configration to excel file {!r}".format(xlpath),
                 style=wx.YES_NO|wx.ICON_INFORMATION) != wx.YES:
                     return
         try:
-            wbook = pxl.load_workbook(xlpath)
+            excel = Excel(xlpath)
             for key in keys:
-                xlwrite(wbook[key], self.data[key], r, c)
-            wbook.save(xlpath)
+                ws = excel.book.Worksheets(key)
+                v = self.data[key]
+                if isinstance(v, np.ndarray):
+                    h, w = v.shape
+                    ws.Range(ws.Cells(r,c), ws.Cells(r+h-1,c+w-1)).Value = v
+                else:
+                    ws.Cells(r,c).Value = v
             return True
-        
         except PermissionError as e:
             if wx.MessageBox("Please close {!r}. Press [OK] to continue.".format(xlpath),
                 caption=str(e), style=wx.OK|wx.CANCEL|wx.ICON_WARNING) == wx.OK:
                     return self.export(keys, r, c, verbose=0)
+
+
+
+if __name__ == "__main__":
+    app = wx.App()
+    config = ConfigData(r"C:\usr\home\workspace\tem13\gdk-data\pylots.config", section='TEM')
+    config.export(('cl3spot',))
+    
+    excel = Excel(config.xlpath)
+    ws = excel.book.Worksheets('cl3spot')
+    
+    import mwx
+    mwx.deb(config)
