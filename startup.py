@@ -21,8 +21,9 @@ class Plugin(Layer):
     category = "Option"
     
     def Init(self):
-        self.accv_param = Param("Acc.Voltage", (100e3, 200e3, 300e3), 300e3, dtype=int,
+        self.accv_param = Param("Acc.Voltage", (100e3, 200e3, 300e3), 300e3,
             handler=self.set_htv,
+                fmt='{:,g}'.format,
                 tip="Acceleration voltage [V]")
         
         self.unit_param = LParam("unit/pixel", (0,1,1e-4), self.graph.unit,
