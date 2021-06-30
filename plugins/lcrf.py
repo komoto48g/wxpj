@@ -80,8 +80,8 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     dst = cv2.linearPolar(src, (nx,ny), w, cv2.WARP_FILL_OUTLIERS)
     
     ## Mask X (radial) axis
-    lo = max(lo, 0)
-    hi = min(hi, w//2)
+    lo = int(max(lo, 0))
+    hi = int(min(hi, w//2))
     dst[:,:lo] = 0
     dst[:,hi:] = 0
     
@@ -153,8 +153,8 @@ class Plugin(Layer):
     
     def Init(self):
         self.radii_params = (
-            LParam("rmin", (0,2048,1), 0),
-            LParam("rmax", (0,4096,1), inf),
+            LParam("rmin", (0, 1, 0.01), 0.1),
+            LParam("rmax", (0, 2, 0.01), 1.0),
         )
         self.layout("blur-threshold", self.lgbt.params, show=0, cw=0, lw=40, tw=40)
         self.layout("radii", self.radii_params, cw=0, lw=36, tw=48)
@@ -197,8 +197,8 @@ class Plugin(Layer):
                 center = nx[0], ny[0]
         
         ## Search center and fit with model (twice at least)
-        lo = self.rmin.value
-        hi = self.rmax.value
+        lo = h/2 * self.rmin.value
+        hi = h/2 * self.rmax.value
         for i in range(maxloop):
             buf, center, fitting_curve, = find_ring_center(src, center, lo, hi)
         self.fitting_curve = fitting_curve
