@@ -5,6 +5,4 @@ pillow
 matplotlib
 wxpython==4.0.7
 pywin32
-openpyxl
-flake8
 httplib2

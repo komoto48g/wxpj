@@ -4,6 +4,7 @@
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
+import win32api
 import win32com.client
 import configparser
 import sys
@@ -130,17 +131,12 @@ class ConfigData(object):
         finally:
             np.set_printoptions(**opt)
     
-    @property
-    def xlpath(self):
-        xlname, _ext = os.path.splitext(os.path.basename(self.path))
-        xlpath = os.path.join(os.path.dirname(self.path),
-                             "config-report-{}.xlsx".format(xlname))
-        return xlpath
-    
     def export(self, keys, r=3, c=3, verbose=True):
         """Export configurations of the given `section
         """
-        xlpath = self.xlpath
+        xlname, _ext = os.path.splitext(os.path.basename(self.path))
+        xlpath = os.path.join(os.path.dirname(self.path),
+                             "config-report-{}.xlsx".format(xlname))
         
         if verbose:
             if wx.MessageBox("Exporting configration to excel file {!r}".format(xlpath),
@@ -148,6 +144,7 @@ class ConfigData(object):
                     return
         try:
             excel = Excel(xlpath)
+            
             for key in keys:
                 ws = excel.book.Worksheets(key)
                 v = self.data[key]
@@ -157,7 +154,7 @@ class ConfigData(object):
                 else:
                     ws.Cells(r,c).Value = v
             return True
-        except PermissionError as e:
+        except (PermissionError, win32api.error) as e:
             if wx.MessageBox("Please close {!r}. Press [OK] to continue.".format(xlpath),
                 caption=str(e), style=wx.OK|wx.CANCEL|wx.ICON_WARNING) == wx.OK:
                     return self.export(keys, r, c, verbose=0)
@@ -169,8 +166,6 @@ if __name__ == "__main__":
     config = ConfigData(r"C:\usr\home\workspace\tem13\gdk-data\pylots.config", section='TEM')
     config.export(('cl3spot',))
     
-    excel = Excel(config.xlpath)
-    ws = excel.book.Worksheets('cl3spot')
-    
     import mwx
+    excel = Excel(r"C:\usr\home\workspace\tem13\gdk-dataconfig-report-pylots.xlsx")
     mwx.deb(config)
