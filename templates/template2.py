@@ -1,10 +1,8 @@
 #! python
 # -*- coding: utf-8 -*-
 """template
-
-Last updated: <2021-06-25 13:18:04 +0900>
-     Version: 2.0
-      Author: Kazuya O'moto <komoto@jeol.co.jp>
+Version: 2.0
+Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
@@ -47,9 +45,6 @@ class Plugin(wxpj.Layer):
             ),
             row=1, expand=0, show=0, type='vspin', cw=12, lw=36, tw=36,
         )
-    
-    def Destroy(self):
-        return wxpj.Layer.Destroy(self)
     
     def run(self):
         k = self.lgbt.ksize.value

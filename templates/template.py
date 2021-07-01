@@ -1,10 +1,8 @@
 #! python
 # -*- coding: utf-8 -*-
 """template
-
-Last updated: <2021-06-25 13:35:31 +0900>
-     Version: 0.0
-      Author: Kazuya O'moto <komoto@jeol.co.jp>
+Version: 0.0
+Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
@@ -46,9 +44,6 @@ class Plugin(wxpj.Layer):
         return {
             'ksize': self.ksize.value,
         }
-    
-    def Destroy(self):
-        return wxpj.Layer.Destroy(self)
     
     def run(self):
         k = self.ksize.value
