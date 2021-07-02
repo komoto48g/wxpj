@@ -176,10 +176,10 @@ class pyJemacs(Framebase):
     @staticmethod
     def write_buffer(path, buf):
         """Write a buffer to path file (override) +.dm3 extension"""
-        if path[-4:] == '.dm3':
-            raise NotImplementedError("Saving as DM3 type is not supported")
-        if path[-4:] == '.img':
-            raise NotImplementedError("Saving as IMG type is not supported")
+        ext = path[-4:]
+        if ext in ('.dm3', '.dm4', '.img'):
+            raise NotImplementedError(
+                "Saving as {} type is not supported".format(ext))
         return Framebase.write_buffer(path, buf)
 
 Frame = pyJemacs
