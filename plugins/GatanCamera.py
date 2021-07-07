@@ -100,7 +100,7 @@ class Plugin(Layer):
         
         self.name_selector = wxpj.Choice(self,
             choices=list(typenames_info), size=(100,22), readonly=1,
-            handler=lambda v: self.unit_selector.reset(typenames_info[v.String][0]))
+            handler=lambda p: self.unit_selector.reset(typenames_info[p.Value][0]))
         
         self.host_selector = wxpj.Choice(self,
             choices=hostnames, size=(100,22))

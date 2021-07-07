@@ -38,7 +38,7 @@ class Plugin(Layer):
         self.score = LParam("score", (0.01, 10, 0.01), 0.1)
         
         self.grid = wxpj.Choice(self, label="grid [mm]", size=(140,-1),
-            handler=lambda v: self.calc_mag(),
+            handler=lambda p: self.calc_mag(),
             choices=['1/2000', # Standard grating(Ted Pera)
                      '1/2160', # Standard Gatan grating
                      '2.04e-7' # Au single 100
