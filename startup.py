@@ -58,12 +58,14 @@ class Plugin(Layer):
              'canvas_focus_set' : [ None, self.on_unit_notify ],
             },
         }
-    
-    def Activate(self, show):
-        if show:
+        
+        @self.handler.bind('pane_shown')
+        def activate():
             for win in self.parent.graphic_windows:
                 win.handler.append(self.context)
-        else:
+        
+        @self.handler.bind('pane_closed')
+        def deactivate():
             for win in self.parent.graphic_windows:
                 win.handler.remove(self.context)
     

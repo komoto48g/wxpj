@@ -32,24 +32,25 @@ class Plugin(Layer):
             ),
             row=3, expand=0, type="vspin", lw=32, cw=12, tw=60
         )
-    
-    def Activate(self, show):
-        if show:
+        
+        @self.handler.bind('pane_shown')
+        def activate():
             self.graph.handler.bind('line_draw', self.calc_rotdeg)
-            self.parent.define_key('C-x r', self.rotate)
-            self.calc_rotdeg(self.graph.frame)
-        else:
+        
+        @self.handler.bind('pane_closed')
+        def deactivate():
             self.graph.handler.unbind('line_draw', self.calc_rotdeg)
-            self.parent.define_key('C-x r', None)
     
     def calc_rotdeg(self, frame):
-        """Calc rotation angles of selector:line and display the value-"""
+        """Calc rotation angles of selector:line and display the value
+        """
         if frame:
             x, y = frame.selector
             self.rotdeg.value = np.arctan2(y[1]-y[0], x[1]-x[0]) * 180/pi
     
     def rotate(self, evt):
-        """Rotate image with given angles and load to output window"""
+        """Rotate image with given angles and load to output window
+        """
         src = self.graph.buffer
         angle = -self.rotdeg.value
         h, w = src.shape
