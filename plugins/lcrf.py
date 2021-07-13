@@ -236,7 +236,11 @@ class Plugin(Layer):
         
         ## サークル描画 (確認用)
         self.Arts = frame.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75)
-        self.Arts += [
-            frame.axes.add_patch(patches.Circle((xc, yc), lo*frame.unit, color='c', ls='--', lw=1/2, fill=0)),
-            frame.axes.add_patch(patches.Circle((xc, yc), hi*frame.unit, color='c', ls='--', lw=1/2, fill=0)),
-        ]
+        ## self.Arts += [
+        ##     frame.axes.add_patch(patches.Circle((xc, yc), lo*frame.unit, color='c', ls='--', lw=1/2, fill=0)),
+        ##     frame.axes.add_patch(patches.Circle((xc, yc), hi*frame.unit, color='c', ls='--', lw=1/2, fill=0)),
+        ## ]
+        self.add_artists(frame,
+            patches.Circle((xc, yc), lo*frame.unit, color='c', ls='--', lw=1/2, fill=0),
+            patches.Circle((xc, yc), hi*frame.unit, color='c', ls='--', lw=1/2, fill=0),
+        )

@@ -47,8 +47,7 @@ class Plugin(Layer):
             row=2,
         )
         self.circ = patches.Circle((0,0), 0, color='r', ls='solid', lw=2, fill=0, zorder=2)
-        self.graph.axes.add_artist(self.circ)
-        self.Arts.append(self.circ)
+        self.add_artists(self.graph, self.circ)
     
     def test_imconv(self):
         src = self.graph.buffer

@@ -95,8 +95,7 @@ class Plugin(Layer):
                     art.height = ra * frame.unit
                     art.width = rb * frame.unit
                     art.angle = 90-angle
-                    frame.axes.add_artist(art)
-                    self.Arts.append(art)
+                    self.add_artists(frame, art)
                     
                     ## 検出した楕円の中心を記録する．強度の偏りは考慮しない
                     ## xy.append(art.center)
