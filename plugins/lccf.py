@@ -87,7 +87,7 @@ class Plugin(Layer):
     def run(self, frame=None, **kwargs):
         if not frame:
             frame = self.selected_view.frame
-        del self.Arts
+        self.remove_artists()
         
         ## Search center of circles
         src = self.lgbt.calc(frame, **kwargs)
