@@ -13,10 +13,10 @@ import wxpyJemacs as wxpj
 
 
 class Plugin(wxpj.Layer):
-    """Plugin template ver.0
+    """Plugin template ver.1
     """
     menu = "Plugins/&Template"
-    menustr = "&template ver.0"
+    menustr = "&template ver.1"
     category = "Test"
     caption = "temp.1"
     dockable = True
