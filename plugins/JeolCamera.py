@@ -16,8 +16,9 @@ import httplib2
 import numpy as np
 from PIL import Image
 from mwx.controls import Param, LParam
+from mwx.controls import Button, Choice
 from mwx.graphman import Layer
-import wxpyJemacs as wxpj
+
 try:
     Offline = 1
     
@@ -254,10 +255,10 @@ class Plugin(Layer):
         self.dark_chk = wx.CheckBox(self, label="dark")
         self.dark_chk.Enable(0)
         
-        self.name_selector = wxpj.Choice(self,
+        self.name_selector = Choice(self,
             choices=list(typenames_info), size=(100,22), readonly=1)
         
-        self.host_selector = wxpj.Choice(self,
+        self.host_selector = Choice(self,
             choices=hostnames, size=(100,22))
         
         self.unit_selector = LParam("mm/pix", (0,1,1e-4), self.graph.unit,
@@ -271,7 +272,7 @@ class Plugin(Layer):
             type='vspin', lw=32, cw=-1, tw=40
         )
         self.layout(None, (
-            wxpj.Button(self, "Capture", self.capture_ex, icon='cam'),
+            Button(self, "Capture", self.capture_ex, icon='cam'),
             self.dark_chk,
             ),
             row=2,
@@ -280,8 +281,8 @@ class Plugin(Layer):
             self.name_selector,
             self.host_selector,
             self.unit_selector,
-            wxpj.Button(self, "Connect", self.connect, size=(-1,20)),
-            wxpj.Button(self, "Prepare/dark", self.prepare_dark, size=(-1,20)),
+            Button(self, "Connect", self.connect, size=(-1,20)),
+            Button(self, "Prepare/dark", self.prepare_dark, size=(-1,20)),
             ),
             row=1, show=0, type=None, lw=-1, tw=50,
         )

@@ -7,8 +7,8 @@ import wx
 import cv2
 import numpy as np
 from mwx.controls import Param, LParam
-from mwx.graphman import Layer, Thread
-import wxpyJemacs as wxpj
+from mwx.controls import ToggleButton, Choice
+from mwx.graphman import Layer, Thread, Frame
 import editor as edi
 
 
@@ -24,13 +24,14 @@ class Plugin(Layer):
     def Init(self):
         self.viewer = Thread(self)
         
-        self.button = wxpj.ToggleButton(self, "View camera", icon='cam',
-            handler=lambda v: self.viewer.Start(self.run) if v.IsChecked() else self.viewer.Stop())
+        self.button = ToggleButton(self, "View camera", icon='cam',
+            handler=lambda v: self.viewer.Start(self.run)
+                        if v.IsChecked() else self.viewer.Stop())
         
         self.rate_param = LParam('rate', (100,500,100), 500, tip="refresh speed [ms] (>= 100ms)")
         self.size_param = Param('size', (128,256,512,1024), 512, tip="resizing view window (<= 1k)")
         
-        self.camera_selector = wxpj.Choice(self,
+        self.camera_selector = Choice(self,
                 choices=['JeolCamera', 'RigakuCamera'], readonly=1)
         
         self.layout(None, (
@@ -104,7 +105,7 @@ class Plugin(Layer):
 if __name__ == '__main__':
     from plugins import JeolCamera, RigakuCamera
     app = wx.App()
-    frm = wxpj.Frame(None)
+    frm = Frame(None)
     frm.load_plug(__file__, show=1)
     frm.load_plug(JeolCamera, show=0)
     frm.load_plug(RigakuCamera, show=0)

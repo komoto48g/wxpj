@@ -228,7 +228,7 @@ class Plugin(Layer):
         X = xc + r * np.cos(a)
         Y = yc + r * np.sin(a)
         
-        l,r,b,t = frame.extent
+        l,r,b,t = frame.get_extent()
         x, y = np.array([(x,y) for x,y in zip(X,Y) if l<x<r and b<y<t]).T
         z = frame.xytoc(x, y)
         oz = (z > 2 * rdist.mean())

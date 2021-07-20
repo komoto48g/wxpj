@@ -8,8 +8,8 @@ import numpy as np
 from numpy import pi,nan
 from numpy.fft import fft2,fftshift
 from mwx.controls import LParam
-from mwx.graphman import Layer
-import wxpyJemacs as wxpj
+from mwx.controls import Button, TextCtrl, Choice
+from mwx.graphman import Layer, Frame
 import editor as edi
 
 
@@ -26,7 +26,7 @@ class Plugin(Layer):
         self.page = LParam("page", (-1,1000,1), -1)
         self.page.bind(lambda lp: self.selected_view.select(lp.value))
         
-        self.choice = wxpj.Choice(self, size=(60,-1),
+        self.choice = Choice(self, size=(60,-1),
             choices=['FFT',
                      'FFT+',
                      'Cor',
@@ -37,7 +37,7 @@ class Plugin(Layer):
         
         self.score = LParam("score", (0.01, 10, 0.01), 0.1)
         
-        self.grid = wxpj.Choice(self, label="grid [mm]", size=(140,-1),
+        self.grid = Choice(self, label="grid [mm]", size=(140,-1),
             handler=lambda p: self.calc_mag(),
             choices=['1/2000', # Standard grating(Ted Pera)
                      '1/2160', # Standard Gatan grating
@@ -46,18 +46,18 @@ class Plugin(Layer):
             tip="Set grid length [mm/grid] to calculate Mag.")
         self.grid.Selection = 0
         
-        self.text = wxpj.TextCtrl(self, size=(140,40), style=wx.TE_READONLY|wx.TE_MULTILINE)
+        self.text = TextCtrl(self, size=(140,40), style=wx.TE_READONLY|wx.TE_MULTILINE)
         
         size = (72,-1)
         
         self.layout("Evaluate step by step", (
-            wxpj.Button(self, "1. Show",
+            Button(self, "1. Show",
                 lambda v: self.selected_view.select(self.selected_frame), icon='help', size=size,
                 tip="Select frame buffer.\n"
                     "(page -1 means the last frame)"),
             self.page,
             
-            wxpj.Button(self, "2. Eval",
+            Button(self, "2. Eval",
                 lambda v: self.testrun(), icon='help', size=size,
                 tip="Select evaluation method\n"
                     "  :FFT evaluates using FFT method. Use when grid is small\n"
@@ -65,13 +65,13 @@ class Plugin(Layer):
                     "  :Cor evaluates using Cor (pattern matching) method. Use when grid is large"),
             self.choice,
             
-            wxpj.Button(self, "3. Mark",
+            Button(self, "3. Mark",
                 lambda v: self.calc_mark(), icon='help', size=size,
                 tip="Set paramter of socre at percentile (:COR only).\n"
                     "score is the ratio [%] to maximum count for extracting spots"),
             self.score,
             
-            wxpj.Button(self, "4. Go",
+            Button(self, "4. Go",
                 lambda v: self.run(), icon='help', size=size,
                 tip="Run the fitting procedure.\n"),
             None,
@@ -79,12 +79,12 @@ class Plugin(Layer):
             row=2, show=1, type='vspin', tw=40, lw=0,
         )
         self.layout(None, (
-            wxpj.Button(self, "check unit",
+            Button(self, "check unit",
                 lambda v: self.parent.su.Show(), icon='v',
                 tip="Check unit length [mm/pixel]\n"
                     "See the startup option where globalunit can be set to calc mags."),
             
-            wxpj.Button(self, "Run",
+            Button(self, "Run",
                 lambda v: self.run_all(), icon='->',
                 tip="Run above (1-2-3) step by step.\n"
                     "Before calculating Mags, check unit length [mm/pixel]"),
@@ -278,7 +278,7 @@ if __name__ == "__main__":
     import glob
     
     app = wx.App()
-    frm = wxpj.Frame(None)
+    frm = Frame(None)
     frm.load_plug(__file__, show=1, docking=4)
     for path in glob.glob(r"C:/usr/home/workspace/images/*.bmp"):
         frm.load_buffer(path)

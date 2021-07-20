@@ -9,7 +9,7 @@ from __future__ import (division, print_function,
 import wx
 import mwx
 from mwx import LineProfile
-from mwx.graphman import Layer
+from mwx.graphman import Layer, Frame
 
 
 class Plugin(Layer):
@@ -38,10 +38,9 @@ class Plugin(Layer):
 if __name__ == "__main__":
     import wx
     import glob
-    import wxpyJemacs as wxpj
     
     app = wx.App()
-    frm = wxpj.Frame(None)
+    frm = Frame(None)
     frm.load_plug(__file__, show=1)
     for path in glob.glob(r"C:/usr/home/workspace/images/*.bmp"):
         frm.load_buffer(path)

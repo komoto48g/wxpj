@@ -8,10 +8,11 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
 import cv2
-import wxpyJemacs as wxpj
+from mwx.controls import LParam, Button
+from wxpyJemacs import Frame, Layer
 
 
-class Plugin(wxpj.Layer):
+class Plugin(Layer):
     """Plugin template ver.2
     """
     menu = "Plugins/&Template"
@@ -29,16 +30,16 @@ class Plugin(wxpj.Layer):
         self.layout(None, (
             self.lgbt.ksize, # reference of the lgbt param. (to be shared)
             
-            wxpj.Button(self, "1. Gaussian", lambda v: self.run(), icon='help',
+            Button(self, "1. Gaussian", lambda v: self.run(), icon='help',
                 tip="Gaussian blurring"),
             
-            wxpj.Button(self, "2. blur", lambda v: self.run_blur(), icon='help',
+            Button(self, "2. blur", lambda v: self.run_blur(), icon='help',
                 tip="Check the standard blur"),
             
-            wxpj.Button(self, "3. median", lambda v: self.run_med(), icon='help',
+            Button(self, "3. median", lambda v: self.run_med(), icon='help',
                 tip="Also check the Median blur"),
             
-            wxpj.Button(self, "4. ALL",
+            Button(self, "4. ALL",
                 lambda v: (self.run(), self.run_blur(), self.run_med()), icon='phoenix',
                 tip="Press to run all blurs above\n"
                     "This example shows how to give plain instruction.")
@@ -61,7 +62,7 @@ class Plugin(wxpj.Layer):
 
 if __name__ == "__main__":
     app = wx.App()
-    frm = wxpj.Frame(None)
+    frm = Frame(None)
     frm.load_plug(__file__, show=1, docking=4)
     frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
     frm.Show()

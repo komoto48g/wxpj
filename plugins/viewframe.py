@@ -12,7 +12,7 @@ from wx import aui
 import numpy as np
 import mwx
 from mwx.controls import Icon
-from mwx.graphman import Layer
+from mwx.graphman import Layer, Frame
 from mwx.framework import CtrlInterface
 from wx.lib.mixins.listctrl import CheckListCtrlMixin
 
@@ -270,10 +270,9 @@ class Plugin(Layer):
 
 if __name__ == "__main__":
     import glob
-    import wxpyJemacs as wxpj
     
     app = wx.App()
-    frm = wxpj.Frame(None)
+    frm = Frame(None)
     frm.load_plug(__file__, show=1, docking=0)
     for path in glob.glob(r"C:/usr/home/workspace/images/*.bmp"):
         print("loading path =", path)

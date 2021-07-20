@@ -8,9 +8,8 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import numpy as np 
 import wx
-from mwx.controls import Param, LParam
-from mwx.graphman import Layer
-import wxpyJemacs as wxpj
+from mwx.controls import Param, LParam, Button
+from wxpyJemacs import Layer, Frame
 
 
 class Plugin(Layer):
@@ -40,11 +39,11 @@ class Plugin(Layer):
             self.unit_param, (),
             self.cuts_param, (),
             
-            wxpj.Button(self, "Apply ALL",
+            Button(self, "Apply ALL",
                 lambda v: self.setup_all(), icon='v',
                     tip="Set globalunit and cutoff conditions to all frames"),
             
-            wxpj.Button(self, "Remove",
+            Button(self, "Remove",
                 lambda v: self.del_localunit(), icon='x',
                     tip="Remove localunit"),
             ),
@@ -128,7 +127,7 @@ class Plugin(Layer):
 
 if __name__ == '__main__':
     app = wx.App()
-    frm = wxpj.Frame(None)
+    frm = Frame(None)
     frm.load_plug(__file__, show=1, docking=4)
     frm.load_buffer(u"C:/usr/home/workspace/images/sample_grid.tif")
     frm.load_buffer(u"C:/usr/home/workspace/images/sample_diff.tif")

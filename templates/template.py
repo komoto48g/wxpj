@@ -1,18 +1,18 @@
 #! python
 # -*- coding: utf-8 -*-
 """template
-Version: 0.0
+Version: 1.0
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
-import mwx
 import cv2
-import wxpyJemacs as wxpj
+from mwx.controls import LParam
+from wxpyJemacs import Frame, Layer
 
 
-class Plugin(wxpj.Layer):
+class Plugin(Layer):
     """Plugin template ver.1
     """
     menu = "Plugins/&Template"
@@ -25,7 +25,7 @@ class Plugin(wxpj.Layer):
     unloadable = True
     
     def Init(self):
-        self.ksize = wxpj.LParam("ksize", (1,99,2), 13, tip="kernel window size")
+        self.ksize = LParam("ksize", (1,99,2), 13, tip="kernel window size")
         
         self.btn = wx.Button(self, label="Run", size=(-1,22))
         self.btn.Bind(wx.EVT_BUTTON, lambda v: self.run())
@@ -54,7 +54,7 @@ class Plugin(wxpj.Layer):
 
 if __name__ == "__main__":
     app = wx.App()
-    frm = wxpj.Frame(None)
+    frm = Frame(None)
     frm.load_plug(__file__, show=1, docking=4)
     frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
     frm.Show()

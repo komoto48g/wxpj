@@ -7,9 +7,8 @@ import cv2
 import numpy as np
 from numpy import pi
 ## from scipy import ndimage as ndi
-from mwx.controls import LParam
-from mwx.graphman import Layer, Frame
-import wxpyJemacs as wxpj
+from mwx.controls import LParam, Button
+from wxpyJemacs import Layer, Frame
 
 
 class Plugin(Layer):
@@ -21,7 +20,7 @@ class Plugin(Layer):
     menu = "Plugins/&Demo"
     
     def Init(self):
-        self.btn = wxpj.Button(self, "Rotate", self.rotate,
+        self.btn = Button(self, "Rotate", self.rotate,
             tip="Try [C-x r] to execute this function instead of press button.")
         
         self.rotdeg = LParam("[deg]", (-180,180, 1), 0, tip="angles to rotate:ccw")

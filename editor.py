@@ -17,9 +17,8 @@ from matplotlib import pyplot as plt
 from matplotlib import patches
 from matplotlib import cm
 ## from PIL import Image
-from mwx.controls import LParam
-from mwx.graphman import Layer
-import wxpyJemacs as wxpj
+from mwx.controls import LParam, Button
+from wxpyJemacs import Layer, Frame
 
 
 class Plugin(Layer):
@@ -39,10 +38,10 @@ class Plugin(Layer):
             row=2, cw=0, lw=16, tw=40
         )
         self.layout("test suite", (
-            wxpj.Button(self, "imconv", lambda v: self.test_imconv()),
-            wxpj.Button(self, "imtrunc", lambda v: self.test_imtrunc()),
-            wxpj.Button(self, "imcorr", lambda v: self.test_imcorr()),
-            wxpj.Button(self, "ellipse", lambda v: self.test_ellipse()),
+            Button(self, "imconv", lambda v: self.test_imconv()),
+            Button(self, "imtrunc", lambda v: self.test_imtrunc()),
+            Button(self, "imcorr", lambda v: self.test_imcorr()),
+            Button(self, "ellipse", lambda v: self.test_ellipse()),
             ),
             row=2,
         )
@@ -94,12 +93,12 @@ class Plugin(Layer):
 ## --------------------------------
 
 def imread(path):
-    buf, info = wxpj.Frame.read_buffer(path) # cf. np.asarray(Image.open(f))
+    buf, info = Frame.read_buffer(path) # cf. np.asarray(Image.open(f))
     return buf
 
 
 def imwrite(path, buf):
-    return wxpj.Frame.write_buffer(path, buf) # cf. Image.fromarray(buf).save(f)
+    return Frame.write_buffer(path, buf) # cf. Image.fromarray(buf).save(f)
 
 
 def imtrunc(buf=None, hi=0, lo=0):
@@ -498,12 +497,12 @@ if __name__ == "__main__":
     plot(xx, p(xx), x, y)
 
 
-## if __name__ == "__main__":
-##     import wx
-##     
-##     app = wx.App()
-##     frm = wxpj.Frame(None)
-##     frm.load_plug(__file__, show=1, docking=4)
-##     frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
-##     frm.Show()
-##     app.MainLoop()
+if __name__ == "__main__":
+    import wx
+    
+    app = wx.App()
+    frm = Frame(None)
+    frm.load_plug(__file__, show=1, docking=4)
+    frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
+    frm.Show()
+    app.MainLoop()

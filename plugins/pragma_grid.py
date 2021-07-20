@@ -4,7 +4,7 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
 from mwx.graphman import Layer
-import wxpyJemacs as wxpj
+from mwx.controls import Button
 
 
 class Plugin(Layer):
@@ -27,10 +27,10 @@ class Plugin(Layer):
         self.chk = wx.CheckBox(self, label="inv")
         
         self.layout(None, (
-            wxpj.Button(self, "Run", lambda v: self.run()),
+            Button(self, "Run", lambda v: self.run()),
             self.chkfit,
             self.chk,
-            wxpj.Button(self, "Setting", lambda v: self.show_setting()),
+            Button(self, "Setting", lambda v: self.show_setting()),
             ),
             row=3
         )
