@@ -1,4 +1,4 @@
-#! python
+#! /usr/bin/python3
 # -*- coding: utf-8 -*-
 """The frontend of Graph and Plug manager
 
@@ -37,7 +37,7 @@ if 'mwx' not in sys.modules:
 import mwx
 from mwx.controls import Icon, Button, ToggleButton, TextCtrl, Choice, Gauge, Indicator
 from mwx.controls import Param, LParam, ControlPanel
-from mwx.graphman import Thread, Layer, Graph
+from mwx.graphman import Layer, Thread, Graph
 from mwx.graphman import Frame as Framebase
 from pyJeol.plugman import NotifyFront
 from pyJeol.temisc import Environ

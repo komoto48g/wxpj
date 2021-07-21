@@ -1,5 +1,5 @@
-## ! python
-## -*- coding: utf-8 -*-
+#! python
+# -*- coding: utf-8 -*-
 """Editor's collection of config utility
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
