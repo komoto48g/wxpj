@@ -79,17 +79,19 @@ class Plugin(Layer):
                 dst = cv2.resize(src, (W, H), interpolation=cv2.INTER_AREA)
                 ## dst = cv2.cvtColor(dst, cv2.COLOR_GRAY2BGR)
                 
-                ## lines and circles with color:cyan #00c0c0
-                ## c = (192,192,0)
-                c = 255
-                cx, cy = W//2, H//2
-                
-                buf = np.resize(0, (H, W)).astype(dst.dtype)
-                cv2.line(buf, (0, cy), (W, cy), c, 1)
-                cv2.line(buf, (cx, 0), (cx, H), c, 1)
-                cv2.circle(buf, (cx, cy), cx//2, c, 1)
-                cv2.circle(buf, (cx, cy), cx//4, c, 1)
-                dst = cv2.bitwise_xor(buf, dst)
+                ## 照準サークルを xor で足し合わせる 
+                if 1:
+                    ## lines and circles with color:cyan #00c0c0
+                    ## c = (192,192,0)
+                    c = 255
+                    cx, cy = W//2, H//2
+                    buf = np.zeros((H, W), dtype=dst.dtype)
+                    ## buf = np.resize(0, (H, W)).astype(dst.dtype)
+                    cv2.line(buf, (0, cy), (W, cy), c, 1)
+                    cv2.line(buf, (cx, 0), (cx, H), c, 1)
+                    cv2.circle(buf, (cx, cy), cx//2, c, 1)
+                    cv2.circle(buf, (cx, cy), cx//4, c, 1)
+                    dst = cv2.bitwise_xor(buf, dst)
                 
                 cv2.imshow(title, dst)
                 cv2.waitKey(self.rate_param.value)

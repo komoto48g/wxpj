@@ -230,17 +230,18 @@ class Plugin(Layer):
         self.attach(self.graph, "graph")
         self.attach(self.output, "output")
         
-        ## @mwx.connect(self.nb, wx.EVT_COMMAND_SET_FOCUS) # wxMSW only
-        @mwx.connect(self.nb, wx.EVT_CHILD_FOCUS)
         def on_focus_set(v):
             self.parent.select_view(self.nb.CurrentPage.Target)
             v.Skip()
+        
+        self.nb.Bind(wx.EVT_CHILD_FOCUS, on_focus_set)
         
         self.Menu[0:0] = [
             (101, "&Edit annotation", "Edit annotation", Icon('edit'),
                 lambda v: self.ask()),
             (),
         ]
+    
     def attach(self, target, caption):
         if target not in [lc.Target for lc in self.all_pages]:
             lc = CheckList(self, target)

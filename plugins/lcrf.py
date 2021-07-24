@@ -40,7 +40,7 @@ class Model(object):
         h, w = buf.shape
         shift = [self(x) for x in np.arange(0,h)/h * 2*pi][::-1] # shift vector
         axis = np.arange(0., w)
-        data = np.resize(0., (h,w))
+        data = np.resize(0., (h, w))
         for j,(x,v) in enumerate(zip(buf, shift)):
             data[j] = np.roll(x, -int(v))
             ## data[j] = np.interp(axis+v, axis, x)
