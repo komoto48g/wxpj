@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#! python3
 # -*- coding: utf-8 -*-
 """The frontend of Graph and Plug manager
 
@@ -48,7 +48,7 @@ from config import ConfigData
 ## import wx.lib.mixins.listctrl # for py2exe
 ## import wx.lib.platebtn as pb
 
-__version__ = "0.30"
+__version__ = "0.31"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2021"
 

@@ -22,26 +22,36 @@ from mwx.graphman import Layer
 try:
     Offline = 1
     
+    ## if 'PyJEM.offline' in sys.modules:
+    ##     print('Loading PyJEM:offline module has already loaded.')
+    ##     from PyJEM.offline import detector
+    ##     Offline = True
+    ## 
+    ## elif 'PyJEM' in sys.modules:
+    ##     print('Loading PyJEM:online module has already loaded.')
+    ##     from PyJEM import detector
+    ##     Offline = False
+    ## 
+    ## else: # the case when this modulue is tested in standalone
+    ##     if Offline:
+    ##         from PyJEM.offline import detector
+    ##     else:
+    ##         from PyJEM import detector
+    
     if 'PyJEM.offline' in sys.modules:
         print('Loading PyJEM:offline module has already loaded.')
-        from PyJEM.offline import detector
         Offline = True
     
     elif 'PyJEM' in sys.modules:
         print('Loading PyJEM:online module has already loaded.')
-        from PyJEM import detector
         Offline = False
     
-    else: # the case when this modulue is tested in standalone
-        if Offline:
-            from PyJEM.offline import detector
-        else:
-            from PyJEM import detector
+    from PyJEM import detector
 
 except Exception as e:
     print(e)
-    print("  Current sys.version is Python {}".format(sys.version.split()[0]))
-    print("  PyJEM is supported under Python 3.5... sorry")
+    ## print("  Current sys.version is Python {}".format(sys.version.split()[0]))
+    ## print("  PyJEM is supported under Python 3.5... sorry")
     Offline = None
     detector = None
 
