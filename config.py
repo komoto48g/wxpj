@@ -1,9 +1,10 @@
-#! python
+#! python3
 # -*- coding: utf-8 -*-
 """Editor's collection of config utility
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
+import shutil
 import win32api
 import win32com.client
 import configparser
@@ -11,8 +12,6 @@ import sys
 import os
 import wx
 import numpy as np
-
-LITERAL_TYPE = str if sys.version_info >= (3,0) else (str,unicode)
 
 
 class Excel(object):
@@ -39,8 +38,10 @@ Usage:
                 try:
                     self.app = win32com.client.gencache.EnsureDispatch("Excel.Application")
                 except Exception as e:
-                    print(e)
-                    self.app = win32com.client.Dispatch("Excel.Application")
+                    print("- Failed to ensure dispatch: {}".format(e))
+                    shutil.rmtree(win32com.__gen_path__)
+                    ## self.app = win32com.client.Dispatch("Excel.Application")
+                    self.app = win32com.client.dynamic.Dispatch("Excel.Application")
                 self.book = self.app.Workbooks.Open(xlpath)
         else:
             ## create an instance of Excel app and create a book
@@ -89,13 +90,13 @@ class ConfigData(object):
         if `keys None, load ALL keys from the section
         """
         if verbose:
-            if wx.MessageBox("Do you want to reload configration?\n"
-                "\n The current data is to be overwritten with the original data:"
-                "\n {!r} [{}], keys={!r}".format(self.path, self.section, keys), "Load",
-                style=wx.YES_NO|wx.ICON_INFORMATION) != wx.YES:
+            if wx.MessageBox("Do you want to reload configuration?\n"
+                "\n The current data will be overwritten with the original data"
+                "\n {!r} [{}], keys={!r}".format(self.path, self.section, keys),
+                self.__module__, style=wx.YES_NO|wx.ICON_INFORMATION) != wx.YES:
                     return
         
-        if isinstance(keys, LITERAL_TYPE):
+        if isinstance(keys, str):
             keys = [keys]
         
         self.parser.read(self.path)
@@ -109,13 +110,13 @@ class ConfigData(object):
         if `keys None, save ALL keys into the section
         """
         if verbose:
-            if wx.MessageBox("Do you want to save configration?\n"
-                "\n The current data is to be saved and overwrites the original data:"
-                "\n {!r} [{}], keys={!r}".format(self.path, self.section, keys), "Save",
-                style=wx.YES_NO|wx.ICON_INFORMATION) != wx.YES:
+            if wx.MessageBox("Do you want to save configuration?\n"
+                "\n The current data will be saved and overwrites the original data"
+                "\n {!r} [{}], keys={!r}".format(self.path, self.section, keys),
+                self.__module__, style=wx.YES_NO|wx.ICON_INFORMATION) != wx.YES:
                     return
         
-        if isinstance(keys, LITERAL_TYPE):
+        if isinstance(keys, str):
             keys = [keys]
         try:
             opt = np.get_printoptions()
@@ -139,8 +140,8 @@ class ConfigData(object):
                              "config-report-{}.xlsx".format(xlname))
         
         if verbose:
-            if wx.MessageBox("Exporting configration to excel file {!r}".format(xlpath),
-                style=wx.YES_NO|wx.ICON_INFORMATION) != wx.YES:
+            if wx.MessageBox("Exporting config to excel file {!r}".format(xlpath),
+                self.__module__, style=wx.YES_NO|wx.ICON_INFORMATION) != wx.YES:
                     return
         try:
             excel = Excel(xlpath)
