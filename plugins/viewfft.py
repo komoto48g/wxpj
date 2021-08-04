@@ -51,8 +51,8 @@ class Plugin(Layer):
                'region_removed' : [ None, self.newfft ],
             }
         }
-        self.parent.define_key('C-f', lambda v: self.newfft(self.graph.frame), "fft")
-        self.parent.define_key('C-S-f', lambda v: self.newfft_inv(self.output.frame), "ifft")
+        self.parent.define_key('C-f', lambda v: self.newfft(self.graph.frame), doc="fft")
+        self.parent.define_key('C-S-f', lambda v: self.newfft_inv(self.output.frame), doc="ifft")
     
     def Destroy(self):
         self.setlive(False)

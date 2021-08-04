@@ -1,8 +1,9 @@
 ## pip install -r requirements.txt
-scipy==1.2.3
-opencv-python==3.4.5.20
+numpy
+scipy
 pillow
 matplotlib
-wxpython==4.0.7
+opencv-python
+wxpython
 pywin32
 httplib2
