@@ -39,12 +39,12 @@ which is required to pip-install the latest modules from GitHub.
     ├ pJ.cmd (batch file for startup)
     └ siteinit.py (initial setting)
 ```
-2. Install Python packages (from pypi) using [make-py35.bat](man/make-py35.bat) file.
+2. Install Python packages (from pypi) using [make-py35.bat](man/make-PY35.bat) file.
     ```
     $ make-py35.bat
     ```
 
-3. To update packages, use [make-py35-update.bat](man/make-py35-update.bat) file.
+3. To update packages, use [make-py35-update.bat](man/make-PY35-update.bat) file.
     ```
     $ make-py35-update.bat
     ```
