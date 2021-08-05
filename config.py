@@ -5,7 +5,7 @@
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 import shutil
-import win32api
+import pywintypes
 import win32com.client
 import configparser
 import sys
@@ -39,7 +39,10 @@ Usage:
                     self.app = win32com.client.gencache.EnsureDispatch("Excel.Application")
                 except Exception as e:
                     print("- Failed to ensure dispatch: {}".format(e))
-                    shutil.rmtree(win32com.__gen_path__)
+                    try:
+                        shutil.rmtree(win32com.__gen_path__)
+                    except FileNotFoundError:
+                        pass
                     ## self.app = win32com.client.Dispatch("Excel.Application")
                     self.app = win32com.client.dynamic.Dispatch("Excel.Application")
                 self.book = self.app.Workbooks.Open(xlpath)
@@ -138,7 +141,6 @@ class ConfigData(object):
         xlname, _ext = os.path.splitext(os.path.basename(self.path))
         xlpath = os.path.join(os.path.dirname(self.path),
                              "config-report-{}.xlsx".format(xlname))
-        
         if verbose:
             if wx.MessageBox("Exporting config to excel file {!r}".format(xlpath),
                 self.__module__, style=wx.YES_NO|wx.ICON_INFORMATION) != wx.YES:
@@ -154,11 +156,14 @@ class ConfigData(object):
                     ws.Range(ws.Cells(r,c), ws.Cells(r+h-1,c+w-1)).Value = v
                 else:
                     ws.Cells(r,c).Value = v
-            return True
-        except (PermissionError, win32api.error) as e:
-            if wx.MessageBox("Please close {!r}. Press [OK] to continue.".format(xlpath),
-                caption=str(e), style=wx.OK|wx.CANCEL|wx.ICON_WARNING) == wx.OK:
-                    return self.export(keys, r, c, verbose=0)
+            if verbose:
+                wx.MessageBox("Exported succesfully.", self.__module__)
+        except pywintypes.com_error as e:
+            wx.MessageBox(str(e), self.__module__)
+        except Exception as e:
+            wx.MessageBox("Access denied\n"
+                "\n- You don't have permission to access {!r}.".format(xlpath),
+                self.__module__, style=wx.ICON_WARNING)
 
 
 
@@ -167,6 +172,6 @@ if __name__ == "__main__":
     config = ConfigData(r"C:\usr\home\workspace\tem13\gdk-data\pylots.config", section='TEM')
     config.export(('cl3spot',))
     
-    import mwx
-    excel = Excel(r"C:\usr\home\workspace\tem13\gdk-dataconfig-report-pylots.xlsx")
-    mwx.deb(config)
+    ## import mwx
+    ## excel = Excel(r"C:\usr\home\workspace\tem13\gdk-data\config-report-pylots.xlsx")
+    ## mwx.deb(config)
