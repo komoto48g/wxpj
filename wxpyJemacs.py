@@ -43,7 +43,6 @@ from pyJeol.plugman import NotifyFront
 from pyJeol.temisc import Environ
 from pyDM3reader import DM3lib
 from pyDM4reader import dm4reader as DM4lib
-from config import ConfigData
 
 ## import wx.lib.mixins.listctrl # for py2exe
 ## import wx.lib.platebtn as pb
@@ -207,26 +206,16 @@ if __name__ == '__main__':
     ## --------------------------------
     ## switch --pyjem: 0(=offline), 1(=online), 2(=online+TEM3)
     try:
-        if online:
-            try:
-                print("Loading PyJEM.detector...")
-                from PyJEM import detector
-                
-                if online > 1:
-                    print("Loading PyJEM.TEM3 module...")
-                    from PyJEM import TEM3
-            
-            except Exception as e:
-                print("  {}... pass".format(e))
-                print("  Switching to offline mode.")
-                online = 0
-        
-        if online == 0:
+        if online > 1:
+            print("Loading PyJEM.TEM3 module...")
+            from PyJEM import TEM3
+        elif online:
+            print("Loading PyJEM...")
+            import PyJEM
+        else:
             print("Loading PyJEM.offline...")
-            from PyJEM.offline import detector
-            from PyJEM.offline import TEM3
-    
-    except Exception as e:
+            import PyJEM.offline
+    except ImportError as e:
         print("  {}... pass".format(e))
         print("  PyJEM is supported under Python 3.5... sorry")
     
