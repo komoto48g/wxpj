@@ -19,41 +19,33 @@ from mwx.controls import Param, LParam
 from mwx.controls import Button, Choice
 from mwx.graphman import Layer
 
-try:
-    Offline = 1
-    
-    ## if 'PyJEM.offline' in sys.modules:
-    ##     print('Loading PyJEM:offline module has already loaded.')
-    ##     from PyJEM.offline import detector
-    ##     Offline = True
-    ## 
-    ## elif 'PyJEM' in sys.modules:
-    ##     print('Loading PyJEM:online module has already loaded.')
-    ##     from PyJEM import detector
-    ##     Offline = False
-    ## 
-    ## else: # the case when this modulue is tested in standalone
-    ##     if Offline:
-    ##         from PyJEM.offline import detector
-    ##     else:
-    ##         from PyJEM import detector
-    
-    if 'PyJEM.offline' in sys.modules:
-        print('Loading PyJEM:offline module has already loaded.')
-        Offline = True
-    
-    elif 'PyJEM' in sys.modules:
-        print('Loading PyJEM:online module has already loaded.')
-        Offline = False
-    
+if sys.version_info >= (3,8):
     from PyJEM import detector
-
-except Exception as e:
-    print(e)
-    ## print("  Current sys.version is Python {}".format(sys.version.split()[0]))
-    ## print("  PyJEM is supported under Python 3.5... sorry")
-    Offline = None
-    detector = None
+else:
+    Offline = 1
+    try:
+        if 'PyJEM.offline' in sys.modules:
+            print('Loading PyJEM:offline module has already loaded.')
+            from PyJEM.offline import detector
+            Offline = True
+        
+        elif 'PyJEM' in sys.modules:
+            print('Loading PyJEM:online module has already loaded.')
+            from PyJEM import detector
+            Offline = False
+        
+        else: # the case when this modulue is tested in standalone
+            if Offline:
+                from PyJEM.offline import detector
+            else:
+                from PyJEM import detector
+        
+    except Exception as e:
+        print("$(e) = {!r}".format((e)))
+        print("Current sys.version is Python {}".format(sys.version.split()[0]))
+        print("- PyJEM is supported under Python 3.5... sorry")
+        Offline = None
+        detector = None
 
 ## REST client
 ##   Performs a single HTTP request.
@@ -147,12 +139,6 @@ Camera property:
     def stop(self):
         StopCreateCache(self.host) # close connection
         self.cont.livestop()
-    
-    ## def snapshot(self):
-    ##     if not Offline: # ▲Offilne とフォーマット違うし(ﾟДﾟ) しかもおそすぎ
-    ##         data = self.cont.snapshot('tif')
-    ##         return np.asarray(Image.open(io.BytesIO(data)))
-    ##     return self.cont.snapshot('tif')
     
     def cache(self):
         """Cache of the current image <uint16>"""
