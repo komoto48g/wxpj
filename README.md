@@ -17,50 +17,64 @@ These instructions will get you a copy of the project up and running on your loc
   cv2 verison 4.5.1
   mwx 0.40
 ```
+
 ### Prerequisites
 
 ![setup](man/image/net.png)
 
 ### Installing
 
-1. 適当なディレクトリ (Your-workdir) を作成し，この社内レポジトリ [wxpj](http://dl-box.jeol.co.jp/gitbucket/komoto/wxpj) から wxpj-master.zip をダウンロードして展開します．
+Create a workspace and install it in it. 
+Please prepare `PyJEM-*.zip` in advance.
+Please Install [Python 3.5.4 for Windows](https://www.python.org/downloads/release/python-354/).
+***Don't use Anaconda because wxPython cannot be installed.***
+Please also install [Git for Windows](https://git-scm.com/) in advance,
+which is required to pip-install the latest modules from GitHub.
 
-2. PyJEM は社内 ノーツデータベース [Automation & PyJEM - PyJEM & AutomationCenter導入](Notes://NotesOffice/4925805700077587/DD11EF58D84D230E4925646F003E2CF8/162DB45516A951F4492580570007AA5D)
-から *PyJEM-1.0.2.1143.zip* をダウンロードして，同じディレクトリにコピーしてください (zip のままで展開は不要)
-
-3.  セッション起動用のバッチファイルを作成しておきます．(絶対必要ではありませんがセッションファイルから起動するときにあると便利です)．
-pj.cmd という名前でテキストファイルを作成し，次のコマンドを書いておきます．
-```
-py -3.5 wxpj-master\wxpyJemacs.py --pyjem=1 -s%*
-```
-
-3. ディレクトリ構成は以下のようになります．
+1. Prepare the workspace directory as follows.
 ```
 <your-workdir>
-    ├ pj.cmd
-    ├ wxpj-master
-    └ PyJEM-x.x.x.xxxx.zip
+    ├ make-py35.bat (batch file for installation)
+    ├ PyJEM-1.0.2.1143.zip (PyJEM package)
+    ├ pJ.cmd (batch file for startup)
+    └ siteinit.py (initial setting)
+```
+2. Install Python packages (from pypi) using [make-py35.bat](man/make-py35.bat) file.
+    ```
+    $ make-py35.bat
+    ```
+
+3. To update packages, use [make-py35-update.bat](man/make-py35-update.bat) file.
+    ```
+    $ make-py35-update.bat
+    ```
+
+#### Installing Note (For internal use only)
+
+- 社内からインストールする場合プロキシが見つからない為に失敗するかもしれません．
+  その場合はまず次の設定を行ってください
+```
+$ set HTTPS_PROXY=http://i-net.jeol.co.jp:80
+$ set HTTP_PROXY=http://i-net.jeol.co.jp:80
 ```
 
-5. Install Python 3.5.4 for Windows
-    (https://www.python.org/downloads/release/python-354/)
-    
-    Currently required environs: PY35 (標準 CPython をインストールしてください)
-    
-    - PYJEM 機能を使用するために PY <= 3.5 (以下) をインストールしてください．
-    - TEM3 を使用する場合は 別途 TemExternal のインストールが必要です．
-    - Anaconda の古いやつだと wxPython のインストールがコケます．
-    - Anaconda はバージョン管理でよくずっコケるので推奨しません．
-
 <!--
-2. Install Git for Windows
-    (https://git-scm.com/)
-    
-    - This program is necessary for installing master modules from GitHub.
--->
+1. 適当なディレクトリ (Your-workdir) を作成し，社内専用レポジトリから .zip をダウンロードして展開します．
+     - [wxpj-master](http://dl-box.jeol.co.jp/gitbucket/komoto/wxpj)
+     - [wxpj-aero-master](http://dl-box.jeol.co.jp/gitbucket/komoto/wxpj-aero) 
 
-6. Install packages
-    
+2. PyJEM は社内 ノーツデータベースから *PyJEM-1.0.2.1143.zip* をダウンロードしてください (zip の展開は不要)
+ディレクトリ構成は以下のようになります．
+```
+<your-workdir>
+    ├ <wxpj-master>
+    ├ <wxpj-aero-master>
+    ├ PyJEM-1.0.2.1143.zip (PyJEM package)
+    ├ pJ.cmd (batch file for startup)
+    └ siteinit.py (initial setting)
+```
+
+4. Install packages
     - To setup wxpj, do pip install.
       コマンドプロンプトを起動して以下のコマンドを順番に実行します ($ はプロンプトなので無視)
     ```
@@ -68,52 +82,38 @@ py -3.5 wxpj-master\wxpyJemacs.py --pyjem=1 -s%*
     $ py -3.5 -m pip install -r wxpj-mater/requirements.txt
     $ py -3.5 -m pip install PyJEM-1.0.2.1143.zip
     ```
-    
-    - 社内からインストールする場合プロキシが見つからない為に失敗するかもしれません．
-      その場合はまず次の設定を行ってください
-    ```
-    $ set HTTPS_PROXY=http://i-net.jeol.co.jp:80
-    $ set HTTP_PROXY=http://i-net.jeol.co.jp:80
-    ```
-    
-
-準備は以上です
-
+-->
 
 ## How to execute wxpyJemacs
 
-`wxpj-master/wxpyJemacs.py` をダブルクリックして起動します．
-終了するときにセッションを保存してください．セッションファイルの拡張子は `*.jssn` です．
-次回からは上で作成した `pj.cmd` にドロップすることで起動できます．
-また，拡張子の関連付け (`*.jssn <= pj.cmd`) をすればダブルクリックだけで起動できるようになります．
+Launch `wxpj/wxpyJemacs.py`.
 
-コマンドプロンプトから起動するときは次のようにします．
+When you close the program, a popup window will appear asking [Do you want to save session before closing program?].
+
+> The session is like a project file, and it roughly saves plugins, paramteres, windows layouts, buffers, etc.
+
+Click [OK]. Then, the next time you start the program with the session file, you can start it in the same state as when it was last closed. The extension of the session file is `*.jssn`. 
+
+
+## How to start session
+
+Start from the command prompt using [pJ.cmd](man/pJ.cmd):
 ```
-$ py -3.5 wxpyjemacs.py --pyjem=1 -suser
+$ pj user
 ```
-    --pyjem: pyjem 拡張の使用を宣言します
+which is equivalent to the following:
+```
+$ py -3.5 wxpj/wxpyjemacs.py --pyjem=1 -suser
+```
+The meanings of the command arguments are:
+
+    --pyjem: Declare using pyjem
 
         Launch wxpyJemacs with --pyjem=0(=offline), 1(=online), or 2(=online with TEM3)
         The defalut switch is --pyjem=None, that means no PyJEMs to be involved.
+        Please use flag `1` normaly.
 
-<!--
-▲ TEM3:online を宣言しない場合，
-アプリケーション起動後に TEM3 を含むプラグインを組み込むことは一切できません
-▲ TEM3:online を宣言した場合，
-DnD, CnP などの Windows shell ex はすべて使用不可になりますので注意してください．
--->
-
-    -sxxx: xxx セッションで開始します
-    
-        セッションとは，プロジェクトファイル的なやつで，
-        プラグイン拡張，ウィンドウレイアウト，バッファとかをおーざっぱに保持します
-
-<!--
-### バイナリ実行の場合
-バイナリパッケージは実行に必要なランタイムをすべて含んでいますが，
-Windows 10 64bit (AMD64) 以外の OS では実行できません．
-(たぶん OpenCV の dll バージョンが合わないため)
--->
+    -sxxx: Start xxx session
 
 
 ## Deployment
