@@ -4,53 +4,14 @@
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
-import shutil
 import pywintypes
 import win32com.client
 import configparser
+import shutil
 import sys
 import os
 import wx
 import numpy as np
-
-
-class Excel(object):
-    """Excel COM object
-
-Usage:
-    excel = Excel(xlpath)
-    ws = excel.book.Worksheets(name)
-    rng = ws.Range(ws.Cells(i,j), ws.Cells(k,l))
-    data = rng.Value # read
-    rng.Value = data # write
-    excel.book.Close()
-    excel.app.Quit()
-    """
-    def __init__(self, xlpath, show=True):
-        if xlpath:
-            xlpath = os.path.abspath(xlpath)
-            try:
-                ## get the active instance of Excel app on our system
-                self.app = win32com.client.GetActiveObject("Excel.Application")
-                self.book = self.app.Workbooks(xlpath)
-            except Exception:
-                ## create an instance of Excel app and open the book
-                try:
-                    self.app = win32com.client.gencache.EnsureDispatch("Excel.Application")
-                except Exception as e:
-                    print("- Failed to ensure dispatch: {}".format(e))
-                    try:
-                        shutil.rmtree(win32com.__gen_path__)
-                    except FileNotFoundError:
-                        pass
-                    ## self.app = win32com.client.Dispatch("Excel.Application")
-                    self.app = win32com.client.dynamic.Dispatch("Excel.Application")
-                self.book = self.app.Workbooks.Open(xlpath)
-        else:
-            ## create an instance of Excel app and create a book
-            self.app = win32com.client.gencache.EnsureDispatch("Excel.Application")
-            self.book = self.app.Workbooks.Add()
-        self.app.Visible = show
 
 
 def _eval_array(x):
@@ -147,9 +108,13 @@ class ConfigData(object):
                     return
         try:
             excel = Excel(xlpath)
-            
+            sheets = excel.book.Worksheets
             for key in keys:
-                ws = excel.book.Worksheets(key)
+                try:
+                    ws = sheets(key)
+                except pywintypes.com_error:
+                    ws = sheets.Add(None, sheets(sheets.Count))
+                    ws.Name = key
                 v = self.data[key]
                 if isinstance(v, np.ndarray):
                     h, w = v.shape
@@ -166,12 +131,39 @@ class ConfigData(object):
                 self.__module__, style=wx.ICON_WARNING)
 
 
+class Excel(object):
+    def __init__(self, xlpath, show=True):
+        xlpath = os.path.abspath(xlpath)
+        if os.path.exists(xlpath):
+            try:
+                ## get the active instance of Excel app on our system
+                self.app = win32com.client.GetActiveObject("Excel.Application")
+                self.book = self.app.Workbooks.Open(xlpath)
+            except Exception:
+                ## create an instance of Excel app and open the book
+                try:
+                    self.app = win32com.client.gencache.EnsureDispatch("Excel.Application")
+                except Exception as e:
+                    print("- Failed to ensure dispatch: {}".format(e))
+                    try:
+                        shutil.rmtree(win32com.__gen_path__)
+                    except FileNotFoundError:
+                        pass
+                    self.app = win32com.client.dynamic.Dispatch("Excel.Application")
+                self.book = self.app.Workbooks.Open(xlpath)
+        else:
+            ## create an instance of Excel app and create a book
+            self.app = win32com.client.gencache.EnsureDispatch("Excel.Application")
+            self.book = self.app.Workbooks.Add()
+            self.book.SaveAs(xlpath)
+        self.app.Visible = show
+
 
 if __name__ == "__main__":
+    import mwx
     app = wx.App()
     config = ConfigData(r"C:\usr\home\workspace\tem13\gdk-data\pylots.config", section='TEM')
     config.export(('cl3spot',))
     
-    ## import mwx
-    ## excel = Excel(r"C:\usr\home\workspace\tem13\gdk-data\config-report-pylots.xlsx")
-    ## mwx.deb(config)
+    excel = Excel(r"C:\usr\home\workspace\tem13\gdk-data\config-report-pylots.xlsx")
+    mwx.deb(excel)
