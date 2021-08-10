@@ -205,19 +205,20 @@ if __name__ == '__main__':
     ##   or else you never do it hereafter.
     ## --------------------------------
     ## switch --pyjem: 0(=offline), 1(=online), 2(=online+TEM3)
-    try:
-        if online > 1:
-            print("Loading PyJEM.TEM3 module...")
-            from PyJEM import TEM3
-        elif online:
-            print("Loading PyJEM...")
-            import PyJEM
-        else:
-            print("Loading PyJEM.offline...")
-            import PyJEM.offline
-    except ImportError as e:
-        print("  {}... pass".format(e))
-        print("  PyJEM is supported under Python 3.5... sorry")
+    if online is not None:
+        try:
+            if online > 1:
+                print("Loading PyJEM.TEM3 module...")
+                from PyJEM import TEM3
+            elif online:
+                print("Loading PyJEM...")
+                import PyJEM
+            else:
+                print("Loading PyJEM.offline...")
+                import PyJEM.offline
+        except ImportError as e:
+            print("  {}... pass".format(e))
+            print("  PyJEM is supported under Python 3.5... sorry")
     
     ## --------------------------------
     ## Start main process with siteinit
