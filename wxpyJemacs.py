@@ -206,13 +206,12 @@ if __name__ == '__main__':
     ## --------------------------------
     ## switch --pyjem: 0(=offline), 1(=online), 2(=online+TEM3)
     try:
-        if online:
-            if online > 1:
-                print("Loading PyJEM.TEM3 module...")
-                from PyJEM import TEM3
-            else:
-                print("Loading PyJEM...")
-                import PyJEM
+        if online > 1:
+            print("Loading PyJEM.TEM3 module...")
+            from PyJEM import TEM3
+        elif online:
+            print("Loading PyJEM...")
+            import PyJEM
         else:
             print("Loading PyJEM.offline...")
             import PyJEM.offline
