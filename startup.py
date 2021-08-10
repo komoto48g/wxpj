@@ -18,6 +18,7 @@ class Plugin(Layer):
     menu = "Plugins/Options"
     menustr = "&startup"
     category = "Option"
+    unloadable = False
     
     def Init(self):
         self.accv_param = Param("Acc.Voltage", (100e3, 200e3, 300e3), 300e3,
