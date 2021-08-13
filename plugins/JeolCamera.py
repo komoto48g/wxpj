@@ -40,8 +40,7 @@ else:
             else:
                 from PyJEM import detector
         
-    except Exception as e:
-        print("$(e) = {!r}".format((e)))
+    except ImportError:
         print("Current sys.version is Python {}".format(sys.version.split()[0]))
         print("- PyJEM is supported under Python 3.5... sorry")
         Offline = None

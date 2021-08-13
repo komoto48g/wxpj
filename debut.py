@@ -30,8 +30,8 @@ import siteinit as si
 try:
     graph = self.graph
     output = self.output
-except Exception as e:
-    print(e)
+except AttributeError:
+    pass
 """
 
 np.set_printoptions(linewidth=256) # default 75
@@ -108,7 +108,7 @@ To Divers:
         Anything one man can imagine, other man can make real.
         --- Jules Verne (1828--1905)
         """,
-        size=(854,360))
+        size=(854,480))
 
 
 if __name__ == '__main__':

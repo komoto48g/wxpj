@@ -24,7 +24,7 @@ def find_ellipses(src, tol=0.75):
     try:
         ## opencv <= 3.4.5
         c, contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    except:
+    except ValueError:
         contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     ## Detect enclosing rectangles

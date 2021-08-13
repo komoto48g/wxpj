@@ -154,8 +154,10 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
         self.__dir = not self.__dir # toggle 0:ascend/1:descend
         
         def _eval(x):
-            try: return eval(x.replace('*','')) # localunit* とか
-            except: return x
+            try:
+                return eval(x.replace('*','')) # localunit* とか
+            except Exception:
+                return x
         
         frames = self.Target.all_frames
         if frames:
