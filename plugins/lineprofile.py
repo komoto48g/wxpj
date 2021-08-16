@@ -9,7 +9,7 @@ from __future__ import (division, print_function,
 import wx
 import mwx
 from mwx import LineProfile
-from mwx.graphman import Layer, Frame
+from mwx.graphman import Layer
 
 
 class Plugin(Layer):
@@ -36,8 +36,9 @@ class Plugin(Layer):
 
 
 if __name__ == "__main__":
-    import wx
     import glob
+    import wx
+    from wxpyJemacs import Frame
     
     app = wx.App()
     frm = Frame(None)

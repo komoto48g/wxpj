@@ -18,7 +18,7 @@ from matplotlib import patches
 from matplotlib import cm
 ## from PIL import Image
 from mwx.controls import LParam, Button
-from wxpyJemacs import Layer, Frame
+from mwx.graphman import Layer, Frame
 
 
 class Plugin(Layer):

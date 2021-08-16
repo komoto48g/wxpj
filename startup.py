@@ -9,7 +9,7 @@ from __future__ import (division, print_function,
 import numpy as np 
 import wx
 from mwx.controls import Param, LParam, Button
-from wxpyJemacs import Layer, Frame
+from mwx.graphman import Layer, Frame
 
 
 class Plugin(Layer):

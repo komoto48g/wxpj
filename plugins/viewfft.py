@@ -12,7 +12,7 @@ from numpy.fft import fft2,ifft2,fftshift
 ## from scipy.fftpack import fft,ifft,fft2,ifft2 Memory Leak? <scipy 0.16.1>
 ## import cv2
 from mwx.controls import Param
-from mwx.graphman import Layer, Frame
+from mwx.graphman import Layer
 
 
 class Plugin(Layer):
@@ -112,6 +112,7 @@ class Plugin(Layer):
 
 if __name__ == "__main__":
     import glob
+    from wxpyJemacs import Frame
     
     app = wx.App()
     frm = Frame(None)

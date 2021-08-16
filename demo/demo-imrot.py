@@ -8,7 +8,7 @@ import numpy as np
 from numpy import pi
 ## from scipy import ndimage as ndi
 from mwx.controls import LParam, Button
-from wxpyJemacs import Layer, Frame
+from mwx.graphman import Layer, Frame
 
 
 class Plugin(Layer):

@@ -9,7 +9,7 @@ from numpy import pi,nan
 from numpy.fft import fft2,fftshift
 from mwx.controls import LParam
 from mwx.controls import Button, TextCtrl, Choice
-from mwx.graphman import Layer, Frame
+from mwx.graphman import Layer
 import editor as edi
 
 
@@ -276,6 +276,7 @@ class Plugin(Layer):
 
 if __name__ == "__main__":
     import glob
+    from wxpyJemacs import Frame
     
     app = wx.App()
     frm = Frame(None)

@@ -12,7 +12,7 @@ from wx import aui
 import numpy as np
 import mwx
 from mwx.controls import Icon
-from mwx.graphman import Layer, Frame
+from mwx.graphman import Layer
 from mwx.framework import CtrlInterface
 from wx.lib.mixins.listctrl import CheckListCtrlMixin
 
@@ -183,7 +183,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
             frames=[self.Target.all_frames[j] for j in self.selected_items] or None)
     
     ## --------------------------------
-    ## Actions of Frame handler
+    ## Actions of frame-handler
     ## --------------------------------
     
     def on_frame_loaded(self, frame):
@@ -273,6 +273,7 @@ class Plugin(Layer):
 
 if __name__ == "__main__":
     import glob
+    from wxpyJemacs import Frame
     
     app = wx.App()
     frm = Frame(None)
