@@ -26,5 +26,4 @@ dist/
 lib/
 lib64/
 *.egg-info/
-*.egg
-MANIFEST
+#*.egg

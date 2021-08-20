@@ -27,12 +27,12 @@ from PIL import Image
 from PIL import TiffImagePlugin # tiff extension for py2exe
 if 'mwx' not in sys.modules:
     ## Add eggs in the nest to the path (new PyJEM for PY38)
-    if sys.version_info >= (3,8):
-        egg = 'py3.8'
-    else:
-        egg = 'py3.5'
     home = os.path.dirname(os.path.abspath(__file__))
-    for path in glob.glob(os.path.join(home, "nest/*-{}.egg".format(egg))):
+    if sys.version_info >= (3,8):
+        eggs = os.path.join(home, "nest/*-py3.8.egg")
+    else:
+        eggs = os.path.join(home, "nest/*-py3.5.egg")
+    for path in reversed(glob.glob(eggs)):
         sys.path.append(path)
 import mwx
 from mwx.controls import Icon, Button, ToggleButton, TextCtrl, Choice, Gauge, Indicator
