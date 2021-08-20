@@ -243,8 +243,12 @@ if __name__ == '__main__':
         raise
     
     if session:
-        print("Starting session {!r}".format(session))
-        frm.load_session(session, flush=False)
+        try:
+            print("Starting session {!r}".format(session))
+            frm.load_session(session, flush=False)
+        except FileNotFoundError:
+            print("- No such session file {!r}".format(session))
+            pass
     
     frm.Show()
     app.MainLoop()
