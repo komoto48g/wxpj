@@ -1,4 +1,4 @@
-#! python
+#! python3
 # -*- coding: utf-8 -*-
 """Editor's collection of wxpj
 
