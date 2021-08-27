@@ -19,9 +19,11 @@ from mwx.controls import Param, LParam
 from mwx.controls import Button, Choice
 from mwx.graphman import Layer
 
-if sys.version_info >= (3,8):
+## if sys.version_info >= (3,8):
+try:
+    Offline = None
     from PyJEM import detector
-else:
+except:
     Offline = 1
     try:
         if 'PyJEM.offline' in sys.modules:

@@ -1,6 +1,7 @@
-#! python
+#! python3
 # -*- coding: utf-8 -*-
 """template
+
 Version: 2.0
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -8,8 +9,8 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 import wx
 import cv2
-from mwx.controls import LParam, Button
-from wxpyJemacs import Frame, Layer
+from mwx.controls import Button
+from wxpyJemacs import Layer, Frame
 
 
 class Plugin(Layer):

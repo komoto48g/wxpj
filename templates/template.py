@@ -1,6 +1,7 @@
-#! python
+#! python3
 # -*- coding: utf-8 -*-
-"""template
+"""Template of Layer
+
 Version: 1.0
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -9,7 +10,7 @@ from __future__ import (division, print_function,
 import wx
 import cv2
 from mwx.controls import LParam
-from wxpyJemacs import Frame, Layer
+from wxpyJemacs import Layer, Frame
 
 
 class Plugin(Layer):
