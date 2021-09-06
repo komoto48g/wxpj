@@ -27,6 +27,7 @@ from numpy import pi,nan,inf
 from scipy import ndimage as ndi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 import siteinit as si
+import editor as edi
 try:
     graph = self.graph
     output = self.output
