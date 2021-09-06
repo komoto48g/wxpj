@@ -87,7 +87,7 @@ class Plugin(Layer):
     def run(self, frame=None, **kwargs):
         if not frame:
             frame = self.selected_view.frame
-        self.remove_artists()
+        del self.Arts
         
         ## Search center of circles
         src = self.lgbt.calc(frame, **kwargs)
@@ -106,7 +106,7 @@ class Plugin(Layer):
                 r *= frame.unit
                 
                 ## 不特定多数の円を描画する
-                self.add_artists(frame,
+                self.set_artists(frame,
                     patches.Circle((x,y), r, color='r', ls='dotted', lw=1, fill=0))
                 xy.append((x,y))
             frame.markers = np.array(xy).T # scatter markers if any xy

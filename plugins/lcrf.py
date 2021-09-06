@@ -183,7 +183,7 @@ class Plugin(Layer):
     def run(self, frame=None, shift=0, maxloop=4):
         if not frame:
             frame = self.selected_view.frame
-        self.remove_artists()
+        del self.Arts
         
         src = frame.buffer
         h, w = src.shape
@@ -235,7 +235,7 @@ class Plugin(Layer):
         frame.markers = (x[oz][0:-1:3], y[oz][0:-1:3]) # scatter markers onto the arc
         
         ## サークル描画 (確認用)
-        self.add_artists(frame,
+        self.set_artists(frame,
             patches.Circle((xc, yc), lo*frame.unit, color='c', ls='--', lw=1/2, fill=0),
             patches.Circle((xc, yc), hi*frame.unit, color='c', ls='--', lw=1/2, fill=0),
             *frame.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75),

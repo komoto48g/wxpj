@@ -72,7 +72,7 @@ class Plugin(Layer):
     def run(self, frame=None, **kwargs):
         if not frame:
             frame = self.selected_view.frame
-        self.remove_artists()
+        del self.Arts
         
         ## Search center of circles
         src = self.lgbt.calc(frame, **kwargs)
@@ -95,7 +95,7 @@ class Plugin(Layer):
                     art.height = ra * frame.unit
                     art.width = rb * frame.unit
                     art.angle = 90-angle
-                    self.add_artists(frame, art)
+                    self.set_artists(frame, art)
                     
                     ## 検出した楕円の中心を記録する．強度の偏りは考慮しない
                     ## xy.append(art.center)
