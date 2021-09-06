@@ -15,7 +15,7 @@ from mwx.graphman import Layer, Frame
 class Plugin(Layer):
     """Plugins of startup settings
     """
-    menu = "Plugins/Options"
+    menu = "File/Options"
     menustr = "&startup"
     category = "Option"
     unloadable = False
