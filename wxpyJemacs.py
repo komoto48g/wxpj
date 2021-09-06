@@ -113,7 +113,6 @@ class pyJemacs(Framebase):
         self.menubar["Plugins"] += [ # insert menus for extenstion, option, etc.
             ("Extensions", []),
             ("Functions", []),
-            ("Options", []),
             (),
         ]
         self.menubar.reset()
