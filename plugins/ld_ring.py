@@ -133,7 +133,7 @@ class Plugin(Layer):
         
         self.model = self.Fitting_model(self)
         self.init_grid(self.graph.axes)
-        
+    
     def init_grid(self, axes):
         grid = self.model.basegrid(self.grid_params)
         self.Arts = [axes.plot([], [], 'k--', lw=0.5, alpha=0.75)[0] for z in grid]\
