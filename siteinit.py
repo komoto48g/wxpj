@@ -27,8 +27,8 @@ def init_frame(self):
     
     ## matplotlib wxagg backend
     ## to restrict imshow sizes max typically < 24e6 (bytes)
-    self.graph.nbytes_threshold = 6e6
-    self.output.nbytes_threshold = 6e6
+    self.graph.nbytes_threshold = 8e6
+    self.output.nbytes_threshold = 8e6
     
     ## window layout
     self.histogram.modeline.Show()
@@ -36,8 +36,8 @@ def init_frame(self):
     ## --------------------------------
     ## Load plugins
     ## --------------------------------
-    sys.path.append(r"C:\usr\home\workspace\tem13\gdk-aero")
-    sys.path.append(r"C:\usr\home\workspace\tem13\gdk-data")
+    ## sys.path.append(r"C:\usr\home\workspace\tem13\gdk-aero")
+    ## sys.path.append(r"C:\usr\home\workspace\tem13\gdk-data")
     
     self.ed = self.require("editor")
     self.su = self.require('startup')
