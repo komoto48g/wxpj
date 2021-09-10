@@ -53,10 +53,11 @@ class Plugin(Layer):
            'thresh': self.thresh.value,
         }
     
-    def calc(self, frame=None, otsu=0, invert=0, show=1):
+    def calc(self, frame=None, otsu=0, invert=0):
         """Blur by Gaussian window and binarize
-       otsu : True when using Otsu's algorithm
-     invert : invert dst image (0 <--> 255)
+        otsu : True when using Otsu's algorithm
+               float number (0 < r < 1) indicates the threshhold percentile
+      invert : invert dst image (for dark-field image)
         """
         if not frame:
             frame = self.selected_view.frame
@@ -69,10 +70,13 @@ class Plugin(Layer):
             buf = cv2.GaussianBlur(buf, (k,k), s)
         self.output.load(buf, name='*Gauss*', localunit=frame.unit)
         
-        t, dst = cv2.threshold(buf, t, 255, cv2.THRESH_OTSU if otsu else cv2.THRESH_BINARY)
+        if 0 < otsu < 1:
+            t = np.percentile(buf, 100 * otsu)
+            t, dst = cv2.threshold(buf, t, 255, cv2.THRESH_BINARY)
+        else:
+            t, dst = cv2.threshold(buf, t, 255, cv2.THRESH_OTSU if otsu else cv2.THRESH_BINARY)
         self.thresh.value = t
         if invert:
             dst = 255 - dst
-        if show:
-            self.output.load(dst, name='*threshold*', localunit=frame.unit)
+        self.output.load(dst, name='*threshold*', localunit=frame.unit)
         return dst

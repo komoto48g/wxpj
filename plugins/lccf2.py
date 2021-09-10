@@ -70,12 +70,13 @@ class Plugin(Layer):
     maxratio = 5.0 # ひずみの大きい楕円は除外する
     
     def run(self, frame=None, **kwargs):
+        """Search center of circles"""
         if not frame:
             frame = self.selected_view.frame
         del self.Arts
         
-        ## Search center of circles
-        src = self.lgbt.calc(frame, **kwargs)
+        src = self.lgbt.calc(frame, **kwargs) # image <uint8>
+        
         circles = find_ellipses(src)
         self.message("found {} circles".format(len(circles)))
         

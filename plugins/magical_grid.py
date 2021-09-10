@@ -153,10 +153,9 @@ class Plugin(Layer):
                 return
         self.message("\b @lccf...")
         if self.score.value is nan:
-            self.lccf.run(frame, otsu=1)
+            self.lccf.run(frame, otsu=True)
         else:
-            self.lgbt.thresh.value = np.percentile(frame.buffer, 100-self.score.value)
-            self.lccf.run(frame, otsu=0)
+            self.lccf.run(frame, otsu=1-self.score.value/100)
         return frame
     
     def calc_fit(self, frame=None):

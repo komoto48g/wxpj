@@ -41,7 +41,7 @@ class Plugin(Layer):
         self.lccf.Show(1)
     
     def run(self):
-        self.lccf.run(otsu=1, invert=self.chk.Value)
+        self.lccf.run(otsu=True, invert=self.chk.Value)
         if self.chkfit.Value:
             self.ld.thread.Start(self.ld.run)
             self.show_setting(1)
