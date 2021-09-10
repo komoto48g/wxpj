@@ -129,6 +129,7 @@ class Plugin(Layer):
             ),
             row=1, show=0, type=None, lw=-1, tw=50, editable=0,
         )
+        self.__camera = None
     
     def set_current_session(self, session):
         if session:
@@ -147,7 +148,9 @@ class Plugin(Layer):
     ## --------------------------------
     ## Camera Attribtues
     ## --------------------------------
-    camera = None
+    @property
+    def camera(self):
+        return self.__camera
     
     def set_exposure(self, p):
         if self.camera:
@@ -165,7 +168,7 @@ class Plugin(Layer):
             print(self.message("- Camera name is not specified."))
             return
         try:
-            self.camera = Camera(name, host)
+            self.__camera = Camera(name, host)
             
             self.message("Connected to {!r}".format(self.camera))
             self.message("\b GMS ver.{}".format(self.camera.GetDMVersion()))
@@ -181,7 +184,7 @@ class Plugin(Layer):
         
         except Exception as e:
             print(self.message("- Connection failed; {!r}".format(e)))
-            self.camera = None
+            self.__camera = None
     
     def insert(self, evt=None, ins=True):
         if self.camera:

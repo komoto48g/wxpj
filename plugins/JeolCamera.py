@@ -283,6 +283,7 @@ class Plugin(Layer):
             ),
             row=1, show=0, type=None, lw=-1, tw=50,
         )
+        self.__camera = None
     
     def set_current_session(self, session):
         if session:
@@ -301,7 +302,9 @@ class Plugin(Layer):
     ## --------------------------------
     ## Camera Attribtues
     ## --------------------------------
-    camera = None
+    @property
+    def camera(self):
+        return self.__camera
     
     def set_exposure(self, p):
         if self.camera:
@@ -328,10 +331,10 @@ class Plugin(Layer):
             return
         try:
             if name != 'camera':
-                self.camera = Camera(name, host)
+                self.__camera = Camera(name, host)
                 self.camera.start()
             else:
-                self.camera = DummyCamera(self)
+                self.__camera = DummyCamera(self)
             
             self.message("Connected to {!r}".format(self.camera))
             
@@ -347,7 +350,7 @@ class Plugin(Layer):
         
         except Exception as e:
             print(self.message("- Connection failed; {!r}".format(e)))
-            self.camera = None
+            self.__camera = None
     
     ## --------------------------------
     ## Camera Interface
