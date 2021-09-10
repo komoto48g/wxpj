@@ -101,7 +101,7 @@ class Plugin(Layer):
     
     @property
     def result_frame(self):
-        if self.choice.Selection < 2:
+        if self.choice.Selection < 2: # FFT/FFT+ mode
             name = "*result of fft*"
         else:
             name = "*result of matching*"
@@ -115,7 +115,7 @@ class Plugin(Layer):
         return self.selected_view.find_frame(self.page.value)
     
     def testrun(self, frame=None):
-        """Evaluation using selected method (ref: choice.Selection)"""
+        """Evaluation using the selected method"""
         if not frame:
             frame = self.selected_frame
         
@@ -124,8 +124,8 @@ class Plugin(Layer):
             ## so we need to put forward the page counter (no problem when -1)
             self.page.value += 1
         
-        if self.choice.Selection < 2:
-            return self.test_fft(frame, crossline=self.choice.Selection==1)
+        if self.choice.Selection < 2: # FFT/FFT+ mode
+            return self.test_fft(frame, crossline=(self.choice.Selection==1))
         else:
             return self.test_cor(frame)
     
@@ -142,7 +142,7 @@ class Plugin(Layer):
         self.run(frame)
     
     ## --------------------------------
-    ## calc functions
+    ## calc/marking functions
     ## --------------------------------
     
     def calc_mark(self, frame=None):
@@ -156,6 +156,10 @@ class Plugin(Layer):
             self.lccf.run(frame, otsu=True)
         else:
             self.lccf.run(frame, otsu=1-self.score.value/100)
+        
+        ## if self.choice.Selection < 2: # FFT/FFT+ mode
+        ##     xs, ys = frame.markers
+        ##     frame.markers = np.append(xs, 0), np.append(ys, 0)
         return frame
     
     def calc_fit(self, frame=None):
@@ -181,7 +185,7 @@ class Plugin(Layer):
         self.text.Value = '\n'.join(res)
     
     ## --------------------------------
-    ## test functions
+    ## test/eval functions
     ## --------------------------------
     
     ## def test_corr(self, frame):
@@ -236,6 +240,7 @@ class Plugin(Layer):
             buf -= sum(buf) / h # バックグラウンド(ぽい)強度を引いてみる (中央も 0 になるので注意)
             
             self.message("\b @remap")
+            
             ## X, Y = np.meshgrid(
             ##     np.arange(-w/2, w/2, dtype=np.float32),
             ##     np.arange(-h/2, h/2, dtype=np.float32),
@@ -244,7 +249,7 @@ class Plugin(Layer):
             ## map_t = ((pi + np.arctan2(Y, X)) * h/2/pi)
             ## buf = cv2.remap(buf.astype(np.float32), map_r, map_t,
             ##                 cv2.INTER_CUBIC, cv2.WARP_FILL_OUTLIERS)
-            ## 
+            
             buf = cv2.linearPolar(buf, (w/2, h/2), rmax, cv2.WARP_INVERSE_MAP)
             
             ## 確認
@@ -253,23 +258,22 @@ class Plugin(Layer):
         dst = np.exp(buf) - 1 # log --> exp で戻す
         
         ## 十紋形切ちょんぱマスク (option)
+        d = int(h * 0.001)
         if crossline:
-            d = int(h * 0.001)
             i, j = h//2, w//2
             dst[:,j-d:j+d+1] = 0
             dst[i-d:i+d+1,:] = 0
-            
-        ## force the central spot be white (default)
-        ## if 0:
-        ##     d = 2
-        ##     i, j = h//2, w//2
-        ##     y, x = np.ogrid[-d:d+1,-d:d+1]     # index arrays
-        ##     m = np.where(np.hypot(y,x) <= d)   # mask submatrix
-        ##     dst[m[0]+i-d,m[1]+j-d] = dst.max() # apply to the center +-d
         
-        ## <uint8> 逆空間 論理スケール [ru/pixel] に変換する
-        ## do not cuts hi/lo: 強度重心を正しくとるためには飽和しないようにする
-        ## dst = edi.imconv(dst, hi=0)
+        ## force the central spot white (option)
+        if 1:
+            i, j = h//2, w//2
+            y, x = np.ogrid[-d:d+1,-d:d+1]     # index arrays
+            m = np.where(np.hypot(y,x) <= d)   # mask submatrix
+            dst[m[0]+i-d,m[1]+j-d] = dst.max() # apply to the center +-d
+        
+        ## 逆空間：論理スケール [ru/pixel] に変換する
+        ## Don't cut hi/lo: 強度重心を正しくとるため，飽和させないこと
+        ## dst = edi.imconv(dst, hi=0, lo=0)
         return frame.parent.load(dst, name="*result of fft*", pos=0, localunit=1/w/frame.unit)
 
 
