@@ -84,13 +84,13 @@ class Plugin(Layer):
     
     maxcount = 256 # 選択する点の数を制限する
     
-    def run(self, frame=None, **kwargs):
+    def run(self, frame=None, otsu=0, invert=0):
         """Search center of circles"""
         if not frame:
             frame = self.selected_view.frame
         del self.Arts
         
-        src = self.lgbt.calc(frame, **kwargs) # image <uint8>
+        src = self.lgbt.calc(frame, otsu, invert) # image <uint8>
         
         circles = find_circles(src, self.rmin.value, self.rmax.value)
         self.message("found {} circles".format(len(circles)))
