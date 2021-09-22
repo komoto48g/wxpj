@@ -24,7 +24,7 @@ class Plugin(Layer):
     
     def Init(self):
         self.page = LParam("page", (-1,1000,1), -1)
-        self.page.bind(lambda lp: self.selected_view.select(lp.value))
+        self.page.bind(lambda lp: self.view.select(lp.value))
         
         self.choice = Choice(self, size=(60,-1),
             choices=['FFT',
@@ -39,6 +39,7 @@ class Plugin(Layer):
         
         self.grid = Choice(self, label="grid [mm]", size=(140,-1),
             handler=lambda p: self.calc_mag(),
+            updater=lambda p: self.calc_mag(),
             choices=['1/2000', # Standard grating(Ted Pera)
                      '1/2160', # Standard Gatan grating
                      '2.04e-7' # Au single 100
@@ -46,51 +47,49 @@ class Plugin(Layer):
             tip="Set grid length [mm/grid] to calculate Mag.")
         self.grid.Selection = 0
         
-        self.text = TextCtrl(self, size=(140,40), style=wx.TE_READONLY|wx.TE_MULTILINE)
+        self.text = TextCtrl(self, size=(140,60), style=wx.TE_READONLY|wx.TE_MULTILINE)
         
         size = (72,-1)
         
         self.layout("Evaluate step by step", (
             Button(self, "1. Show",
-                lambda v: self.selected_view.select(self.selected_frame), icon='help', size=size,
+                lambda v: self.view.select(self.selected_frame), icon='help', size=size,
                 tip="Select frame buffer.\n"
                     "(page -1 means the last frame)"),
             self.page,
             
-            Button(self, "2. Eval",
-                lambda v: self.testrun(), icon='help', size=size,
+            Button(self, "2. Eval", lambda v: self.testrun(), icon='help', size=size,
                 tip="Select evaluation method\n"
                     "  :FFT evaluates using FFT method. Use when grid is small\n"
                     "  :FFT+ in addition to FFT method, corss-cut the center (十文字きりちょんぱ)\n"
                     "  :Cor evaluates using Cor (pattern matching) method. Use when grid is large"),
             self.choice,
             
-            Button(self, "3. Mark",
-                lambda v: self.calc_mark(), icon='help', size=size,
+            Button(self, "3. Mark", lambda v: self.calc_mark(), icon='help', size=size,
                 tip="Set paramter of socre at percentile (:COR only).\n"
                     "score is the ratio [%] to maximum count for extracting spots"),
             self.score,
             
-            Button(self, "4. Go",
-                lambda v: self.run(), icon='help', size=size,
+            Button(self, "4. Run", lambda v: self.run(), icon='help', size=size,
                 tip="Run the fitting procedure.\n"),
-            None,
+            
+            Button(self, "Settings", lambda v: self.lccf.Show()),
             ),
             row=2, show=1, type='vspin', tw=40, lw=0,
         )
-        self.layout(None, (
-            Button(self, "check unit",
-                lambda v: self.parent.su.Show(), icon='v',
-                tip="Check unit length [mm/pixel]\n"
-                    "See the startup option where globalunit can be set to calc mags."),
-            
-            Button(self, "Run",
-                lambda v: self.run_all(), icon='->',
-                tip="Run above (1-2-3) step by step.\n"
-                    "Before calculating Mags, check unit length [mm/pixel]"),
-            ),
-            row=2,
-        )
+        ## self.layout(None, (
+        ##     Button(self, "check unit",
+        ##         lambda v: self.parent.su.Show(), icon='v',
+        ##         tip="Check unit length [mm/pixel]\n"
+        ##             "See the startup option where globalunit can be set to calc mags."),
+        ##     
+        ##     Button(self, "Run",
+        ##         lambda v: self.run_all(), icon='->',
+        ##         tip="Run above (1-2-3) step by step.\n"
+        ##             "Before calculating Mags, check unit length [mm/pixel]"),
+        ##     ),
+        ##     row=2,
+        ## )
         self.layout("log/output", (
             self.grid,
             self.text,
@@ -100,24 +99,39 @@ class Plugin(Layer):
         self.lgbt.ksize.value = 5 # default blur window size
     
     @property
+    def view(self):
+        return self.graph
+    
+    @property
     def result_frame(self):
         if self.choice.Selection < 2: # FFT/FFT+ mode
             name = "*result of fft*"
         else:
             name = "*result of matching*"
-        return self.selected_view.find_frame(name)
+        return self.view.get_frame(name)
     
     @property
     def selected_frame(self):
-        self.page.range = (-1, len(self.selected_view))
-        ## if self.page.value is nan:
-        ##     return self.selected_view.frame
-        return self.selected_view.find_frame(self.page.value)
+        self.page.range = (-1, len(self.view))
+        return self.view.get_frame(self.page.value)\
+            or self.view.frame
     
-    def testrun(self, frame=None):
+    ## --------------------------------
+    ## calc/marking functions
+    ## --------------------------------
+    
+    def run(self):
+        self.ldc.reset_params(backcall=None)
+        self.ldc.thread.Start(self.calc_fit)
+    
+    ## def run_all(self):
+    ##     self.testrun()
+    ##     self.calc_mark()
+    ##     self.run()
+    
+    def testrun(self):
         """Evaluation using the selected method"""
-        if not frame:
-            frame = self.selected_frame
+        frame = self.selected_frame
         
         if not self.result_frame and self.page.value >= 0:
             ## A new frame (*result*) is to be loaded ahead of stacks
@@ -125,64 +139,52 @@ class Plugin(Layer):
             self.page.value += 1
         
         if self.choice.Selection < 2: # FFT/FFT+ mode
-            return self.test_fft(frame, crossline=(self.choice.Selection==1))
+            self.test_fft(frame, crossline=(self.choice.Selection==1))
         else:
-            return self.test_cor(frame)
+            self.test_cor(frame)
     
-    def run(self, frame=None):
+    def calc_mark(self):
+        frame = self.result_frame
         if not frame:
-            frame = self.selected_frame
-        self.message("\b @ldc...")
-        self.ldc.reset_params(backcall=None)
-        self.ldc.thread.Start(self.calc_fit, frame)
-    
-    def run_all(self, frame=None):
-        result = self.testrun(frame)
-        frame = self.calc_mark(result)
-        self.run(frame)
-    
-    ## --------------------------------
-    ## calc/marking functions
-    ## --------------------------------
-    
-    def calc_mark(self, frame=None):
-        if not frame:
-            frame = self.result_frame
-            if not frame:
-                print(self.message("- No *result* frame"))
-                return
+            print(self.message("- No *result*"))
+            return
         self.message("\b @lccf...")
         if self.score.value is nan:
             self.lccf.run(frame, otsu=True)
         else:
             self.lccf.run(frame, otsu=1-self.score.value/100)
-        
-        ## if self.choice.Selection < 2: # FFT/FFT+ mode
-        ##     xs, ys = frame.markers
-        ##     frame.markers = np.append(xs, 0), np.append(ys, 0)
-        return frame
     
-    def calc_fit(self, frame=None):
+    def calc_fit(self):
+        frame = self.result_frame
+        if not frame:
+            print(self.message("- No *result*"))
+            return
+        self.message("\b @ldc...")
         self.ldc.run(frame)
         self.ldc.run(frame) # 計算 x2 回目
         self.ldc.Show()
         self.calc_mag()
-        if frame:
-            frame.update_attributes(
-                parameters = self.parameters[:-1], # except the last text
-                annotation = ', '.join(self.text.Value.splitlines()),
-            )
     
     def calc_mag(self):
-        g = self.ldc.grid_params[0].value
-        g0 = eval(self.grid.Value)
+        lu = self.selected_frame.unit     # [mm/pix]
+        g = self.ldc.grid_params[0].value # [mm/grid] image or 1/g :FFT
+        g0 = eval(self.grid.Value)        # [mm/grid] org
         if self.choice.Selection < 2: # FFT
-            res = ("Mag = {:6,.0f} [fft]".format(1/g/g0),
-                         "grid = {:g} mm".format(1/g))
+            g = 1/g
+            method = 'fft'
         else:
-            res = ("Mag = {:6,.0f} [cor]".format(g/g0),
-                         "grid = {:g} mm".format(g))
-        self.text.Value = '\n'.join(res)
+            method = 'cor'
+        self.text.Value = '\n'.join((
+            "Mag = {:6,.0f} [{}]".format(g/g0, method),
+            "grid: {:g} mm".format(g),
+            "({:g} m/pix)".format(lu * g0/g * 1e-3)))
+        ## print("{:g} grid/pix".format(lu/g))
+        ## print("{:g} mm/pix on spec".format(lu * g0/g))
+        
+        self.selected_frame.update_attributes(
+            parameters = self.parameters[:-1], # except the last text
+            annotation = ', '.join(self.text.Value.splitlines()),
+        )
     
     ## --------------------------------
     ## test/eval functions
@@ -279,7 +281,7 @@ class Plugin(Layer):
 
 if __name__ == "__main__":
     import glob
-    from wxpyJemacs import Frame
+    from mwx.graphman import Frame
     
     app = wx.App()
     frm = Frame(None)
