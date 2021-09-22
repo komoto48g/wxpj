@@ -6,18 +6,20 @@ import wx
 import cv2
 import numpy as np
 from numpy import pi,cos,sin
-from mwx.graphman import Layer
 from matplotlib import patches
-import editor as edi
+from mwx.controls import LParam
+from mwx.graphman import Layer
+## import editor as edi
 
 
-def find_ellipses(src, tol=0.75):
-    """Find ellipses
-    楕円検出を行うため，5 点以上のコンターが必要．小さいスポットは除外される
-    小さいスポットを検出するためにはぼかし量を大きくすればよい
-    画像の端にある円を除く
+def find_ellipses(src, rmin, rmax, tol=0.75):
+    """Find ellipses with radius (rmin, rmax)
+    excluding circles at the edges of the image < tol*r
     
   retval -> list of (c:=(x,y), r:=(ra<rb), angle) sorted by pos
+    (cx,cy) : center of the rectangle [pix]
+    (ra,rb) : ra:width < rb:height of the rectangle [pix]
+      angle : rotation angle in clockwise (from 00:00 o'clock)
     """
     ## Finds contours in binary image
     ## ▲ src は上書きされるので後で使うときは注意する
@@ -28,8 +30,10 @@ def find_ellipses(src, tol=0.75):
         contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     ## Detect enclosing rectangles
-    ## Note: there should be at least 5 points to fit the ellipse (c,r,a)
     ellipses = [cv2.fitEllipse(v) for v in contours if len(v) > 4]
+    
+    ## There should be at least 5 points to fit the ellipse (c,r,a)
+    ## To detect small spots, increase the amount of blur.
     
     h, w = src.shape
     
@@ -38,8 +42,8 @@ def find_ellipses(src, tol=0.75):
         return np.hypot(c[0]-w/2, c[1]-h/2)
     
     def isinside(c, r): # 画像の端にある円を除く
-        d = tol * max(r)
-        return d < c[0] < w-d and d < c[1] < h-d
+        d = tol * r[1]
+        return (rmin < r[0] and r[1] < rmax and d < c[0] < w-d and d < c[1] < h-d)
     
     return sorted([(c,r,a) for c,r,a in ellipses if isinside(c,r)], key=distance)
 
@@ -54,7 +58,12 @@ class Plugin(Layer):
     lgbt = property(lambda self: self.parent.require('lgbt'))
     
     def Init(self):
+        self.radii_params = (
+            LParam("rmin", (0,1000,1), 2),
+            LParam("rmax", (0,1000,1), 200),
+        )
         self.layout("blur-threshold", self.lgbt.params, show=0, cw=0, lw=40, tw=40)
+        self.layout("radii", self.radii_params, cw=0, lw=40, tw=48)
         
         btn1 = wx.Button(self, label="+Bin", size=(40,22))
         btn1.Bind(wx.EVT_BUTTON, lambda v: self.lgbt.calc(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
@@ -65,6 +74,19 @@ class Plugin(Layer):
         btn2.SetToolTip("S-Lbutton to estimate threshold using Otsu algorithm")
         
         self.layout(None, (btn1, btn2), row=2)
+    
+    rmin = property(lambda self: self.radii_params[0])
+    rmax = property(lambda self: self.radii_params[1])
+    
+    def set_current_session(self, session):
+        self.rmin.value = session.get('rmin')
+        self.rmax.value = session.get('rmax')
+    
+    def get_current_session(self):
+        return {
+            'rmin': self.rmin.value,
+            'rmax': self.rmax.value,
+        }
     
     maxcount = 256 # 選択する点の数を制限する
     maxratio = 5.0 # ひずみの大きい楕円は除外する
@@ -77,7 +99,7 @@ class Plugin(Layer):
         
         src = self.lgbt.calc(frame, otsu, invert) # image <uint8>
         
-        circles = find_ellipses(src)
+        circles = find_ellipses(src, self.rmin.value, self.rmax.value)
         self.message("found {} circles".format(len(circles)))
         
         if circles:

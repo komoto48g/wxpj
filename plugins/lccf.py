@@ -10,9 +10,10 @@ from mwx.controls import LParam
 from mwx.graphman import Layer
 
 
-def find_circles(src, rmin=10, rmax=1000, tol=0.75):
-    """Find circle with radius (rmin, rmax) excluding
-    circles at the edges of the image (within dr: = tol * radius)
+def find_circles(src, rmin, rmax, tol=0.75):
+    """Find circle with radius (rmin, rmax)
+    excluding circles at the edges of the image < tol*r
+    
   retval -> list of (c:=(x,y), r) sorted by pos
     """
     ## Finds contours in binary image
