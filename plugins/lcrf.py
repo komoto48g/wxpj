@@ -238,5 +238,5 @@ class Plugin(Layer):
         self.set_artists(frame,
             patches.Circle((xc, yc), lo*frame.unit, color='c', ls='--', lw=1/2, fill=0),
             patches.Circle((xc, yc), hi*frame.unit, color='c', ls='--', lw=1/2, fill=0),
-            *frame.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75),
         )
+        self.Arts += frame.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75)

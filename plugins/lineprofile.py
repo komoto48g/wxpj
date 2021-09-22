@@ -38,7 +38,7 @@ class Plugin(Layer):
 if __name__ == "__main__":
     import glob
     import wx
-    from wxpyJemacs import Frame
+    from mwx.graphman import Frame
     
     app = wx.App()
     frm = Frame(None)
