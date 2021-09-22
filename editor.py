@@ -300,14 +300,16 @@ def centroid(src):
 
 def find_ellipses(src, frmin=None, frmax=None, ksize=1, sortby='size'):
     """Find the rotated rectangle in which the ellipse is inscribed
+    
     frmin : min threshold ratio (to src.shape) of ellipses to find
     frmax : max threshold
     ksize : size of blur window
    sortby : key of sorted list (pos or size:default)
+   
   retval -> RotatedRect: (cx,cy), (ra,rb), angle
-        (cx,cy) : center of the rectangle [pix]
-        (ra,rb) : ra:width < rb:height of the rectangle [pix]
-          angle : rotation angle in clockwise (from 00:00 o'clock)
+    (cx,cy) : center of the rectangle [pix]
+    (ra,rb) : ra:width < rb:height of the rectangle [pix]
+      angle : rotation angle in clockwise (from 00:00 o'clock)
     """
     src = imconv(src) # src image is overwritten
     h, w = src.shape
@@ -327,7 +329,7 @@ def find_ellipses(src, frmin=None, frmax=None, ksize=1, sortby='size'):
     
     ## There should be at least 5 points to fit the ellipse
     ellipses = [cv2.fitEllipse(v) for v in contours if len(v) > 4]
-    ls = [(c,r,a) for c,r,a in ellipses if rmin < r[0] < rmax and rmin < r[1] < rmax]
+    ls = [(c,r,a) for c,r,a in ellipses if rmin < r[0] and r[1] < rmax]
     
     if sortby == 'size':
         return sorted(ls, key=lambda v: v[1][0], reverse=1) # 大きさで降順ソート
