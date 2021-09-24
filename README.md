@@ -12,9 +12,9 @@ These instructions will get you a copy of the project up and running on your loc
 <Python 3.8.6 (tags/v3.8.6:db45529, Sep 23 2020, 15:52:53) [MSC v.1927 64 bit (AMD64)]>
   wx.version(selected) 4.1.1 msw (phoenix) wxWidgets 3.1.5
   scipy/numpy version 1.6.0/1.20.1
-  matplotlib verison 3.4.2
-  Image verison 8.1.0
-  cv2 verison 4.5.1
+  matplotlib version 3.4.2
+  Image version 8.1.0
+  cv2 version 4.5.1
   mwx 0.40
 ```
 
@@ -90,7 +90,7 @@ Launch `wxpj/wxpyJemacs.py`.
 
 When you close the program, a popup window will appear asking [Do you want to save session before closing program?].
 
-> The session is like a project file, and it roughly saves plugins, paramteres, windows layouts, buffers, etc.
+> The session is like a project file, and it roughly saves plugins, parameters, windows layouts, buffers, etc.
 
 Click [OK]. Then, the next time you start the program with the session file, you can start it in the same state as when it was last closed. The extension of the session file is `*.jssn`. 
 
@@ -110,8 +110,8 @@ The meanings of the command arguments are:
     --pyjem: Declare using pyjem
 
         Launch wxpyJemacs with --pyjem=0(=offline), 1(=online), or 2(=online with TEM3)
-        The defalut switch is --pyjem=None, that means no PyJEMs to be involved.
-        Please use flag `1` normaly.
+        The default switch is --pyjem=None, that means no PyJEMs to be involved.
+        Please use flag `1` normally.
 
     -sxxx: Start xxx session
 

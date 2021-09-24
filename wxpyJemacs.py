@@ -56,9 +56,9 @@ def version():
       "<Python {}>".format(sys.version),
       "wx.version(selected) {}".format(wx.version()),
       "scipy/numpy version {}/{}".format(scipy.__version__, np.__version__),
-      "matplotlib verison {}".format(matplotlib.__version__),
-      "Image verison {}".format(Image.__version__),
-      "cv2 verison {}".format(cv2.__version__),
+      "matplotlib version {}".format(matplotlib.__version__),
+      "Image version {}".format(Image.__version__),
+      "cv2 version {}".format(cv2.__version__),
       "mwx {}".format(mwx.__version__),
       ))
 
@@ -109,8 +109,8 @@ class pyJemacs(Framebase):
                 lambda v: self.nfront.Show(v.IsChecked()),
                 lambda v: v.Check(self.nfront.IsShown())),
         ]
-        ## self.menubar["File"][9:9] = [ # insert menus for extenstion, option, etc.
-        self.menubar["Plugins"] += [ # insert menus for extenstion, option, etc.
+        ## self.menubar["File"][9:9] = [ # insert menus for extension, option, etc.
+        self.menubar["Plugins"] += [ # insert menus for extension, option, etc.
             ("Extensions", []),
             ("Functions", []),
             (),

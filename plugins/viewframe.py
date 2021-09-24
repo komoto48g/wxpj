@@ -72,10 +72,10 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
         self.handler.update({
             0 : {
                             '*' : (0, lambda v: v.Skip()),
-               'Lbutton dclick' : (0, self.OnShowItems), # --> frame_shown
-                'enter pressed' : (0, self.OnShowItems), # --> frame_shown
+               'Lbutton dclick' : (0, self.OnShowItems), # -> frame_shown
+                'enter pressed' : (0, self.OnShowItems), # -> frame_shown
                #'space pressed' : (0, self.OnToggleItems),
-               'delete pressed' : (0, self.OnRemoveItems), # --> frame_removed/shown
+               'delete pressed' : (0, self.OnRemoveItems), # -> frame_removed/shown
                   'C-a pressed' : (0, self.OnSelectAllItems),
                   'C-o pressed' : (0, self.OnLoadItems),
                   'C-s pressed' : (0, self.OnSaveItems),

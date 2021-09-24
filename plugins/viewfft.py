@@ -82,7 +82,8 @@ class Plugin(Layer):
     
     def refft(self, frame):
         """Show or get new fft of frame (graph.frame) to output.frame
-        ディメンジョンの再設定はしない (再設定したいときは一度全部消すこと)"""
+        ディメンジョンの再設定はしない (再設定したいときは一度全部消すこと)
+        """
         if frame:
             name = "*fft of {}*".format(frame.name)
             if name not in self.output:

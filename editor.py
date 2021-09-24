@@ -459,7 +459,7 @@ def match_pattern(src, temp, method=cv2.TM_CCOEFF_NORMED):
 
 def eval_shift(src, src2, div=4):
     h, w = src.shape
-    ht, wt = h//div, w//div  # tamplate pattern in the src divided by `div
+    ht, wt = h//div, w//div  # template pattern in the src divided by `div
     xt = int((w - wt) / 2)   # template position lt = (xt, yt)
     yt = int((h - ht) / 2)   # 
     temp = src[yt:yt+ht, xt:xt+wt]
