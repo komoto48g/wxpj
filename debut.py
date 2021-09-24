@@ -28,11 +28,11 @@ from scipy import ndimage as ndi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 import siteinit as si
 import editor as edi
-try:
-    graph = self.graph
-    output = self.output
-except AttributeError:
-    pass
+## try:
+##     graph = self.graph
+##     output = self.output
+## except AttributeError:
+##     pass
 """
 
 np.set_printoptions(linewidth=256) # default 75
@@ -104,7 +104,9 @@ To Divers:
     This executes your startup script ($PYTHONSTARTUP:~/.py).
     Then, call spec (post-startup function defined above),
     """
-    mwx.deb(*args, startup=init_spec, execStartupScript=True,
+    mwx.deb(*args,
+        startup=init_spec,
+        execStartupScript=True,
         introText = """
         Anything one man can imagine, other man can make real.
         --- Jules Verne (1828--1905)
