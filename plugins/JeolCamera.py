@@ -99,7 +99,7 @@ class Camera(object):
     
     name : name of selected camera
     host : localhost if offline (default) otherwise 172.17.41.1
-    cont : camera controler
+    cont : camera controller
     
 Camera property:
   pixel_size : raw pixel size [u/pix]

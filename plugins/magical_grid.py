@@ -66,7 +66,7 @@ class Plugin(Layer):
             self.choice,
             
             Button(self, "3. Mark", lambda v: self.calc_mark(), icon='help', size=size,
-                tip="Set paramter of socre at percentile (:COR only).\n"
+                tip="Set parameter of socre at percentile (:COR only).\n"
                     "score is the ratio [%] to maximum count for extracting spots"),
             self.score,
             

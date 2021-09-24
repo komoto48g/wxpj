@@ -68,7 +68,7 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     theta = 0 を基準として，相対変位 [pixels] を計算する．
     
     src : source buffer
- center : initial value of center positoin [nx,ny]
+ center : initial value of center position [nx,ny]
   lo-hi : masking size of radial axis
       N : resizing of angular axis (total step in angle [0:2pi])
   retval ->
@@ -161,7 +161,7 @@ class Plugin(Layer):
         
         btn = wx.Button(self, label="+Execute", size=(64,22))
         btn.Bind(wx.EVT_BUTTON, lambda v: self.run(shift=wx.GetKeyState(wx.WXK_SHIFT)))
-        btn.SetToolTip("S-Lbutton to enter recusive centering")
+        btn.SetToolTip("S-Lbutton to enter recursive centering")
         
         self.chkplt = wx.CheckBox(self, label="rdist")
         

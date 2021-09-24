@@ -99,7 +99,7 @@ class Plugin(Layer):
             if self.pix.check:
                 y, x = np.ogrid[-h/2:h/2, -w/2:w/2]
                 mask = np.hypot(y,x) > w/self.pix.value
-                ## src = cv2.bitwise_and(src, src, mask.astype(np.uint8)) !! unsupported <comlex>
+                ## src = cv2.bitwise_and(src, src, mask.astype(np.uint8)) !! unsupported <complex>
                 frame.roi[mask] = 0
                 frame.update_buffer()
                 frame.parent.draw()

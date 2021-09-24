@@ -127,7 +127,7 @@ class Plugin(Layer):
         
         self.layout("Distortion", self.dist_params, cw=64, lw=20, tw=64, show=0)
         self.layout("XY Aspects", self.ratio_params, cw=64, lw=20, tw=64)
-        self.layout("Grid paramter", self.grid_params, cw=56, lw=28, tw=64)
+        self.layout("Grid parameter", self.grid_params, cw=56, lw=28, tw=64)
         self.layout(None, [self.btn, self.order], row=2, type='choice', cw=40, lw=32)
         self.layout(None, [self.text], expand=2)
         
