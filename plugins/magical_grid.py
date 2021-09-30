@@ -121,7 +121,7 @@ class Plugin(Layer):
     ## --------------------------------
     
     def run(self):
-        self.ldc.reset_params(backcall=None)
+        self.ldc.reset_params()
         self.ldc.thread.Start(self.calc_fit)
     
     ## def run_all(self):
@@ -260,7 +260,7 @@ class Plugin(Layer):
         dst = np.exp(buf) - 1 # log --> exp で戻す
         
         ## 十紋形切ちょんぱマスク (option)
-        d = int(h * 0.001)
+        d = max(int(h * 0.001), 2)
         if crossline:
             i, j = h//2, w//2
             dst[:,j-d:j+d+1] = 0
