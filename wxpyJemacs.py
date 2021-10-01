@@ -47,7 +47,7 @@ from pyDM4reader import dm4reader as DM4lib
 ## import wx.lib.mixins.listctrl # for py2exe
 ## import wx.lib.platebtn as pb
 
-__version__ = "0.31"
+__version__ = "0.32"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2021"
 
