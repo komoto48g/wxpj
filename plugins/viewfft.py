@@ -25,16 +25,12 @@ class Plugin(Layer):
     caption = "FFT view"
     
     def Init(self):
-        self.vchk = wx.CheckBox(self, label="semi-live")
-        self.vchk.Bind(wx.EVT_CHECKBOX, lambda v: self.setlive(v.IsChecked()))
-        
         self.pchk = wx.CheckBox(self, label="logical unit")
-        ## self.pchk.Value = True
+        self.pchk.Value = True
         
         self.pix = Param("mask", (2,4,8,16,32,64))
         
         self.layout("normal FFT", (
-            self.vchk,
             self.pchk,
             ),
             row=1, expand=1, show=1, vspacing=4
@@ -42,32 +38,19 @@ class Plugin(Layer):
         self.layout("inverse FFT", (
             self.pix,
             ),
-            row=1, expand=1, show=0, type=None, style='chkbox', tw=32, h=20
+            row=1, expand=1, show=1, type=None, style='chkbox', tw=32
         )
-        self.context = {
-            None: {
-                  'frame_shown' : [ None, self.refft ],
-                 'region_drawn' : [ None, self.newfft ],
-               'region_removed' : [ None, self.newfft ],
-            }
-        }
-        self.parent.define_key('C-f', lambda v: self.newfft(self.graph.frame), doc="fft")
-        self.parent.define_key('C-S-f', lambda v: self.newfft_inv(self.output.frame), doc="ifft")
+        self.parent.define_key('C-f', self.newfft)
+        self.parent.define_key('C-S-f', self.newifft)
     
     def Destroy(self):
-        self.setlive(False)
         self.parent.define_key('C-f', None)
         self.parent.define_key('C-S-f', None)
         return Layer.Destroy(self)
     
-    def setlive(self, p):
-        if p:
-            self.graph.handler.append(self.context)
-        else:
-            self.graph.handler.remove(self.context)
-    
-    def newfft(self, frame):
-        """New fft of frame (grahph.frame) to output.frame"""
+    def newfft(self, evt):
+        """New FFT of graph to output"""
+        frame = self.graph.frame
         if frame:
             self.message("FFT execution...")
             src = frame.roi
@@ -75,23 +58,24 @@ class Plugin(Layer):
             h, w = src.shape
             
             self.message("\b Loading image...")
-            self.output.load(dst, name="*fft of {}*".format(frame.name), localunit=1/w)
+            u = 1 / w
             if self.pchk.Value:
-                self.output.frame.unit /= frame.unit
+                u /= frame.unit
+            self.output.load(dst, name="*fft of {}*".format(frame.name), localunit=u)
             self.message("\b done")
     
-    def refft(self, frame):
-        """Show or get new fft of frame (graph.frame) to output.frame
-        ディメンジョンの再設定はしない (再設定したいときは一度全部消すこと)
-        """
-        if frame:
-            name = "*fft of {}*".format(frame.name)
-            if name not in self.output:
-                return self.newfft(frame)
-            self.output.select(name)
+    ## def refft(self):
+    ##     """Get FFT of graph"""
+    ##     frame = self.graph.frame
+    ##     if frame:
+    ##         name = "*fft of {}*".format(frame.name)
+    ##         if name not in self.output:
+    ##             return self.newfft(frame)
+    ##         self.output.select(name)
     
-    def newfft_inv(self, frame):
-        """New inverse fft of frame (output.frame) to graph.frame"""
+    def newifft(self, evt):
+        """New inverse FFT of output to graph"""
+        frame = self.output.frame
         if frame:
             self.message("iFFT execution...")
             src = frame.roi
