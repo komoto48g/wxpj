@@ -47,10 +47,9 @@ class Plugin(Layer):
         )
     
     def set_current_session(self, session):
-        if session:
-            self.rate_param.value = session.get('rate')
-            self.size_param.value = session.get('size')
-            self.camera_selector.value = session.get('camera')
+        self.rate_param.value = session.get('rate')
+        self.size_param.value = session.get('size')
+        self.camera_selector.value = session.get('camera')
     
     def get_current_session(self):
         return {
