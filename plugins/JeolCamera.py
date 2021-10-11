@@ -23,7 +23,8 @@ from mwx.graphman import Layer
 try:
     Offline = None
     from PyJEM import detector
-except:
+
+except ImportError:
     Offline = 1
     try:
         if 'PyJEM.offline' in sys.modules:

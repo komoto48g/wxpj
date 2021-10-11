@@ -8,7 +8,7 @@ from numpy import pi
 from scipy import signal
 from plugins import lcrf
 import editor as edi
-reload(edi)
+## reload(edi)
 
 
 def find_ring_center(src, lo, hi, N=256, tol=0.01):

@@ -10,7 +10,6 @@ from pprint import pformat
 import wx
 from wx import aui
 import numpy as np
-import mwx
 from mwx.controls import Icon
 from mwx.graphman import Layer
 from mwx.framework import CtrlInterface

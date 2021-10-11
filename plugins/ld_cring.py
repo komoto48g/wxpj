@@ -4,7 +4,7 @@ from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
 from itertools import chain
 import plugins.ld_ring as base
-reload(base)
+## reload(base)
 
 class Model(base.Model):
     def residual(self, fitting_params, x, y):

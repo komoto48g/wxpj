@@ -5,7 +5,7 @@ from __future__ import (division, print_function,
 import wx
 import cv2
 import numpy as np
-from numpy import pi,cos,sin,inf
+from numpy import pi,cos,sin
 from scipy import optimize
 from scipy import signal
 from matplotlib import patches
@@ -39,7 +39,7 @@ class Model(object):
         """
         h, w = buf.shape
         shift = [self(x) for x in np.arange(0,h)/h * 2*pi][::-1] # shift vector
-        axis = np.arange(0., w)
+        ## axis = np.arange(0., w)
         data = np.resize(0., (h, w))
         for j,(x,v) in enumerate(zip(buf, shift)):
             data[j] = np.roll(x, -int(v))
