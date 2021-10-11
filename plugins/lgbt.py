@@ -41,17 +41,17 @@ class Plugin(Layer):
     sigma = property(lambda self: self.params[1])
     thresh = property(lambda self: self.params[2])
     
-    def set_current_session(self, session):
+    def init_session(self, session):
         self.ksize.value = session.get('ksize')
         self.sigma.value = session.get('sigma')
         self.thresh.value = session.get('thresh')
     
-    def get_current_session(self):
-        return {
+    def save_session(self, session):
+        session.update({
             'ksize': self.ksize.value,
             'sigma': self.sigma.value,
            'thresh': self.thresh.value,
-        }
+        })
     
     def calc(self, frame=None, otsu=0, invert=0):
         """Blur by Gaussian window and binarize

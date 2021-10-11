@@ -38,13 +38,11 @@ class Plugin(Layer):
             cw=-1, lw=36, tw=30      # + and *w indicates width of Param; [c]ontrol, [l]abel, [t]ext
         )
     
-    def set_current_session(self, session):
+    def init_session(self, session):
         self.ksize.value = session.get('ksize')
     
-    def get_current_session(self):
-        return {
-            'ksize': self.ksize.value,
-        }
+    def save_session(self, session):
+        session['ksize'] = self.ksize.value
     
     def run(self):
         k = self.ksize.value

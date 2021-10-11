@@ -46,17 +46,17 @@ class Plugin(Layer):
             row=1, show=0, type='vspin', lw=40, tw=40, cw=-1
         )
     
-    def set_current_session(self, session):
+    def init_session(self, session):
         self.rate_param.value = session.get('rate')
         self.size_param.value = session.get('size')
         self.camera_selector.value = session.get('camera')
     
-    def get_current_session(self):
-        return {
+    def save_session(self, session):
+        session.update({
             'rate': self.rate_param.value,
             'size': self.size_param.value,
           'camera': self.camera_selector.value,
-        }
+        })
     
     def Destroy(self):
         if self.viewer.is_active:

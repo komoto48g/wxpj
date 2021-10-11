@@ -73,15 +73,15 @@ class Plugin(Layer):
     rmin = property(lambda self: self.radii_params[0])
     rmax = property(lambda self: self.radii_params[1])
     
-    def set_current_session(self, session):
+    def init_session(self, session):
         self.rmin.value = session.get('rmin')
         self.rmax.value = session.get('rmax')
     
-    def get_current_session(self):
-        return {
+    def save_session(self, session):
+        session.update({
             'rmin': self.rmin.value,
             'rmax': self.rmax.value,
-        }
+        })
     
     maxcount = 256 # 選択する点の数を制限する
     

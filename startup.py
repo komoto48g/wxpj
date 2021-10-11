@@ -68,19 +68,20 @@ class Plugin(Layer):
             for win in self.parent.graphic_windows:
                 win.handler.remove(self.context)
     
-    def set_current_session(self, session):
+    def init_session(self, session):
         self.accv_param.value = session.get('accv')
         self.unit_param.std_value = session.get('unit')
         self.cuts_param.value = session.get('cuts')
-        self.setup_all()
+        
         self.set_htv(self.accv_param)
+        self.setup_all()
     
-    def get_current_session(self):
-        return {
+    def save_session(self, session):
+        session.update({
             'accv': self.accv_param.value,
             'unit': self.unit_param.std_value,
             'cuts': self.cuts_param.value,
-        }
+        })
     
     def on_unit_notify(self, frame):
         if frame:
