@@ -108,7 +108,7 @@ class Plugin(Layer):
                 r *= frame.unit
                 
                 ## 不特定多数の円を描画する
-                self.set_artists(frame,
+                self.attach_artists(frame.axes,
                     patches.Circle((x,y), r, color='r', ls='dotted', lw=1, fill=0))
                 xy.append((x,y))
             frame.markers = np.array(xy).T # scatter markers if any xy

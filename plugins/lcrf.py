@@ -235,7 +235,7 @@ class Plugin(Layer):
         frame.markers = (x[oz][0:-1:3], y[oz][0:-1:3]) # scatter markers onto the arc
         
         ## サークル描画 (確認用)
-        self.set_artists(frame,
+        self.attach_artists(frame.axes,
             patches.Circle((xc, yc), lo*frame.unit, color='c', ls='--', lw=1/2, fill=0),
             patches.Circle((xc, yc), hi*frame.unit, color='c', ls='--', lw=1/2, fill=0),
         )
