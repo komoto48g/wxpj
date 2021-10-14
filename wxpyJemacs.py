@@ -39,7 +39,7 @@ from mwx.controls import Icon, Button, ToggleButton, TextCtrl, Choice, Gauge, In
 from mwx.controls import Param, LParam, ControlPanel
 from mwx.graphman import Layer, Thread, Graph
 from mwx.graphman import Frame as Framebase
-from pyJeol.plugman import NotifyFront
+from pyJeol.temsys import NotifyFront
 from pyJeol.temisc import Environ
 from pyDM3reader import DM3lib
 from pyDM4reader import dm4reader as DM4lib
