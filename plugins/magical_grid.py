@@ -175,7 +175,7 @@ class Plugin(Layer):
         else:
             method = 'cor'
         self.text.Value = '\n'.join((
-            "Mag = {:6,.0f} [{}]".format(g/g0, method),
+            "Mag = {:,.0f} [{}]".format(g/g0, method),
             "grid: {:g} mm".format(g),
             "({:g} m/pix)".format(lu * g0/g * 1e-3)))
         ## print("{:g} grid/pix".format(lu/g))

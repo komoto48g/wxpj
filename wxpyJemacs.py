@@ -41,8 +41,7 @@ from mwx.graphman import Layer, Thread, Graph
 from mwx.graphman import Frame as Framebase
 from pyJeol.temsys import NotifyFront
 from pyJeol.temisc import Environ
-from pyDM3reader import DM3lib
-from pyDM4reader import dm4reader as DM4lib
+import pyDM3reader as DM3lib
 
 ## import wx.lib.mixins.listctrl # for py2exe
 ## import wx.lib.platebtn as pb
@@ -54,7 +53,7 @@ __copyright__ = "Copyright (c) 2018-2021"
 def version():
     return '\n  '.join((
       "<Python {}>".format(sys.version),
-      "wx.version(selected) {}".format(wx.version()),
+      "wx.version {}".format(wx.version()),
       "scipy/numpy version {}/{}".format(scipy.__version__, np.__version__),
       "matplotlib version {}".format(matplotlib.__version__),
       "Image version {}".format(Image.__version__),
@@ -136,19 +135,19 @@ class pyJemacs(Framebase):
     @staticmethod
     def read_buffer(path):
         """Read a buffer from path file (override) +.dm3 extension"""
-        if path[-4:] == '.dm3':
+        if path[-4:] in ('.dm3', '.dm4'):
             dmf = DM3lib.DM3(path)
             ## return dmf.image # PIL Image file
             return dmf.imagedata, {'header':dmf.info}
         
-        if path[-4:] == '.dm4':
-            dmf = DM4lib.DM4File.open(path)
-            tags = dmf.read_directory()
-            data = tags.named_subdirs['ImageList'].unnamed_subdirs[1].named_subdirs['ImageData']
-            w = dmf.read_tag_data(data.named_subdirs['Dimensions'].unnamed_tags[0])
-            h = dmf.read_tag_data(data.named_subdirs['Dimensions'].unnamed_tags[1])
-            buf = dmf.read_tag_data(data.named_tags['Data'])
-            return np.asarray(buf, dtype=np.uint16).reshape(h,w), {'header':None}
+        ## if path[-4:] == '.dm4':
+        ##     dmf = DM4lib.DM4File.open(path)
+        ##     tags = dmf.read_directory()
+        ##     data = tags.named_subdirs['ImageList'].unnamed_subdirs[1].named_subdirs['ImageData']
+        ##     w = dmf.read_tag_data(data.named_subdirs['Dimensions'].unnamed_tags[0])
+        ##     h = dmf.read_tag_data(data.named_subdirs['Dimensions'].unnamed_tags[1])
+        ##     buf = dmf.read_tag_data(data.named_tags['Data'])
+        ##     return np.asarray(buf, dtype=np.uint16).reshape(h,w), {'header':None}
         
         if path[-4:] == '.img':
             with open(path, 'rb') as i:

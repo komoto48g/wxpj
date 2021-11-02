@@ -82,9 +82,12 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
                'M-down pressed' : (0, self.Target.OnPageDown),
             },
         })
+        self.handler.clear(0)
+        
         self.__dir = True
         self.SetToolTip('')
         self.ToolTip.SetMaxWidth(2048)
+        
         self.Bind(wx.EVT_MOTION, self.OnMotion)
         self.Bind(wx.EVT_LIST_COL_CLICK, self.OnSortItems)
         
