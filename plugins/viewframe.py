@@ -61,7 +61,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
             ("min", 50),
             ("annotation", 240),
         )
-        for k,(name,w) in enumerate(self.alist):
+        for k, (name, w) in enumerate(self.alist):
             self.InsertColumn(k, name, width=w)
         
         for j, frame in enumerate(self.Target.all_frames):
@@ -167,9 +167,9 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
             la = sorted(self.all_items, key=lambda v: _eval(v[col]), reverse=self.__dir)
             frames[:] = [frames[int(c[0])] for c in la] # sort by new Id of items
             
-            for j,c in enumerate(la):
+            for j, c in enumerate(la):
                 self.Select(j, False)        # 1, deselect all items,
-                for k,v in enumerate(c[1:]): # 2, except for id(0), update text:str
+                for k, v in enumerate(c[1:]): # 2, except for id(0), update text:str
                     self.SetItem(j, k+1, v)
             self.Target.select(frame) # invokes [frame_shown] to select the item
     
@@ -252,13 +252,13 @@ class Plugin(Layer):
             self.nb.AddPage(lc, caption)
     
     def detach(self, target):
-        for k,lc in enumerate(self.all_pages):
+        for k, lc in enumerate(self.all_pages):
             if target is lc.Target:
                 self.nb.DeletePage(k)
     
     def show_page(self, target):
         self.nb.SetSelection(next((k
-            for k,lc in enumerate(self.all_pages) if target is lc.Target), -1))
+            for k, lc in enumerate(self.all_pages) if target is lc.Target), -1))
     
     def ask(self, prompt='Enter an annotation'):
         """Get response from the user using a dialog box."""
