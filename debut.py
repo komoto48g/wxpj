@@ -28,11 +28,6 @@ from scipy import ndimage as ndi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 import siteinit as si
 import editor as edi
-## try:
-##     graph = self.graph
-##     output = self.output
-## except AttributeError:
-##     pass
 """
 
 np.set_printoptions(linewidth=256) # default 75
@@ -42,33 +37,6 @@ def init_spec(self):
     """Initialize shell/editor and the environs
     """
     self.Execute(SHELLSTARTUP)
-    
-    @self.define_key('C-tab')
-    def insert_space_like_tab():
-        """タブの気持ちになって半角スペースを前向きに入力する
-        Enter half-width spaces forward as if feeling like a tab
-        """
-        self.eat_white_forward()
-        
-        _text, lp = self.CurLine
-        n = lp % 4
-        self.write(' ' * (4-n))
-    
-    @self.define_key('C-S-tab')
-    def delete_backward_space_like_tab():
-        """シフト+タブの気持ちになって半角スペースを後ろ向きに消す
-        Delete half-width spaces backward as if feeling like a shift+tab
-        """
-        self.eat_white_forward()
-        
-        _text, lp = self.CurLine
-        n = lp % 4 or 4
-        for i in range(n):
-            p = self.cur
-            if self.preceding_char == ' ' and p != self.bol:
-                self.Replace(p-1, p, '')
-            else:
-                break
     
     self.set_style({
         "STC_STYLE_DEFAULT"     : "fore:#cccccc,back:#202020,face:MS Gothic,size:9",

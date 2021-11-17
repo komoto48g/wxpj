@@ -20,9 +20,9 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
     """ CheckList with FSM
     list item order = buffer order リストアイテムとバッファの並び順 0..n は常に一致します．
     """
-    @property
-    def checked_items(self):
-        return [j for j in range(self.ItemCount) if self.IsChecked(j)]
+    ## @property
+    ## def checked_items(self):
+    ##     return [j for j in range(self.ItemCount) if self.IsChecked(j)]
     
     @property
     def selected_items(self):
@@ -73,7 +73,6 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
                             '*' : (0, lambda v: v.Skip()),
                'Lbutton dclick' : (0, self.OnShowItems), # -> frame_shown
                 'enter pressed' : (0, self.OnShowItems), # -> frame_shown
-               #'space pressed' : (0, self.OnToggleItems),
                'delete pressed' : (0, self.OnRemoveItems), # -> frame_removed/shown
                   'C-a pressed' : (0, self.OnSelectAllItems),
                   'C-o pressed' : (0, self.OnLoadItems),
@@ -138,10 +137,6 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
                 tip = "No attributes"
         self.SetToolTip(tip)
         evt.Skip()
-    
-    def OnToggleItems(self, evt):
-        for j in self.selected_items:
-            self.CheckItem(j, not self.IsChecked(j))
     
     def OnShowItems(self, evt):
         self.Target.select(self.FocusedItem)
