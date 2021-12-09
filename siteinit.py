@@ -119,7 +119,7 @@ if __name__ == '__main__':
     app = wx.App()
     frm = wxpj.Frame(None)
     init_frame(frm)
-    debut.init_spec(frm.inspector.shell)
+    debut.init_spec(frm.inspector.rootshell)
     frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
     frm.load_buffer(u"C:/usr/home/workspace/images/sample_circ.bmp")
     frm.load_buffer(u"C:/usr/home/workspace/images/13 TEM1-3 MAG10k FLS1=2A00,B700.dm3")

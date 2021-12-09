@@ -34,7 +34,7 @@ np.set_printoptions(linewidth=256) # default 75
 
 
 def init_spec(self):
-    """Initialize shell/editor and the environs
+    """Initialize shell/editor environs
     """
     self.Execute(SHELLSTARTUP)
     

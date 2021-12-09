@@ -21,6 +21,7 @@ def find_ring_center(src, lo, hi, N=256, tol=0.01):
     src : source buffer (typ. log(abs(fft)))
   lo-hi : masking size of radial axis
       N : resizing of angular axis (total step in angle [0:2pi])
+    tol : remove peaks that leap greater than N * tol
   retval ->
         dst(log-polar-transformed image) and fitting model
     """
