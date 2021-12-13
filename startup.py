@@ -20,6 +20,8 @@ class Plugin(Layer):
     category = "Option"
     unloadable = False
     
+    em = property(lambda self: self.parent.em) # ref:wxpj
+    
     def Init(self):
         self.accv_param = Param("Acc.Voltage", (100e3, 200e3, 300e3), 300e3,
             handler=self.set_htv,
@@ -89,7 +91,7 @@ class Plugin(Layer):
             self.unit_param.std_value = frame.parent.unit
     
     def set_htv(self, p):
-        self.parent.em.__init__(p.value)
+        self.em.__init__(p.value)
     
     def set_localunit(self, p):
         target = self.selected_view

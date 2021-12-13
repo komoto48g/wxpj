@@ -45,7 +45,7 @@ class Model(object):
     
     @property
     def Angles(self):
-        le = self.owner.parent.em.elambda
+        le = self.owner.su.em.elambda
         ds = calc_fcc_spacings(a=4.080e-10, N=self.nGrid)
         return sorted(le / ds)[:20]
     
@@ -90,6 +90,8 @@ class Plugin(Layer):
     """Distortion fitting of ring
     """
     menu = "Plugins/Measure &Distortion"
+    
+    su = property(lambda self: self.parent.require('startup'))
     
     Fitting_model = Model
     fitting_params = property(

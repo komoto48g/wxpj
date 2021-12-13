@@ -46,7 +46,7 @@ import pyDM3reader as DM3lib
 ## import wx.lib.mixins.listctrl # for py2exe
 ## import wx.lib.platebtn as pb
 
-__version__ = "0.32"
+__version__ = "0.34rc"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2021"
 
@@ -95,7 +95,8 @@ class pyJemacs(Framebase):
         if os.path.exists(icon):
             self.SetIcon(wx.Icon(icon, wx.BITMAP_TYPE_ICO))
         
-        ## Settings with default acc.v [V]
+        ## Settings with default acc [V]
+        ## Note: referenced thru su.
         self.em = Environ(300e3)
         
         ## Notify process
