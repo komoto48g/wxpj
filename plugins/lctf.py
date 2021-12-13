@@ -6,9 +6,33 @@ import cv2
 import numpy as np
 from numpy import pi
 from scipy import signal
-from plugins import lcrf
+from plugins.lcrf import Model
 import editor as edi
-## reload(edi)
+
+
+def logpolar(src, r0, r1, center=None):
+    """Log-Polar transform
+    The area radii [r0:r1] of radius N/2 mapsto the same size of src image
+    
+    cf. cv2.logPolar(src, (nx,ny), M, cv2.INTER_CUBIC)
+    """
+    h, w = src.shape
+    if center is None:
+        xc, yc = w//2, h//2
+    else:
+        xc, yc = center
+    
+    x = np.arange(w, dtype=np.float32) /w
+    y = np.arange(h, dtype=np.float32) * 2*pi /h
+    xx, yy = np.meshgrid(x, y)
+    
+    rh0 = np.log(r0) if r0>0 else 0
+    rh1 = np.log(r1)
+    r = np.exp(rh0 + (rh1 - rh0) * xx)
+    map_x = xc + r * np.cos(yy)
+    map_y = yc + r * np.sin(yy)
+    dst = cv2.remap(src.astype(np.float32), map_x, map_y, cv2.INTER_CUBIC)
+    return dst
 
 
 def find_ring_center(src, lo, hi, N=256, tol=0.01):
@@ -27,7 +51,7 @@ def find_ring_center(src, lo, hi, N=256, tol=0.01):
     """
     h, w = src.shape
     
-    dst = edi.logpolar(src, lo, hi)
+    dst = logpolar(src, lo, hi)
     
     ## Resize Y (angular) axis (計算を軽くするためリサイズ)
     rdst = cv2.resize(dst.astype(np.float32), (w, N), interpolation=cv2.INTER_AREA)
@@ -54,7 +78,7 @@ def find_ring_center(src, lo, hi, N=256, tol=0.01):
             xx.append(x)
             yy.append(y)
     
-    fitting_curve = lcrf.Model(xx, yy)
+    fitting_curve = Model(xx, yy)
     
     ## edi.plot(xx, yy, '+', X, fitting_curve(X))
     
@@ -66,7 +90,9 @@ def find_ring_center(src, lo, hi, N=256, tol=0.01):
 
 
 def find_radial_peaks(data, tol=0.01):
-    ## Smooth with window (cf. signal.windows) and find local maximas
+    """find local maxima/minim's
+    smoothing with Gaussian window (signal.windows.gaussian)
+    """
     w = len(data)
     lw = int(max(3, tol * w/2))
     
@@ -74,15 +100,43 @@ def find_radial_peaks(data, tol=0.01):
     window = signal.windows.gaussian(lw, std=lw)
     
     ys = np.convolve(window/window.sum(), data, mode='same')
-    ## ys = signal.lfilter(window/window.sum(), 1, data)
+    ## ys = signal.lfilter(window/window.sum(), 1, data) # シフトが含まれる
     
-    maxima = signal.argrelmax(ys)
-    ## maxima = signal.find_peaks_cwt(ys, np.arange(2,4))
-    ## maxima,_ = signal.find_peaks(ys, width=2)
+    ## maxima = signal.find_peaks_cwt(ys, np.arange(3,4))
+    maxima,_attr = signal.find_peaks(ys, width=2)
     
-    minima = signal.argrelmin(ys)
-    ## minima = signal.find_peaks_cwt(-ys, np.arange(2,4))
-    ## minima,_ = signal.find_peaks(-ys, width=2)
+    ## minima = signal.find_peaks_cwt(-ys, np.arange(3,4))
+    minima,_attr = signal.find_peaks(-ys, width=2)
     
-    ## return ys, maxima, minima
-    return ys, np.sort(np.append(maxima, minima))
+    ## maxima = signal.argrelmax(ys)
+    ## minima = signal.argrelmin(ys)
+    
+    return ys, maxima, minima # np.sort(np.append(maxima, minima))
+
+
+def polyfit(n, xx, yy, show=False):
+    x = xx[:n]
+    y = yy[:n]
+    a, b, c = np.polyfit(x, y, 2)
+    if show:
+        nn = n * 2
+        q = np.linspace(0, 0.1, 100)
+        edi.plot(xx[:nn], yy[:nn], 'o')
+        edi.plot(q, a*q**2 + b*q + c, '-')
+    return a, b, c
+
+
+## def polyfit2(n, xx, yy, params, show=False):
+##     x = xx[:n]
+##     y = yy[:n]
+##     def residual(p, x, y):
+##         return (p[0]*x**2 + p[1]*x - y)**2
+##     result = optimize.leastsq(residual, params, args=(x, y))
+##     a, b = result[0]
+##     c = 0
+##     if show:
+##         nn = n * 2
+##         q = np.linspace(0, 0.1, 100)
+##         edi.plot(xx[:nn], yy[:nn], 'o')
+##         edi.plot(q, a*q**2 + b*q + c, '-')
+##     return a, b, c

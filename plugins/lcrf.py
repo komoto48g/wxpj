@@ -14,17 +14,42 @@ from mwx.graphman import Layer
 import editor as edi
 
 
+def linpolar(src, r0, r1, center=None):
+    """Linear-Polar transform
+    The area radii [r0:r1] mapsto the same size of src image
+    
+    cf. cv2.linearPolar(src, (xc, yc), R, cv2.INTER_CUBIC)
+    """
+    h, w = src.shape
+    if center is None:
+        xc, yc = w//2, h//2
+    else:
+        xc, yc = center
+    
+    x = np.arange(w, dtype=np.float32) /w
+    y = np.arange(h, dtype=np.float32) * 2*pi /h
+    xx, yy = np.meshgrid(x, y)
+    
+    r = r0 + (r1 - r0) * xx
+    map_x = xc + r * np.cos(yy)
+    map_y = yc + r * np.sin(yy)
+    dst = cv2.remap(src.astype(np.float32), map_x, map_y, cv2.INTER_CUBIC)
+    return dst
+
+
 class Model(object):
+    """Cor-fitting model function
+    """
     def __init__(self, x, y):
         params = [0.,] * 5
+        x = np.array(x)
+        y = np.array(y)
         result = optimize.leastsq(self.residual, params, args=(x,y))
         self.params = result[0]
     
     def __call__(self, x):
         a,b,c,d,e = self.params
-        x = np.array(x)
         return a + b * cos(x-c) + d * cos(2*x-e)
-        ## return a + b * cos(x-c) + d * cos(2*(x-e))
     
     def residual(self, params, x, y):
         self.params = params
@@ -52,10 +77,6 @@ class Model(object):
       retval -> 1D-array of modulated (+avr.) line profile
         """
         h, w = buf.shape
-        ## data = np.zeros(w)
-        ## for j,x in enumerate(buf):
-        ##     y = (1 - j/h) * 2*pi              # yaxis (from 2pi to 0)
-        ##     data += np.roll(x, -int(self(y))) # roll anti-shift (to modify peak pos)
         data = sum(self.mod2d(buf))
         return data / h
 
@@ -71,6 +92,7 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
  center : initial value of center position [nx,ny]
   lo-hi : masking size of radial axis
       N : resizing of angular axis (total step in angle [0:2pi])
+    tol : remove peaks that leap greater than N * tol
   retval ->
         dst(linear-polar-transformed image), guessed center, and fitting model
     """
@@ -124,22 +146,28 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     b = fitting_curve.params[1]
     c = fitting_curve.params[2] % (2*pi)
     
-    t = c+pi if b>0 else c # 推定中心方向
-    nx -= abs(b) * cos(t)
-    ny += abs(b) * sin(t)
+    ## t = c+pi if b>0 else c # 推定中心方向
+    ## nx -= abs(b) * cos(t)
+    ## ny += abs(b) * sin(t)
+    t = c if b>0 else c+pi # tmax: 推定中心方向
+    nx += abs(b) * cos(t)
+    ny -= abs(b) * sin(t)
     center = (nx, ny)
     return dst, center, fitting_curve
 
 
-## def find_radial_peaks(data):
-##     """Find radial peaks in Polar-converted buffer
-##    data : Polar-converted output buffer
-##     """
-##     ys = data.copy()
-##     peaks = signal.find_peaks_cwt(ys, widths=np.arange(3,4))
-##     
-##     peaks = [p for p in peaks if ys[p] > ys.mean()] # filtered by threshold
-##     return ys, np.array(peaks)
+def find_radial_peaks(data, tol=0.01):
+    """Find radial peaks in Polar-converted buffer
+    data : Polar-converted output buffer
+    """
+    w = len(data)
+    lw = int(max(3, tol * w/2))
+    window = signal.windows.gaussian(lw, std=lw)
+    ys = np.convolve(window/window.sum(), data, mode='same')
+    ## ys = data
+    peaks,_attr = signal.find_peaks(ys, width=1)
+    peaks = [p for p in peaks if ys[p] > ys.mean()] # filtered by threshold
+    return ys, peaks
 
 
 class Plugin(Layer):
@@ -210,8 +238,9 @@ class Plugin(Layer):
         rdist = fitting_curve.mod1d(buf)
         
         ## Find radial peaks in polar-converted buffer
-        peaks = signal.find_peaks_cwt(rdist, widths=np.arange(3,4))
-        peaks = [p for p in peaks if rdist[p] > rdist.mean()] # filtered by threshold
+        ## peaks = signal.find_peaks_cwt(rdist, widths=np.arange(3,4))
+        ## peaks = [p for p in peaks if rdist[p] > rdist.mean()] # filtered by threshold
+        rdist, peaks = find_radial_peaks(rdist)
         
         if self.chkplt.Value: # this should be called for MainThread
             edi.clf()

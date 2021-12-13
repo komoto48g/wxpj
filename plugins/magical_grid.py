@@ -18,6 +18,7 @@ class Plugin(Layer):
     """
     menu = "Plugins/&Pragma Tools"
     
+    su = property(lambda self: self.parent.require('startup'))
     lgbt = property(lambda self: self.parent.require('lgbt'))
     lccf = property(lambda self: self.parent.require('lccf2'))
     ldc = property(lambda self: self.parent.require('ld_cgrid'))
@@ -27,11 +28,7 @@ class Plugin(Layer):
         self.page.bind(lambda lp: self.view.select(lp.value))
         
         self.choice = Choice(self, size=(60,-1),
-            choices=['FFT',
-                     'FFT+',
-                     'Cor',
-                     ],
-            readonly=1,
+            choices=['FFT', 'FFT+', 'Cor'], readonly=1,
         )
         self.choice.Selection = 0
         
@@ -40,10 +37,11 @@ class Plugin(Layer):
         self.grid = Choice(self, label="grid [mm]", size=(140,-1),
             handler=lambda p: self.calc_mag(),
             updater=lambda p: self.calc_mag(),
-            choices=['1/2000', # Standard grating(Ted Pera)
-                     '1/2160', # Standard Gatan grating
-                     '2.04e-7' # Au single 100
-                     ],
+            choices=[
+                '1/2000', # Standard grating(Ted Pera)
+                '1/2160', # Standard Gatan grating
+                '2.04e-7' # Au single 100
+                ],
             tip="Set grid length [mm/grid] to calculate Mag.")
         self.grid.Selection = 0
         
@@ -52,44 +50,20 @@ class Plugin(Layer):
         size = (72,-1)
         
         self.layout("Evaluate step by step", (
-            Button(self, "1. Show",
-                lambda v: self.view.select(self.selected_frame), icon='help', size=size,
-                tip="Select frame buffer.\n"
-                    "(page -1 means the last frame)"),
+            Button(self, "1. Show", self.show_frame, icon='help', size=size),
             self.page,
             
-            Button(self, "2. Eval", lambda v: self.testrun(), icon='help', size=size,
-                tip="Select evaluation method\n"
-                    "  :FFT evaluates using FFT method. Use when grid is small\n"
-                    "  :FFT+ in addition to FFT method, corss-cut the center (十文字きりちょんぱ)\n"
-                    "  :Cor evaluates using Cor (pattern matching) method. Use when grid is large"),
+            Button(self, "2. Eval", self.test_run, icon='help', size=size),
             self.choice,
             
-            Button(self, "3. Mark", lambda v: self.calc_mark(), icon='help', size=size,
-                tip="Set parameter of socre at percentile (:COR only).\n"
-                    "score is the ratio [%] to maximum count for extracting spots"),
+            Button(self, "3. Mark", self.calc_mark, icon='help', size=size),
             self.score,
             
-            Button(self, "4. Run", lambda v: self.run(), icon='help', size=size,
-                tip="Run the fitting procedure.\n"),
-            
-            Button(self, "Settings", lambda v: self.lccf.Show()),
+            Button(self, "4. Run", self.run, icon='help', size=size),
+            Button(self, "Settings", self.show_settings),
             ),
             row=2, show=1, type='vspin', tw=40, lw=0,
         )
-        ## self.layout(None, (
-        ##     Button(self, "check unit",
-        ##         lambda v: self.parent.su.Show(), icon='v',
-        ##         tip="Check unit length [mm/pixel]\n"
-        ##             "See the startup option where globalunit can be set to calc mags."),
-        ##     
-        ##     Button(self, "Run",
-        ##         lambda v: self.run_all(), icon='->',
-        ##         tip="Run above (1-2-3) step by step.\n"
-        ##             "Before calculating Mags, check unit length [mm/pixel]"),
-        ##     ),
-        ##     row=2,
-        ## )
         self.layout("log/output", (
             self.grid,
             self.text,
@@ -119,18 +93,41 @@ class Plugin(Layer):
     ## --------------------------------
     ## calc/marking functions
     ## --------------------------------
-    
-    def run(self):
-        self.ldc.reset_params()
-        self.ldc.thread.Start(self.calc_fit)
-    
+    ## Run the following procs (1-2-3) step by step.
+    ## Before calculating Mags, check unit length [mm/pixel]
     ## def run_all(self):
-    ##     self.testrun()
+    ##     self.test_run()
     ##     self.calc_mark()
     ##     self.run()
     
-    def testrun(self):
-        """Evaluation using the selected method"""
+    def show_frame(self, evt):
+        """Select frame buffer
+        page -1 means the last frame
+        """
+        self.view.select(self.selected_frame)
+    
+    def show_settings(self, evt):
+        """Check settings
+        Check lccf radii [rmin:rmax]
+        Check unit length [mm/pixel]
+        See the startup:globalunit for calculating mags.
+        """
+        self.lccf.Show()
+        self.su.Show()
+    
+    def run(self, evt):
+        """Run the fitting procedure
+        """
+        self.ldc.reset_params()
+        self.ldc.thread.Start(self.calc_fit)
+    
+    def test_run(self, evt):
+        """Evaluation using the selected method
+        Select evaluation method
+          :FFT evaluates using FFT method. Use when grid is small
+          :FFT+ in addition to FFT method, corss-cut the center (十文字きりちょんぱ)
+          :Cor evaluates using Cor (pattern matching) method. Use when grid is large
+        """
         frame = self.selected_frame
         
         if not self.result_frame and self.page.value >= 0:
@@ -143,7 +140,10 @@ class Plugin(Layer):
         else:
             self.test_cor(frame)
     
-    def calc_mark(self):
+    def calc_mark(self, evt):
+        """Set parameter of socre at percentile (:COR only).
+        score: the ratio [%] to maximum count for extracting spots
+        """
         frame = self.result_frame
         if not frame:
             print(self.message("- No *result*"))
