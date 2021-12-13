@@ -6,10 +6,11 @@
   Phase 2: Phoenix (2018--2020) Integrated system for image analysis
   Phase 3: Analysis center phoenix (2020--)
 """
-from __future__ import division, print_function
-from __future__ import unicode_literals
-from __future__ import absolute_import
+## from __future__ import division, print_function
+## from __future__ import unicode_literals
+## from __future__ import absolute_import
 from collections import OrderedDict
+from functools import wraps
 from pprint import pprint
 import traceback
 import datetime # imported but unused :necessary to eval
@@ -181,6 +182,17 @@ class pyJemacs(Framebase):
         return Framebase.write_buffer(path, buf)
 
 Frame = pyJemacs
+
+
+def wait(f):
+    @wraps(f)
+    def _f(self, *args, **kwargs):
+        try:
+            busy = wx.BusyCursor()
+            return f(self, *args, **kwargs)
+        finally:
+            del busy
+    return _f
 
 
 if __name__ == '__main__':

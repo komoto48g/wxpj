@@ -10,6 +10,7 @@ from numpy.fft import fft2,fftshift
 from mwx.controls import LParam
 from mwx.controls import Button, TextCtrl, Choice
 from mwx.graphman import Layer
+from wxpyJemacs import wait
 import editor as edi
 
 
@@ -112,15 +113,17 @@ class Plugin(Layer):
         Check unit length [mm/pixel]
         See the startup:globalunit for calculating mags.
         """
-        self.lccf.Show()
         self.su.Show()
+        self.lccf.Show()
     
+    @wait
     def run(self, evt):
         """Run the fitting procedure
         """
         self.ldc.reset_params()
         self.ldc.thread.Start(self.calc_fit)
     
+    @wait
     def test_run(self, evt):
         """Evaluation using the selected method
         Select evaluation method
@@ -140,6 +143,7 @@ class Plugin(Layer):
         else:
             self.test_cor(frame)
     
+    @wait
     def calc_mark(self, evt):
         """Set parameter of socre at percentile (:COR only).
         score: the ratio [%] to maximum count for extracting spots
@@ -154,6 +158,7 @@ class Plugin(Layer):
         else:
             self.lccf.run(frame, otsu=1-self.score.value/100)
     
+    @wait
     def calc_fit(self):
         frame = self.result_frame
         if not frame:
@@ -165,6 +170,7 @@ class Plugin(Layer):
         self.ldc.Show()
         self.calc_mag()
     
+    @wait
     def calc_mag(self):
         lu = self.selected_frame.unit     # [mm/pix]
         g = self.ldc.grid_params[0].value # [mm/grid] image or 1/g :FFT
@@ -222,56 +228,51 @@ class Plugin(Layer):
         src = frame.roi
         h, w = src.shape
         
-        ## resize to 2**N squared ROI
-        n = pow(2, int(np.log2(min(h,w)))-1)
+        ## resize to 2**N squared ROI (N=2n)
+        n = pow(2, int(np.log2(min(h, w)))-1)
         i, j = h//2, w//2
         src = src[i-n:i+n,j-n:j+n]
         
-        h, w = src.shape
-        i, j = h//2, w//2
-        
         self.message("processing fft... @log")
         src = fftshift(fft2(src))
+        
         buf = np.log(1 + abs(src)) # log intensity
+        h, w = buf.shape           # shape:(2n,2n)
         
         ## background subst.
         if 1:
             self.message("\b @subst")
-            rmax = w/2
+            rmax = n * 0.75
             buf = cv2.linearPolar(buf, (w/2, h/2), rmax, cv2.WARP_FILL_OUTLIERS)
-            buf -= sum(buf) / h # バックグラウンド(ぽい)強度を引いてみる (中央も 0 になるので注意)
+            buf -= sum(buf) / h # バックグラウンド(ぽい)強度を引いてみる
             
             self.message("\b @remap")
-            
-            ## X, Y = np.meshgrid(
-            ##     np.arange(-w/2, w/2, dtype=np.float32),
-            ##     np.arange(-h/2, h/2, dtype=np.float32),
-            ## )
-            ## map_r = w/rmax * np.hypot(Y, X)
-            ## map_t = ((pi + np.arctan2(Y, X)) * h/2/pi)
-            ## buf = cv2.remap(buf.astype(np.float32), map_r, map_t,
-            ##                 cv2.INTER_CUBIC, cv2.WARP_FILL_OUTLIERS)
-            
             buf = cv2.linearPolar(buf, (w/2, h/2), rmax, cv2.WARP_INVERSE_MAP)
             
-            ## 確認
+            ## ## 逆変換
+            ## N = np.arange(-n, n, dtype=np.float32),
+            ## X, Y = np.meshgrid(N, N)
+            ## map_r = w/rmax * np.hypot(Y, X)
+            ## map_t = (pi + np.arctan2(Y, X)) * h/2 /pi
+            ## buf = cv2.remap(buf.astype(np.float32), map_r, map_t,
+            ##                 cv2.INTER_CUBIC, cv2.WARP_FILL_OUTLIERS)
+            ## ## 確認
             ## self.output.load(buf, name="*remap*", localunit=1/w)
             
         dst = np.exp(buf) - 1 # log --> exp で戻す
         
         ## 十紋形切ちょんぱマスク (option)
-        d = max(int(h * 0.001), 2)
+        d = max(int(n * 0.002), 2)
+        
         if crossline:
-            i, j = h//2, w//2
-            dst[:,j-d:j+d+1] = 0
-            dst[i-d:i+d+1,:] = 0
+            dst[:,n-d:n+d+1] = 0
+            dst[n-d:n+d+1,:] = 0
         
         ## force the central spot white (option)
         if 1:
-            i, j = h//2, w//2
             y, x = np.ogrid[-d:d+1,-d:d+1]     # index arrays
             m = np.where(np.hypot(y,x) <= d)   # mask submatrix
-            dst[m[0]+i-d,m[1]+j-d] = dst.max() # apply to the center +-d
+            dst[m[0]+n-d,m[1]+n-d] = dst.max() # apply to the center +-d
         
         ## 逆空間：論理スケール [ru/pixel] に変換する
         ## Don't cut hi/lo: 強度重心を正しくとるため，飽和させないこと
