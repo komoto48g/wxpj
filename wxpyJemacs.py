@@ -41,7 +41,6 @@ from mwx.controls import Param, LParam, ControlPanel
 from mwx.graphman import Layer, Thread, Graph
 from mwx.graphman import Frame as Framebase
 from pyJeol.temsys import NotifyFront
-from pyJeol.temisc import Environ
 import pyDM3reader as DM3lib
 
 ## import wx.lib.mixins.listctrl # for py2exe
@@ -95,10 +94,6 @@ class pyJemacs(Framebase):
         icon = os.path.join(home, "Jun.ico")
         if os.path.exists(icon):
             self.SetIcon(wx.Icon(icon, wx.BITMAP_TYPE_ICO))
-        
-        ## Settings with default acc [V]
-        ## Note: referenced thru su.
-        self.em = Environ(300e3)
         
         ## Notify process
         self.nfront = NotifyFront(self)

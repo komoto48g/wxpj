@@ -37,13 +37,15 @@ class Plugin(Layer):
         
         self.grid = Choice(self, label="grid [mm]", size=(140,-1),
             handler=lambda p: self.calc_mag(),
-            updater=lambda p: self.calc_mag(),
+            updater=lambda p: self.calc_ru(),
             choices=[
                 '1/2000', # Standard grating(Ted Pera)
                 '1/2160', # Standard Gatan grating
-                '2.04e-7' # Au single 100
+                '2.356e-7', # Au single 111
+                '2.040e-7', # Au single 200
                 ],
-            tip="Set grid length [mm/grid] to calculate Mag.")
+            tip="Set grid length [mm/grid] to calculate Mag."
+        )
         self.grid.Selection = 0
         
         self.text = TextCtrl(self, size=(140,60), style=wx.TE_READONLY|wx.TE_MULTILINE)
@@ -88,8 +90,10 @@ class Plugin(Layer):
     @property
     def selected_frame(self):
         self.page.range = (-1, len(self.view))
-        return self.view.get_frame(self.page.value)\
-            or self.view.frame
+        try:
+            return self.view.get_frame(self.page.value)
+        except TypeError:
+            return self.view.frame
     
     ## --------------------------------
     ## calc/marking functions
@@ -172,25 +176,52 @@ class Plugin(Layer):
     
     @wait
     def calc_mag(self):
-        lu = self.selected_frame.unit     # [mm/pix]
+        """Calculate Mags from the grid length [mm/grid]
+        """
+        frame = self.selected_frame
+        u = frame.unit                    # [mm/pix]
         g = self.ldc.grid_params[0].value # [mm/grid] image or 1/g :FFT
         g0 = eval(self.grid.Value)        # [mm/grid] org
         if self.choice.Selection < 2: # FFT
-            g = 1/g
             method = 'fft'
+            g = 1/g
         else:
             method = 'cor'
+        M = g/g0
         self.text.Value = '\n'.join((
-            "Mag = {:,.0f} [{}]".format(g/g0, method),
+            "Mag = {:,.0f} [{}]".format(M, method),
             "grid: {:g} mm".format(g),
-            "({:g} m/pix)".format(lu * g0/g * 1e-3)))
-        ## print("{:g} grid/pix".format(lu/g))
-        ## print("{:g} mm/pix on spec".format(lu * g0/g))
+            "({:g} m/pix)".format(u/M * 1e-3)))
         
-        self.selected_frame.update_attributes(
+        frame.update_attributes(
             parameters = self.parameters[:-1], # except the last text
             annotation = ', '.join(self.text.Value.splitlines()),
         )
+    
+    @wait
+    def calc_ru(self):
+        """Estimate [u/pix] on specimen from two spots
+        1. Select the *result* frame
+        2. Draw line from orign to the nearest spot
+        3. Press to estimate the unit length [u/pix]
+        """
+        frame = self.result_frame
+        x, y = frame.selector
+        if len(x) < 2:
+            self.message("- Select two nearest spots")
+        else:
+            u = frame.unit                      # [u/pix] or [u-1/pix] :FFT
+            g = np.hypot(y[1]-y[0], x[1]-x[0])  # [u/grid] or [u-1/grid] :FFT
+            g0 = eval(self.grid.Value)          # [u/grid] org
+            if self.choice.Selection < 2: # FFT
+                h, w = frame.buffer.shape
+                method = 'fft'
+                M = 1/g/g0
+                u = 1/w/u
+            else:
+                method = 'cor'
+                M = g/g0
+            self.message("unit: {:g} m/pix [{}]".format(u/M * 1e-3, method))
     
     ## --------------------------------
     ## test/eval functions

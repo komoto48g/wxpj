@@ -10,6 +10,7 @@ import numpy as np
 import wx
 from mwx.controls import Param, LParam, Button
 from mwx.graphman import Layer, Frame
+from pyJeol.temisc import Environ
 
 
 class Plugin(Layer):
@@ -20,9 +21,12 @@ class Plugin(Layer):
     category = "Option"
     unloadable = False
     
-    em = property(lambda self: self.parent.em) # ref:wxpj
+    em = property(lambda self: self.__em)
     
     def Init(self):
+        ## Settings with default acc [V]
+        self.__em = Environ(300e3)
+        
         self.accv_param = Param("Acc.Voltage", (100e3, 200e3, 300e3), 300e3,
             handler=self.set_htv,
                 fmt='{:,g}'.format,

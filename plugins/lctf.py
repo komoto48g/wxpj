@@ -89,18 +89,35 @@ def find_ring_center(src, lo, hi, N=256, tol=0.01):
     return dst, fitting_curve
 
 
+def smooth1d(data, tol=0.01):
+    w = len(data)
+    lw = int(max(3, tol * w/2))
+    if lw % 2 == 0:
+        lw += 1
+    return signal.savgol_filter(data, lw, polyorder=3)
+
+
+def blur1d(data, tol=0.01):
+    w = len(data)
+    lw = int(max(3, tol * w/2))
+    ## window = np.hanning(lw)
+    window = signal.windows.gaussian(lw, std=lw)
+    ## padding dumy data at both edge
+    data = np.concatenate((data[:lw][::-1], data, data[-lw:][::-1]))
+    ys = np.convolve(window/window.sum(), data, mode='same')
+    return ys[lw:-lw]
+
+
 def find_radial_peaks(data, tol=0.01):
     """find local maxima/minim's
     smoothing with Gaussian window (signal.windows.gaussian)
     """
-    w = len(data)
-    lw = int(max(3, tol * w/2))
-    
-    ## window = np.hanning(lw)
-    window = signal.windows.gaussian(lw, std=lw)
-    
-    ys = np.convolve(window/window.sum(), data, mode='same')
-    ## ys = signal.lfilter(window/window.sum(), 1, data) # シフトが含まれる
+    ## w = len(data)
+    ## lw = int(max(3, tol * w/2))
+    ## window = signal.windows.gaussian(lw, std=lw)
+    ## ys = np.convolve(window/window.sum(), data, mode='same') # ぼかしならし
+    ## ys = signal.lfilter(window/window.sum(), 1, data) # 短周期シフト ? NG
+    ys = blur1d(data, tol)
     
     ## maxima = signal.find_peaks_cwt(ys, np.arange(3,4))
     maxima,_attr = signal.find_peaks(ys, width=2)
@@ -112,31 +129,3 @@ def find_radial_peaks(data, tol=0.01):
     ## minima = signal.argrelmin(ys)
     
     return ys, maxima, minima # np.sort(np.append(maxima, minima))
-
-
-def polyfit(n, xx, yy, show=False):
-    x = xx[:n]
-    y = yy[:n]
-    a, b, c = np.polyfit(x, y, 2)
-    if show:
-        nn = n * 2
-        q = np.linspace(0, 0.1, 100)
-        edi.plot(xx[:nn], yy[:nn], 'o')
-        edi.plot(q, a*q**2 + b*q + c, '-')
-    return a, b, c
-
-
-## def polyfit2(n, xx, yy, params, show=False):
-##     x = xx[:n]
-##     y = yy[:n]
-##     def residual(p, x, y):
-##         return (p[0]*x**2 + p[1]*x - y)**2
-##     result = optimize.leastsq(residual, params, args=(x, y))
-##     a, b = result[0]
-##     c = 0
-##     if show:
-##         nn = n * 2
-##         q = np.linspace(0, 0.1, 100)
-##         edi.plot(xx[:nn], yy[:nn], 'o')
-##         edi.plot(q, a*q**2 + b*q + c, '-')
-##     return a, b, c
