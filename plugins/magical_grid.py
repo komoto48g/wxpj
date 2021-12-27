@@ -75,6 +75,12 @@ class Plugin(Layer):
         )
         self.lgbt.ksize.value = 5 # default blur window size
     
+    def init_session(self, session):
+        self.reset_params(session.get('params'))
+    
+    def save_session(self, session):
+        session['params'] = self.parameters
+    
     @property
     def view(self):
         return self.graph
@@ -208,20 +214,23 @@ class Plugin(Layer):
         frame = self.result_frame
         x, y = frame.selector
         if len(x) < 2:
-            self.message("- Select two nearest spots")
+            wx.MessageBox(
+                self.message("- Select two nearest spots in the *result* frame"),
+                style = wx.ICON_INFORMATION | wx.OK | wx.CANCEL)
+            return
+        
+        u = frame.unit                      # [u/pix] or [u-1/pix] :FFT
+        g = np.hypot(y[1]-y[0], x[1]-x[0])  # [u/grid] or [u-1/grid] :FFT
+        g0 = eval(self.grid.Value)          # [u/grid] org
+        if self.choice.Selection < 2: # FFT
+            h, w = frame.buffer.shape
+            method = 'fft'
+            M = 1/g/g0
+            u = 1/w/u
         else:
-            u = frame.unit                      # [u/pix] or [u-1/pix] :FFT
-            g = np.hypot(y[1]-y[0], x[1]-x[0])  # [u/grid] or [u-1/grid] :FFT
-            g0 = eval(self.grid.Value)          # [u/grid] org
-            if self.choice.Selection < 2: # FFT
-                h, w = frame.buffer.shape
-                method = 'fft'
-                M = 1/g/g0
-                u = 1/w/u
-            else:
-                method = 'cor'
-                M = g/g0
-            self.message("unit: {:g} m/pix [{}]".format(u/M * 1e-3, method))
+            method = 'cor'
+            M = g/g0
+        self.message("unit: {:g} m/pix [{}]".format(u/M * 1e-3, method))
     
     ## --------------------------------
     ## test/eval functions
