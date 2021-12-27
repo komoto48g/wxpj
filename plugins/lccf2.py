@@ -120,10 +120,11 @@ class Plugin(Layer):
                     art.angle = 90-angle
                     self.attach_artists(frame.axes, art)
                     
-                    ## 検出した楕円の中心を記録する．強度の偏りは考慮しない
+                    ## 検出した楕円の中心を記録する
                     ## xy.append(art.center)
                     
-                    r = int(max(ra,rb)/2) # max radius enclosing the area cf. cv2.minEnclosingCircle
+                    ## Show max radius enclosing the area (cf. cv2.minEnclosingCircle)
+                    r = int(max(ra, rb) / 2)
                     x, y = int(cx), int(cy)
                     xa = max(0, x-r)
                     ya = max(0, y-r)
@@ -132,7 +133,7 @@ class Plugin(Layer):
                     ## local maximum
                     ## dy, dx = np.unravel_index(buf.argmax(), buf.shape)
                     
-                    ## local maximum :averaged
+                    ## local maximum :averaged (強度の偏りを考慮する)
                     yy, xx = np.where(buf == np.amax(buf))
                     dy, dx = np.average(yy), np.average(xx)
                     

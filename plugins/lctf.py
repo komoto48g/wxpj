@@ -182,8 +182,6 @@ class Plugin(Layer):
             ),
             type='vspin', style='button', lw=28, tw=50,
         )
-        self.circ = patches.Circle((0,0), 0, color='r', ls='solid', lw=0.5, fill=0, zorder=2)
-        self.attach_artists(self.output.axes, self.circ)
     
     @property
     def selected_frame(self):
@@ -225,13 +223,12 @@ class Plugin(Layer):
             self.output.load(dst, "*log-polar*", pos=0)
             self.output.load(buf, "*fft-of-{}*".format(frame.name),
                              localunit=1/w/frame.unit)
+            del self.Arts
         self.message("\b done.")
         
         ## 拡張 log-polar 変換は振幅が m 倍だけ引き延ばされている
         eps, phi = self.fitting_curve.params[3:5]
         self.stigma = eps / m * np.exp(phi * 1j)
-        
-        ## print("self.stigma =", self.stigma)
         print("$result(eps, phi) = {!r}".format((eps, phi)))
     
     @wait
@@ -273,16 +270,17 @@ class Plugin(Layer):
             edi.plot(*lp, 'o')    # filtered peaks
             
         if show:
-            art = self.circ
             u = self.output.frame.unit
-            A = self.stigma
-            eps = np.abs(A)
-            ang = np.angle(A) * 180/pi
-            r = N * np.sqrt(lx[0])
-            print("eps =", eps)
-            print("ang =", ang)
-            art.width = 2 * r * (1 + eps) * u
-            art.height = 2 * r * (1 - eps) * u
-            art.angle = ang / 2
-            art.set_visible(1)
+            eps = np.abs(self.stigma)
+            ang = np.angle(self.stigma) * 180/pi
+            
+            ## 不特定多数の円を描画する (最大 N まで)
+            del self.Arts
+            for x in lp[0,:10]:
+                r = N * np.sqrt(x)
+                art = patches.Circle((0,0), 0, color='r', ls='--', lw=0.5, fill=0, alpha=0.5)
+                art.width = 2 * r * (1 + eps) * u
+                art.height = 2 * r * (1 - eps) * u
+                art.angle = ang / 2
+                self.attach_artists(self.output.axes, art)
             self.output.draw()
