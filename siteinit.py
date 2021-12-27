@@ -6,8 +6,15 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from __future__ import (division, print_function,
                         absolute_import, unicode_literals)
+from six.moves import builtins
 import sys
 import os
+import editor as edi
+
+builtins.plot = edi.plot
+builtins.mplot = edi.mplot
+builtins.splot = edi.splot
+builtins.imshow = edi.imshow
 
 
 def init_frame(self):
@@ -41,7 +48,7 @@ def init_frame(self):
     self.ed = self.require("editor")
     self.su = self.require('startup')
     
-    from plugins import lgbt, lccf, lcrf, lccf2
+    from plugins import lgbt, lcrf, lccf, lccf2
     self.load_plug(lgbt)
     self.load_plug(lcrf)
     self.load_plug(lccf)
@@ -113,13 +120,10 @@ def init_frame(self):
 
 if __name__ == '__main__':
     import wx
-    import debut
     import wxpyJemacs as wxpj
-    
     app = wx.App()
     frm = wxpj.Frame(None)
     init_frame(frm)
-    debut.init_spec(frm.inspector.rootshell)
     frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
     frm.load_buffer(u"C:/usr/home/workspace/images/sample_circ.bmp")
     frm.load_buffer(u"C:/usr/home/workspace/images/13 TEM1-3 MAG10k FLS1=2A00,B700.dm3")

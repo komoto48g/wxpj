@@ -236,11 +236,6 @@ if __name__ == '__main__':
         si = __import__('siteinit')
         print("Executing {!r}".format(si.__file__))
         si.init_frame(frm)
-        
-        debut = __import__('debut')
-        print("Executing {!r}".format(debut.__file__))
-        debut.init_spec(frm.inspector.rootshell)
-        frm.inspector.rootshell.handler.bind('shell_cloned', debut.init_spec)
     except Exception:
         ## traceback.print_exc()
         raise
