@@ -78,9 +78,12 @@ class Plugin(Layer):
                 art.width = ra * frame.unit
                 art.angle = -angle
                 art.set_visible(1)
-            self.message("\b; c=({:.1f}, {:.1f})".format(cx, cy))
-            self.message("\b; r=({:.1f}, {:.1f})".format(ra, rb))
-            self.message("\b; brightness {:.2f}/{:.2f} (SN {:.2f})".format(p, q, p/q))
+            self.message("\b; " + "; ".join((
+                "c=({:.1f}, {:.1f})".format(cx, cy),
+                "r=({:.1f}, {:.1f})".format(ra, rb),
+                "{:.1f} deg".format(angle),
+                "brightness {:.2f}/{:.2f} (SN {:.2f})".format(p, q, p/q),
+            )))
         else:
             art.set_visible(0)
             p = src.sum() / src.size
