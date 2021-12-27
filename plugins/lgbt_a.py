@@ -45,9 +45,9 @@ class Plugin(Layer):
         buf = edi.imconv(src, hi, lo)
         if k > 1:
             buf = cv2.GaussianBlur(buf, (k,k), s)
-        ## self.output.load(buf, name='*Gauss*', localunit=frame.unit)
+        self.output.load(buf, "*Gauss*", localunit=frame.unit)
         
         dst = cv2.adaptiveThreshold(buf, 255,
             cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, block, C)
-        self.output.load(dst, name='*threshold*', localunit=frame.unit)
+        self.output.load(dst, "*threshold*", localunit=frame.unit)
         return dst

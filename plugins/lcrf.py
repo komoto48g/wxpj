@@ -231,7 +231,7 @@ class Plugin(Layer):
             buf, center, fitting_curve, = find_ring_center(src, center, lo, hi)
         self.fitting_curve = fitting_curve
         
-        self.output.load(buf, name="*lin-polar*", localunit=1)
+        self.output.load(buf, "*lin-polar*", localunit=1)
         frame.selector = frame.xyfrompixel(center)
         
         ## Find peaks in radial distribution

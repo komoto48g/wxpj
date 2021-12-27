@@ -61,7 +61,8 @@ class Plugin(Layer):
             u = 1 / w
             if self.pchk.Value:
                 u /= frame.unit
-            self.output.load(dst, name="*fft of {}*".format(frame.name), localunit=u)
+            self.output.load(dst, "*fft of {}*".format(frame.name),
+                             localunit=u)
             self.message("\b done")
     
     ## def refft(self):
@@ -90,8 +91,8 @@ class Plugin(Layer):
             dst = ifft2(fftshift(src))
             
             self.message("\b Loading image...")
-            self.graph.load(dst.real,
-                name="*ifft of {}*".format(frame.name), localunit=1/w/frame.unit)
+            self.graph.load(dst.real, "*ifft of {}*".format(frame.name),
+                            localunit=1/w/frame.unit)
             self.message("\b done")
 
 

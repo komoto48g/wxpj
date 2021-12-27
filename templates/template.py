@@ -48,7 +48,7 @@ class Plugin(Layer):
         k = self.ksize.value
         src = self.graph.buffer
         dst = cv2.GaussianBlur(src, (k,k), 0.)
-        self.output.load(dst, name='*gauss*')
+        self.output.load(dst, "*gauss*")
 
 
 if __name__ == "__main__":
