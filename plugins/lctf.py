@@ -249,15 +249,15 @@ class Plugin(Layer):
         hx, hy = newaxis[maxima], newdata[maxima]
         lx, ly = newaxis[minima], newdata[minima]
         
+        self.lxy = np.vstack((lx, ly))
+        self.hxy = np.vstack((hx, hy))
         ## lp = np.vstack((lx, ly))
         
-        ## the nearest-peak index
-        ldx = np.diff(lx)
-        k = np.argmin(ldx)
-        
+        ## --------------------------------
         ## filter low peaks
+        ## --------------------------------
         threshold = tol/10 * R1**2
-        print("threshold =", threshold)
+        print("$(threshold) = {!r}".format((threshold)))
         lxx = []
         lyy = []
         for i, (x, y) in enumerate(zip(lx, ly)):
@@ -272,11 +272,15 @@ class Plugin(Layer):
             lyy.append(y)
         lp = np.vstack((lxx, lyy))
         
-        self.lpoints = lp[:,:50] # max N low peaks
+        self.lpoints = lp[:,:20] # max N low peaks
         self.newaxis = newaxis
         self.newdata = newdata
         
-        print("+ {} low peaks found".format(len(lp.T)))
+        ## --------------------------------
+        ## output results to verify it
+        ## --------------------------------
+        
+        print("+ {} low peaks found".format(lp.shape[1]))
         if show:
             edi.plot(self.axis**2, self.data, '--', lw=0.5) # raw data
             ## edi.plot(newaxis, orgdata, '--', lw=1) # original data
@@ -285,18 +289,20 @@ class Plugin(Layer):
             edi.plot(hx, hy, '^') # high peaks
             edi.plot(*self.lpoints, 'o')    # filtered peaks
             
-        if show:
-            u = self.output.frame.unit
-            eps = np.abs(self.stig)
-            ang = np.angle(self.stig) * 180/pi
-            
-            ## 不特定多数の円を描画する (最大 N まで)
-            del self.Arts
-            for x in self.lpoints[0,:10]:
-                r = N * np.sqrt(x)
-                art = patches.Circle((0,0), 0, color='r', ls='--', lw=0.5, fill=0, alpha=0.5)
-                art.width = 2 * r * (1 + eps) * u
-                art.height = 2 * r * (1 - eps) * u
-                art.angle = ang / 2
-                self.attach_artists(self.output.axes, art)
-            self.output.draw()
+            try:
+                u = self.output.frame.unit
+                eps = np.abs(self.stig)
+                ang = np.angle(self.stig) * 180/pi
+                
+                ## 不特定多数の円を描画する (最大 N まで)
+                del self.Arts
+                for x in self.lpoints[0,:10]:
+                    r = N * np.sqrt(x)
+                    art = patches.Circle((0,0), 0, color='r', ls='--', lw=0.5, fill=0, alpha=0.5)
+                    art.width = 2 * r * (1 + eps) * u
+                    art.height = 2 * r * (1 - eps) * u
+                    art.angle = ang / 2
+                    self.attach_artists(self.output.axes, art)
+                self.output.draw()
+            except Exception:
+                self.message("- no data.")
