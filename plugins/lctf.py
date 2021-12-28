@@ -1,7 +1,5 @@
 #! python
 # -*- coding: utf-8 -*-
-from __future__ import (division, print_function,
-                        absolute_import, unicode_literals)
 import cv2
 import numpy as np
 from numpy import pi

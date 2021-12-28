@@ -4,8 +4,6 @@
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
-from __future__ import (division, print_function,
-                        absolute_import, unicode_literals)
 import numpy as np 
 import wx
 from mwx.controls import Param, LParam, Button

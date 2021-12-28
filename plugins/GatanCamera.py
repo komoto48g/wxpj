@@ -5,8 +5,6 @@
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 Contributions by Hirofumi Iijima @JEOL.JP
 """
-from __future__ import (division, print_function,
-                        absolute_import, unicode_literals)
 from datetime import datetime
 import time
 import os

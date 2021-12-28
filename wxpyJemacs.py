@@ -6,9 +6,6 @@
   Phase 2: Phoenix (2018--2020) Integrated system for image analysis
   Phase 3: Analysis center phoenix (2020--)
 """
-## from __future__ import division, print_function
-## from __future__ import unicode_literals
-## from __future__ import absolute_import
 from collections import OrderedDict
 from functools import wraps
 from pprint import pprint
@@ -43,10 +40,7 @@ from mwx.graphman import Frame as Framebase
 from pyJeol.temsys import NotifyFront
 import pyDM3reader as DM3lib
 
-## import wx.lib.mixins.listctrl # for py2exe
-## import wx.lib.platebtn as pb
-
-__version__ = "0.34rc"
+__version__ = "0.34"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2021"
 

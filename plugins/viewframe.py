@@ -4,8 +4,6 @@
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
-from __future__ import (division, print_function,
-                        absolute_import, unicode_literals)
 from pprint import pformat
 import wx
 from wx import aui
