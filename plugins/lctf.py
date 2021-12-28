@@ -141,31 +141,12 @@ def find_radial_peaks(data, tol=0.01):
     return ys, maxima, minima # np.sort(np.append(maxima, minima))
 
 
-def filter_peaks(xx, yy, threshold=1/2):
-    """Return well-spacing peaks (xx, yy)
-    Assumption:
-    0. The first peak is a true peak.
-    1. All peak intensities are likely decreasing
-    2. All peak intervals are likely decreasing
-       ▲狭い間隔で二つのピークが並ぶことがあるので注意
-    """
-    pt = np.vstack((xx, yy)).T
-    po = pt[0]
-    dpo = pt[1] - po
-    ls = [po]
-    for p in pt[1:]:
-        dp = p - po
-        if abs(dp[0] / dpo[0] - 1) < threshold:
-            ls.append(p)
-            po = p
-            dpo = dp
-    return np.array(ls).T
-
-
 class Plugin(Layer):
     """CTF finder ver 1.0
     """
     menu = "Test"
+    
+    debug = 0
     
     def Init(self):
         self.rmin = LParam("rmin", (0.01, 0.1, 0.001), 0.05,
@@ -182,6 +163,23 @@ class Plugin(Layer):
             ),
             type='vspin', style='button', lw=28, tw=50,
         )
+    
+    def init_session(self, session):
+        self.reset_params(session.get('params'))
+        
+        if self.debug:
+            print("$(session) = {!r}".format((session)))
+            self.__dict__.update(session)
+    
+    def save_session(self, session):
+        session['params'] = self.parameters
+        
+        if self.debug:
+            session.update({
+                'axis': self.axis,
+                'data': self.data,
+                'stig': self.stig,
+            })
     
     @property
     def selected_frame(self):
@@ -228,7 +226,7 @@ class Plugin(Layer):
         
         ## 拡張 log-polar 変換は振幅が m 倍だけ引き延ばされている
         eps, phi = self.fitting_curve.params[3:5]
-        self.stigma = eps / m * np.exp(phi * 1j)
+        self.stig = eps / m * np.exp(phi * 1j)
         print("$result(eps, phi) = {!r}".format((eps, phi)))
     
     @wait
@@ -238,7 +236,6 @@ class Plugin(Layer):
         N = self.data.size
         R0 = self.rmin.value
         R1 = 0.5
-        TOL = 0.05
         tol = self.tol.value
         
         ## r2:data の一定間隔補間データを作ってゼロ点を求める
@@ -253,10 +250,31 @@ class Plugin(Layer):
         ## Check validity of zero-points spacing
         hx, hy = newaxis[maxima], newdata[maxima]
         lx, ly = newaxis[minima], newdata[minima]
-        ## lp = np.vstack((lx, ly))
-        lp = filter_peaks(lx, ly) # low peaks
         
-        self.lpoints = lp
+        ## lp = np.vstack((lx, ly))
+        
+        ## the nearest-peak index
+        ldx = np.diff(lx)
+        k = np.argmin(ldx)
+        
+        ## filter low peaks
+        threshold = tol/10 * R1**2
+        print("threshold =", threshold)
+        lxx = []
+        lyy = []
+        for i, (x, y) in enumerate(zip(lx, ly)):
+            ## Eliminate if near one of high peaks
+            if min(abs(x - hx)) < threshold:
+                continue
+            ## Stop if two low pakes are continuous
+            if i < len(lx)-1:
+                if not np.any((x < hx) & (hx < lx[i+1])):
+                    break
+            lxx.append(x)
+            lyy.append(y)
+        lp = np.vstack((lxx, lyy))
+        
+        self.lpoints = lp[:,:50] # max N low peaks
         self.newaxis = newaxis
         self.newdata = newdata
         
@@ -267,16 +285,16 @@ class Plugin(Layer):
             edi.plot(newaxis, newdata, '-', lw=1) # interpolated
             edi.plot(lx, ly, 'v') # low peaks
             edi.plot(hx, hy, '^') # high peaks
-            edi.plot(*lp, 'o')    # filtered peaks
+            edi.plot(*self.lpoints, 'o')    # filtered peaks
             
         if show:
             u = self.output.frame.unit
-            eps = np.abs(self.stigma)
-            ang = np.angle(self.stigma) * 180/pi
+            eps = np.abs(self.stig)
+            ang = np.angle(self.stig) * 180/pi
             
             ## 不特定多数の円を描画する (最大 N まで)
             del self.Arts
-            for x in lp[0,:10]:
+            for x in self.lpoints[0,:10]:
                 r = N * np.sqrt(x)
                 art = patches.Circle((0,0), 0, color='r', ls='--', lw=0.5, fill=0, alpha=0.5)
                 art.width = 2 * r * (1 + eps) * u
