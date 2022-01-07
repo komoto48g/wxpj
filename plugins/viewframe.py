@@ -45,16 +45,16 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
         self.parent = parent
         self.Target = target
         
-        self.alist = ( # assoc list of column names
+        self.alist = ( # assoc-list of column names
             ("id", 42),
             ("name", 160),
             ("shape", 90),
             ("dtype", 60),
             ("Mb",   40),
             ("unit", 60),
-            ("mean", 60),
-            ("std", 60),
-            ("med", 60),
+            ## ("mean", 60),
+            ## ("std", 60),
+            ## ("med", 60),
             ("max", 50),
             ("min", 50),
             ("annotation", 240),
@@ -111,9 +111,9 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
               "{}".format(frame.buffer.dtype),
           "{:.1f}".format(frame.buffer.nbytes/1e6),
           "{:g}{}".format(frame.unit, '*' if frame.localunit else ''),
-          "{:.2f}".format(np.mean(frame.buffer)),
-          "{:.2f}".format(np.std(frame.buffer)),
-          "{:.2f}".format(np.median(frame.buffer)),
+          ## "{:.2f}".format(np.mean(frame.buffer)),
+          ## "{:.2f}".format(np.std(frame.buffer)),
+          ## "{:.2f}".format(np.median(frame.buffer)),
             "{:g}".format(frame.buffer.max()),
             "{:g}".format(frame.buffer.min()),
               "{}".format(frame.annotation),
