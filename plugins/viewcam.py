@@ -32,15 +32,16 @@ class Plugin(Layer):
         self.camera_selector = Choice(self,
                 choices=['JeolCamera', 'RigakuCamera'], readonly=1)
         
-        self.layout(None, (
-            self.button,
+        self.layout((
+                self.button,
             ),
         )
-        self.layout("Setting", (
-            self.rate_param,
-            self.size_param,
-            self.camera_selector,
+        self.layout((
+                self.rate_param,
+                self.size_param,
+                self.camera_selector,
             ),
+            title="Setting",
             row=1, show=0, type='vspin', lw=40, tw=40, cw=-1
         )
     

@@ -29,8 +29,9 @@ class Plugin(Layer):
         self.btn = wx.Button(self, label="Run", size=(-1,22))
         self.btn.Bind(wx.EVT_BUTTON, lambda v: self.run())
         
-        self.layout("Gaussian blur", # subtitle of this layout group. otherwise None (no frame)
-            (self.ksize, self.btn,), # the list of objects stacked with the following style:
+        self.layout(
+            (self.ksize, self.btn),  # the list of objects stacked with the following style:
+            title="Gaussian blur",   # subtitle of this layout group. otherwise None (no box)
             row=1, expand=0, show=1, # grouping style: row means the horizontal stack size
             type='vspin',            # control style: slider[*], [hv]spin, choice
             cw=-1, lw=36, tw=30      # w: width of [c]ontrol, [l]abel, [t]ext
@@ -55,6 +56,6 @@ if __name__ == "__main__":
     app = wx.App()
     frm = Frame(None)
     frm.load_plug(__file__, show=1, docking=4)
-    frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
+    frm.load_buffer("C:/usr/home/workspace/images/sample.bmp")
     frm.Show()
     app.MainLoop()

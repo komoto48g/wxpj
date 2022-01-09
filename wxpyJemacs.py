@@ -40,7 +40,7 @@ from mwx.graphman import Frame as Framebase
 from pyJeol.temsys import NotifyFront
 import pyDM3reader as DM3lib
 
-__version__ = "0.34"
+__version__ = "0.35rc"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2021"
 

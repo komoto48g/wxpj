@@ -26,33 +26,36 @@ class Plugin(Layer):
         self.__em = Environ(300e3)
         
         self.accv_param = Param("Acc.Voltage", (100e3, 200e3, 300e3), 300e3,
-            handler=self.set_htv,
+                handler=self.set_htv,
                 fmt='{:,g}'.format,
                 tip="Acceleration voltage [V]")
         
         self.unit_param = LParam("unit/pixel", (0,1,1e-4), self.graph.unit,
-            updater=self.set_localunit,
+                updater=self.set_localunit,
                 tip="Set localunit to the selected frame")
         
         self.cuts_param = LParam("cutoff [%]", (0,1,1e-2), self.graph.score_percentile,
-            updater=self.set_cutoff,
+                updater=self.set_cutoff,
                 tip="Set cutoff score percentiles of the current frame\n"
                     "to cut the upper/lower limits given by the tolerances[%]")
         
-        self.layout(None, (
-            self.accv_param, (),
-            self.unit_param, (),
-            self.cuts_param, (),
-            
+        self.layout((
+                self.accv_param,
+                self.unit_param,
+                self.cuts_param,
+            ),
+            type='vspin', style='button', lw=66, tw=60, cw=-1
+        )
+        self.layout((
             Button(self, "Apply ALL",
                 lambda v: self.setup_all(), icon='v',
-                    tip="Set globalunit and cutoff conditions to all frames"),
+                tip="Set globalunit and cutoff conditions to all frames"),
             
             Button(self, "Remove",
                 lambda v: self.del_localunit(), icon='x',
-                    tip="Remove localunit"),
+                tip="Remove localunit"),
             ),
-            row=2, expand=0, type='vspin', style='button', lw=66, tw=60, cw=-1
+            row=2,
         )
         self.context = {
             None : {

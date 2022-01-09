@@ -22,11 +22,12 @@ class Plugin(Layer):
         self.chkfit = wx.CheckBox(self, label="fit")
         self.chkfit.Value = True
         
-        self.layout(None, (
-            Button(self, "+Run", lambda v: self.run(shift=wx.GetKeyState(wx.WXK_SHIFT))),
-            self.chkfit,
-            (),
-            Button(self, "Setting", lambda v: self.show_setting()),
+        self.layout((
+                Button(self, "+Run",
+                    lambda v: self.run(shift=wx.GetKeyState(wx.WXK_SHIFT))),
+                self.chkfit,
+                (),
+                Button(self, "Setting", lambda v: self.show_setting()),
             ),
             row=3
         )

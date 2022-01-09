@@ -260,26 +260,28 @@ class Plugin(Layer):
         self.unit_selector = LParam("mm/pix", (0,1,1e-4), self.graph.unit,
             handler=self.set_pixsize)
         
-        self.layout("Acquire setting", (
-            self.binning_selector,
-            self.exposure_selector,
-            self.gain_selector,
+        self.layout((
+                self.binning_selector,
+                self.exposure_selector,
+                self.gain_selector,
             ),
+            title="Acquire setting",
             type='vspin', lw=32, cw=-1, tw=40
         )
-        self.layout(None, (
-            Button(self, "Capture", self.capture_ex, icon='cam'),
-            self.dark_chk,
+        self.layout((
+                Button(self, "Capture", self.capture_ex, icon='cam'),
+                self.dark_chk,
             ),
             row=2,
         )
-        self.layout("Setup", (
-            self.name_selector,
-            self.host_selector,
-            self.unit_selector,
-            Button(self, "Connect", self.connect, size=(-1,20)),
-            Button(self, "Prepare/dark", self.prepare_dark, size=(-1,20)),
+        self.layout((
+                self.name_selector,
+                self.host_selector,
+                self.unit_selector,
+                Button(self, "Connect", self.connect, size=(-1,20)),
+                Button(self, "Prepare/dark", self.prepare_dark, size=(-1,20)),
             ),
+            title="Setup",
             row=1, show=0, type=None, lw=-1, tw=50,
         )
         self.__camera = None

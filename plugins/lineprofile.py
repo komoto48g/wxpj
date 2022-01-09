@@ -19,7 +19,8 @@ class Plugin(Layer):
     
     def Init(self):
         self.plot = LineProfile(self, log=self.message, size=(300,200))
-        self.layout(None, [self.plot], expand=2, border=0)
+        
+        self.layout([self.plot], expand=2, border=0)
         
         @self.handler.bind('pane_shown')
         def activate():

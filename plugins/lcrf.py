@@ -182,8 +182,8 @@ class Plugin(Layer):
             LParam("rmin", (0, 1, 0.01), 0.1),
             LParam("rmax", (0, 2, 0.01), 1.0),
         )
-        self.layout("blur-threshold", self.lgbt.params, show=0, cw=0, lw=40, tw=40)
-        self.layout("radii", self.radii_params, cw=0, lw=36, tw=48)
+        self.layout(self.lgbt.params, title="blur-threshold", show=0, cw=0, lw=40, tw=40)
+        self.layout(self.radii_params, title="radii", cw=0, lw=36, tw=48)
         
         btn = wx.Button(self, label="+Execute", size=(64,22))
         btn.Bind(wx.EVT_BUTTON, lambda v: self.run(shift=wx.GetKeyState(wx.WXK_SHIFT)))
@@ -191,7 +191,7 @@ class Plugin(Layer):
         
         self.chkplt = wx.CheckBox(self, label="rdist")
         
-        self.layout(None, (btn, self.chkplt), row=2, type='vspin', tw=22)
+        self.layout((btn, self.chkplt), row=2, type='vspin', tw=22)
     
     rmin = property(lambda self: self.radii_params[0])
     rmax = property(lambda self: self.radii_params[1])

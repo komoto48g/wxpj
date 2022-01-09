@@ -52,25 +52,27 @@ class Plugin(Layer):
         
         size = (72,-1)
         
-        self.layout("Evaluate step by step", (
-            Button(self, "1. Show", self.show_frame, icon='help', size=size),
-            self.page,
-            
-            Button(self, "2. Eval", self.test_run, icon='help', size=size),
-            self.choice,
-            
-            Button(self, "3. Mark", self.calc_mark, icon='help', size=size),
-            self.score,
-            
-            Button(self, "4. Run", self.run, icon='help', size=size),
-            Button(self, "Settings", self.show_settings),
+        self.layout((
+                Button(self, "1. Show", self.show_frame, icon='help', size=size),
+                self.page,
+                
+                Button(self, "2. Eval", self.test_run, icon='help', size=size),
+                self.choice,
+                
+                Button(self, "3. Mark", self.calc_mark, icon='help', size=size),
+                self.score,
+                
+                Button(self, "4. Run", self.run, icon='help', size=size),
+                Button(self, "Settings", self.show_settings),
             ),
+            title="Evaluate step by step",
             row=2, show=1, type='vspin', tw=40, lw=0,
         )
-        self.layout("log/output", (
-            self.grid,
-            self.text,
+        self.layout((
+                self.grid,
+                self.text,
             ),
+            title="log/output",
             row=1, show=1, tw=50, vspacing=4,
         )
         self.lgbt.ksize.value = 5 # default blur window size

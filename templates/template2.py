@@ -26,7 +26,7 @@ class Plugin(Layer):
     lgbt = property(lambda self: self.parent.require('template'))
     
     def Init(self):
-        self.layout(None, (
+        self.layout((
             self.lgbt.ksize, # reference of the lgbt param. (to be shared)
             
             Button(self, "1. Gaussian", lambda v: self.run(), icon='help',

@@ -29,17 +29,17 @@ class Plugin(Layer):
         self.hi = LParam("hi", (0, 10 ,0.005), 0)
         self.lo = LParam("lo", (0, 10, 0.005), 0)
         
-        self.layout("truncation", (
-            self.hi,
-            self.lo,
+        self.layout((
+                self.hi,
+                self.lo,
             ),
-            row=2, cw=0, lw=16, tw=40
+            title="truncation", cw=0, lw=16, tw=40
         )
-        self.layout("test suite", (
-            Button(self, "imconv", lambda v: self.test_imconv()),
-            Button(self, "imtrunc", lambda v: self.test_imtrunc()),
-            Button(self, "imcorr", lambda v: self.test_imcorr()),
-            Button(self, "ellipse", lambda v: self.test_ellipse()),
+        self.layout((
+                Button(self, "imconv", lambda v: self.test_imconv()),
+                Button(self, "imtrunc", lambda v: self.test_imtrunc()),
+                Button(self, "imcorr", lambda v: self.test_imcorr()),
+                Button(self, "ellipse", lambda v: self.test_ellipse()),
             ),
             row=2,
         )

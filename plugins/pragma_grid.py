@@ -24,11 +24,11 @@ class Plugin(Layer):
         
         self.chk = wx.CheckBox(self, label="inv")
         
-        self.layout(None, (
-            Button(self, "Run", lambda v: self.run()),
-            self.chkfit,
-            self.chk,
-            Button(self, "Setting", lambda v: self.show_setting()),
+        self.layout((
+                Button(self, "Run", lambda v: self.run()),
+                self.chkfit,
+                self.chk,
+                Button(self, "Setting", lambda v: self.show_setting()),
             ),
             row=3
         )

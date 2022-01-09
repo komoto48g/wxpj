@@ -25,12 +25,13 @@ class Plugin(Layer):
         self.dist_params = self.grid.dist_params
         self.ratio_params = self.grid.ratio_params
         
-        self.layout("Distortion", self.dist_params, cw=0, lw=24, tw=64)
-        self.layout("XY Aspects", self.ratio_params, cw=0, lw=24, tw=64)
+        self.layout(self.dist_params, title="Distortion", cw=0, lw=24, tw=64)
+        self.layout(self.ratio_params, title="XY Aspects", cw=0, lw=24, tw=64)
         
         btn = wx.Button(self, label="Execute", size=(80,22))
         btn.Bind(wx.EVT_BUTTON, lambda v: self.run())
-        self.layout(None, [btn])
+        
+        self.layout([btn])
     
     def run(self, frame=None):
         if not frame:

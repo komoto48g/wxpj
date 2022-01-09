@@ -155,10 +155,11 @@ class Plugin(Layer):
                            updater=lambda p: self.calc_peak(),
                            tip="Ratio to the radius of blurring pixels")
         
-        self.layout("FFT Cond.", (
-            self.rmin,
-            self.tol,
+        self.layout((
+                self.rmin,
+                self.tol,
             ),
+            title="FFT Cond.",
             type='vspin', style='button', lw=28, tw=50,
         )
     

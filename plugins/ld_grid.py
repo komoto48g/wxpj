@@ -119,11 +119,11 @@ class Plugin(Layer):
         
         self.text = wx.TextCtrl(self, size=(160,60), style=wx.TE_READONLY|wx.TE_MULTILINE)
         
-        self.layout("Distortion", self.dist_params, cw=64, lw=20, tw=64, show=0)
-        self.layout("XY Aspects", self.ratio_params, cw=64, lw=20, tw=64)
-        self.layout("Grid parameter", self.grid_params, cw=56, lw=28, tw=64)
-        self.layout(None, [self.btn, self.order], row=2, type='choice', cw=40, lw=36)
-        self.layout(None, [self.text], expand=2)
+        self.layout(self.dist_params, title="Distortion", cw=64, lw=20, tw=64, show=0)
+        self.layout(self.ratio_params, title="XY Aspects", cw=64, lw=20, tw=64)
+        self.layout(self.grid_params, title="Grid parameter", cw=56, lw=28, tw=64)
+        self.layout([self.btn, self.order], row=2, type='choice', cw=40, lw=36)
+        self.layout([self.text], expand=2)
         
         self.model = self.Fitting_model(self)
         self.init_grid(self.graph.axes)
