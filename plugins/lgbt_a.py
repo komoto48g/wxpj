@@ -36,7 +36,7 @@ class Plugin(Layer):
         ##     self.cutoff_params, title="cutoff [%]",
         ##     type='vspin', cw=-1, lw=16, tw=44
         ## )
-        self.layout([btn])
+        self.layout((btn,))
         
     def calc(self, frame=None):
         if not frame:

@@ -223,7 +223,7 @@ class Plugin(Layer):
             style = (aui.AUI_NB_DEFAULT_STYLE|aui.AUI_NB_RIGHT)
                   &~(aui.AUI_NB_CLOSE_ON_ACTIVE_TAB|aui.AUI_NB_MIDDLE_CLICK_CLOSE)
         )
-        self.layout([self.nb], expand=2, border=0)
+        self.layout((self.nb,), expand=2, border=0)
         self.attach(self.graph, "graph")
         self.attach(self.output, "output")
         

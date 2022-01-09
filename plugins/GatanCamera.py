@@ -122,6 +122,7 @@ class Plugin(Layer):
                 self.name_selector,
                 self.host_selector,
                 self.unit_selector,
+                
                 Button(self, "Connect", self.connect, size=(-1,20)),
                 Button(self, "Prepare/dark", self.prepare_dark, size=(-1,20)),
                 Button(self, "Insert camera", self.insert, size=(-1,20)),

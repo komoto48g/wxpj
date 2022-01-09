@@ -29,17 +29,21 @@ class Plugin(Layer):
         self.layout((
             self.lgbt.ksize, # reference of the lgbt param. (to be shared)
             
-            Button(self, "1. Gaussian", lambda v: self.run(), icon='help',
+            Button(self, "1. Gaussian",
+                lambda v: self.run(), icon='help',
                 tip="Gaussian blurring"),
             
-            Button(self, "2. blur", lambda v: self.run_blur(), icon='help',
+            Button(self, "2. blur",
+                lambda v: self.run_blur(), icon='help',
                 tip="Check the standard blur"),
             
-            Button(self, "3. median", lambda v: self.run_med(), icon='help',
+            Button(self, "3. median",
+                lambda v: self.run_med(), icon='help',
                 tip="Also check the Median blur"),
             
             Button(self, "4. ALL",
-                lambda v: (self.run(), self.run_blur(), self.run_med()), icon='phoenix',
+                lambda v: (self.run(), self.run_blur(), self.run_med()),
+                icon='phoenix',
                 tip="Press to run all blurs above\n"
                     "This example shows how to give plain instruction.")
             ),

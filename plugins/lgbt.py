@@ -38,7 +38,7 @@ class Plugin(Layer):
         ##     self.cutoff_params, title="cutoff [%]",
         ##     type='vspin', cw=-1, lw=16, tw=44
         ## )
-        self.layout([btn])
+        self.layout((btn,))
     
     ksize = property(lambda self: self.params[0])
     sigma = property(lambda self: self.params[1])
