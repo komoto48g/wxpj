@@ -11,17 +11,13 @@ import numpy as np
 from mwx.controls import Icon
 from mwx.graphman import Layer
 from mwx.framework import CtrlInterface
-from wx.lib.mixins.listctrl import CheckListCtrlMixin
+from mwx.controls import CheckList as CheckListCtrl
 
 
-class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
+class CheckList(CheckListCtrl, CtrlInterface):
     """ CheckList with FSM
     list item order = buffer order リストアイテムとバッファの並び順 0..n は常に一致します．
     """
-    ## @property
-    ## def checked_items(self):
-    ##     return [j for j in range(self.ItemCount) if self.IsChecked(j)]
-    
     @property
     def selected_items(self):
         return [j for j in range(self.ItemCount) if self.IsSelected(j)]
@@ -37,9 +33,8 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
         return [[self.GetItemText(j, k) for k in cols] for j in rows]
     
     def __init__(self, parent, target, **kwargs):
-        wx.ListCtrl.__init__(self, parent,
-            size=(400,130), style=wx.LC_REPORT|wx.LC_HRULES, **kwargs)
-        CheckListCtrlMixin.__init__(self)
+        CheckListCtrl.__init__(self, parent, size=(400,130),
+                               style=wx.LC_REPORT|wx.LC_HRULES, **kwargs)
         CtrlInterface.__init__(self)
         
         self.parent = parent
@@ -82,8 +77,8 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
         self.handler.clear(0)
         
         self.__dir = True
-        self.SetToolTip('')
-        self.ToolTip.SetMaxWidth(2048)
+        self.ToolTip = ''
+        self.ToolTip.SetMaxWidth(1000)
         
         self.Bind(wx.EVT_MOTION, self.OnMotion)
         self.Bind(wx.EVT_LIST_COL_CLICK, self.OnSortItems)
@@ -125,7 +120,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
             self.CheckItem(j)
     
     def OnMotion(self, evt):
-        j, flag = self.HitTest(evt.GetPosition())
+        j, flag = self.HitTest(evt.Position)
         tip = ''
         if j >= 0:
             attr = self.Target.all_frames[j].attributes
@@ -133,7 +128,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
                 tip = pformat(attr, width=80, depth=1) # compact=0:PY3
             else:
                 tip = "No attributes"
-        self.SetToolTip(tip)
+        self.ToolTip = tip
         evt.Skip()
     
     def OnShowItems(self, evt):
@@ -150,7 +145,7 @@ class CheckList(wx.ListCtrl, CheckListCtrlMixin, CtrlInterface):
         
         def _eval(x):
             try:
-                return eval(x.replace('*','')) # localunit* とか
+                return eval(x.replace('*', '')) # localunit* とか
             except Exception:
                 return x
         
