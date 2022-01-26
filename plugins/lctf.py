@@ -97,7 +97,7 @@ def smooth1d(data, tol=0.01):
     lw = int(max(3, tol * w/2))
     if lw % 2 == 0:
         lw += 1
-    return signal.savgol_filter(data, lw, polyorder=3)
+    return signal.savgol_filter(data, lw, polyorder=2)
 
 
 def blur1d(data, tol=0.01):
@@ -147,7 +147,7 @@ class Plugin(Layer):
     debug = 0
     
     def Init(self):
-        self.rmin = LParam("rmin", (0.01, 0.1, 0.001), 0.05,
+        self.rmin = LParam("rmin", (0.001, 0.1, 0.001), 0.05,
                            updater=lambda p: self.calc_ring(),
                            tip="Ratio to the radius")
         
@@ -219,8 +219,8 @@ class Plugin(Layer):
             self.message("\b Loading log-polar image...")
             dst = self.fitting_curve.mod2d(dst)
             self.output.load(dst, "*log-polar*", pos=0)
-            self.output.load(buf, "*fft of {}*".format(frame.name),
-                             localunit=1/w/frame.unit)
+            ## self.output.load(buf, "*fft of {}*".format(frame.name),
+            ##                  localunit=1/w/frame.unit)
             del self.Arts
         self.message("\b done.")
         
