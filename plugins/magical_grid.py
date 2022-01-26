@@ -3,7 +3,7 @@
 import wx
 import cv2
 import numpy as np
-from numpy import pi,nan
+from numpy import nan
 from numpy.fft import fft2,fftshift
 from mwx.controls import LParam
 from mwx.controls import Button, TextCtrl, Choice
@@ -199,8 +199,8 @@ class Plugin(Layer):
         self.text.Value = '\n'.join((
             "Mag = {:,.0f} [{}]".format(M, method),
             "grid: {:g} mm".format(g),
-            "({:g} m/pix)".format(u/M * 1e-3)))
-        
+            "({:g} m/pix)".format(u/M * 1e-3)
+        ))
         frame.update_attributes(
             parameters = self.parameters[:-1], # except the last text
             annotation = ', '.join(self.text.Value.splitlines()),
@@ -214,6 +214,8 @@ class Plugin(Layer):
         3. Press to estimate the unit length [u/pix]
         """
         frame = self.result_frame
+        if not frame:
+            print(self.message("- No *result*"))
         x, y = frame.selector
         if len(x) < 2:
             wx.MessageBox(
@@ -232,7 +234,7 @@ class Plugin(Layer):
         else:
             method = 'cor'
             M = g/g0
-        self.message("unit: {:g} m/pix [{}]".format(u/M * 1e-3, method))
+        self.text.Value = "{:g} m/pix [{}]".format(u/M * 1e-3, method)
     
     ## --------------------------------
     ## test/eval functions

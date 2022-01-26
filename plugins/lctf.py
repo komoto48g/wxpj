@@ -189,6 +189,7 @@ class Plugin(Layer):
         src = self.selected_frame.buffer
         h, w = src.shape
         n = pow(2, int(np.log2(min(h,w)))-1) # resize to 2^n squared ROI
+        n = min(n, 1024)
         i, j = h//2, w//2
         return src[i-n:i+n,j-n:j+n]
     
@@ -218,7 +219,7 @@ class Plugin(Layer):
             self.message("\b Loading log-polar image...")
             dst = self.fitting_curve.mod2d(dst)
             self.output.load(dst, "*log-polar*", pos=0)
-            self.output.load(buf, "*fft-of-{}*".format(frame.name),
+            self.output.load(buf, "*fft of {}*".format(frame.name),
                              localunit=1/w/frame.unit)
             del self.Arts
         self.message("\b done.")
