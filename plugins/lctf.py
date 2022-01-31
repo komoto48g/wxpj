@@ -97,19 +97,25 @@ def smooth1d(data, tol=0.01):
     lw = int(max(3, tol * w/2))
     if lw % 2 == 0:
         lw += 1
-    return signal.savgol_filter(data, lw, polyorder=3)
+    return signal.savgol_filter(data, lw, polyorder=2)
 
 
 def blur1d(data, tol=0.01):
     w = len(data)
     lw = int(max(3, tol * w/2))
+    if lw % 2 == 0:
+        lw += 1
     ## window = np.hanning(lw)
     window = signal.windows.gaussian(lw, std=lw)
     
+    ## ys = signal.lfilter(window/window.sum(), 1, data) # 短周期は苦手？NG
+    ## ys = np.convolve(window/window.sum(), data, mode='same')
+    ## return ys
+
     ## padding dumy data at both edge
     data = np.concatenate((data[:lw][::-1], data, data[-lw:][::-1]))
+
     ys = np.convolve(window/window.sum(), data, mode='same') # ならし
-    ## ys = signal.lfilter(window/window.sum(), 1, data) # 短周期は苦手？NG
     return ys[lw:-lw]
 
 
@@ -132,10 +138,10 @@ def find_radial_peaks(data, tol=0.01):
     
     ## remove near-edge peaks
     def _edge(x):
-        return x[(lw/2 < x) & (x < w-lw/2)]
+        return x[(lw < x) & (x < w-lw)]
+    
     maxima = _edge(maxima)
     minima = _edge(minima)
-    
     return ys, maxima, minima # np.sort(np.append(maxima, minima))
 
 
@@ -147,16 +153,21 @@ class Plugin(Layer):
     debug = 0
     
     def Init(self):
-        self.rmin = LParam("rmin", (0.01, 0.1, 0.001), 0.05,
-                           updater=lambda p: self.calc_ring(),
+        self.rmin = LParam("rmin", (0.001, 0.1, 0.001), 0.05,
+                           updater=lambda p: self.calc_ring(True),
+                           tip="Ratio to the radius")
+        
+        self.rmax = LParam("rmax", (0.1, 0.5, 0.01), 0.5,
+                           updater=lambda p: self.calc_ring(True),
                            tip="Ratio to the radius")
         
         self.tol = LParam("tol", (0, 0.1, 0.001), 0.01,
-                           updater=lambda p: self.calc_peak(),
+                           updater=lambda p: self.calc_peak(True),
                            tip="Ratio to the radius of blurring pixels")
         
         self.layout((
                 self.rmin,
+                self.rmax,
                 self.tol,
             ),
             title="FFT Cond.",
@@ -189,11 +200,11 @@ class Plugin(Layer):
         src = self.selected_frame.buffer
         h, w = src.shape
         n = pow(2, int(np.log2(min(h,w)))-1) # resize to 2^n squared ROI
+        n = min(n, 1024)
         i, j = h//2, w//2
         return src[i-n:i+n,j-n:j+n]
     
-    @wait
-    def calc_ring(self, show=True):
+    def calc_ring(self, show=False):
         """Calc log-polar of ring pattern
         """
         frame = self.selected_frame
@@ -206,7 +217,7 @@ class Plugin(Layer):
         
         self.message("Calculating CTF ring...")
         r0 = w * self.rmin.value
-        r1 = w * 0.5
+        r1 = w * self.rmax.value
         dst, self.fitting_curve = find_ring_center(buf, r0, r1, N=256, tol=0.05)
         
         m = w / np.log(r1/r0)
@@ -214,13 +225,13 @@ class Plugin(Layer):
         self.axis = r0 / w * np.exp(np.arange(w) / m) # [R0:R1] <= [0:1/2]
         self.data = self.fitting_curve.mod1d(dst)
         
+        if 0:
+            self.output.load(buf, "*fft of {}*".format(frame.name),
+                             localunit=1/w/frame.unit)
         if show:
             self.message("\b Loading log-polar image...")
             dst = self.fitting_curve.mod2d(dst)
             self.output.load(dst, "*log-polar*", pos=0)
-            self.output.load(buf, "*fft-of-{}*".format(frame.name),
-                             localunit=1/w/frame.unit)
-            del self.Arts
         self.message("\b done.")
         
         ## 拡張 log-polar 変換は振幅が m 倍だけ引き延ばされている
@@ -228,21 +239,20 @@ class Plugin(Layer):
         self.stig = eps / m * np.exp(phi * 1j)
         print("$result(eps, phi) = {!r}".format((eps, phi)))
     
-    @wait
-    def calc_peak(self, show=True):
+    def calc_peak(self, show=False):
         """Calc min/max peak detection
         """
         N = self.data.size
         R0 = self.rmin.value
-        R1 = 0.5
+        R1 = self.rmax.value
         tol = self.tol.value
         
         ## r2:data の一定間隔補間データを作ってゼロ点を求める
         newaxis = np.linspace(R0**2, R1**2, N)
         orgdata = np.interp(newaxis, self.axis**2, self.data)
         newdata = smooth1d(orgdata, tol)
-        ## if show:
-        ##     edi.plot(newaxis, newdata, '-', lw=1) # original smoothing data
+        if show:
+            edi.plot(newaxis, newdata, '--', lw=1) # original smoothing data
         
         newdata, maxima, minima = find_radial_peaks(newdata, tol)
         
@@ -266,9 +276,11 @@ class Plugin(Layer):
             if min(abs(x - hx)) < threshold:
                 continue
             ## Stop if two low pakes are continuous
-            if i < len(lx)-1:
-                if not np.any((x < hx) & (hx < lx[i+1])):
-                    break
+            ## if i < len(lx)-1:
+            ##     if not np.any((x < hx) & (hx < lx[i+1])):
+            ##         break
+            if i > 50:
+                break
             lxx.append(x)
             lyy.append(y)
         lp = np.vstack((lxx, lyy))
@@ -290,6 +302,7 @@ class Plugin(Layer):
             edi.plot(hx, hy, '^') # high peaks
             edi.plot(*self.lpoints, 'o')    # filtered peaks
             
+        if 0:
             try:
                 u = self.output.frame.unit
                 eps = np.abs(self.stig)

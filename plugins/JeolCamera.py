@@ -17,7 +17,6 @@ from mwx.controls import Param, LParam
 from mwx.controls import Button, Choice
 from mwx.graphman import Layer
 
-## if sys.version_info >= (3,8):
 try:
     Offline = None
     from PyJEM import detector
@@ -46,6 +45,11 @@ except ImportError:
         print("- PyJEM is supported under Python 3.5... sorry")
         Offline = None
         detector = None
+
+try:
+    detector.change_ip("172.17.41.1")
+except AttributeError:
+    pass
 
 ## REST client
 ##   Performs a single HTTP request.
