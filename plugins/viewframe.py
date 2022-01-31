@@ -267,7 +267,7 @@ if __name__ == "__main__":
     
     app = wx.App()
     frm = Frame(None)
-    frm.load_plug(__file__, show=1, docking=0)
+    frm.load_plug(__file__, show=1, dock=0)
     for path in glob.glob(r"C:/usr/home/workspace/images/*.bmp"):
         print("loading path =", path)
         frm.load_buffer(path)

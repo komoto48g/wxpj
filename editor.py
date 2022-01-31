@@ -455,7 +455,7 @@ if __name__ == "__main__":
     
     app = wx.App()
     frm = Frame(None)
-    frm.load_plug(__file__, show=1, docking=4)
+    frm.load_plug(__file__, show=1, dock=4)
     frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
     frm.Show()
     app.MainLoop()

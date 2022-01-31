@@ -18,10 +18,6 @@ class Plugin(Layer):
     menustr = "&template ver.1"
     category = "Test"
     caption = "temp.1"
-    dockable = True
-    editable = True
-    reloadable = True
-    unloadable = True
     
     def Init(self):
         self.ksize = LParam("ksize", (1,99,2), 13, tip="kernel window size")
@@ -55,7 +51,7 @@ class Plugin(Layer):
 if __name__ == "__main__":
     app = wx.App()
     frm = Frame(None)
-    frm.load_plug(__file__, show=1, docking=4)
+    frm.load_plug(__file__, show=1, dock=4)
     frm.load_buffer("C:/usr/home/workspace/images/sample.bmp")
     frm.Show()
     app.MainLoop()
