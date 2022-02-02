@@ -237,6 +237,9 @@ if __name__ == '__main__':
     if session:
         try:
             print("Starting session {!r}".format(session))
+            if 1:
+                ## for backward-compatibility mwx 0.51
+                frm.inspector = frm.shellframe
             frm.load_session(session, flush=False)
         except FileNotFoundError:
             print("- No such session file {!r}".format(session))
