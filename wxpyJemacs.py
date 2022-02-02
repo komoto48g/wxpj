@@ -38,6 +38,7 @@ from mwx.controls import Param, LParam, ControlPanel
 from mwx.graphman import Layer, Thread, Graph
 from mwx.graphman import Frame as Framebase
 from pyJeol.temsys import NotifyFront
+import pyJeol as pJ
 import pyDM3reader as DM3lib
 
 __version__ = "0.35"
@@ -53,6 +54,7 @@ def version():
       "Image version {}".format(Image.__version__),
       "cv2 version {}".format(cv2.__version__),
       "mwx {}".format(mwx.__version__),
+      "pJ {}".format(pJ.__version__),
       ))
 
 
