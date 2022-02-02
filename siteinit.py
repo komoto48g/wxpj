@@ -41,7 +41,8 @@ def init_frame(self):
     ## --------------------------------
     ## Load plugins
     ## --------------------------------
-    ## sys.path.append(r"C:\usr\home\workspace\tem13\gdk-aero")
+    sys.path.append(r"C:\usr\home\workspace\tem13\gdk")
+    sys.path.append(r"C:\usr\home\workspace\tem13\gdk-aero")
     sys.path.append(r"C:\usr\home\workspace\tem13\wxpj-data")
     
     self.ed = self.require("editor")
