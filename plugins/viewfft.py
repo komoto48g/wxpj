@@ -13,12 +13,22 @@ from mwx.controls import Param
 from mwx.graphman import Layer
 
 
+def fftresize(src, maxsize=None):
+    """Resize src image to 2**n squared ROI"""
+    h, w = src.shape
+    if not maxsize:
+        maxsize = w
+    n = pow(2, int(np.log2(min(h, w, maxsize))) - 1)
+    i, j = h//2, w//2
+    return src[i-n:i+n,j-n:j+n]
+
+
 class Plugin(Layer):
     """FFT view
     FFT src (graph.buffer) to dst (output.buffer)
     長方形のリージョンは歪んだパターンになるので要注意
     """
-    menu = "Plugins/Functions"
+    menu = "Plugins/Extensions"
     menustr = "&FFT view"
     caption = "FFT view"
     
@@ -49,9 +59,10 @@ class Plugin(Layer):
         frame = self.graph.frame
         if frame:
             self.message("FFT execution...")
-            src = frame.roi
-            dst = fftshift(fft2(src))
+            src = fftresize(frame.roi)
             h, w = src.shape
+            
+            dst = fftshift(fft2(src))
             
             self.message("\b Loading image...")
             u = 1 / w
@@ -60,15 +71,6 @@ class Plugin(Layer):
             self.output.load(dst, "*fft of {}*".format(frame.name),
                              localunit=u)
             self.message("\b done")
-    
-    ## def refft(self):
-    ##     """Get FFT of graph"""
-    ##     frame = self.graph.frame
-    ##     if frame:
-    ##         name = "*fft of {}*".format(frame.name)
-    ##         if name not in self.output:
-    ##             return self.newfft(frame)
-    ##         self.output.select(name)
     
     def newifft(self, evt):
         """New inverse FFT of output to graph"""
