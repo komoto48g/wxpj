@@ -198,7 +198,7 @@ class Plugin(Layer):
     
     @property
     def selected_roi(self):
-        return fftresize(self.selected_frame.roi, maxsize=1024)
+        return fftresize(self.selected_frame.roi, maxsize=2048)
     
     def calc_ring(self, show=False):
         """Calc log-polar of ring pattern
