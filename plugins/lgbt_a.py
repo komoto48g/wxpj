@@ -8,6 +8,10 @@ from mwx.graphman import Layer
 import editor as edi
 
 
+def _valist(params):
+    return list(p.value for p in params)
+
+
 class Plugin(Layer):
     """Gaussian Blur and Threshold --adaptive
     """
@@ -42,8 +46,8 @@ class Plugin(Layer):
         if not frame:
             frame = self.selected_view.frame
         
-        k, s, block, C = np.int32(self.params)
-        hi, lo = np.float32(self.cutoff_params)
+        k, s, block, C = _valist(self.params)
+        hi, lo = _valist(self.cutoff_params)
         src = frame.buffer
         buf = edi.imconv(src, hi, lo)
         if k > 1:

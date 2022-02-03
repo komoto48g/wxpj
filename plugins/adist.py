@@ -7,6 +7,10 @@ from numpy import pi,exp,conj
 from mwx.graphman import Layer
 
 
+def _valist(params):
+    return list(p.value for p in params)
+
+
 def calc_dist(u, D, d):
     return complex(D, d) * u * u * conj(u)
 
@@ -50,8 +54,8 @@ class Plugin(Layer):
         zo = xo + 1j * yo
         del xo
         del yo
-        zi = calc_aspect(zo, *np.float32(self.ratio_params))\
-             + calc_dist(zo, *np.float32(self.dist_params))
+        zi = calc_aspect(zo, *_valist(self.ratio_params))\
+             + calc_dist(zo, *_valist(self.dist_params))
         del zo
         
         self.message("\b @remap...")
