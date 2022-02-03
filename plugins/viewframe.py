@@ -49,9 +49,8 @@ class CheckList(CheckListCtrl, CtrlInterface):
             ("unit", 60),
             ## ("mean", 60),
             ## ("std", 60),
-            ## ("med", 60),
-            ("max", 50),
-            ("min", 50),
+            ## ("max", 50),
+            ## ("min", 50),
             ("annotation", 240),
         )
         for k, (name, w) in enumerate(self.alist):
@@ -108,9 +107,8 @@ class CheckList(CheckListCtrl, CtrlInterface):
           "{:g}{}".format(frame.unit, '*' if frame.localunit else ''),
           ## "{:.2f}".format(np.mean(frame.buffer)),
           ## "{:.2f}".format(np.std(frame.buffer)),
-          ## "{:.2f}".format(np.median(frame.buffer)),
-            "{:g}".format(frame.buffer.max()),
-            "{:g}".format(frame.buffer.min()),
+            ## "{:g}".format(frame.buffer.max()),
+            ## "{:g}".format(frame.buffer.min()),
               "{}".format(frame.annotation),
         )
         j = frame.index
