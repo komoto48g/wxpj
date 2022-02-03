@@ -274,8 +274,7 @@ class Plugin(Layer):
         src = frame.roi
         h, w = src.shape
         
-        ## resize to 2**N squared ROI (N=2n)
-        n = pow(2, int(np.log2(min(h, w)))-1)
+        n = pow(2, int(np.log2(min(h, w)))-1) # resize to 2**N squared ROI (N=2n)
         i, j = h//2, w//2
         src = src[i-n:i+n,j-n:j+n]
         

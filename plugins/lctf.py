@@ -8,6 +8,7 @@ from scipy import signal
 from matplotlib import patches
 from mwx.controls import LParam
 from mwx.graphman import Layer
+from plugins.viewfft import fftresize
 from plugins.lcrf import Model
 from wxpyJemacs import wait
 import editor as edi
@@ -108,7 +109,7 @@ def blur1d(data, tol=0.01):
     ## window = np.hanning(lw)
     window = signal.windows.gaussian(lw, std=lw)
     
-    ## ys = signal.lfilter(window/window.sum(), 1, data) # 短周期は苦手？NG
+    ## ys = signal.lfilter(window/window.sum(), 1, data) # 短周期 NG
     ## ys = np.convolve(window/window.sum(), data, mode='same')
     ## return ys
 
@@ -197,12 +198,7 @@ class Plugin(Layer):
     
     @property
     def selected_roi(self):
-        src = self.selected_frame.buffer
-        h, w = src.shape
-        n = pow(2, int(np.log2(min(h,w)))-1) # resize to 2^n squared ROI
-        n = min(n, 1024)
-        i, j = h//2, w//2
-        return src[i-n:i+n,j-n:j+n]
+        return fftresize(self.selected_frame.roi, maxsize=1024)
     
     def calc_ring(self, show=False):
         """Calc log-polar of ring pattern
