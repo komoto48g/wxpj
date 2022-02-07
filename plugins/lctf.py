@@ -149,7 +149,7 @@ def find_radial_peaks(data, tol=0.01):
 class Plugin(Layer):
     """CTF finder ver 1.0
     """
-    menu = "Test"
+    menu = "CTF"
     
     debug = 0
     
