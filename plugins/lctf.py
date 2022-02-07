@@ -10,7 +10,6 @@ from mwx.controls import LParam
 from mwx.graphman import Layer
 from plugins.viewfft import fftresize
 from plugins.lcrf import Model
-from wxpyJemacs import wait
 import editor as edi
 
 
@@ -149,22 +148,25 @@ def find_radial_peaks(data, tol=0.01):
 class Plugin(Layer):
     """CTF finder ver 1.0
     """
-    menu = "Test"
+    menu = "CTF"
     
     debug = 0
     
     def Init(self):
         self.rmin = LParam("rmin", (0.001, 0.1, 0.001), 0.05,
                            updater=lambda p: self.calc_ring(True),
-                           tip="Ratio to the radius")
+                           tip="Ratio to the radius."
+                               "\n" + self.calc_ring.__doc__)
         
         self.rmax = LParam("rmax", (0.1, 0.5, 0.01), 0.5,
                            updater=lambda p: self.calc_ring(True),
-                           tip="Ratio to the radius")
+                           tip="Ratio to the radius."
+                               "\n" + self.calc_ring.__doc__)
         
         self.tol = LParam("tol", (0, 0.1, 0.001), 0.01,
                            updater=lambda p: self.calc_peak(True),
-                           tip="Ratio to the radius of blurring pixels")
+                           tip="Ratio to the radius of blurring pixels."
+                               "\n" + self.calc_peak.__doc__)
         
         self.layout((
                 self.rmin,
