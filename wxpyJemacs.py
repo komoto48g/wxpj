@@ -6,6 +6,10 @@
   Phase 2: Phoenix (2018--2020) Integrated system for image analysis
   Phase 3: Analysis center phoenix (2020--)
 """
+__version__ = "0.36rc"
+__author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
+__copyright__ = "Copyright (c) 2018-2021"
+
 from collections import OrderedDict
 from functools import wraps
 from pprint import pprint
@@ -41,9 +45,6 @@ from pyJeol.temsys import NotifyFront
 import pyJeol as pJ
 import pyDM3reader as DM3lib
 
-__version__ = "0.35"
-__author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
-__copyright__ = "Copyright (c) 2018-2021"
 
 def version():
     return '\n  '.join((
