@@ -58,7 +58,7 @@ class CheckList(CheckListCtrl, CtrlInterface):
         
         for j, frame in enumerate(self.Target.all_frames):
             self.InsertItem(j, str(j))
-            self.Update(frame) # update all --> 計算が入ると時間がかかる
+            self.UpdateInfo(frame) # update all --> 計算が入ると時間がかかる
         
         self.handler.update({
             0 : {
@@ -88,8 +88,8 @@ class CheckList(CheckListCtrl, CtrlInterface):
                  'frame_hidden' : [ None, self.on_frame_hidden ],
                  'frame_loaded' : [ None, self.on_frame_loaded ],
                 'frame_removed' : [ None, self.on_frames_removed ],
-               'frame_modified' : [ None, self.Update ],
-                'frame_updated' : [ None, self.Update ],
+               'frame_modified' : [ None, self.UpdateInfo ],
+                'frame_updated' : [ None, self.UpdateInfo ],
             }
         }
         self.Target.handler.append(self.context)
@@ -98,7 +98,7 @@ class CheckList(CheckListCtrl, CtrlInterface):
         self.Target.handler.remove(self.context)
         return wx.ListCtrl.Destroy(self)
     
-    def Update(self, frame):
+    def UpdateInfo(self, frame):
         ls = ("{}".format(frame.index),
               "{}".format(frame.name),
               "{}".format(frame.buffer.shape),
@@ -179,7 +179,7 @@ class CheckList(CheckListCtrl, CtrlInterface):
         self.InsertItem(j, str(j))
         for k in range(j+1, self.ItemCount): # id(0) を更新する
             self.SetItem(k, 0, str(k))
-        self.Update(frame)
+        self.UpdateInfo(frame)
     
     def on_frame_shown(self, frame):
         j = frame.index
