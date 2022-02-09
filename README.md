@@ -49,16 +49,34 @@ Create a workspace to install.
     ├ pJ.cmd (batch file for startup)
     └ siteinit.py (initial setting)
 ```
-2. Install Python packages (from pypi) using [make-py35.bat](man/make-PY35.bat) file.
+2. Install Python packages (from pypi) using batch files  
+
+    [make-py35.bat](man/make-PY35.bat) file.
+    <details>
+      <summary>To install PY35 w/ PyJEM </summary>
+
     ```
     py -3.5 -m pip install -U pip
     py -3.5 -m pip install scipy opencv-python==3.4.5.20 pillow matplotlib wxpython
     py -3.5 -m pip install pywin32 openpyxl flake8 httplib2
     py -3.5 -m pip install -U mwxlib
-    git clone https://github.com/komoto48g/wxpj.git
-    git clone https://github.com/komoto48g/wxpj-aero.git
     py -3.5 -m pip install PyJEM-1.0.2.1143.zip
+    git clone https://github.com/komoto48g/wxpj.git
     ```
+    </details>
+
+    [make-py3.bat](man/make-PY3.bat) file.
+    <details>
+      <summary>To install PY38 (+later) w/o PyJEM</summary>
+
+    ```
+    py -m pip install -U pip
+    py -m pip install scipy opencv-python pillow matplotlib wxpython
+    py -m pip install pywin32 flake8 httplib2
+    py -m pip install -U mwxlib
+	git clone https://github.com/komoto48g/wxpj.git
+    ```
+    </details>
 
 #### Note (for internal use only)
 
