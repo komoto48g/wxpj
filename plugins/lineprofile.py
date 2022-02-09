@@ -4,8 +4,8 @@
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
-from mwx import LineProfile
 from mwx.graphman import Layer
+from mwx.matplot2lg import LineProfile
 
 
 class Plugin(Layer):

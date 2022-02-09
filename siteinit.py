@@ -45,7 +45,7 @@ def init_frame(self):
     sys.path.append(r"C:\usr\home\workspace\tem13\gdk-aero")
     sys.path.append(r"C:\usr\home\workspace\tem13\wxpj-data")
     
-    self.ed = self.require("editor")
+    self.ed = self.require('editor')
     self.su = self.require('startup')
     
     from plugins import lgbt, lcrf, lccf, lccf2
