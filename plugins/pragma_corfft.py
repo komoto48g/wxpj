@@ -26,7 +26,7 @@ class Plugin(Layer):
     
     def Init(self):
         self.page = LParam("page", (-1,1000,1), -1)
-        self.page.bind(lambda lp: self.view.select(lp.value))
+        self.page.bind(lambda p: self.view.select(p.value))
         
         self.choice = Choice(self, size=(60,-1),
             choices=['FFT', 'FFT+', 'Cor'], readonly=1,

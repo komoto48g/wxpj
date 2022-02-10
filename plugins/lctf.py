@@ -10,6 +10,7 @@ from mwx.controls import LParam
 from mwx.graphman import Layer
 from plugins.viewfft import fftresize
 from plugins.lcrf import Model
+from wxpyJemacs import _F
 import editor as edi
 
 
@@ -154,19 +155,16 @@ class Plugin(Layer):
     
     def Init(self):
         self.rmin = LParam("rmin", (0.001, 0.1, 0.001), 0.05,
-                           updater=lambda p: self.calc_ring(True),
-                           tip="Ratio to the radius."
-                               "\n" + self.calc_ring.__doc__)
+                           updater=_F(self.calc_ring, True),
+                           tip="Ratio to the radius.")
         
         self.rmax = LParam("rmax", (0.1, 0.5, 0.01), 0.5,
-                           updater=lambda p: self.calc_ring(True),
-                           tip="Ratio to the radius."
-                               "\n" + self.calc_ring.__doc__)
+                           updater=_F(self.calc_ring, True),
+                           tip="Ratio to the radius.")
         
         self.tol = LParam("tol", (0, 0.1, 0.001), 0.01,
-                           updater=lambda p: self.calc_peak(True),
-                           tip="Ratio to the radius of blurring pixels."
-                               "\n" + self.calc_peak.__doc__)
+                           updater=_F(self.calc_peak, True),
+                           tip="Ratio to the radius of blurring pixels.")
         
         self.layout((
                 self.rmin,

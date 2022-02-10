@@ -1,7 +1,5 @@
 #! python
 # -*- coding: utf-8 -*-
-from functools import wraps
-from pprint import pprint
 import wx
 import numpy as np
 from numpy import pi
@@ -9,7 +7,8 @@ from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 from scipy import optimize
 from mwx.controls import LParam
 from mwx.controls import Button
-from wxpyJemacs import Layer, Frame
+from mwx.graphman import Layer
+from wxpyJemacs import wait, _F
 import editor as edi
 
 
@@ -40,13 +39,15 @@ class Plugin(Layer):
     
     def Init(self):
         self.cmax = LParam("limit", (2, 50), 10,
-                           updater=lambda p: self.calc_optvar(),
+                           updater=_F(self.calc_optvar),
                            tip="Set maximum index for fitting")
         
-        self.ru = LParam("A/pix", (0, 2, 0.001), 0.5, fmt="{:5.3f}".format)
+        self.ru = LParam("A/pix", (0, 2, 0.001), 0.5, fmt="{:5.3f}".format,
+                         tip="Angstrom per pixel")
         
         self.cs = LParam("Cs", (0, 5, 0.01), 1.0, fmt="{:5.2f}".format,
-                         updater=lambda p: self.calc_sherzer())
+                         updater=_F(self.calc_sherzer),
+                         tip="Design value of Cs")
         
         self.layout((
             self.lctf.rmin,
@@ -65,8 +66,8 @@ class Plugin(Layer):
         self.layout((
             self.cmax,
             None,
-            Button(self, "CTF", lambda v: self.run(), icon='->'),
-            Button(self, "clf", lambda v: edi.clear(), icon='-'),
+            Button(self, "CTF", _F(self.run), icon='->'),
+            Button(self, "clf", _F(edi.clear), icon='-'),
             ),
             row=2, type='vspin', style='button', lw=32, tw=50,
         )
@@ -78,8 +79,7 @@ class Plugin(Layer):
         session['params'] = self.parameters
     
     def calc_sherzer(self):
-        """Sherzer focus [m]
-        sin(2*pi/3) = 0.866 になるところ
+        """Sherzer focus [m] defined as sin(2*pi/3) = 0.866
         """
         el = self.em.elambda
         cs = self.cs.value * 1e-3
@@ -206,7 +206,13 @@ class Plugin(Layer):
               "cs* = {:g} mm".format(cs * 1e3),
         ))
     
+    @wait
     def run(self):
+        """Execute all processes
+        1. Calc log-polar of ring pattern
+        2. Calc min/max peak detection
+        3. Calc optical variables
+        """
         print('-' * 32)
         print('>', self.graph.frame.name)
         self.lctf.calc_ring(show=0)
@@ -215,6 +221,8 @@ class Plugin(Layer):
 
 
 if __name__ == "__main__":
+    from mwx.graphman import Frame
+    
     app = wx.App()
     frm = Frame(None)
     frm.load_plug(__file__, show=1)

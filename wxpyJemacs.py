@@ -187,6 +187,13 @@ def wait(f):
     return _f
 
 
+def _F(f, *args, **kwargs):
+    @wraps(f)
+    def _f(*v):
+        return f(*args, **kwargs)
+    return _f
+
+
 if __name__ == '__main__':
     print(version())
     
