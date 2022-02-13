@@ -11,7 +11,26 @@ import numpy as np
 from mwx.controls import Icon
 from mwx.graphman import Layer
 from mwx.framework import CtrlInterface
-from mwx.controls import CheckList as CheckListCtrl
+
+if wx.VERSION < (4,1,0):
+    from wx.lib.mixins.listctrl import CheckListCtrlMixin
+    
+    class CheckListCtrl(wx.ListCtrl, CheckListCtrlMixin):
+        def __init__(self, *args, **kwargs):
+            wx.ListCtrl.__init__(self, *args, **kwargs)
+            CheckListCtrlMixin.__init__(self)
+            
+            self.ToolTip = ''
+            self.IsItemChecked = self.IsChecked # for wx 4.1 compatibility
+
+else:
+    class CheckListCtrl(wx.ListCtrl):
+        def __init__(self, *args, **kwargs):
+            wx.ListCtrl.__init__(self, *args, **kwargs)
+            
+            ## To avoid $BUG wx 4.1.1 (but default Tooltip will disappear)
+            self.ToolTip = ''
+            self.EnableCheckBoxes()
 
 
 class CheckList(CheckListCtrl, CtrlInterface):
@@ -96,7 +115,7 @@ class CheckList(CheckListCtrl, CtrlInterface):
     
     def Destroy(self):
         self.Target.handler.remove(self.context)
-        return wx.ListCtrl.Destroy(self)
+        return CheckListCtrl.Destroy(self)
     
     def UpdateInfo(self, frame):
         ls = ("{}".format(frame.index),
