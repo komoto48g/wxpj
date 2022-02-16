@@ -7,6 +7,7 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 from pprint import pformat
 import wx
 from wx import aui
+from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 import numpy as np
 from mwx.controls import Icon
 from mwx.graphman import Layer
@@ -15,18 +16,20 @@ from mwx.framework import CtrlInterface
 if wx.VERSION < (4,1,0):
     from wx.lib.mixins.listctrl import CheckListCtrlMixin
     
-    class CheckListCtrl(wx.ListCtrl, CheckListCtrlMixin):
+    class CheckListCtrl(wx.ListCtrl, ListCtrlAutoWidthMixin, CheckListCtrlMixin):
         def __init__(self, *args, **kwargs):
             wx.ListCtrl.__init__(self, *args, **kwargs)
+            ListCtrlAutoWidthMixin.__init__(self)
             CheckListCtrlMixin.__init__(self)
             
             self.ToolTip = ''
             self.IsItemChecked = self.IsChecked # for wx 4.1 compatibility
 
 else:
-    class CheckListCtrl(wx.ListCtrl):
+    class CheckListCtrl(wx.ListCtrl, ListCtrlAutoWidthMixin):
         def __init__(self, *args, **kwargs):
             wx.ListCtrl.__init__(self, *args, **kwargs)
+            ListCtrlAutoWidthMixin.__init__(self)
             
             ## To avoid $BUG wx 4.1.1 (but default Tooltip will disappear)
             self.ToolTip = ''
