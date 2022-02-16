@@ -70,7 +70,8 @@ class Plugin(Layer):
                 return
             
             while self.viewer.is_active:
-                src = edi.imconv(self.cameraman.capture())
+                buf = self.cameraman.capture()
+                src = edi.imconv(buf, hi=0.01, lo=0.01)
                 h, w = src.shape
                 H = self.size_param.value
                 W = H * w // h

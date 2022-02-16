@@ -135,8 +135,8 @@ def imconv(buf=None, hi=0, lo=0):
         ## return y.astype(buf.dtype)
         buf = cv2.cvtColor(buf, cv2.COLOR_RGB2GRAY) # rgb2gray
     
-    a = buf.min() if hi else np.percentile(buf, lo)
-    b = buf.max() if lo else np.percentile(buf, 100-hi)
+    a = np.percentile(buf, lo) if lo else buf.min()
+    b = np.percentile(buf, 100-hi) if hi else buf.max()
     
     r = (255 / (b - a)) if a < b else 1
     img = np.uint8((buf - a) * r) # copy buffer
