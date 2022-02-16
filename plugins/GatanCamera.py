@@ -90,8 +90,8 @@ class Plugin(Layer):
     menustr = "&Gatan camera ver.2"
     
     def Init(self):
-        self.binning_selector = Param("bin", (1,2,4), handler=self.set_binning)
-        self.exposure_selector = LParam("exp", (0.05, 5, 0.05), handler=self.set_exposure)
+        self.binning_selector = Param("bin", (1,2,4), 1, handler=self.set_binning)
+        self.exposure_selector = LParam("exp", (0, 5, 0.05), 0.05, handler=self.set_exposure)
         
         self.dark_chk = wx.CheckBox(self, label="dark")
         self.dark_chk.Enable(0)
@@ -153,6 +153,8 @@ class Plugin(Layer):
         return self.__camera
     
     def set_exposure(self, p):
+        if p.value < 0.001:
+            p.value = 0.001
         if self.camera:
             self.camera.exposure = p.value
     
