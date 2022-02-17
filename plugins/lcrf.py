@@ -179,8 +179,8 @@ class Plugin(Layer):
     
     def Init(self):
         self.radii_params = (
-            LParam("rmin", (0, 1, 0.01), 0.1),
-            LParam("rmax", (0, 2, 0.01), 1.0),
+            LParam("rmin", (0, 1, 0.01), 0.1, handler=self.set_radii),
+            LParam("rmax", (0, 2, 0.01), 1.0, handler=self.set_radii),
         )
         self.layout(self.lgbt.params, title="blur-threshold", show=0, cw=0, lw=40, tw=40)
         self.layout(self.radii_params, title="radii", cw=0, lw=36, tw=48)
@@ -267,3 +267,19 @@ class Plugin(Layer):
             patches.Circle((xc, yc), hi*frame.unit, color='c', ls='--', lw=1/2, fill=0),
         )
         self.Arts += frame.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75)
+    
+    def set_radii(self, p):
+        frame = self.selected_view.frame
+        h, w = frame.buffer.shape
+        lo = h/2 * self.rmin.value
+        hi = h/2 * self.rmax.value
+        xc, yc = frame.selector
+        if len(xc) == 0: # no selector
+            xc, yc = 0, 0
+        del self.Arts
+        ## サークル描画 (確認用)
+        self.attach_artists(frame.axes,
+            patches.Circle((xc, yc), lo*frame.unit, color='c', ls='--', lw=1/2, fill=0),
+            patches.Circle((xc, yc), hi*frame.unit, color='c', ls='--', lw=1/2, fill=0),
+        )
+        self.Draw()
