@@ -203,7 +203,8 @@ class Plugin(Layer):
         ))
         frame.update_attributes(
             parameters = self.parameters[:-1], # except the last text
-            annotation = ', '.join(self.text.Value.splitlines()),
+            annotation = ', '.join(self.text.Value.splitlines())\
+                       + '; \n' + self.result_frame.annotation,
         )
     
     @wait
