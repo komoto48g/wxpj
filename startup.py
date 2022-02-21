@@ -76,19 +76,12 @@ class Plugin(Layer):
                 win.handler.remove(self.context)
     
     def init_session(self, session):
-        self.accv_param.value = session.get('accv')
-        self.unit_param.std_value = session.get('unit')
-        self.cuts_param.value = session.get('cuts')
-        
+        self.parameters = session['params']
         self.set_htv(self.accv_param)
         self.setup_all()
     
     def save_session(self, session):
-        session.update({
-            'accv': self.accv_param.value,
-            'unit': self.unit_param.std_value,
-            'cuts': self.cuts_param.value,
-        })
+        session['params'] = self.parameters
     
     def on_unit_notify(self, frame):
         if frame:
