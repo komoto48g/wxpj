@@ -16,27 +16,25 @@ from mwx.framework import CtrlInterface
 if wx.VERSION < (4,1,0):
     from wx.lib.mixins.listctrl import CheckListCtrlMixin
     
-    class CheckListCtrl(wx.ListCtrl, ListCtrlAutoWidthMixin, CheckListCtrlMixin):
+    class CheckListCtrl(wx.ListCtrl, CheckListCtrlMixin):
         def __init__(self, *args, **kwargs):
             wx.ListCtrl.__init__(self, *args, **kwargs)
-            ListCtrlAutoWidthMixin.__init__(self)
             CheckListCtrlMixin.__init__(self)
             
             self.ToolTip = ''
             self.IsItemChecked = self.IsChecked # for wx 4.1 compatibility
 
 else:
-    class CheckListCtrl(wx.ListCtrl, ListCtrlAutoWidthMixin):
+    class CheckListCtrl(wx.ListCtrl):
         def __init__(self, *args, **kwargs):
             wx.ListCtrl.__init__(self, *args, **kwargs)
-            ListCtrlAutoWidthMixin.__init__(self)
             
             ## To avoid $BUG wx 4.1.1 (but default Tooltip will disappear)
             self.ToolTip = ''
             self.EnableCheckBoxes()
 
 
-class CheckList(CheckListCtrl, CtrlInterface):
+class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
     """ CheckList with FSM
     list item order = buffer order リストアイテムとバッファの並び順 0..n は常に一致します．
     """
@@ -57,6 +55,7 @@ class CheckList(CheckListCtrl, CtrlInterface):
     def __init__(self, parent, target, **kwargs):
         CheckListCtrl.__init__(self, parent, size=(400,130),
                                style=wx.LC_REPORT|wx.LC_HRULES, **kwargs)
+        ListCtrlAutoWidthMixin.__init__(self)
         CtrlInterface.__init__(self)
         
         self.parent = parent
