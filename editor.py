@@ -33,7 +33,7 @@ class Plugin(Layer):
                 self.hi,
                 self.lo,
             ),
-            title="truncation", cw=0, lw=16, tw=40
+            row=2, title="truncation", cw=0, lw=16, tw=40
         )
         self.layout((
                 Button(self, "imconv", lambda v: self.test_imconv()),
@@ -65,8 +65,11 @@ class Plugin(Layer):
         ellipses = find_ellipses(src, ksize=5)
         self.message("Found {} circles".format(len(ellipses)))
         if ellipses:
-            (cx,cy), (ra,rb), angle = ellipses[0]
-            p, q = calc_ellipse(src, ellipses[0])
+            el = ellipses[0]
+            (cx,cy), (ra,rb), angle = el
+            R, n, s = calc_ellipse(src, el)
+            p = R * n/s
+            q = R * (1-n)/(1-s)
             if p/q > 1: # signal
                 art.center = frame.xyfrompixel(cx, cy)
                 ## art.height = ra * frame.unit
@@ -290,7 +293,12 @@ def find_ellipses(src, frmin=None, frmax=None, ksize=1, sortby='size'):
 
 def calc_ellipse(src, ellipse):
     """Calculate the count density
-  retval -> p:inside, q:outside of given ellipse
+  retval -> R : averaged count/pixel (N/S)
+            n : ratio of count / N
+            s : ratio of pixel / S
+    Note: power density p:inside, q:outside,
+          p = R * n/s
+          q = R * (1-n)/(1-s)
     """
     (cx,cy), (ra,rb), angle = ellipse
     h, w = src.shape
@@ -301,16 +309,15 @@ def calc_ellipse(src, ellipse):
     yy = (x-xo) *-sin(t) + (y-yo)*cos(t)
     mask = np.hypot(xx/ra*2, yy/rb*2) < 1 # 楕円の短径 ra/2 < 長径 rb/2
     
-    ## OTSU algorithm を使うので，きっちり領域をとるとは限らない．
-    ## とくに飽和している場合，正確な値にならない．
-    if src.dtype in (np.int16, np.uint16, np.int32, np.uint32):
-        src = np.float32(src)
+    N = src.sum()   # 全カウント数
+    S = src.size    # 全ピクセル数
+    R = N / S       # Averaged count/pix
+    Np = src[mask].sum() # 楕円の領域に入るカウント数
+    Sp = mask.sum()      # 〃              ピクセル数
     
-    power = src[mask].sum() # 楕円の領域に入る強度
-    area = mask.sum()       # 楕円の領域
-    p = power / area        # power density p:inside, q:outside,
-    q = (src.sum() - power) / (src.size - area)
-    return p, q
+    n = Np / N  # カウント数比
+    s = Sp / S  # ピクセル数比
+    return R, n, s
 
 
 ## def find_peaks(y):

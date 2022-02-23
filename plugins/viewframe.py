@@ -230,8 +230,19 @@ class Plugin(Layer):
     dockable = False
     unloadable = False
     
-    all_pages = property(
-        lambda self: [self.nb.GetPage(i) for i in range(self.nb.PageCount)])
+    @property
+    def all_pages(self):
+        return [self.nb.GetPage(i) for i in range(self.nb.PageCount)]
+    
+    @property
+    def selected_buffers(self):
+        page = self.nb.CurrentPage
+        return page.Target[page.selected_items]
+    
+    @property
+    def focused_buffer(self):
+        page = self.nb.CurrentPage
+        return page.Target[page.focused_item]
     
     def Init(self):
         self.nb = aui.AuiNotebook(self, size=(400,150),
