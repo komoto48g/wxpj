@@ -23,12 +23,12 @@ class Plugin(Layer):
         self.layout((self.plot,), expand=2, border=0)
         
         @self.handler.bind('pane_shown')
-        def activate():
+        def activate(*v):
             self.plot.attach(*self.parent.graphic_windows)
             self.plot.linplot(self.parent.selected_view.frame)
         
         @self.handler.bind('pane_closed')
-        def deactivate():
+        def deactivate(*v):
             self.plot.detach(*self.parent.graphic_windows)
 
 

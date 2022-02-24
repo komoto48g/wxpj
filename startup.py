@@ -59,19 +59,19 @@ class Plugin(Layer):
         )
         self.context = {
             None : {
-                  "frame_shown" : [ None, self.on_unit_notify ],
+                 #"frame_shown" : [ None, self.on_unit_notify ],
                 "frame_updated" : [ None, self.on_unit_notify ],
                "frame_selected" : [ None, self.on_unit_notify ],
             },
         }
         
         @self.handler.bind('pane_shown')
-        def activate():
+        def activate(*v):
             for win in self.parent.graphic_windows:
                 win.handler.append(self.context)
         
         @self.handler.bind('pane_closed')
-        def deactivate():
+        def deactivate(*v):
             for win in self.parent.graphic_windows:
                 win.handler.remove(self.context)
     
