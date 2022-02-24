@@ -45,13 +45,12 @@ Create a workspace to install.
 ```
 <your-workdir>
     ├ make-py35.bat (batch file for installation)
-    ├ PyJEM-1.0.2.1143.zip (PyJEM package for installation)
+    ├ PyJEM-1.0.2.1143.zip (PyJEM package if needed)
     ├ pJ.cmd (batch file for startup)
     └ siteinit.py (initial setting)
 ```
 2. Install Python packages (from pypi) using batch files  
 
-    [make-py35.bat](man/make-PY35.bat) file.
     <details>
       <summary>To install PY35 w/ PyJEM </summary>
 
@@ -63,9 +62,9 @@ Create a workspace to install.
     py -3.5 -m pip install PyJEM-1.0.2.1143.zip
     git clone https://github.com/komoto48g/wxpj.git
     ```
+    [make-py35.bat](man/make-PY35.bat) file.
     </details>
 
-    [make-py3.bat](man/make-PY3.bat) file.
     <details>
       <summary>To install PY38 (+later) w/o PyJEM</summary>
 
@@ -76,6 +75,7 @@ Create a workspace to install.
     py -m pip install -U mwxlib
 	git clone https://github.com/komoto48g/wxpj.git
     ```
+    [make-py3.bat](man/make-PY3.bat) file.
     </details>
 
 #### Note (for internal use only)
@@ -86,6 +86,12 @@ Create a workspace to install.
 set HTTPS_PROXY=http://i-net.jeol.co.jp:80
 set HTTP_PROXY=http://i-net.jeol.co.jp:80
 ```
+
+
+### Updating
+
+To update the packages, just run `make-PY3.bat` or `make-PY35.bat` again.
+Before updating, delete wxpj directory, or else the latest wxpj will not be cloned.
 
 
 ## How to execute wxpyJemacs
