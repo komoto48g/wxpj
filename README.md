@@ -41,42 +41,39 @@ These instructions will get you a copy of the project up and running on your loc
 
 Create a workspace to install.
 
-1. Prepare the workspace directory as follows.
-```
-<your-workdir>
-    ├ make-py35.bat (batch file for installation)
-    ├ PyJEM-1.0.2.1143.zip (PyJEM package if needed)
-    ├ pJ.cmd (batch file for startup)
-    └ siteinit.py (initial setting)
-```
+1. Prepare the workspace directory as follows.  
+    ```
+    <your-workdir>
+        ├ make-py.bat (batch file for installation)
+        ├ PyJEM-***.zip (PyJEM package if needed)
+        ├ pJ.cmd (batch file for startup)
+        └ siteinit.py (initial setting)
+    ```
+
 2. Install Python packages (from pypi) using batch files  
 
-    <details>
-      <summary>To install PY35 w/ PyJEM </summary>
-
+    To install PY35 packages, use [make-py35.bat](man/make-PY35.bat) file.
     ```
     py -3.5 -m pip install -U pip
-    py -3.5 -m pip install scipy opencv-python==3.4.5.20 pillow matplotlib wxpython
+    py -3.5 -m pip install scipy opencv-python==3.4.5.20 pillow matplotlib wxpython==4.0.7
     py -3.5 -m pip install pywin32 openpyxl flake8 httplib2
     py -3.5 -m pip install -U mwxlib
-    py -3.5 -m pip install PyJEM-1.0.2.1143.zip
     git clone https://github.com/komoto48g/wxpj.git
     ```
-    [make-py35.bat](man/make-PY35.bat) file.
-    </details>
 
-    <details>
-      <summary>To install PY38 (+later) w/o PyJEM</summary>
-
+    To install PY38+ packages, use [make-py3.bat](man/make-PY3.bat) file.
     ```
     py -m pip install -U pip
     py -m pip install scipy opencv-python pillow matplotlib wxpython
     py -m pip install pywin32 flake8 httplib2
     py -m pip install -U mwxlib
-	git clone https://github.com/komoto48g/wxpj.git
+    git clone https://github.com/komoto48g/wxpj.git
     ```
-    [make-py3.bat](man/make-PY3.bat) file.
-    </details>
+
+3. Install PyJEM (from zip) if needed  
+    ```
+    py -m pip install PyJEM-***.zip
+    ```
 
 #### Note (for internal use only)
 

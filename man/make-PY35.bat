@@ -2,7 +2,7 @@
 
 rem: Update PY35 packages (py required)
 py -3.5 -m pip install -U pip
-py -3.5 -m pip install scipy opencv-python==3.4.5.20 pillow matplotlib wxpython
+py -3.5 -m pip install scipy opencv-python==3.4.5.20 pillow matplotlib wxpython==4.0.7
 py -3.5 -m pip install pywin32 flake8 httplib2
 py -3.5 -m pip install -U mwxlib
 
