@@ -19,6 +19,8 @@ def init_frame(self):
     """Program settings of pyJemacs <Frame>
     """
     self.Editor = "C:/usr/home/bin/xyzzy/xyzzy.exe"
+    sys.path.append(r"C:\usr\home\workspace\tem13\gdk-aero")
+    sys.path.append(r"C:\usr\home\workspace\tem13\wxpj-data")
     
     ## Film/CCD [mm/pixel]
     ## 0.0820 mm/pixel - Jenoptik
@@ -41,9 +43,6 @@ def init_frame(self):
     ## --------------------------------
     ## Load plugins
     ## --------------------------------
-    sys.path.append(r"C:\usr\home\workspace\tem13\gdk")
-    sys.path.append(r"C:\usr\home\workspace\tem13\gdk-aero")
-    sys.path.append(r"C:\usr\home\workspace\tem13\wxpj-data")
     
     self.ed = self.require('editor')
     self.su = self.require('startup')
@@ -67,10 +66,9 @@ def init_frame(self):
     self.load_plug(viewframe)
     self.load_plug(viewfft)
     
-    ## from pyJeol.legacy import cmdl, cntf
-    ## cmdl.HOST = cntf.HOST = 'localhost'
-    ## cmdl.OFFLINE = True
-    ## cmdl.open()
+    ## from pyJeol import legacy
+    ## legacy.set_host('localhost')
+    
     self.notify.start()
     
     ## --------------------------------
