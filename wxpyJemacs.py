@@ -4,11 +4,12 @@
 
   Phase 1: Legacy (2015--2017) TEM control
   Phase 2: Phoenix (2018--2020) Integrated system for image analysis
-  Phase 3: Analysis center phoenix (2020--)
+  Phase 3: Analysis center phoenix (2020--2022)
+  Phase 4: Automation center phoenix (2022--)
 """
-__version__ = "0.36rc"
+__version__ = "0.37rc"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
-__copyright__ = "Copyright (c) 2018-2021"
+__copyright__ = "Copyright (c) 2018-2022"
 
 from collections import OrderedDict
 from functools import wraps
