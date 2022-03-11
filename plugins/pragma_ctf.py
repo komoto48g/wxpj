@@ -5,10 +5,11 @@ import numpy as np
 from numpy import pi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 from scipy import optimize
+from mwx import funcall as _F
 from mwx.controls import LParam
 from mwx.controls import Button
 from mwx.graphman import Layer
-from wxpyJemacs import wait, _F
+from wxpyJemacs import wait
 import editor as edi
 
 

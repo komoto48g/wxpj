@@ -8,9 +8,9 @@ from scipy import signal
 from matplotlib import patches
 from mwx.controls import LParam
 from mwx.graphman import Layer
+from mwx import funcall as _F
 from plugins.viewfft import fftresize
 from plugins.lcrf import Model
-from wxpyJemacs import _F
 import editor as edi
 
 
