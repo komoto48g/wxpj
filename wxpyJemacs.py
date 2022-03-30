@@ -11,11 +11,8 @@ __version__ = "0.37rc"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 
-from collections import OrderedDict
 from functools import wraps
-from pprint import pprint
-import traceback
-import datetime # imported but unused :necessary to eval
+import datetime # noqa: necessary to eval
 import getopt
 import glob
 import sys
@@ -27,7 +24,6 @@ import numpy as np
 import scipy
 import matplotlib
 from PIL import Image
-from PIL import TiffImagePlugin # tiff extension for py2exe
 if 'mwx' not in sys.modules:
     ## Add eggs in the nest to the path (new PyJEM for PY38)
     home = os.path.dirname(os.path.abspath(__file__))
@@ -38,9 +34,7 @@ if 'mwx' not in sys.modules:
     for path in reversed(glob.glob(eggs)):
         sys.path.append(path)
 import mwx
-from mwx.controls import Icon, Button, ToggleButton, TextCtrl, Choice, Gauge, Indicator
-from mwx.controls import Param, LParam, ControlPanel
-from mwx.graphman import Layer, Thread, Graph
+from mwx.graphman import Layer, Thread # noqa: referenced from submoduels
 from mwx.graphman import Frame as Framebase
 from pyJeol.temsys import NotifyFront
 import pyJeol as pJ
@@ -49,15 +43,15 @@ import pyDM3reader as DM3lib
 
 def version():
     return '\n  '.join((
-      "<Python {}>".format(sys.version),
-      "wx.version {}".format(wx.version()),
-      "scipy/numpy version {}/{}".format(scipy.__version__, np.__version__),
-      "matplotlib version {}".format(matplotlib.__version__),
-      "Image version {}".format(Image.__version__),
-      "cv2 version {}".format(cv2.__version__),
-      "mwx {}".format(mwx.__version__),
-      "pJ {}".format(pJ.__version__),
-      ))
+        "<Python {}>".format(sys.version),
+        "wx.version {}".format(wx.__version__),
+        "scipy/numpy version {}/{}".format(scipy.__version__, np.__version__),
+        "matplotlib version {}".format(matplotlib.__version__),
+        "Image version {}".format(Image.__version__),
+        "cv2 version {}".format(cv2.__version__),
+        "mwx {}".format(mwx.__version__),
+        "pJ {}".format(pJ.__version__),
+        ))
 
 
 class pyJemacs(Framebase):
@@ -82,12 +76,6 @@ class pyJemacs(Framebase):
     def __init__(self, *args, **kwargs):
         Framebase.__init__(self, *args, **kwargs)
         
-        ## HOME = sys.path[0]
-        ## if HOME[-4:] == '.exe': # ~/dist/*.exe (py2exe)
-        ##     HOME = os.path.dirname(os.path.dirname(HOME))
-        ##     if HOME not in sys.path:
-        ##         sys.path += [ HOME ] # adds root for loading plugins
-        
         home = os.path.dirname(os.path.abspath(__file__))
         icon = os.path.join(home, "Jun.ico")
         if os.path.exists(icon):
@@ -96,14 +84,12 @@ class pyJemacs(Framebase):
         ## Notify process
         self.nfront = NotifyFront(self)
         self.notify = self.nfront.notify
-        ## self.notify.start() # do not start here; do after setting 'host:port:online'
         
         self.menubar["File"][-4:-4] = [
             (100, "&Notifyee\tF11", "Notify logger", wx.ITEM_CHECK,
                 lambda v: self.nfront.Show(v.IsChecked()),
                 lambda v: v.Check(self.nfront.IsShown())),
         ]
-        ## self.menubar["File"][9:9] = [ # insert menus for extension, option, etc.
         self.menubar["Plugins"] += [ # insert menus for extension, option, etc.
             ("Extensions", []),
             ("Functions", []),
@@ -134,15 +120,6 @@ class pyJemacs(Framebase):
             dmf = DM3lib.DM3(path)
             ## return dmf.image # PIL Image file
             return dmf.imagedata, {'header':dmf.info}
-        
-        ## if path[-4:] == '.dm4':
-        ##     dmf = DM4lib.DM4File.open(path)
-        ##     tags = dmf.read_directory()
-        ##     data = tags.named_subdirs['ImageList'].unnamed_subdirs[1].named_subdirs['ImageData']
-        ##     w = dmf.read_tag_data(data.named_subdirs['Dimensions'].unnamed_tags[0])
-        ##     h = dmf.read_tag_data(data.named_subdirs['Dimensions'].unnamed_tags[1])
-        ##     buf = dmf.read_tag_data(data.named_tags['Data'])
-        ##     return np.asarray(buf, dtype=np.uint16).reshape(h,w), {'header':None}
         
         if path[-4:] == '.img':
             with open(path, 'rb') as i:
@@ -201,13 +178,10 @@ if __name__ == '__main__':
             if k == "--pyjem":
                 online = eval(v)
     except Exception as e:
-        print("  Exception occurs in getopt;", e)
+        print("- Exception occurs in getopt;", e)
         sys.exit(1)
     
-    ## --------------------------------
-    ## Do import TEM3 before the wx.App
-    ##   or else you never do it hereafter.
-    ## --------------------------------
+    ## Please import TEM3 before the wx.App, or else you never do it hereafter.
     ## switch --pyjem: 0(=offline), 1(=online), 2(=online+TEM3)
     if online is not None:
         try:
@@ -222,32 +196,22 @@ if __name__ == '__main__':
                 import PyJEM.offline
         except ImportError as e:
             print("  {}... pass".format(e))
-            print("  PyJEM is supported under Python 3.5... sorry")
+            ## print("  PyJEM is supported under Python 3.5... sorry")
     
-    ## --------------------------------
-    ## Start main process with siteinit
-    ## --------------------------------
     app = wx.App()
     frm = pyJemacs(None)
-    try:
-        sys.path.insert(0, '')
-        si = __import__('siteinit')
-        print("Executing {!r}".format(si.__file__))
-        si.init_frame(frm)
-    except Exception:
-        ## traceback.print_exc()
-        raise
+    
+    sys.path.insert(0, '')      # try to import si:local if exists
+    si = __import__('siteinit') # otherwise, si:global
+    print("Executing {!r}".format(si.__file__))
+    si.init_frame(frm)
     
     if session:
         try:
             print("Starting session {!r}".format(session))
-            if 1:
-                ## for backward-compatibility mwx 0.51
-                frm.inspector = frm.shellframe
             frm.load_session(session, flush=False)
         except FileNotFoundError:
             print("- No such session file {!r}".format(session))
-            pass
     
     frm.Show()
     app.MainLoop()
