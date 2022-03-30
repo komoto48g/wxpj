@@ -59,7 +59,7 @@ class Plugin(Layer):
         )
         self.context = {
             None : {
-                 #"frame_shown" : [ None, self.on_unit_notify ],
+                  "frame_shown" : [ None, self.on_unit_notify ],
                 "frame_updated" : [ None, self.on_unit_notify ],
                "frame_selected" : [ None, self.on_unit_notify ],
             },

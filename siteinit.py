@@ -1,12 +1,9 @@
 #! python3
 # -*- coding: utf-8 -*-
-"""siteinit file of wxpj
-
-Author: Kazuya O'moto <komoto@jeol.co.jp>
+"""siteinit file
 """
 from six.moves import builtins
 import sys
-import os
 import editor as edi
 
 builtins.plot = edi.plot
@@ -91,8 +88,13 @@ def init_frame(self):
         else:
             self.graph.SetFocus()
     
-    self.define_key('pageup', lambda v: self.selected_view.OnPageUp(v), doc="previous page")
-    self.define_key('pagedown', lambda v: self.selected_view.OnPageDown(v), doc="next page")
+    @self.define_key('pageup', doc="previous page")
+    def pageup(v):
+        self.selected_view.OnPageUp(v)
+    
+    @self.define_key('pagedown', doc="next page")
+    def pagedown(v):
+        self.selected_view.OnPageDown(v)
     
     @self.handler.bind('frame_cached')
     def cache(frame):
@@ -118,12 +120,12 @@ def init_frame(self):
 
 if __name__ == '__main__':
     import wx
-    import wxpyJemacs as wxpj
+    from wxpyJemacs import Frame
+    
     app = wx.App()
-    frm = wxpj.Frame(None)
+    frm = Frame(None)
     init_frame(frm)
-    frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
-    frm.load_buffer(u"C:/usr/home/workspace/images/sample_circ.bmp")
-    frm.load_buffer(u"C:/usr/home/workspace/images/13 TEM1-3 MAG10k FLS1=2A00,B700.dm3")
+    frm.load_buffer("C:/usr/home/workspace/images/sample.bmp")
+    frm.load_buffer("C:/usr/home/workspace/images/sample_circ.bmp")
     frm.Show()
     app.MainLoop()
