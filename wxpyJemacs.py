@@ -7,7 +7,7 @@
   Phase 3: Analysis center phoenix (2020--2022)
   Phase 4: Automation center phoenix (2022--)
 """
-__version__ = "0.37rc"
+__version__ = "0.38rc"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 
@@ -152,17 +152,6 @@ class pyJemacs(Framebase):
         return Framebase.write_buffer(path, buf)
 
 Frame = pyJemacs
-
-
-def wait(f):
-    @wraps(f)
-    def _f(self, *args, **kwargs):
-        try:
-            busy = wx.BusyCursor()
-            return f(self, *args, **kwargs)
-        finally:
-            del busy
-    return _f
 
 
 if __name__ == '__main__':
