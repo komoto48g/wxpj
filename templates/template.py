@@ -8,7 +8,7 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 import wx
 import cv2
 from mwx.controls import LParam
-from wxpyJemacs import Layer, Frame
+from wxpyJemacs import Layer
 
 
 class Plugin(Layer):
@@ -49,6 +49,8 @@ class Plugin(Layer):
 
 
 if __name__ == "__main__":
+    from wxpyJemacs import Frame
+    
     app = wx.App()
     frm = Frame(None)
     frm.load_plug(__file__, show=1, dock=4)
