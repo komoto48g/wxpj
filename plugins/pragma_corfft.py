@@ -8,7 +8,7 @@ from numpy.fft import fft2,fftshift
 from mwx.controls import LParam
 from mwx.controls import Button, TextCtrl, Choice
 from mwx.graphman import Layer
-from wxpyJemacs import wait
+from mwx import funcall as _F
 import editor as edi
 
 FFT_FRAME_NAME = "*result of fft*"
@@ -26,11 +26,11 @@ class Plugin(Layer):
     
     def Init(self):
         self.page = LParam("page", (-1,1000,1), -1)
-        self.page.bind(lambda p: self.view.select(p.value))
+        self.page.bind(lambda p: self.graph.select(p.value))
         
         self.choice = Choice(self, size=(60,-1),
-            choices=['FFT', 'FFT+', 'Cor'], readonly=1,
-        )
+                             choices=['FFT', 'FFT+', 'Cor'],
+                             readonly=1)
         self.choice.Selection = 0
         
         self.score = LParam("score", (0.01, 10, 0.01), 0.1)
@@ -48,22 +48,28 @@ class Plugin(Layer):
         )
         self.grid.Selection = 0
         
-        self.text = TextCtrl(self, size=(140,60), style=wx.TE_READONLY|wx.TE_MULTILINE)
-        
+        self.text = TextCtrl(self, size=(140,60),
+                             style=wx.TE_READONLY|wx.TE_MULTILINE)
         size = (72,-1)
         
         self.layout((
-                Button(self, "1. Show", self.show_frame, icon='help', size=size),
+                Button(self, "1. Show",
+                       _F(self.on_show_frame), icon='help', size=size),
                 self.page,
                 
-                Button(self, "2. Eval", self.test_run, icon='help', size=size),
+                Button(self, "2. Eval",
+                       _F(self.test_run), icon='help', size=size),
                 self.choice,
                 
-                Button(self, "3. Mark", self.calc_mark, icon='help', size=size),
+                Button(self, "3. Mark",
+                       _F(self.calc_mark), icon='help', size=size),
                 self.score,
                 
-                Button(self, "4. Run", self.run, icon='help', size=size),
-                Button(self, "Settings", self.show_settings),
+                Button(self, "4. Run",
+                       _F(self.run), icon='help', size=size),
+                
+                Button(self, "Settings",
+                       _F(self.on_show_settings)),
             ),
             title="Evaluate step by step",
             row=2, show=1, type='vspin', tw=40, lw=0,
@@ -72,7 +78,7 @@ class Plugin(Layer):
                 self.grid,
                 self.text,
             ),
-            title="log/output",
+            title="Output",
             row=1, show=1, tw=50, vspacing=4,
         )
         self.lgbt.ksize.value = 5 # default blur window size
@@ -84,42 +90,34 @@ class Plugin(Layer):
         session['params'] = self.parameters
     
     @property
-    def view(self):
-        return self.graph
-    
-    @property
     def result_frame(self):
         if self.choice.Selection < 2: # FFT/FFT+ mode
             name = FFT_FRAME_NAME
         else:
             name = COR_FRAME_NAME
-        return self.view.get_frame(name)
+        return self.output.get_frame(name)
     
     @property
     def selected_frame(self):
-        self.page.range = (-1, len(self.view))
+        self.page.range = (-1, len(self.graph))
         try:
-            return self.view.get_frame(self.page.value)
+            return self.graph.get_frame(self.page.value)
         except TypeError:
-            return self.view.frame
+            return self.graph.frame
     
     ## --------------------------------
     ## calc/marking functions
     ## --------------------------------
     ## Run the following procs (1-2-3) step by step.
     ## Before calculating Mags, check unit length [mm/pixel]
-    ## def run_all(self):
-    ##     self.test_run()
-    ##     self.calc_mark()
-    ##     self.run()
     
-    def show_frame(self, evt):
+    def on_show_frame(self, evt):
         """Select frame buffer
         page -1 means the last frame
         """
-        self.view.select(self.selected_frame)
+        self.graph.select(self.selected_frame)
     
-    def show_settings(self, evt):
+    def on_show_settings(self, evt):
         """Check settings
         Check lccf radii [rmin:rmax]
         Check unit length [mm/pixel]
@@ -128,35 +126,36 @@ class Plugin(Layer):
         self.su.Show()
         self.lccf.Show()
     
-    @wait
-    def run(self, evt):
-        """Run the fitting procedure
-        """
-        self.ldc.reset_params()
-        self.ldc.thread.Start(self.calc_fit)
+    def run(self):
+        """Run the fitting procedure"""
+        try:
+            busy = wx.BusyCursor()
+            self.ldc.reset_params()
+            self.ldc.thread.Start(self.calc_fit)
+        finally:
+            del busy
     
-    @wait
-    def test_run(self, evt):
+    def test_run(self, frame=None):
         """Evaluation using the selected method
         Select evaluation method
           :FFT evaluates using FFT method. Use when grid is small
           :FFT+ in addition to FFT method, corss-cut the center (十文字きりちょんぱ)
           :Cor evaluates using Cor (pattern matching) method. Use when grid is large
         """
-        frame = self.selected_frame
+        if not frame:
+            frame = self.selected_frame
         
-        if not self.result_frame and self.page.value >= 0:
-            ## A new frame (*result*) is to be loaded ahead of stacks
-            ## so we need to put forward the page counter (no problem when -1)
-            self.page.value += 1
+        ## if not self.result_frame and self.page.value >= 0:
+        ##     ## A new frame (*result*) is to be loaded ahead of stacks
+        ##     ## so we need to put forward the page counter (no problem when -1)
+        ##     self.page.value += 1
         
         if self.choice.Selection < 2: # FFT/FFT+ mode
             self.test_fft(frame, crossline=(self.choice.Selection==1))
         else:
             self.test_cor(frame)
     
-    @wait
-    def calc_mark(self, evt):
+    def calc_mark(self):
         """Set parameter of socre at percentile (:COR only).
         score: the ratio [%] to maximum count for extracting spots
         """
@@ -170,7 +169,6 @@ class Plugin(Layer):
         else:
             self.lccf.run(frame, otsu=1-self.score.value/100)
     
-    @wait
     def calc_fit(self):
         frame = self.result_frame
         if not frame:
@@ -181,15 +179,18 @@ class Plugin(Layer):
         self.ldc.run(frame) # 計算 x2 回目
         self.ldc.Show()
         self.calc_mag()
+        frame.parent.select(frame)
     
-    @wait
     def calc_mag(self):
         """Calculate Mags from the grid length [mm/grid]
         """
-        frame = self.selected_frame
-        u = frame.unit                    # [mm/pix]
-        g = self.ldc.grid_params[0].value # [mm/grid] image or 1/g :FFT
-        g0 = eval(self.grid.Value)        # [mm/grid] org
+        frame = self.result_frame
+        if not frame:
+            print(self.message("- No *result*"))
+            return
+        u = frame.unit                    # [u/pix]
+        g = self.ldc.grid_params[0].value # [u/grid] image or 1/g :FFT
+        g0 = eval(self.grid.Value)        # [u/grid] org
         if self.choice.Selection < 2: # FFT
             method = 'fft'
             g = 1/g
@@ -201,13 +202,12 @@ class Plugin(Layer):
             "grid: {:g} mm".format(g),
             "({:g} m/pix)".format(u/M * 1e-3)
         ))
-        frame.update_attributes(
+        self.selected_frame.update_attributes(
             parameters = self.parameters[:-1], # except the last text
             annotation = ', '.join(self.text.Value.splitlines())\
-                       + '; \n' + self.result_frame.annotation,
+                       + '; \n' + frame.annotation,
         )
     
-    @wait
     def calc_ru(self):
         """Estimate [u/pix] on specimen from two spots
         1. Select the *result* frame
@@ -217,11 +217,11 @@ class Plugin(Layer):
         frame = self.result_frame
         if not frame:
             print(self.message("- No *result*"))
+            return
         x, y = frame.selector
         if len(x) < 2:
-            wx.MessageBox(
-                self.message("- Select two nearest spots in the *result* frame"),
-                style = wx.ICON_INFORMATION | wx.OK | wx.CANCEL)
+            wx.MessageBox("Select two nearest spots."
+                          "\n\n{}".format(self.calc_ru.__doc__))
             return
         
         u = frame.unit                      # [u/pix] or [u-1/pix] :FFT
@@ -268,8 +268,8 @@ class Plugin(Layer):
         
         ## <float32> to <uint8>
         dst = edi.imconv(dst, hi=0)
-        return frame.parent.load(dst, COR_FRAME_NAME,
-                                 pos=0, localunit=frame.unit)
+        return self.output.load(dst, COR_FRAME_NAME,
+                                     localunit=frame.unit)
     
     def test_fft(self, frame, crossline=0):
         src = frame.roi
@@ -323,8 +323,8 @@ class Plugin(Layer):
         ## 逆空間：論理スケール [ru/pixel] に変換する
         ## Don't cut hi/lo: 強度重心を正しくとるため，飽和させないこと
         ## dst = edi.imconv(dst, hi=0, lo=0)
-        return frame.parent.load(dst, FFT_FRAME_NAME,
-                                 pos=0, localunit=1/w/frame.unit)
+        return self.output.load(dst, FFT_FRAME_NAME,
+                                     localunit=1/w/frame.unit)
 
 
 if __name__ == "__main__":

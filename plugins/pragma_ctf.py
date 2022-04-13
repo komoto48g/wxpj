@@ -5,11 +5,10 @@ import numpy as np
 from numpy import pi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 from scipy import optimize
-from mwx import funcall as _F
 from mwx.controls import LParam
 from mwx.controls import Button
 from mwx.graphman import Layer
-from wxpyJemacs import wait
+from mwx import funcall as _F
 import editor as edi
 
 
@@ -207,7 +206,6 @@ class Plugin(Layer):
               "cs* = {:g} mm".format(cs * 1e3),
         ))
     
-    @wait
     def run(self):
         """Execute all processes
         1. Calc log-polar of ring pattern

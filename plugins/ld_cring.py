@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 from itertools import chain
 import plugins.ld_ring as base
-## reload(base)
+
+## import mwx
+## mwx.reload(base)
 
 class Model(base.Model):
     def residual(self, fitting_params, x, y):

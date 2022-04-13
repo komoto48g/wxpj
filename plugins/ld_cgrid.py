@@ -4,7 +4,9 @@ from itertools import chain
 import numpy as np
 from numpy import pi,exp
 import plugins.ld_grid as base
-## reload(base)
+
+## import mwx
+## mwx.reload(base)
 
 class Model(base.Model):
     def residual(self, fitting_params, x, y):
