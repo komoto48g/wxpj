@@ -54,7 +54,7 @@ class Plugin(Layer):
         
         self.layout((
                 Button(self, "1. Show",
-                       _F(self.on_show_frame), icon='help', size=size),
+                       self.on_show_frame, icon='help', size=size),
                 self.page,
                 
                 Button(self, "2. Eval",
@@ -69,7 +69,7 @@ class Plugin(Layer):
                        _F(self.run), icon='help', size=size),
                 
                 Button(self, "Settings",
-                       _F(self.on_show_settings)),
+                       self.on_show_settings),
             ),
             title="Evaluate step by step",
             row=2, show=1, type='vspin', tw=40, lw=0,
@@ -156,7 +156,7 @@ class Plugin(Layer):
             self.test_cor(frame)
     
     def calc_mark(self):
-        """Set parameter of socre at percentile (:COR only).
+        """Set parameter of socre at percentile
         score: the ratio [%] to maximum count for extracting spots
         """
         frame = self.result_frame
