@@ -25,9 +25,6 @@ class Plugin(Layer):
     ldc = property(lambda self: self.parent.require('ld_cgrid'))
     
     def Init(self):
-        self.page = LParam("page", (-1,1000,1), -1)
-        self.page.bind(lambda p: self.graph.select(p.value))
-        
         self.choice = Choice(self, size=(60,-1),
                              choices=['FFT', 'FFT+', 'Cor'],
                              readonly=1)
@@ -50,26 +47,20 @@ class Plugin(Layer):
         
         self.text = TextCtrl(self, size=(140,60),
                              style=wx.TE_READONLY|wx.TE_MULTILINE)
-        size = (72,-1)
+        
+        def make_button(label, func):
+            return Button(self, label, _F(func),
+                                icon='help', size=(72,-1)),
         
         self.layout((
-                Button(self, "1. Show",
-                       self.on_show_frame, icon='help', size=size),
-                self.page,
-                
-                Button(self, "2. Eval",
-                       _F(self.test_run), icon='help', size=size),
+                make_button("1. Eval", self.evaluate),
                 self.choice,
                 
-                Button(self, "3. Mark",
-                       _F(self.calc_mark), icon='help', size=size),
+                make_button("2. Mark", self.calc_mark),
                 self.score,
                 
-                Button(self, "4. Run",
-                       _F(self.run), icon='help', size=size),
-                
-                Button(self, "Settings",
-                       self.on_show_settings),
+                make_button("3. Run", self.run),
+                Button(self, "Settings", self.on_show_settings),
             ),
             title="Evaluate step by step",
             row=2, show=1, type='vspin', tw=40, lw=0,
@@ -97,13 +88,8 @@ class Plugin(Layer):
             name = COR_FRAME_NAME
         return self.output.get_frame(name)
     
-    @property
-    def selected_frame(self):
-        self.page.range = (-1, len(self.graph))
-        try:
-            return self.graph.get_frame(self.page.value)
-        except TypeError:
-            return self.graph.frame
+    target_view = None          # given at evaluation time
+    output_view = Layer.output  # property
     
     ## --------------------------------
     ## calc/marking functions
@@ -111,17 +97,10 @@ class Plugin(Layer):
     ## Run the following procs (1-2-3) step by step.
     ## Before calculating Mags, check unit length [mm/pixel]
     
-    def on_show_frame(self, evt):
-        """Select frame buffer
-        page -1 means the last frame
-        """
-        self.graph.select(self.selected_frame)
-    
     def on_show_settings(self, evt):
-        """Check settings
-        Check lccf radii [rmin:rmax]
-        Check unit length [mm/pixel]
-        See the startup:globalunit for calculating mags.
+        """Show settings to check
+        1. lccf radii [rmin:rmax] for marking spots
+        2. unit length [mm/pixel] for calculating mags
         """
         self.su.Show()
         self.lccf.Show()
@@ -135,7 +114,7 @@ class Plugin(Layer):
         finally:
             del busy
     
-    def test_run(self, frame=None):
+    def evaluate(self, frame=None):
         """Evaluation using the selected method
         Select evaluation method
           :FFT evaluates using FFT method. Use when grid is small
@@ -143,12 +122,8 @@ class Plugin(Layer):
           :Cor evaluates using Cor (pattern matching) method. Use when grid is large
         """
         if not frame:
-            frame = self.selected_frame
-        
-        ## if not self.result_frame and self.page.value >= 0:
-        ##     ## A new frame (*result*) is to be loaded ahead of stacks
-        ##     ## so we need to put forward the page counter (no problem when -1)
-        ##     self.page.value += 1
+            frame = self.graph.frame
+        self.target_view = frame.parent # update target view <graph>
         
         if self.choice.Selection < 2: # FFT/FFT+ mode
             self.test_fft(frame, crossline=(self.choice.Selection==1))
@@ -202,7 +177,7 @@ class Plugin(Layer):
             "grid: {:g} mm".format(g),
             "({:g} m/pix)".format(u/M * 1e-3)
         ))
-        self.selected_frame.update_attributes(
+        self.target_view.frame.update_attributes(
             parameters = self.parameters[:-1], # except the last text
             annotation = ', '.join(self.text.Value.splitlines())\
                        + '; \n' + frame.annotation,
