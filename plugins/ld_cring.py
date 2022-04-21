@@ -1,4 +1,4 @@
-#! python
+#! python3
 # -*- coding: utf-8 -*-
 from itertools import chain
 import plugins.ld_ring as base

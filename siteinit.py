@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """siteinit file
 """
-from six.moves import builtins
+import builtins
 import sys
 import editor as edi
 
