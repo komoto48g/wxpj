@@ -61,12 +61,6 @@ class Plugin(Layer):
             row=1, show=0, type='vspin', lw=40, tw=40, cw=-1
         )
     
-    def init_session(self, session):
-        self.parameters = session['params']
-    
-    def save_session(self, session):
-        session['params'] = self.parameters
-    
     def Destroy(self):
         if self.viewer.is_active:
             self.viewer.Stop()

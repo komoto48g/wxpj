@@ -33,14 +33,6 @@ class Plugin(Layer):
             cw=-1, lw=36, tw=30      # w: width of [c]ontrol, [l]abel, [t]ext
         )
     
-    def init_session(self, session):
-        """Restore settings from a session file"""
-        self.ksize.value = session.get('ksize')
-    
-    def save_session(self, session):
-        """Save settings in a session file"""
-        session['ksize'] = self.ksize.value
-    
     def run(self):
         k = self.ksize.value
         src = self.graph.buffer

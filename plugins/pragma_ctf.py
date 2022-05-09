@@ -72,12 +72,6 @@ class Plugin(Layer):
             row=2, type='vspin', style='button', lw=32, tw=50,
         )
     
-    def init_session(self, session):
-        self.reset_params(session.get('params'))
-    
-    def save_session(self, session):
-        session['params'] = self.parameters
-    
     def calc_sherzer(self):
         """Sherzer focus [m] defined as sin(2*pi/3) = 0.866
         """

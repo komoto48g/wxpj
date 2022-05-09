@@ -69,12 +69,6 @@ class Plugin(Layer):
         )
         self.lgbt.ksize.value = 5 # default blur window size
     
-    def init_session(self, session):
-        self.reset_params(session.get('params'))
-    
-    def save_session(self, session):
-        session['params'] = self.parameters
-    
     @property
     def result_frame(self):
         if self.choice.Selection < 2: # FFT/FFT+ mode

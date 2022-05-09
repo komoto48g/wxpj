@@ -74,14 +74,8 @@ class Plugin(Layer):
         def deactivate(*v):
             for win in self.parent.graphic_windows:
                 win.handler.remove(self.context)
-    
-    def init_session(self, session):
-        self.parameters = session['params']
-        self.set_htv(self.accv_param)
-        self.setup_all()
-    
-    def save_session(self, session):
-        session['params'] = self.parameters
+        
+        wx.CallAfter(self.setup_all) # call after init_session
     
     def on_unit_notify(self, frame):
         if frame:
