@@ -47,20 +47,15 @@ class Plugin(Layer):
         
         self.text = TextCtrl(self, size=(140,60),
                              style=wx.TE_READONLY|wx.TE_MULTILINE)
-        
-        def make_button(label, func):
-            return Button(self, label, _F(func),
-                                icon='help', size=(72,-1)),
-        
         self.layout((
-                make_button("1. Eval", self.evaluate),
+                Button(self, "1. Eval", _F(self.evaluate), icon='help', size=(72,-1)),
                 self.choice,
                 
-                make_button("2. Mark", self.calc_mark),
+                Button(self, "2. Mark", _F(self.calc_mark), icon='help', size=(72,-1)),
                 self.score,
                 
-                make_button("3. Run", self.run),
-                Button(self, "Settings", self.on_show_settings),
+                Button(self, "3. Run", _F(self.run), icon='help', size=(72,-1)),
+                Button(self, "Settings", _F(self.show_settings)),
             ),
             title="Evaluate step by step",
             row=2, show=1, type='vspin', tw=40, lw=0,
@@ -97,7 +92,7 @@ class Plugin(Layer):
     ## Run the following procs (1-2-3) step by step.
     ## Before calculating Mags, check unit length [mm/pixel]
     
-    def on_show_settings(self, evt):
+    def show_settings(self):
         """Show settings to check
         1. lccf radii [rmin:rmax] for marking spots
         2. unit length [mm/pixel] for calculating mags
