@@ -35,21 +35,16 @@ class Model(object):
         self.owner = parent
     
     def basegrid(self, params):
-        """描画範囲の基準グリッド (複素数配列の組) を返す
-        メッシュ数と分割数は同数である必要はないが，ここでは同数．
-        """
+        """描画範囲の基準グリッド (複素数配列の組)"""
         grid, tilt, xc, yc = _valist(params)
         u = grid * exp(1j * tilt * pi/180)
         N = self.nGrid
+        ## メッシュ数と分割数は同数である必要はないが，ここでは同数
         lu = u * N * np.linspace(-0.5, 0.5, N+1) # 1/(N)grid
         X = xc + lu
         Y = yc + lu
         return [(X + 1j * y) for y in Y]\
              + [(x + 1j * Y) for x in X]
-        
-        ## メッシュ数と分割数は同数の場合，これでＯＫ
-        ## X, Y = np.meshgrid(lu, lu)
-        ## return (xc + 1j * yc) + np.vstack((X + 1j * Y, Y + 1j * X))
     
     def residual(self, fitting_params, x, y):
         """最小自乗法の剰余函数"""
@@ -72,7 +67,7 @@ class Model(object):
         u = grid * exp(1j * tilt * pi/180)
         lu = u * np.arange(-N, N+1)
         X, Y = np.meshgrid(lu, lu)
-        net = (xc + 1j * yc + X + 1j * Y).ravel()
+        net = (xc + 1j * yc) + (X + 1j * Y).ravel()
         gr = calc_aspect(net, ratio, phi) + calc_dist(net, D, d)
         
         ## 再近接グリッド点からのズレを評価する (探索範囲のリミットを設ける)
@@ -150,9 +145,9 @@ class Plugin(Layer):
         
         for art,z in zip(self.Arts, grids): # グリッドの設定
             art.set_data(z.real, z.imag)
+        
         self.Draw()
         
-        ## e = (1-r) / (1+r)
         e = (1 - r)
         t *= pi/180
         R1 = (1 - e * cos(2*t)) / (1 + e * cos(2*t))
@@ -195,7 +190,7 @@ class Plugin(Layer):
                 result = optimize.leastsq(self.model.residual,
                     _valist(self.fitting_params), args=(x,y), ftol=10**-order)
                 
-                for lp,v in zip(self.fitting_params, result[0]):
+                for lp, v in zip(self.fitting_params, result[0]):
                     lp.value = v
             
             ## check final result
@@ -210,16 +205,6 @@ class Plugin(Layer):
                 annotation = ', '.join(self.text.Value.splitlines()),
             )
     
-    ## def find_near_grid(self, x, y):
-    ##     dx = np.diff(x)
-    ##     dy = np.diff(y)
-    ##     dl = np.hypot(dx,dy)
-    ##     j = dl.argmin() # 隣接スポット間の距離のうち最小のやつ
-    ##     g = dl[j]
-    ##     t = np.arctan(dy[j]/dx[j]) * 180/pi
-    ##     for lp,v in zip(self.grid_params, (g, t, x[0], y[0])):
-    ##         lp.value = v
-    ## 
     def find_near_grid(self, x, y):
         lx = []
         ly = []
@@ -236,7 +221,7 @@ class Plugin(Layer):
         k = ld.index(np.percentile(ld, 50, interpolation='nearest'))
         g = ld[k]
         t = np.arctan(ly[k]/lx[k]) * 180/pi
-        for lp,v in zip(self.grid_params, (g, t, x[0], y[0])):
+        for lp, v in zip(self.grid_params, (g, t, x[0], y[0])):
             lp.value = v
 
 

@@ -9,10 +9,21 @@ import plugins.ld_grid as base
 ## mwx.reload(base)
 
 class Model(base.Model):
+    def basegrid(self, params):
+        """描画範囲の基準グリッド (複素数配列の組)"""
+        grid, tilt, xc, yc = np.float32(params)
+        u = grid * exp(1j * tilt * pi/180)
+        N = self.nGrid
+        lu = u * N * np.linspace(-0.5, 0.5, N+1) # 1/(N)grid
+        X = lu
+        Y = lu
+        return [(X + 1j * y) for y in Y]\
+             + [(x + 1j * Y) for x in X]
+    
     def residual(self, fitting_params, x, y):
         """最小自乗法の剰余函数"""
-        xc, yc = 0, 0
         grid, tilt, ratio, phi = fitting_params
+        xc, yc = 0, 0
         z = x + 1j*y
         
         ## φ超過時の補正
@@ -26,7 +37,7 @@ class Model(base.Model):
             print("... Iteration stopped")
             raise StopIteration
         
-        ## 検索範囲（描画範囲ではない）の基準グリッド (十分広く設定する)
+        ## 検索範囲（描画範囲ではない）の基準グリッド (-N:N 十分広く設定する)
         N = int(max(np.hypot(x,y)) / grid) + 1
         u = grid * exp(1j * tilt * pi/180)
         lu = u * np.arange(-N, N+1)
@@ -34,7 +45,7 @@ class Model(base.Model):
         net = (xc + 1j * yc) + (X + 1j * Y).ravel()
         gr = base.calc_aspect(net, ratio, phi)
         
-        ## 再近接グリッド点からのズレを評価する (ただし，探索範囲のリミットが設けられる)
+        ## 再近接グリッド点からのズレを評価する (探索範囲のリミットを設ける)
         lim = N * grid
         res = [ min(abs(gr - p))**2 for p in z if abs(p.real) < lim and abs(p.imag) < lim ]
         

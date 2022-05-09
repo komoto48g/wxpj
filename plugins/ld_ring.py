@@ -133,7 +133,7 @@ class Plugin(Layer):
         self.layout(self.dist_params, title="Distortion", cw=64, lw=20, tw=64, show=0)
         self.layout(self.ratio_params, title="XY Aspects", cw=64, lw=20, tw=64)
         self.layout(self.grid_params, title="Grid parameter", cw=56, lw=28, tw=64)
-        self.layout((self.btn, self.order), row=2, type='choice', cw=40, lw=32)
+        self.layout((self.btn, self.order), row=2, type='choice', cw=40, lw=36)
         self.layout((self.text,), expand=2)
         
         self.model = self.Fitting_model(self)
@@ -157,9 +157,9 @@ class Plugin(Layer):
         
         for art,z in zip(self.Arts, grids): # グリッドの設定
             art.set_data(z.real, z.imag)
+        
         self.Draw()
         
-        ## e = (1-r) / (1+r)
         e = (1 - r)
         t *= pi/180
         R1 = (1 - e * cos(2*t)) / (1 + e * cos(2*t))
@@ -203,7 +203,7 @@ class Plugin(Layer):
             result = optimize.leastsq(self.model.residual,
                 _valist(self.fitting_params), args=(x,y), ftol=1e-6)
             
-            for lp,v in zip(self.fitting_params, result[0]):
+            for lp, v in zip(self.fitting_params, result[0]):
                 lp.value = v
             
             ## check final result
