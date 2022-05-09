@@ -291,19 +291,6 @@ class Plugin(Layer):
         )
         self.__camera = None
     
-    def init_session(self, session):
-        self.name_selector.value = session.get('name')
-        self.host_selector.value = session.get('host')
-        self.unit_selector.value = session.get('unit')
-        self.preset_dark()
-    
-    def save_session(self, session):
-        session.update({
-            'name': self.name_selector.value,
-            'host': self.host_selector.value,
-            'unit': self.unit_selector.value,
-        })
-    
     ## --------------------------------
     ## Camera Attribtues
     ## --------------------------------
