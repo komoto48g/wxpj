@@ -11,7 +11,6 @@ __version__ = "0.38rc"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 
-from functools import wraps
 import datetime # noqa: necessary to eval
 import getopt
 import glob
@@ -21,8 +20,8 @@ import re
 import wx
 import cv2
 import numpy as np
-import scipy
-import matplotlib
+import scipy as sp
+import matplotlib as mpl
 from PIL import Image
 if 'mwx' not in sys.modules:
     ## Add eggs in the nest to the path (new PyJEM for PY38)
@@ -34,7 +33,7 @@ if 'mwx' not in sys.modules:
     for path in reversed(glob.glob(eggs)):
         sys.path.append(path)
 import mwx
-from mwx.graphman import Layer, Thread # noqa: referenced from submoduels
+from mwx.graphman import Layer # noqa: referenced from submoduels
 from mwx.graphman import Frame as Framebase
 from pyJeol.temsys import NotifyFront
 import pyJeol as pJ
@@ -44,9 +43,9 @@ import pyDM3reader as DM3lib
 def version():
     return '\n  '.join((
         "<Python {}>".format(sys.version),
-        "wx.version {}".format(wx.__version__),
-        "scipy/numpy version {}/{}".format(scipy.__version__, np.__version__),
-        "matplotlib version {}".format(matplotlib.__version__),
+        "wx version {}".format(wx.__version__),
+        "scipy/numpy version {}/{}".format(sp.__version__, np.__version__),
+        "matplotlib version {}/{}".format(mpl.__version__, mpl.get_backend()),
         "Image version {}".format(Image.__version__),
         "cv2 version {}".format(cv2.__version__),
         "mwx {}".format(mwx.__version__),
@@ -161,7 +160,7 @@ if __name__ == '__main__':
     online = None
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "s:", ["pyjem="])
-        for k,v in opts:
+        for k, v in opts:
             if k == "-s":
                 session = v if v.endswith(".jssn") else v + '.jssn'
             if k == "--pyjem":
@@ -187,6 +186,10 @@ if __name__ == '__main__':
             print("  {}... pass".format(e))
             ## print("  PyJEM is supported under Python 3.5... sorry")
     
+    ## Launch application
+    ## 1. load si:siteinit -> initialize app settings
+    ## 2. load su:startup -> restore app settings
+    ## 3. load session -> restore plugins
     app = wx.App()
     frm = pyJemacs(None)
     
