@@ -151,8 +151,6 @@ class Plugin(Layer):
     """
     menu = "CTF"
     
-    debug = 0
-    
     def Init(self):
         self.rmin = LParam("rmin", (0.001, 0.1, 0.001), 0.05,
                            updater=_F(self.calc_ring, True),
@@ -174,23 +172,6 @@ class Plugin(Layer):
             title="FFT Cond.",
             type='vspin', style='button', lw=28, tw=50,
         )
-    
-    def init_session(self, session):
-        self.reset_params(session.get('params'))
-        
-        if self.debug:
-            print("$(session) = {!r}".format((session)))
-            self.__dict__.update(session)
-    
-    def save_session(self, session):
-        session['params'] = self.parameters
-        
-        if self.debug:
-            session.update({
-                'axis': self.axis,
-                'data': self.data,
-                'stig': self.stig,
-            })
     
     @property
     def selected_frame(self):
