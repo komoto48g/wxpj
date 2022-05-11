@@ -20,15 +20,15 @@ class Plugin(Layer):
     unloadable = False
     
     em = property(lambda self: self.__em)
+    em_std = property(lambda self: self.__em_std)
     
     def Init(self):
-        ## Settings with default acc [V]
-        self.__em = Environ(300e3)
-        
         self.accv_param = Param("Acc.Voltage", (100e3, 200e3, 300e3), 300e3,
                 handler=self.set_htv,
                 fmt='{:,g}'.format,
                 tip="Acceleration voltage [V]")
+        
+        self.accv_param.reset() # -> call set_htv
         
         self.unit_param = LParam("unit/pixel", (0,1,1e-4), self.graph.unit,
                 updater=self.set_localunit,
@@ -75,7 +75,7 @@ class Plugin(Layer):
             for win in self.parent.graphic_windows:
                 win.handler.remove(self.context)
         
-        wx.CallAfter(self.setup_all) # call after init_session
+        wx.CallAfter(self.setup_all)
     
     def on_unit_notify(self, frame):
         if frame:
@@ -83,7 +83,8 @@ class Plugin(Layer):
             self.unit_param.std_value = frame.parent.unit
     
     def set_htv(self, p):
-        self.em.__init__(p.value)
+        self.__em = Environ(p.value)
+        self.__em_std = Environ(p.std_value)
     
     def set_localunit(self, p):
         target = self.selected_view
