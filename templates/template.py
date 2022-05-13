@@ -7,8 +7,8 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 import wx
 import cv2
-from mwx.controls import LParam
-from wxpyJemacs import Layer
+from mwx.controls import LParam, Button
+from mwx.graphman import Layer
 
 
 class Plugin(Layer):
@@ -20,17 +20,15 @@ class Plugin(Layer):
     caption = "temp.1"
     
     def Init(self):
-        self.ksize = LParam("ksize", (1,99,2), 13, tip="kernel window size")
+        self.ksize = LParam("ksize", (1,99,2), 13,
+                            tip="kernel window size")
         
-        self.btn = wx.Button(self, label="Run", size=(-1,22))
-        self.btn.Bind(wx.EVT_BUTTON, lambda v: self.run())
+        self.btn = Button(self, label="Run", size=(-1,22),
+                          handler=lambda v: self.run(), icon='->')
         
-        self.layout(
-            (self.ksize, self.btn),  # the list of objects stacked with the following style:
-            title="Gaussian blur",   # subtitle of this layout group. otherwise None (no box)
-            row=1, expand=0, show=1, # grouping style: row means the horizontal stack size
-            type='vspin',            # control style: slider[*], [hv]spin, choice
-            cw=-1, lw=36, tw=30      # w: width of [c]ontrol, [l]abel, [t]ext
+        self.layout((self.ksize, self.btn),
+            title="Gaussian blur", row=1,
+            type='vspin', cw=-1, lw=36, tw=30,
         )
     
     def run(self):
@@ -38,14 +36,3 @@ class Plugin(Layer):
         src = self.graph.buffer
         dst = cv2.GaussianBlur(src, (k,k), 0.)
         self.output.load(dst, "*gauss*")
-
-
-if __name__ == "__main__":
-    from wxpyJemacs import Frame
-    
-    app = wx.App()
-    frm = Frame(None)
-    frm.load_plug(__file__, show=1, dock=4)
-    frm.load_buffer("C:/usr/home/workspace/images/sample.bmp")
-    frm.Show()
-    app.MainLoop()

@@ -8,7 +8,7 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 import wx
 import cv2
 from mwx.controls import Button
-from wxpyJemacs import Layer
+from mwx.graphman import Layer
 
 
 class Plugin(Layer):
@@ -19,7 +19,7 @@ class Plugin(Layer):
     category = "Test"
     caption = "temp.2"
     
-    lgbt = property(lambda self: self.parent.require('template'))
+    lgbt = property(lambda self: self.require('template'))
     
     def Init(self):
         self.layout((
@@ -37,9 +37,8 @@ class Plugin(Layer):
                 lambda v: self.run_med(), icon='help',
                 tip="Also check the Median blur"),
             
-            Button(self, "4. ALL",
-                lambda v: (self.run(), self.run_blur(), self.run_med()),
-                icon='phoenix',
+            Button(self, "Execute ALL",
+                lambda v: self.run_all(), icon='->',
                 tip="Press to run all blurs above\n"
                     "This example shows how to give plain instruction.")
             ),
@@ -57,14 +56,8 @@ class Plugin(Layer):
     def run_med(self):
         k = self.lgbt.ksize.value
         self.output["*median*"] = cv2.medianBlur(self.graph.buffer, k)
-
-
-if __name__ == "__main__":
-    from wxpyJemacs import Frame
     
-    app = wx.App()
-    frm = Frame(None)
-    frm.load_plug(__file__, show=1, dock=4)
-    frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
-    frm.Show()
-    app.MainLoop()
+    def run_all(self):
+        self.run()
+        self.run_blur()
+        self.run_med()
