@@ -6,9 +6,8 @@ from numpy import pi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 from scipy import signal
 from matplotlib import patches
-from mwx.controls import LParam
-from mwx.graphman import Layer
 from mwx import funcall as _F
+from jgdk import Layer, LParam
 from plugins.viewfft import fftresize
 from plugins.lcrf import Model
 import editor as edi

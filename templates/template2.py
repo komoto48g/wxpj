@@ -5,10 +5,8 @@
 Version: 2.0
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
-import wx
 import cv2
-from mwx.controls import Button
-from mwx.graphman import Layer
+from jgdk import Layer, Button
 
 
 class Plugin(Layer):

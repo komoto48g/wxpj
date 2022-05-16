@@ -7,8 +7,7 @@ from numpy import pi,cos,sin
 from scipy import optimize
 from scipy import signal
 from matplotlib import patches
-from mwx.controls import LParam
-from mwx.graphman import Layer
+from jgdk import Layer, LParam
 import editor as edi
 
 

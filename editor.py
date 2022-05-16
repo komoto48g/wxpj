@@ -15,8 +15,7 @@ from matplotlib import pyplot as plt
 from matplotlib import patches
 from matplotlib import cm
 ## from PIL import Image
-from mwx.controls import LParam, Button
-from mwx.graphman import Layer, Frame
+from jgdk import Layer, LParam, Button
 
 
 class Plugin(Layer):
@@ -459,6 +458,7 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     import wx
+    from jgdk import Frame
     
     app = wx.App()
     frm = Frame(None)

@@ -4,7 +4,7 @@
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
-from mwx.graphman import Layer
+from jgdk import Layer
 from mwx.matplot2lg import LineProfile
 
 
@@ -35,7 +35,7 @@ class Plugin(Layer):
 if __name__ == "__main__":
     import glob
     import wx
-    from mwx.graphman import Frame
+    from jgdk import Frame
     
     app = wx.App()
     frm = Frame(None)

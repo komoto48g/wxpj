@@ -6,8 +6,7 @@ import cv2
 import numpy as np
 from numpy import pi,exp,cos,sin
 from scipy import optimize
-from mwx.controls import LParam
-from mwx.graphman import Layer, Thread
+from jgdk import Layer, Thread, LParam
 
 
 def _valist(params):

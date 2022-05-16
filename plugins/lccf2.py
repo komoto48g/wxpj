@@ -5,8 +5,7 @@ import cv2
 import numpy as np
 from numpy import pi,cos,sin
 from matplotlib import patches
-from mwx.controls import LParam
-from mwx.graphman import Layer
+from jgdk import Layer, LParam
 ## import editor as edi
 
 

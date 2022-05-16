@@ -6,8 +6,7 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 import numpy as np 
 import wx
-from mwx.controls import Param, LParam, Button
-from mwx.graphman import Layer, Frame
+from jgdk import Layer, Param, LParam, Button
 from pyJeol.temisc import Environ
 
 
@@ -121,6 +120,8 @@ class Plugin(Layer):
 
 
 if __name__ == '__main__':
+    from jgdk import Frame
+    
     app = wx.App()
     frm = Frame(None)
     frm.load_plug(__file__, show=1, dock=4)

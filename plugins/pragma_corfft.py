@@ -5,10 +5,8 @@ import cv2
 import numpy as np
 from numpy import nan
 from numpy.fft import fft2,fftshift
-from mwx.controls import LParam
-from mwx.controls import Button, TextCtrl, Choice
-from mwx.graphman import Layer
 from mwx import funcall as _F
+from jgdk import Layer, LParam, Button, TextCtrl, Choice
 import editor as edi
 
 FFT_FRAME_NAME = "*result of fft*"
@@ -293,7 +291,7 @@ class Plugin(Layer):
 
 if __name__ == "__main__":
     import glob
-    from mwx.graphman import Frame
+    from jgdk import Frame
     
     app = wx.App()
     frm = Frame(None)

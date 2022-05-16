@@ -5,10 +5,8 @@ import numpy as np
 from numpy import pi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 from scipy import optimize
-from mwx.controls import LParam
-from mwx.controls import Button
-from mwx.graphman import Layer
 from mwx import funcall as _F
+from jgdk import Layer, LParam, Button
 import editor as edi
 
 
@@ -214,7 +212,7 @@ class Plugin(Layer):
 
 
 if __name__ == "__main__":
-    from mwx.graphman import Frame
+    from jgdk import Frame
     
     app = wx.App()
     frm = Frame(None)

@@ -4,7 +4,7 @@ import wx
 import cv2
 import numpy as np
 from numpy import pi,exp,conj
-from mwx.graphman import Layer
+from jgdk import Layer
 
 
 def _valist(params):

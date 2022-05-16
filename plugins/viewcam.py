@@ -3,9 +3,7 @@
 import wx
 import cv2
 import numpy as np
-from mwx.controls import Param, LParam
-from mwx.controls import ToggleButton, Choice
-from mwx.graphman import Layer, Thread
+from jgdk import Layer, Thread, Param, LParam, ToggleButton, Choice
 import editor as edi
 
 
@@ -122,7 +120,7 @@ class Plugin(Layer):
 
 if __name__ == '__main__':
     from plugins import JeolCamera, RigakuCamera
-    from mwx.graphman import Frame
+    from jgdk import Frame
     
     app = wx.App()
     frm = Frame(None)

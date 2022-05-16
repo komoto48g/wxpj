@@ -9,8 +9,7 @@ import numpy as np
 from numpy.fft import fft2,ifft2,fftshift
 ## from scipy.fftpack import fft,ifft,fft2,ifft2 Memory Leak? <scipy 0.16.1>
 ## import cv2
-from mwx.controls import Param
-from mwx.graphman import Layer
+from jgdk import Layer, Param
 
 
 def fftresize(src, maxsize=None):
@@ -96,7 +95,7 @@ class Plugin(Layer):
 
 if __name__ == "__main__":
     import glob
-    from mwx.graphman import Frame
+    from jgdk import Frame
     
     app = wx.App()
     frm = Frame(None)

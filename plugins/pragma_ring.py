@@ -1,8 +1,7 @@
 #! python3
 # -*- coding: utf-8 -*-
 import wx
-from mwx.graphman import Layer
-from mwx.controls import Button
+from jgdk import Layer, Button
 
 
 class Plugin(Layer):

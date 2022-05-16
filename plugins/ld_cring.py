@@ -3,8 +3,8 @@
 from itertools import chain
 import plugins.ld_ring as base
 
-## import mwx
-## mwx.reload(base)
+## import importlib
+## importlib.reload(base)
 
 class Model(base.Model):
     def residual(self, fitting_params, x, y):

@@ -9,8 +9,7 @@ import wx
 from wx import aui
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 import numpy as np
-from mwx.controls import Icon
-from mwx.graphman import Layer
+from jgdk import Layer, Icon
 from mwx.framework import CtrlInterface
 
 if wx.VERSION < (4,1,0):
@@ -293,7 +292,7 @@ class Plugin(Layer):
 
 if __name__ == "__main__":
     import glob
-    from mwx.graphman import Frame
+    from jgdk import Frame
     
     app = wx.App()
     frm = Frame(None)

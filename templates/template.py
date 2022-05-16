@@ -5,10 +5,8 @@
 Version: 1.0
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
-import wx
 import cv2
-from mwx.controls import LParam, Button
-from mwx.graphman import Layer
+from jgdk import Layer, LParam, Button
 
 
 class Plugin(Layer):

@@ -120,7 +120,7 @@ def init_frame(self):
 
 if __name__ == '__main__':
     import wx
-    from wxpyJemacs import Frame
+    from jgdk import Frame
     
     app = wx.App()
     frm = Frame(None)

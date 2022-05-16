@@ -13,9 +13,7 @@ import wx
 import httplib2
 import numpy as np
 from PIL import Image
-from mwx.controls import Param, LParam
-from mwx.controls import Button, Choice
-from mwx.graphman import Layer
+from jgdk import Layer, Param, LParam, Button, Choice
 
 try:
     Offline = None

@@ -5,8 +5,8 @@ import numpy as np
 from numpy import pi,exp
 import plugins.ld_grid as base
 
-## import mwx
-## mwx.reload(base)
+## import importlib
+## importlib.reload(base)
 
 class Model(base.Model):
     def basegrid(self, params):
