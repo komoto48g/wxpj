@@ -7,7 +7,7 @@
   Phase 3: Analysis center phoenix (2020--2022)
   Phase 4: Automation center phoenix (2022--)
 """
-__version__ = "0.38.0"
+__version__ = "0.40.0"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 
@@ -56,16 +56,12 @@ class pyJemacs(Framebase):
     """the Frontend of Graph and Plug manager
     """
     def About(self):
-        try:
-            from wx.adv import AboutDialogInfo, AboutBox #! phoenix
-        except Exception:
-            from wx import AboutDialogInfo, AboutBox #? obsolete
-        
+        from wx.adv import AboutDialogInfo, AboutBox
         info = AboutDialogInfo()
         info.Name = self.__class__.__name__
         info.Version = __version__
         info.Copyright = __copyright__ +' '+ __author__
-        info.Description = '\n'.join((__doc__, version()))
+        info.Description = __doc__
         info.License = '\n'.join((mwx.__doc__ , ))
         info.Developers = []
         info.Artists = []
@@ -161,7 +157,9 @@ if __name__ == '__main__':
         opts, args = getopt.gnu_getopt(sys.argv[1:], "s:", ["pyjem="])
         for k, v in opts:
             if k == "-s":
-                session = v if v.endswith(".jssn") else v + '.jssn'
+                if not v.endswith(".jssn"):
+                    v += '.jssn'
+                session = v
             if k == "--pyjem":
                 online = eval(v)
     except Exception as e:
@@ -192,8 +190,8 @@ if __name__ == '__main__':
     app = wx.App()
     frm = pyJemacs(None)
     
-    sys.path.insert(0, '')      # try to import si:local if exists
-    si = __import__('siteinit') # otherwise, si:global
+    sys.path.insert(0, '')      # try import si:local if it exists.
+    si = __import__('siteinit') # otherwise, si:global.
     print("Executing {!r}".format(si.__file__))
     si.init_frame(frm)
     
@@ -202,7 +200,7 @@ if __name__ == '__main__':
             print("Starting session {!r}".format(session))
             frm.load_session(session, flush=False)
         except FileNotFoundError:
-            print("- No such session file {!r}".format(session))
+            print("- No such file {!r}".format(session))
     
     frm.Show()
     app.MainLoop()
