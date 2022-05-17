@@ -173,9 +173,16 @@ def splot(*args, **kwargs):
     ax.plot_wireframe(*args, **kwargs)
     plt.show()
 
+def scatter(x, y, *args, **kwargs):
+    """mpl scatter"""
+    art = plt.scatter(x, y, *args, **kwargs)
+    plt.grid(True)
+    plt.show()
+
 def clf():
     """clear figure (and the stack of memory)"""
     plt.clf()
+
 clear = clf
 
 ## --------------------------------
