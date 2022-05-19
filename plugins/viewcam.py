@@ -118,7 +118,7 @@ class Plugin(Layer):
             cv2.destroyAllWindows()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from plugins import JeolCamera, RigakuCamera
     from jgdk import Frame
     

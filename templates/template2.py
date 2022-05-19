@@ -17,7 +17,7 @@ class Plugin(Layer):
     category = "Test"
     caption = "temp.2"
     
-    lgbt = property(lambda self: self.require('template'))
+    lgbt = property(lambda self: self.parent.require('template'))
     
     def Init(self):
         self.layout((
@@ -59,3 +59,14 @@ class Plugin(Layer):
         self.run()
         self.run_blur()
         self.run_med()
+
+
+if __name__ == "__main__":
+    import wx
+    from jgdk import Frame
+    app = wx.App()
+    frm = Frame(None)
+    frm.load_plug(Plugin, show=1, dock=4)
+    frm.load_buffer(r"C:\usr\home\workspace\images\sample.bmp")
+    frm.Show()
+    app.MainLoop()

@@ -119,7 +119,7 @@ class Plugin(Layer):
         target.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from jgdk import Frame
     
     app = wx.App()

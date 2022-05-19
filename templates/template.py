@@ -34,3 +34,14 @@ class Plugin(Layer):
         src = self.graph.buffer
         dst = cv2.GaussianBlur(src, (k,k), 0.)
         self.output.load(dst, "*gauss*")
+
+
+if __name__ == "__main__":
+    import wx
+    from jgdk import Frame
+    app = wx.App()
+    frm = Frame(None)
+    frm.load_plug(Plugin, show=1, dock=4)
+    frm.load_buffer(r"C:\usr\home\workspace\images\sample.bmp")
+    frm.Show()
+    app.MainLoop()

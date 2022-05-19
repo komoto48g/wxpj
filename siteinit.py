@@ -118,7 +118,7 @@ def init_frame(self):
                      mode=self.notify.modestr, **frame.attributes)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import wx
     from jgdk import Frame
     

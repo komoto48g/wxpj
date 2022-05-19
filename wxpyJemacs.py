@@ -148,7 +148,7 @@ class pyJemacs(Framebase):
 Frame = pyJemacs
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(version())
     
     session = None

@@ -4,7 +4,7 @@
 
 wxPython 4.1.1 msw (phoenix) wxWidgets 3.1.5
 """
-__version__ = "1.0.0"
+__version__ = "0.0"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2022 JEOL Co.,Ltd."
 
