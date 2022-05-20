@@ -56,8 +56,6 @@ class Model(base.Model):
 class Plugin(base.Plugin):
     """Distortion fitting of grid (override) with fixed origin center
     """
-    menu = "Plugins/Measure &Cetntral-dist"
-    
     Fitting_model = Model
     fitting_params = property(
         lambda self: self.grid_params[:2] + self.ratio_params)

@@ -7,6 +7,7 @@ import numpy as np
 from numpy import pi,exp,cos,sin
 from scipy import optimize
 from jgdk import Layer, Thread, LParam
+import editor as edi
 
 
 def _valist(params):
@@ -90,7 +91,7 @@ class Model(object):
 class Plugin(Layer):
     """Distortion fitting of ring
     """
-    menu = "Plugins/Measure &Distortion"
+    menu = "Plugins/&Measure Tools"
     
     su = property(lambda self: self.parent.require('startup'))
     em = property(lambda self: self.su.em)
@@ -221,7 +222,7 @@ class Plugin(Layer):
         h, w = src.shape
         k = h // 200
         k += k%2 + 1
-        src = cv2.GaussianBlur(src, (k,k), 0)
+        src = cv2.GaussianBlur(edi.imconv(src), (k,k), 0)
         for x in range(times):
             pp = []
             for x, y in zip(nx, ny):
