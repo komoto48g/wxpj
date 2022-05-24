@@ -60,7 +60,7 @@ class Plugin(Layer):
         )
     
     def Destroy(self):
-        if self.viewer.is_active:
+        if self.viewer.active:
             self.viewer.Stop()
         return Layer.Destroy(self)
     
@@ -68,7 +68,7 @@ class Plugin(Layer):
         try:
             title = self.__module__
             
-            while self.viewer.is_active:
+            while self.viewer.active:
                 buf = self.cameraman.capture()
                 src = edi.imconv(buf, self.hi.value, self.lo.value)
                 h, w = src.shape

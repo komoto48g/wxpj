@@ -33,7 +33,7 @@ class Model(base.Model):
             elif phi > 90: phi -= 180
             fitting_params[3] = phi
         
-        if not self.owner.thread.is_active:
+        if not self.owner.thread.active:
             print("... Iteration stopped")
             raise StopIteration
         
