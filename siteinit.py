@@ -43,6 +43,7 @@ def init_frame(self):
     
     self.ed = self.require('editor')
     self.su = self.require('startup')
+    self.si = sys.modules.get(__name__)
     
     from plugins import lgbt, lcrf, lccf, lccf2
     self.load_plug(lgbt)
