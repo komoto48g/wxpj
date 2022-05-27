@@ -95,19 +95,9 @@ class Plugin(Layer):
 ## Image conv/plot/view
 ## --------------------------------
 
-def imread(path):
-    buf, info = Frame.read_buffer(path) # cf. np.asarray(Image.open(f))
-    return buf
-
-
-def imwrite(path, buf):
-    return Frame.write_buffer(path, buf) # cf. Image.fromarray(buf).save(f)
-
-
-def imtrunc(buf=None, hi=0, lo=0):
-    if buf is None:
-        return lambda buf: imtrunc(buf, hi, lo)
-    
+def imtrunc(buf, hi=0, lo=0):
+    """Truncate buffer hi/lo with given tolerance score [%]
+    """
     if hi > 0 or lo > 0:
         a = np.percentile(buf, lo)
         b = np.percentile(buf, 100-hi)
@@ -118,13 +108,10 @@ def imtrunc(buf=None, hi=0, lo=0):
     return buf
 
 
-def imconv(buf=None, hi=0, lo=0):
+def imconv(buf, hi=0, lo=0):
     """Convert buffer to dst<uint8> := |(buf-a) * 255/(b-a)|
-    hi/lo : cuts vlim with given tolerances of the score [%]
+    hi/lo : cuts vlim with given tolerance score [%]
     """
-    if buf is None:
-        return lambda buf: imconv(buf, hi, lo)
-    
     if buf.dtype == np.uint8:
         return buf
     
