@@ -222,7 +222,8 @@ class Plugin(Layer):
         h, w = src.shape
         k = h // 200
         k += k%2 + 1
-        src = cv2.GaussianBlur(edi.imconv(src), (k,k), 0)
+        buf = edi.imconv(src, hi=0.01, lo=0.01)
+        src = cv2.GaussianBlur(buf, (k,k), 0)
         for x in range(times):
             pp = []
             for x, y in zip(nx, ny):
