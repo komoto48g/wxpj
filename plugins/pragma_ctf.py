@@ -5,7 +5,6 @@ import numpy as np
 from numpy import pi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 from scipy import optimize
-from mwx import funcall as _F
 from jgdk import Layer, LParam, Button
 import editor as edi
 
@@ -36,6 +35,8 @@ class Plugin(Layer):
     em = property(lambda self: self.su.em)
     
     def Init(self):
+        _F = self.interactive_call
+        
         self.cmax = LParam("limit", (2, 50), 10,
                            updater=_F(self.calc_optvar),
                            tip="Set maximum index for fitting")

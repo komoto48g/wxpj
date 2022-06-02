@@ -6,7 +6,6 @@ from numpy import pi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 from scipy import signal
 from matplotlib import patches
-from mwx import funcall as _F
 from jgdk import Layer, LParam
 from plugins.viewfft import fftresize
 from plugins.lcrf import Model
@@ -151,6 +150,8 @@ class Plugin(Layer):
     menu = "CTF"
     
     def Init(self):
+        _F = self.interactive_call
+        
         self.rmin = LParam("rmin", (0.001, 0.1, 0.001), 0.05,
                            updater=_F(self.calc_ring, True),
                            tip="Ratio to the radius.")
