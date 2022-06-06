@@ -64,12 +64,12 @@ class Plugin(Layer):
             },
         }
         
-        @self.handler.bind('pane_shown')
+        @self.handler.bind('page_shown')
         def activate(*v):
             for win in self.parent.graphic_windows:
                 win.handler.append(self.context)
         
-        @self.handler.bind('pane_closed')
+        @self.handler.bind('page_closed')
         def deactivate(*v):
             for win in self.parent.graphic_windows:
                 win.handler.remove(self.context)
