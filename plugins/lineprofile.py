@@ -11,8 +11,7 @@ from mwx.matplot2lg import LineProfile
 class Plugin(Layer):
     """Line profile of the currently selected buffers
     """
-    menu = "Plugins/Extensions"
-    menustr = "&Line profile\tCtrl+l"
+    menukey = "Plugins/Extensions/&Line profile\tCtrl+l"
     caption = "Line profile"
     dockable = False
     unloadable = False

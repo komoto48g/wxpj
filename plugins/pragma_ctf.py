@@ -26,7 +26,7 @@ def make_indices_matrix(n):
 class Plugin(Layer):
     """Plugin test of CTF ver.2
     """
-    menu = "CTF"
+    menukey = "CTF/"
     
     debug = 0
     

@@ -147,7 +147,7 @@ def find_radial_peaks(data, tol=0.01):
 class Plugin(Layer):
     """CTF finder ver 1.0
     """
-    menu = "CTF"
+    menukey = "CTF/"
     
     def Init(self):
         _F = self.interactive_call

@@ -84,8 +84,7 @@ class Camera(gatan.GatanSocket):
 class Plugin(Layer):
     """Gatan camera manager
     """
-    menu = "Cameras"
-    menustr = "&Gatan camera ver.2"
+    menukey = "Cameras/&Gatan camera ver.2"
     
     def Init(self):
         self.binning_selector = Param("bin", (1,2,4), 1, handler=self.set_binning)

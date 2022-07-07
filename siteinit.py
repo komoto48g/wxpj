@@ -89,14 +89,6 @@ def init_frame(self):
         else:
             self.graph.SetFocus()
     
-    @self.define_key('pageup', doc="previous page")
-    def pageup(v):
-        self.selected_view.OnPageUp(v)
-    
-    @self.define_key('pagedown', doc="next page")
-    def pagedown(v):
-        self.selected_view.OnPageDown(v)
-    
     @self.handler.bind('frame_cached')
     def cache(frame):
         frame.update_attributes(

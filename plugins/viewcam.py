@@ -10,8 +10,7 @@ import editor as edi
 class Plugin(Layer):
     """Plugins of camera viewer
     """
-    menu = "Cameras"
-    menustr = "Camera &viewer"
+    menukey = "Cameras/Camera &viewer"
     
     @property
     def cameraman(self):

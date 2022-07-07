@@ -14,7 +14,7 @@ COR_FRAME_NAME = "*result of cor*"
 class Plugin(Layer):
     """Plugin for magcal
     """
-    menu = "Plugins/&Pragma Tools"
+    menukey = "Plugins/&Pragma Tools/"
     
     su = property(lambda self: self.parent.require('startup'))
     lgbt = property(lambda self: self.parent.require('lgbt'))

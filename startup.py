@@ -13,8 +13,7 @@ from pyJeol.temisc import Environ
 class Plugin(Layer):
     """Plugins of startup settings
     """
-    menu = "File/Options"
-    menustr = "&startup"
+    menukey = "File/Options/&Startup"
     category = "Option"
     unloadable = False
     

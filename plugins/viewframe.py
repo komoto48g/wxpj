@@ -222,8 +222,7 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
 class Plugin(Layer):
     """Property list of Grpah buffers
     """
-    menu = "Plugins/Extensions"
-    menustr = "&Buffer listbox\tCtrl+b"
+    menukey = "Plugins/Extensions/&Buffer listbox\tCtrl+b"
     caption = "Property list"
     dockable = False
     unloadable = False

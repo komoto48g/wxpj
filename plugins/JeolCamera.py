@@ -242,8 +242,7 @@ class DummyCamera(object):
 class Plugin(Layer):
     """Jeol camera manager
     """
-    menu = "Cameras"
-    menustr = "&Jeol camera ver.2"
+    menukey = "Cameras/&Jeol camera ver.2"
     
     def Init(self):
         self.binning_selector = Param("bin", (1,2,4), 1, handler=self.set_binning)

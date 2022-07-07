@@ -21,8 +21,7 @@ from jgdk import Layer, LParam, Button
 class Plugin(Layer):
     """Plugin as testsuite for editors functions
     """
-    menu = "Plugins/Functions"
-    menustr = "&Editor"
+    menukey = "Plugins/Functions/&Editor"
     
     def Init(self):
         self.hi = LParam("hi", (0, 10 ,0.005), 0)

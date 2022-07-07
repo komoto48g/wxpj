@@ -91,7 +91,7 @@ class Model(object):
 class Plugin(Layer):
     """Distortion fitting of ring
     """
-    menu = "Plugins/&Measure Tools"
+    menukey = "Plugins/&Measure Tools/"
     
     su = property(lambda self: self.parent.require('startup'))
     em = property(lambda self: self.su.em)

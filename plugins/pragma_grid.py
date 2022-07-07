@@ -10,7 +10,7 @@ class Plugin(Layer):
     1. lccf.run to find contours of circles
     2. ld_grid.run to calc the aspect ratio
     """
-    menu = "Plugins/&Pragma Tools"
+    menukey = "Plugins/&Pragma Tools/"
     category = "Pragma Tools"
     caption = "Grid"
     

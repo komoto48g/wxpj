@@ -80,7 +80,7 @@ class Model(object):
 class Plugin(Layer):
     """Distortion fitting of grid
     """
-    menu = "Plugins/&Measure Tools"
+    menukey = "Plugins/&Measure Tools/"
     
     Fitting_model = Model
     fitting_params = property(

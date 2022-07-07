@@ -14,7 +14,7 @@ def _valist(params):
 class Plugin(Layer):
     """Gaussian Blur and Threshold --adaptive
     """
-    menu = "Plugins/&Basic Tools"
+    menukey = "Plugins/&Basic Tools/"
     category = "Basic Tools"
     
     def Init(self):

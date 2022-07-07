@@ -27,8 +27,7 @@ class Plugin(Layer):
     FFT src (graph.buffer) to dst (output.buffer)
     長方形のリージョンは歪んだパターンになるので要注意
     """
-    menu = "Plugins/Extensions"
-    menustr = "&FFT view"
+    menukey = "Plugins/Extensions/&FFT view"
     caption = "FFT view"
     
     def Init(self):

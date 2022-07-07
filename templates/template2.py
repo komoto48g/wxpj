@@ -12,8 +12,7 @@ from jgdk import Layer, Button
 class Plugin(Layer):
     """Plugin template ver.2
     """
-    menu = "Plugins/&Template"
-    menustr = "&template ver.2"
+    menukey = "Plugins/&Template/&template ver.2"
     category = "Test"
     caption = "temp.2"
     

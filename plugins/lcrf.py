@@ -170,7 +170,7 @@ def find_radial_peaks(data, tol=0.01):
 class Plugin(Layer):
     """Center of Rings finder ver 1.0
     """
-    menu = "Plugins/&Basic Tools"
+    menukey = "Plugins/&Basic Tools/"
     category = "Basic Tools"
     unloadable = False
     
