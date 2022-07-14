@@ -7,11 +7,10 @@
   Phase 3: Analysis center phoenix (2020--2022)
   Phase 4: Automation center phoenix (2022--)
 """
-__version__ = "0.42.0"
+__version__ = "0.43.1"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 
-import datetime # noqa: necessary to eval
 import getopt
 import glob
 import sys
@@ -190,8 +189,8 @@ if __name__ == "__main__":
     app = wx.App()
     frm = pyJemacs(None)
     
-    sys.path.insert(0, '')      # try import si:local if it exists.
-    si = __import__('siteinit') # otherwise, si:global.
+    sys.path.insert(0, '')
+    si = __import__('siteinit') # try import si:local first
     print("Executing {!r}".format(si.__file__))
     si.init_frame(frm)
     

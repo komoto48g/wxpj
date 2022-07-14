@@ -256,7 +256,7 @@ class Plugin(Layer):
         
         self.nb.Bind(wx.EVT_CHILD_FOCUS, on_focus_set)
         
-        self.Menu[0:0] = [
+        self.menu[0:0] = [
             (101, "&Edit annotation", "Edit annotation", Icon('edit'),
                 lambda v: self.ask()),
             (),
