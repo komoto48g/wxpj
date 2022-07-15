@@ -17,6 +17,7 @@ import sys
 import os
 import re
 import wx
+import wx.adv
 import cv2
 import numpy as np
 import scipy as sp
@@ -55,16 +56,17 @@ class pyJemacs(Framebase):
     """the Frontend of Graph and Plug manager
     """
     def About(self):
-        from wx.adv import AboutDialogInfo, AboutBox
-        info = AboutDialogInfo()
+        info = wx.adv.AboutDialogInfo()
         info.Name = self.__class__.__name__
         info.Version = __version__
         info.Copyright = __copyright__ +' '+ __author__
         info.Description = __doc__
         info.License = '\n'.join((mwx.__doc__ , ))
         info.Developers = []
+        info.DocWriters = []
         info.Artists = []
-        AboutBox(info)
+        info.SetWebSite("https://github.com/komoto48g")
+        wx.adv.AboutBox(info)
     
     def __init__(self, *args, **kwargs):
         Framebase.__init__(self, *args, **kwargs)

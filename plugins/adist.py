@@ -49,7 +49,7 @@ class Plugin(Layer):
         h, w = src.shape
         nx = np.arange(w, dtype=np.float32)
         ny = np.arange(h, dtype=np.float32)
-        x, y = frame.xyfrompxiel(nx, ny)
+        x, y = frame.xyfrompixel(nx, ny)
         xo, yo = np.meshgrid(x, y, copy=False)
         zo = xo + 1j * yo
         del xo

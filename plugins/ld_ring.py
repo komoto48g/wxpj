@@ -224,6 +224,7 @@ class Plugin(Layer):
         k += k%2 + 1
         buf = edi.imconv(src, hi=0.01, lo=0.01)
         src = cv2.GaussianBlur(buf, (k,k), 0)
+        ## Note: Gaussian をかけるので実際のピーク位置とずれることがある．
         for x in range(times):
             pp = []
             for x, y in zip(nx, ny):
