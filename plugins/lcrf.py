@@ -195,7 +195,7 @@ class Plugin(Layer):
     rmin = property(lambda self: self.radii_params[0])
     rmax = property(lambda self: self.radii_params[1])
     
-    def init_session(self, session):
+    def load_session(self, session):
         self.rmin.value = session.get('rmin')
         self.rmax.value = session.get('rmax')
     

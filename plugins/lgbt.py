@@ -47,7 +47,7 @@ class Plugin(Layer):
     sigma = property(lambda self: self.params[1])
     thresh = property(lambda self: self.params[2])
     
-    def init_session(self, session):
+    def load_session(self, session):
         self.ksize.value = session.get('ksize')
         self.sigma.value = session.get('sigma')
         self.thresh.value = session.get('thresh')
