@@ -34,8 +34,10 @@ else:
 
 
 class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
-    """ CheckList with FSM
-    list item order = buffer order リストアイテムとバッファの並び順 0..n は常に一致します．
+    """ CheckList of Graph buffers
+    
+    list item order = buffer order
+    (リストアイテムとバッファの並び順 0..n は常に一致します)
     """
     @property
     def selected_items(self):
@@ -220,7 +222,7 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
 
 
 class Plugin(Layer):
-    """Property list of Grpah buffers
+    """Property list of Grpah buffers.
     """
     menukey = "Plugins/Extensions/&Buffer listbox\tCtrl+b"
     caption = "Property list"

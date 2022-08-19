@@ -6,7 +6,7 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 import wx
 import numpy as np
-from numpy.fft import fft2,ifft2,fftshift
+from numpy.fft import fft2,ifft2,fftshift,ifftshift
 ## from scipy.fftpack import fft,ifft,fft2,ifft2 Memory Leak? <scipy 0.16.1>
 ## import cv2
 from jgdk import Layer, Param
@@ -24,8 +24,11 @@ def fftresize(src, maxsize=None):
 
 class Plugin(Layer):
     """FFT view
+    
     FFT src (graph.buffer) to dst (output.buffer)
-    長方形のリージョンは歪んだパターンになるので要注意
+    Note:
+        Rectangular regions will result in distorted patterns.
+        長方形のリージョンは歪んだパターンになるので要注意
     """
     menukey = "Plugins/Extensions/&FFT view"
     caption = "FFT view"
@@ -84,7 +87,7 @@ class Plugin(Layer):
                 frame.roi[mask] = 0
                 frame.update_buffer()
                 frame.parent.draw()
-            dst = ifft2(fftshift(src))
+            dst = ifft2(ifftshift(src))
             
             self.message("\b Loading image...")
             self.graph.load(dst.real, "*ifft of {}*".format(frame.name),
