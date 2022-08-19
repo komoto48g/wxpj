@@ -103,7 +103,7 @@ class pyJemacs(Framebase):
               "TIF file (*.tif)|*.tif",
               "BMP file (*.bmp)|*.bmp",
         "Gatan DM3 file (*.dm3)|*.dm3", # Gatan DM3 extension (read-only)
-        "Gatan DM4 file (*.dm4)|*.dm3", # Gatan DM4 extension (read-only)
+        "Gatan DM4 file (*.dm4)|*.dm4", # Gatan DM4 extension (read-only)
        "Rigaku IMG file (*.img)|*.img", # Rigaku image file extension (read-only)
                "All files (*.*)|*.*",
     ]
