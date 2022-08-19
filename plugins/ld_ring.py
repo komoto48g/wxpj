@@ -157,6 +157,7 @@ class Plugin(Layer):
         
         for art,z in zip(self.Arts, grids): # グリッドの設定
             art.set_data(z.real, z.imag)
+            art.set_clip_on(False)
         
         self.Draw()
         
