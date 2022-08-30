@@ -35,12 +35,12 @@ class Plugin(Layer):
             self.params, title="blur-threshold",
             type='vspin', cw=0, lw=48, tw=48
         )
-        ## self.layout(
-        ##     self.cutoff_params, title="cutoff [%]",
-        ##     type='vspin', cw=-1, lw=16, tw=44
-        ## )
+        self.layout(
+            self.cutoff_params, title="cutoff [%]",
+            type='vspin', cw=-1, lw=16, tw=44
+        )
         self.layout((btn,))
-        
+    
     def calc(self, frame=None):
         if not frame:
             frame = self.selected_view.frame

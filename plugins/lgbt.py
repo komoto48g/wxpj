@@ -25,7 +25,7 @@ class Plugin(Layer):
             LParam("thresh", (0,255,1), 128),
         )
         self.cutoff_params = (
-            LParam("hi", (0, 1 ,0.005), 0),
+            LParam("hi", (0, 1, 0.005), 0),
             LParam("lo", (0, 1, 0.005), 0)
         )
         btn = wx.Button(self, label="+Bin", size=(40,22))
@@ -46,18 +46,6 @@ class Plugin(Layer):
     ksize = property(lambda self: self.params[0])
     sigma = property(lambda self: self.params[1])
     thresh = property(lambda self: self.params[2])
-    
-    def load_session(self, session):
-        self.ksize.value = session.get('ksize')
-        self.sigma.value = session.get('sigma')
-        self.thresh.value = session.get('thresh')
-    
-    def save_session(self, session):
-        session.update({
-            'ksize': self.ksize.value,
-            'sigma': self.sigma.value,
-           'thresh': self.thresh.value,
-        })
     
     def calc(self, frame=None, otsu=0, invert=0):
         """Blur by Gaussian window and binarize
