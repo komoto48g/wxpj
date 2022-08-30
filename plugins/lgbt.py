@@ -19,15 +19,13 @@ class Plugin(Layer):
     unloadable = False
     
     def Init(self):
-        self.params = (
-            LParam("ksize", (1,99,2), 13),
-            LParam("sigma", (0,100,1), 0),
-            LParam("thresh", (0,255,1), 128),
-        )
-        self.cutoff_params = (
-            LParam("hi", (0, 1, 0.005), 0),
-            LParam("lo", (0, 1, 0.005), 0)
-        )
+        self.ksize = LParam("ksize", (1,99,2), 13)
+        self.sigma = LParam("sigma", (0,100,1), 0)
+        self.thresh = LParam("thresh", (0,255,1), 128)
+        
+        self.hi = LParam("hi", (0, 1, 0.005), 0)
+        self.lo = LParam("lo", (0, 1, 0.005), 0)
+        
         btn = wx.Button(self, label="+Bin", size=(40,22))
         btn.Bind(wx.EVT_BUTTON, lambda v: self.calc(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
         btn.SetToolTip("Test blur and threshold;\n"
@@ -38,14 +36,12 @@ class Plugin(Layer):
             type='vspin', cw=0, lw=40, tw=40
         )
         self.layout(
-            self.cutoff_params, title="cutoff [%]",
+            (self.hi, self.lo), title="cutoff [%]",
             visible=1, type='vspin', cw=-1, lw=16, tw=44
         )
         self.layout((btn,))
     
-    ksize = property(lambda self: self.params[0])
-    sigma = property(lambda self: self.params[1])
-    thresh = property(lambda self: self.params[2])
+    params = property(lambda self: (self.ksize, self.sigma, self.thresh))
     
     def calc(self, frame=None, otsu=0, invert=0):
         """Blur by Gaussian window and binarize
@@ -57,9 +53,8 @@ class Plugin(Layer):
             frame = self.selected_view.frame
         
         k, s, t = _valist(self.params)
-        hi, lo = _valist(self.cutoff_params)
         src = frame.buffer
-        buf = edi.imconv(src, hi, lo) # truncates hi & lo cutoff percentile
+        buf = edi.imconv(src, self.hi.value, self.lo.value)
         if k > 1:
             buf = cv2.GaussianBlur(buf, (k,k), s)
         self.output.load(buf, "*Gauss*", localunit=frame.unit)
