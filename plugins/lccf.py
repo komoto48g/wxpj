@@ -50,12 +50,11 @@ class Plugin(Layer):
     lgbt = property(lambda self: self.parent.require('lgbt'))
     
     def Init(self):
-        self.radii_params = (
-            LParam("rmin", (0,1000,1), 20),
-            LParam("rmax", (0,1000,1), 500),
-        )
+        self.rmin = LParam("rmin", (0,1000,1), 20)
+        self.rmax = LParam("rmax", (0,1000,1), 500)
+        
         self.layout(self.lgbt.params, title="blur-threshold", show=0, cw=0, lw=40, tw=40)
-        self.layout(self.radii_params, title="radii", cw=0, lw=40, tw=48)
+        self.layout((self.rmin, self.rmax), title="radii", cw=0, lw=40, tw=48)
         
         btn1 = wx.Button(self, label="+Bin", size=(40,22))
         btn1.Bind(wx.EVT_BUTTON, lambda v: self.lgbt.calc(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
@@ -66,9 +65,6 @@ class Plugin(Layer):
         btn2.SetToolTip("S-Lbutton to estimate threshold using Otsu algorithm")
         
         self.layout((btn1, btn2), row=2)
-    
-    rmin = property(lambda self: self.radii_params[0])
-    rmax = property(lambda self: self.radii_params[1])
     
     maxcount = 256 # 選択する点の数を制限する
     
