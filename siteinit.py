@@ -102,10 +102,6 @@ def init_frame(self):
                   filter = dict(self.notify.efilter.Info),
                  modestr = self.notify.modestr, # joined substr
         )
-        ## frame.annotation = "{0},slit={filter[slit_width]}eV,bin{binning}-{exposure}s".format(
-        ##     self.notify.modestr, **frame.attributes)
-        ## frame.name = "{acq_datetime:%Y%m%d-%H%M%S}-{annotation}".format(**frame.attributes)
-        
         frame.name = "{acq_datetime:%Y%m%d-%H%M%S}-{mode},"\
                      "slit={filter[slit_width]}eV,bin{binning}-{exposure}s".format(
                      mode=self.notify.modestr, **frame.attributes)
