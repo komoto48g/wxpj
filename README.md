@@ -18,7 +18,7 @@ These instructions will get you a copy of the project up and running on your loc
   mwx 0.40
 ```
 
-![setup](man/image/net.png)
+![setup](docs/images/net.png)
 
 ### Prerequisites
 
@@ -52,7 +52,7 @@ Create a workspace to install.
 
 2. Install Python packages (from pypi) using batch files  
 
-    To install PY35 packages, use [make-py35.bat](man/make-PY35.bat) file.
+    To install PY35 packages:
     ```
     py -3.5 -m pip install -U pip
     py -3.5 -m pip install scipy opencv-python==3.4.5.20 pillow matplotlib wxpython==4.0.7
@@ -61,7 +61,7 @@ Create a workspace to install.
     git clone https://github.com/komoto48g/wxpj.git
     ```
 
-    To install PY38+ packages, use [make-py3.bat](man/make-PY3.bat) file.
+    To install PY38+ packages:
     ```
     py -m pip install -U pip
     py -m pip install scipy opencv-python pillow matplotlib wxpython
@@ -87,8 +87,8 @@ set HTTP_PROXY=http://i-net.jeol.co.jp:80
 
 ### Updating
 
-To update the packages, just run `make-PY3.bat` or `make-PY35.bat` again.
-Before updating, delete wxpj directory, or else the latest wxpj will not be cloned.
+To update your packages, follow the steps above again.
+Remove the wxpj directory before updating. Otherwise the latest wxpj will not be cloned.
 
 
 ## How to execute wxpyJemacs

@@ -1,20 +1,20 @@
 *.jssn
 *.ssn
 *.db
-*.l
 *.lnk
 *.pptx
 *.docx
 *.xlsx
+*.l
+*.log
+*.out
+*.txt
 Makefile
 exclude_files
-setup.py
-setup_exe.py
-pyJeol/
-pyGatan/
-pyDM3reader/
-pyDM4reader/
+
+# Resources
 plugins/RigakuCamera.py
+pyJeol/legacy/src/
 
 # Byte-compiled files
 __pycache__/

@@ -24,7 +24,6 @@ import scipy as sp
 import matplotlib as mpl
 from PIL import Image
 if 'mwx' not in sys.modules:
-    ## Add eggs in the nest to the path (new PyJEM for PY38)
     home = os.path.dirname(os.path.abspath(__file__))
     if sys.version_info >= (3,8):
         eggs = os.path.join(home, "nest/*-py3.8.egg")
@@ -33,7 +32,7 @@ if 'mwx' not in sys.modules:
     for path in reversed(glob.glob(eggs)):
         sys.path.append(path)
 import mwx
-from mwx.graphman import Frame as Framebase
+from mwx.graphman import Frame
 from pyJeol.temsys import NotifyFront
 import pyJeol as pJ
 import pyDM3reader as DM3lib
@@ -52,7 +51,7 @@ def version():
         ))
 
 
-class pyJemacs(Framebase):
+class pyJemacs(Frame):
     """the Frontend of Graph and Plug manager
     """
     def About(self):
@@ -69,7 +68,7 @@ class pyJemacs(Framebase):
         wx.adv.AboutBox(info)
     
     def __init__(self, *args, **kwargs):
-        Framebase.__init__(self, *args, **kwargs)
+        Frame.__init__(self, *args, **kwargs)
         
         home = os.path.dirname(os.path.abspath(__file__))
         icon = os.path.join(home, "Jun.ico")
@@ -94,7 +93,7 @@ class pyJemacs(Framebase):
     
     def Destroy(self):
         self.nfront.Destroy()
-        return Framebase.Destroy(self)
+        return Frame.Destroy(self)
     
     ## --------------------------------
     ## read/write buffers
@@ -135,7 +134,7 @@ class pyJemacs(Framebase):
                 buf.resize(h, w)
                 return buf, {'header':info}
         
-        return Framebase.read_buffer(path)
+        return Frame.read_buffer(path)
     
     @staticmethod
     def write_buffer(path, buf):
@@ -144,9 +143,7 @@ class pyJemacs(Framebase):
         if ext in ('.dm3', '.dm4', '.img'):
             raise NotImplementedError(
                 "Saving as {} type is not supported".format(ext))
-        return Framebase.write_buffer(path, buf)
-
-Frame = pyJemacs
+        return Frame.write_buffer(path, buf)
 
 
 if __name__ == "__main__":
