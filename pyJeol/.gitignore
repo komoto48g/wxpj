@@ -1,0 +1,26 @@
+*.jssn
+*.ssn
+*.db
+*.lnk
+*.pptx
+*.docx
+*.xlsx
+*.l
+*.log
+*.out
+*.txt
+Makefile
+exclude_files
+
+# Resources
+legacy/src/
+
+# Byte-compiled files
+__pycache__/
+*.py[co]
+
+# Distribution / packaging
+build/
+dist/
+lib/
+*.egg-info/
