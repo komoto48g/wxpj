@@ -46,23 +46,26 @@ class Plugin(Layer):
     
     def test_imconv(self):
         src = self.graph.buffer
-        self.output["*result of imconv*"] = imconv(src, self.hi.value, self.lo.value)
+        hi, lo = self.parameters
+        self.output["*result of imconv*"] = imconv(src, hi, lo)
     
     def test_imtrunc(self):
         src = self.graph.buffer
-        self.output["*result of imtrunc*"] = imtrunc(src, self.hi.value, self.lo.value)
+        hi, lo = self.parameters
+        self.output["*result of imtrunc*"] = imtrunc(src, hi, lo)
     
     def test_imcorr(self):
         src = self.graph.buffer
         self.output["*result of Corr*"] = Corr(src, src)
     
     def test_ellipse(self):
+        hi, lo = self.parameters
         frame = self.selected_view.frame
-        src = imtrunc(frame.buffer, self.hi.value, self.lo.value)
+        src = imtrunc(frame.buffer, hi, lo)
         ellipses = find_ellipses(src, ksize=5)
         self.message("Found {} circles".format(len(ellipses)))
         
-        ## Search art attached to the frame.axes.
+        ## Check if an art is attached to the frame.axes.
         for art in self.Arts:
             if art.axes is frame.axes:
                 break
