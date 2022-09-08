@@ -23,7 +23,8 @@ def init_frame(self):
     ## 0.0820 mm/pixel - Jenoptik
     ## 0.0428 mm/pixel - FLASH 1181
     ## 0.435 mm/pixel - LSCR Z300FSC
-    self.graph.unit = self.output.unit = 0.0428
+    self.graph.unit = 0.0428
+    self.output.unit = 0.0428
     
     ## Cutoff tolerance of the score at a given percentile
     self.graph.score_percentile = 0.01

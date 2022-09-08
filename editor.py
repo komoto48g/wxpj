@@ -37,31 +37,43 @@ class Plugin(Layer):
                 Button(self, "imconv", lambda v: self.test_imconv()),
                 Button(self, "imtrunc", lambda v: self.test_imtrunc()),
                 Button(self, "imcorr", lambda v: self.test_imcorr()),
-                Button(self, "ellipse", lambda v: self.test_ellipse()),
+                Button(self, "ellipse", lambda v: self.test_ellipse(), icon="->"),
             ),
             row=2,
         )
-        self.circ = patches.Circle((0,0), 0, color='r', ls='solid', lw=2, fill=0, zorder=2)
-        self.attach_artists(self.graph.axes, self.circ)
+        ## self.circ = patches.Circle((0,0), 0, color='r', ls='solid', lw=2, fill=0, zorder=2)
+        ## self.attach_artists(self.graph.axes, self.circ)
     
     def test_imconv(self):
         src = self.graph.buffer
-        self.output["*result of imconv*"] = imconv(src, self.hi.value, self.lo.value)
+        hi, lo = self.parameters
+        self.output["*result of imconv*"] = imconv(src, hi, lo)
     
     def test_imtrunc(self):
         src = self.graph.buffer
-        self.output["*result of imtrunc*"] = imtrunc(src, self.hi.value, self.lo.value)
+        hi, lo = self.parameters
+        self.output["*result of imtrunc*"] = imtrunc(src, hi, lo)
     
     def test_imcorr(self):
         src = self.graph.buffer
         self.output["*result of Corr*"] = Corr(src, src)
     
     def test_ellipse(self):
-        art = self.circ
-        frame = self.graph.frame
-        src = imtrunc(frame.buffer, self.hi.value, self.lo.value)
+        hi, lo = self.parameters
+        frame = self.selected_view.frame
+        src = imtrunc(frame.buffer, hi, lo)
         ellipses = find_ellipses(src, ksize=5)
         self.message("Found {} circles".format(len(ellipses)))
+        
+        ## Check if an art is attached to the frame.axes.
+        for art in self.Arts:
+            if art.axes is frame.axes:
+                break
+        else:
+            art = patches.Circle((0,0), 0, color='r', ls='solid', lw=2, fill=0, zorder=2)
+            self.attach_artists(frame.axes, art)
+        
+        ## Draw the first ellipse if detected.
         if ellipses:
             el = ellipses[0]
             (cx,cy), (ra,rb), angle = el
@@ -70,9 +82,6 @@ class Plugin(Layer):
             q = R * (1-n)/(1-s)
             if p/q > 1: # signal
                 art.center = frame.xyfrompixel(cx, cy)
-                ## art.height = ra * frame.unit
-                ## art.width = rb * frame.unit
-                ## art.angle = 90-angle
                 art.height = rb * frame.unit
                 art.width = ra * frame.unit
                 art.angle = -angle
@@ -87,7 +96,9 @@ class Plugin(Layer):
             art.set_visible(0)
             p = src.sum() / src.size
             self.message("\b; brightness {:.1f}".format(p))
-        self.graph.draw(art)
+        
+        self.selected_view.draw(art)
+        print(self.message('\b')) # Show the last message.
 
 
 ## --------------------------------
@@ -108,7 +119,8 @@ def imtrunc(buf, hi=0, lo=0):
 
 
 def imconv(buf, hi=0, lo=0):
-    """Convert buffer to dst<uint8> := |(buf-a) * 255/(b-a)|
+    """Convert buffer to dst<uint8> := |(buf-a) * 255/(b-a)|.
+    
     hi/lo : cuts vlim with given tolerance score [%]
     """
     if buf.dtype == np.uint8:
@@ -215,7 +227,8 @@ def grad2(src, ksize=5):
 
 def Corr(src, tmp):
     """Correlation product
-    using an fft-based array flipped convolution (i.e. correlation)
+    using an fft-based array flipped convolution (i.e. correlation).
+    
     cf. cv2.phaseCorrelate: translational shifts between two images
     """
     src = src.astype(np.float32) - src.mean()
@@ -245,17 +258,20 @@ def centroid(src):
 
 
 def find_ellipses(src, frmin=None, frmax=None, ksize=1, sortby='size'):
-    """Find the rotated rectangle in which the ellipse is inscribed
+    """Find the rotated rectangle in which the ellipse is inscribed.
     
-    frmin : min threshold ratio (to src.shape) of ellipses to find
-    frmax : max threshold
-    ksize : size of blur window
-   sortby : key of sorted list (pos or size:default)
-   
-  retval -> RotatedRect: (cx,cy), (ra,rb), angle
-    (cx,cy) : center of the rectangle [pix]
-    (ra,rb) : ra:width < rb:height of the rectangle [pix]
-      angle : rotation angle in clockwise (from 00:00 o'clock)
+    Args:
+        frmin   : min threshold ratio (to src.shape) of ellipses to find
+        frmax   : max threshold
+        ksize   : size of blur window
+        sortby  : key of sorted list (pos or size:default)
+    
+    Returns:
+        RotatedRect: (cx,cy), (ra,rb), angle
+        
+        (cx,cy) : center of the rectangle [pix]
+        (ra,rb) : ra:width < rb:height of the rectangle [pix]
+        angle   : rotation angle in clockwise (from 00:00 o'clock)
     """
     src = imconv(src) # src image is overwritten
     h, w = src.shape
@@ -284,13 +300,17 @@ def find_ellipses(src, frmin=None, frmax=None, ksize=1, sortby='size'):
 
 
 def calc_ellipse(src, ellipse):
-    """Calculate the count density
-  retval -> R : averaged count/pixel (N/S)
-            n : ratio of count / N
-            s : ratio of pixel / S
-    Note: power density p:inside, q:outside,
-          p = R * n/s
-          q = R * (1-n)/(1-s)
+    """Calculate the count density.
+    
+    Returns:
+        R : averaged count/pixel (N/S)
+        n : ratio of count / N
+        s : ratio of pixel / S
+    
+    Note:
+        To get power density p:inside, q:outside,
+        p = R * n/s
+        q = R * (1-n)/(1-s)
     """
     (cx,cy), (ra,rb), angle = ellipse
     h, w = src.shape
@@ -328,9 +348,10 @@ def calc_ellipse(src, ellipse):
 
 
 def qrsp(x, y):
-    """2次式で極値の箇所を推定する．
-    x[3],y[3]: x,y 近接した３点を与える
-  retval -> 中央位置 x[1] からの差分値 (dx,dy)
+    """x[3],y[3]: x,y 近接した３点から 2次式で極値の箇所を推定する．
+    
+    Returns:
+        中央位置 x[1] からの差分値 (dx,dy)
     """
     x0 = x[0]-x[1]
     x2 = x[2]-x[1]
@@ -346,12 +367,14 @@ def qrsp(x, y):
 
 def find_local_extremum(x, y, max=True):
     """2次式で極値の箇所を推定する．
-    Estimates the `max|min peak pos y[x] and the value
+    Estimates the `max|min peak pos y[x] and the value.
+    
     x は昇順ソートされていること．少なくとも３点なくてはならない
     推定位置が範囲内になければ，範囲内の極値点と判定結果を返す
-  retval ->
-    convex : 極値が凸：極大であるかどうか a<0 ?
-     valid : 求める推定値 (最大／最小) 存在し，かつ，範囲内に収まっているか ?
+    
+    Returns:
+        convex : 極値が凸：極大であるかどうか a<0 ?
+        valid  : 求める推定値 (最大／最小) 存在し，かつ，範囲内に収まっているか ?
     """
     N = len(x)
     if N < 3:
@@ -372,8 +395,10 @@ def find_local_extremum(x, y, max=True):
 
 def find_local_extremum2d(src, max=True):
     """2次式で極値の箇所を推定する．
-    Estimates the `max|min peak pos [x,y] and the value
-    推定位置が範囲内にあるとは限らない．max:凹，min:凸，および，鞍点の場合は None を返す
+    Estimates the `max|min peak pos [x,y] and the value.
+    
+    推定位置が範囲内にあるとは限らない．
+    max:凹，min:凸，および，鞍点の場合は None を返す
     """
     Ny, Nx = src.shape
     n = src.argmax() if max else src.argmin()
@@ -390,13 +415,14 @@ def find_local_extremum2d(src, max=True):
 
 
 def match_pattern(src, temp, method=cv2.TM_CCOEFF_NORMED):
-    """Match_pattern of image `src to template image
-    depth must be (CV_8U or CV_32F)
+    """Match_pattern of image `src to template image.
     
-    All the 6 methods for comparison in a list `method
-    in ('TM_CCOEFF', 'TM_CCOEFF_NORMED',
+    The depth must be (CV_8U or CV_32F)
+    
+    All the 6 methods for comparison in a list `method` must be in
+        'TM_CCOEFF', 'TM_CCOEFF_NORMED',
         'TM_CCORR',  'TM_CCORR_NORMED',
-        'TM_SQDIFF', 'TM_SQDIFF_NORMED')
+        'TM_SQDIFF', 'TM_SQDIFF_NORMED',
     """
     src = imconv(src)
     temp = imconv(temp)
