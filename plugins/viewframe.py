@@ -256,7 +256,7 @@ class Plugin(Layer):
                 text = pformat(frame.attributes, sort_dicts=0)
             else:
                 text = "{}\n{}".format(frame.name, frame.annotation)
-            Clipboard.write(pformat(text, sort_dicts=False))
+            Clipboard.write(text)
         
         self.menu[0:0] = [
             (101, "&Edit annotation", "Edit annotation", Icon('edit'),
