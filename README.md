@@ -7,18 +7,20 @@ A package for Image analysis and TEM control
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-私の環境では以下のバージョンで動作しています．
+私の環境では 2022/9/9 現在，以下のバージョンで動作しています．
 ```
 <Python 3.8.6 (tags/v3.8.6:db45529, Sep 23 2020, 15:52:53) [MSC v.1927 64 bit (AMD64)]>
-  wx.version(selected) 4.1.1 msw (phoenix) wxWidgets 3.1.5
-  scipy/numpy version 1.6.0/1.20.1
-  matplotlib version 3.4.2
+  wx version 4.1.1
+  scipy/numpy version 1.7.3/1.20.1
+  matplotlib version 3.4.0/WXAgg
   Image version 8.1.0
   cv2 version 4.5.1
-  mwx 0.40
+  mwx 0.71.3
+  pJ 0.50
 ```
 
-![setup](docs/images/net.png)
+![setup](docfiles/images/net.png)
+
 
 ### Prerequisites
 
@@ -43,11 +45,8 @@ Create a workspace to install.
 
 1. Prepare the workspace directory as follows.  
     ```
-    <your-workdir>
-        ├ make-py.bat (batch file for installation)
-        ├ PyJEM-***.zip (PyJEM package if needed)
-        ├ pJ.cmd (batch file for startup)
-        └ siteinit.py (initial setting)
+    /your-workdir/
+        PyJEM-***.zip (PyJEM package if needed)
     ```
 
 2. Install Python packages (from pypi) using batch files  
@@ -108,7 +107,7 @@ Click [OK]. Then, the next time you start the program with the session file, you
 ## How to restart the session
 
 Suppose the session file is `user.jssn`.
-Start from the command prompt:
+Start from the command prompt in your workdir:
 ```
 py wxpj/wxpyjemacs.py --pyjem=1 -suser
 ```
@@ -122,8 +121,10 @@ The meanings of the command arguments are:
 
     -sxxx: Start xxx session
 
-If `.jssn` is associated with the batch file [pJ.cmd](man/pJ.cmd), you can double-click the session file to restart the program easily.
-
+If `.jssn` is associated with the batch file (pJ.cmd), you can double-click the session file to restart the program easily. The pJ.cmd file would be like this:
+```
+py -3.8 wxpj/wxpyJemacs.py --pyjem=1 -s%*
+```
 
 ## Deployment
 
