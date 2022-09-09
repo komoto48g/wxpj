@@ -8,8 +8,7 @@ from pprint import pformat
 import wx
 from wx import aui
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
-import numpy as np
-from jgdk import Layer, Icon
+from jgdk import Layer, Icon, Clipboard
 from mwx.framework import CtrlInterface
 
 if wx.VERSION < (4,1,0):
@@ -69,10 +68,6 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
             ("dtype", 60),
             ("Mb",   40),
             ("unit", 60),
-            ## ("mean", 60),
-            ## ("std", 60),
-            ## ("max", 50),
-            ## ("min", 50),
             ("annotation", 240),
         )
         for k, (name, w) in enumerate(self.alist):
@@ -127,10 +122,6 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
               "{}".format(frame.buffer.dtype),
           "{:.1f}".format(frame.buffer.nbytes/1e6),
           "{:g}{}".format(frame.unit, '*' if frame.localunit else ''),
-          ## "{:.2f}".format(np.mean(frame.buffer)),
-          ## "{:.2f}".format(np.std(frame.buffer)),
-            ## "{:g}".format(frame.buffer.max()),
-            ## "{:g}".format(frame.buffer.min()),
               "{}".format(frame.annotation),
         )
         j = frame.index
@@ -152,7 +143,7 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         evt.Skip()
     
     def OnShowItems(self, evt):
-        self.Target.select(self.FocusedItem)
+        self.Target.select(self.focused_item)
     
     def OnRemoveItems(self, evt):
         del self.Target[self.selected_items]
@@ -258,10 +249,23 @@ class Plugin(Layer):
         
         self.nb.Bind(wx.EVT_CHILD_FOCUS, on_focus_set)
         
+        def copy(all=True):
+            page = self.nb.CurrentPage
+            frame = page.Target.all_frames[page.focused_item]
+            if all:
+                text = pformat(frame.attributes, sort_dicts=0)
+            else:
+                text = "{}\n{}".format(frame.name, frame.annotation)
+            Clipboard.write(pformat(text, sort_dicts=False))
+        
         self.menu[0:0] = [
             (101, "&Edit annotation", "Edit annotation", Icon('edit'),
                 lambda v: self.ask()),
             (),
+            ("Copy attributes", Icon('copy'), (
+                (102, "ALL data", Icon('copy'), lambda v: copy()),
+                (103, "row data", Icon('edit'), lambda v: copy(0)),
+            )),
         ]
     
     def attach(self, target, caption):
