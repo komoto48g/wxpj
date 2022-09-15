@@ -137,8 +137,8 @@ class Plugin(Layer):
         return self.__camera
     
     def set_exposure(self, p):
-        if p.value < 0.001:
-            p.value = 0.001
+        if p.value < 0.01:
+            p.value = 0.01
         if self.camera:
             self.camera.exposure = p.value
     
