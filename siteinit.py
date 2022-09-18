@@ -12,8 +12,8 @@ builtins.splot = edi.splot
 builtins.imshow = edi.imshow
 
 
-def init_frame(self):
-    """Program settings of pyJemacs <Frame>
+def init_mainframe(self):
+    """Program settings of mainframe
     """
     self.Editor = "C:/usr/home/bin/xyzzy/xyzzy.exe"
     sys.path.append(r"C:\usr\home\workspace\tem13\gdk-aero")

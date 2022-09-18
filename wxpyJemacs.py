@@ -51,12 +51,14 @@ def version():
         ))
 
 
-class pyJemacs(Frame):
+class MainFrame(Frame):
     """the Frontend of Graph and Plug manager
     """
+    Name = "pyJemacs"
+    
     def About(self):
         info = wx.adv.AboutDialogInfo()
-        info.Name = self.__class__.__name__
+        info.Name = self.Name
         info.Version = __version__
         info.Copyright = __copyright__ +' '+ __author__
         info.Description = __doc__
@@ -186,12 +188,12 @@ if __name__ == "__main__":
     ## 2. load su:startup -> restore app settings
     ## 3. load session -> restore plugins
     app = wx.App()
-    frm = pyJemacs(None)
+    frm = MainFrame(None)
     
     sys.path.insert(0, '')
     si = __import__('siteinit') # try import si:local first
     print("Executing {!r}".format(si.__file__))
-    si.init_frame(frm)
+    si.init_mainframe(frm)
     
     if session:
         try:
