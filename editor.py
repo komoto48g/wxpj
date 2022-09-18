@@ -70,8 +70,6 @@ class Plugin(Layer):
             self.draw_ellipse(el, src, frame)
         else:
             self.Draw(None)
-            ## p = src.sum() / src.size
-            ## self.message("\b; Brightness {:.1f}".format(p))
         print(self.message('\b')) # Show the last message.
     
     def draw_ellipse(self, el, src, frame):
@@ -85,9 +83,9 @@ class Plugin(Layer):
         
         (cx,cy), (ra,rb), angle = el
         R, n, s = calc_ellipse(src, el)
-        p = R * n/s
-        q = R * (1-n)/(1-s)
-        if p/q > 1: # signal borderline
+        P = R * n/s
+        Q = R * (1-n)/(1-s)
+        if abs(P/Q) > 1: # signal borderline
             art.center = frame.xyfrompixel(cx, cy)
             art.height = rb * frame.unit
             art.width = ra * frame.unit
@@ -98,7 +96,7 @@ class Plugin(Layer):
                 "r=({:.1f}, {:.1f})".format(ra, rb),
                 "{:.1f} deg".format(angle),
             )))
-        self.message("\b; Brightness {:.2f}/{:.2f} (S/N {:.2f})".format(p, q, p/q))
+        self.message("\b; BRIGHTNESS {:.2f}/{:.2f} (S/N {:.2f})".format(P, Q, P/Q))
         self.selected_view.draw(art)
 
 
