@@ -56,7 +56,7 @@ class Plugin(Layer):
                 self.lo,
             ),
             title="Setting",
-            row=1, show=0, type='vspin', lw=40, tw=40, cw=-1
+            show=0, type='vspin', lw=40, tw=40, cw=-1
         )
     
     def Destroy(self):

@@ -284,7 +284,7 @@ class Plugin(Layer):
                 Button(self, "Prepare/dark", self.prepare_dark, size=(-1,20)),
             ),
             title="Setup",
-            row=1, show=0, type=None, lw=-1, tw=50,
+            show=0, type=None, lw=-1, tw=50,
         )
         self.__camera = None
     

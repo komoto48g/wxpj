@@ -41,11 +41,11 @@ class Plugin(Layer):
         
         self.layout(
             (self.pchk,), title="normal FFT",
-            row=1, expand=1, show=1, vspacing=4
+            expand=1, show=1, vspacing=4
         )
         self.layout(
             (self.pix,), title="inverse FFT",
-            row=1, expand=1, show=1, type=None, style='chkbox', tw=32
+            expand=1, show=1, type=None, style='chkbox', tw=32
         )
         self.parent.define_key('C-f', self.newfft)
         self.parent.define_key('C-S-f', self.newifft)
