@@ -24,8 +24,8 @@ class Plugin(Layer):
     menukey = "Plugins/Functions/&Editor"
     
     def Init(self):
-        self.hi = LParam("hi", (0, 10 ,0.005), 0)
-        self.lo = LParam("lo", (0, 10, 0.005), 0)
+        self.hi = LParam("hi", (0, 10 ,0.005), 0.1)
+        self.lo = LParam("lo", (0, 10, 0.005), 0.0)
         
         self.layout((
                 self.hi,
@@ -61,10 +61,18 @@ class Plugin(Layer):
     def test_ellipse(self):
         hi, lo = self.parameters
         frame = self.selected_view.frame
-        src = imtrunc(frame.buffer, hi, lo)
-        ellipses = find_ellipses(src, ksize=5)
-        self.message("Found {} circles".format(len(ellipses)))
-        
+        src = imconv(frame.buffer, hi, lo)
+        ellipses = find_ellipses(src, ksize=3)
+        print(self.message("Found {} circles.".format(len(ellipses))))
+        if ellipses:
+            ## Draw the first ellipse if detected.
+            el = ellipses[0]
+            self.draw_ellipse(el, src, frame)
+        else:
+            self.Draw(None)
+        print(self.message('\b')) # Show the last message.
+    
+    def draw_ellipse(self, el, src, frame):
         ## Check if an art is attached to the frame.axes.
         for art in self.Arts:
             if art.axes is frame.axes:
@@ -73,32 +81,23 @@ class Plugin(Layer):
             art = patches.Circle((0,0), 0, color='r', ls='solid', lw=2, fill=0, zorder=2)
             self.attach_artists(frame.axes, art)
         
-        ## Draw the first ellipse if detected.
-        if ellipses:
-            el = ellipses[0]
-            (cx,cy), (ra,rb), angle = el
-            R, n, s = calc_ellipse(src, el)
-            p = R * n/s
-            q = R * (1-n)/(1-s)
-            if p/q > 1: # signal
-                art.center = frame.xyfrompixel(cx, cy)
-                art.height = rb * frame.unit
-                art.width = ra * frame.unit
-                art.angle = -angle
-                art.set_visible(1)
-            self.message("\b; " + "; ".join((
+        (cx,cy), (ra,rb), angle = el
+        R, n, s = calc_ellipse(src, el)
+        p = R * n/s
+        q = R * (1-n)/(1-s)
+        if abs(p/q) > 1: # signal borderline
+            art.center = frame.xyfrompixel(cx, cy)
+            art.height = rb * frame.unit
+            art.width = ra * frame.unit
+            art.angle = -angle
+            art.set_visible(1)
+            self.message(' '.join((
                 "c=({:.1f}, {:.1f})".format(cx, cy),
                 "r=({:.1f}, {:.1f})".format(ra, rb),
                 "{:.1f} deg".format(angle),
-                "brightness {:.2f}/{:.2f} (SN {:.2f})".format(p, q, p/q),
             )))
-        else:
-            art.set_visible(0)
-            p = src.sum() / src.size
-            self.message("\b; brightness {:.1f}".format(p))
-        
+        self.message("\b; BRIGHTNESS {:.2f}/{:.2f} (S/N {:.2f})".format(p, q, p/q))
         self.selected_view.draw(art)
-        print(self.message('\b')) # Show the last message.
 
 
 ## --------------------------------
@@ -178,7 +177,9 @@ def scatter(x, y, *args, **kwargs):
     plt.show()
 
 def clf():
-    """clear figure (and the stack of memory)"""
+    """clear figure (and the stack of memory)
+    cf. plt.close()
+    """
     plt.clf()
 
 clear = clf

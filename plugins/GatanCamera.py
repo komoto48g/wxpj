@@ -125,7 +125,7 @@ class Plugin(Layer):
                 Button(self, "Insert camera", self.insert, size=(-1,20)),
             ),
             title="Setup",
-            row=1, show=0, type=None, lw=-1, tw=50, editable=0,
+            show=0, type=None, lw=-1, tw=50, editable=0,
         )
         self.__camera = None
     
@@ -137,8 +137,8 @@ class Plugin(Layer):
         return self.__camera
     
     def set_exposure(self, p):
-        if p.value < 0.001:
-            p.value = 0.001
+        if p.value < 0.01:
+            p.value = 0.01
         if self.camera:
             self.camera.exposure = p.value
     

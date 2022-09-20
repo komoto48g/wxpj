@@ -27,13 +27,13 @@ class Plugin(Layer):
             handler=lambda v: self.viewer.Start(self.run)
                         if v.IsChecked() else self.viewer.Stop())
         
-        self.sight_chk = wx.CheckBox(self, label="sight") # 照準器
+        self.sight_chk = wx.CheckBox(self, label="sight+") # 照準器
         self.sight_chk.Value = 1
         
-        self.detect_chk = wx.CheckBox(self, label="detection")
+        self.detect_chk = wx.CheckBox(self, label="detect")
         
-        self.hi = LParam("hi", (0, 10 ,0.005), 0.01)
-        self.lo = LParam("lo", (0, 10, 0.005), 0.01)
+        self.hi = LParam("hi", (0, 10, 0.01), 0.1)
+        self.lo = LParam("lo", (0, 10, 0.01), 0.0)
         
         self.rate_param = LParam('rate', (100,500,100), 500, tip="refresh speed [ms] (>= 100ms)")
         self.size_param = Param('size', (128,256,512,1024), 512, tip="resizing view window (<= 1k)")
@@ -43,7 +43,8 @@ class Plugin(Layer):
         
         self.layout((
                 self.button, None,
-                self.sight_chk, self.detect_chk,
+                self.sight_chk,
+                self.detect_chk,
             ),
             row=2, cw=0, lw=16, tw=40
         )
@@ -55,7 +56,7 @@ class Plugin(Layer):
                 self.lo,
             ),
             title="Setting",
-            row=1, show=0, type='vspin', lw=40, tw=40, cw=-1
+            show=0, type='vspin', lw=40, tw=40, cw=-1
         )
     
     def Destroy(self):
