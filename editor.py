@@ -61,7 +61,8 @@ class Plugin(Layer):
     def test_ellipse(self):
         hi, lo = self.parameters
         frame = self.selected_view.frame
-        src = imconv(frame.buffer, hi, lo)
+        ## src = imconv(frame.buffer, hi, lo) # 256 に変換するときはカウント数に注意
+        src = frame.buffer
         ellipses = find_ellipses(src, ksize=3)
         print(self.message("Found {} circles.".format(len(ellipses))))
         if ellipses:
