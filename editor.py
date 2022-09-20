@@ -83,9 +83,9 @@ class Plugin(Layer):
         
         (cx,cy), (ra,rb), angle = el
         R, n, s = calc_ellipse(src, el)
-        P = R * n/s
-        Q = R * (1-n)/(1-s)
-        if abs(P/Q) > 1: # signal borderline
+        p = R * n/s
+        q = R * (1-n)/(1-s)
+        if abs(p/q) > 1: # signal borderline
             art.center = frame.xyfrompixel(cx, cy)
             art.height = rb * frame.unit
             art.width = ra * frame.unit
@@ -96,7 +96,7 @@ class Plugin(Layer):
                 "r=({:.1f}, {:.1f})".format(ra, rb),
                 "{:.1f} deg".format(angle),
             )))
-        self.message("\b; BRIGHTNESS {:.2f}/{:.2f} (S/N {:.2f})".format(P, Q, P/Q))
+        self.message("\b; BRIGHTNESS {:.2f}/{:.2f} (S/N {:.2f})".format(p, q, p/q))
         self.selected_view.draw(art)
 
 
@@ -177,7 +177,9 @@ def scatter(x, y, *args, **kwargs):
     plt.show()
 
 def clf():
-    """clear figure (and the stack of memory)"""
+    """clear figure (and the stack of memory)
+    cf. plt.close()
+    """
     plt.clf()
 
 clear = clf

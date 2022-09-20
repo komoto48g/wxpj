@@ -4,12 +4,6 @@
 """
 import builtins
 import sys
-import editor as edi
-
-builtins.plot = edi.plot
-builtins.mplot = edi.mplot
-builtins.splot = edi.splot
-builtins.imshow = edi.imshow
 
 
 def init_mainframe(self):
