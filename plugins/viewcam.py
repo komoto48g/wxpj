@@ -10,7 +10,7 @@ import editor as edi
 class Plugin(Layer):
     """Plugins of camera viewer
     """
-    menukey = "Cameras/Camera &viewer"
+    menukey = "Cameras/"
     
     @property
     def cameraman(self):
@@ -60,9 +60,11 @@ class Plugin(Layer):
         )
     
     def Destroy(self):
-        if self.viewer.active:
-            self.viewer.Stop()
-        return Layer.Destroy(self)
+        try:
+            if self.viewer.active:
+                self.viewer.Stop()
+        finally:
+            return Layer.Destroy(self)
     
     def run(self):
         try:
@@ -93,9 +95,9 @@ class Plugin(Layer):
                     if ellipses:
                         el = ellipses[0]
                         R, n, s = edi.calc_ellipse(src, el)
-                        p = R * n/s
-                        q = R * (1-n)/(1-s)
-                        print("$(p, q) = {:g}, {:g}".format(p, q))
+                        ## p = R * n/s
+                        ## q = R * (1-n)/(1-s)
+                        ## print("$(p, q) = {:g}, {:g}".format(p, q))
                         ratio = H/h # dst/src 縮小率
                         cc, rc, angle = el
                         cc = np.int32(np.array(cc) * ratio)
@@ -108,24 +110,25 @@ class Plugin(Layer):
                 
                 if cv2.getWindowProperty(title, 0) < 0:
                     self.button.Value = False
-                    self.viewer.Stop()
+                    ## self.viewer.Stop()
                     break
-        except AttributeError:
-            wx.MessageBox("The camera is not specified.\n\n",
-                          "Select a camera system from Setting",
-                          style=wx.ICON_ERROR)
+        except Exception as e:
+            ## wx.MessageBox("The camera is not specified.\n\n",
+            ##               "Select a camera system from Setting",
+            ##               style=wx.ICON_ERROR)
+            print(e)
         finally:
+            self.viewer.Stop()
             cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
-    from plugins import JeolCamera, RigakuCamera
+    from plugins import JeolCamera
     from jgdk import Frame
     
     app = wx.App()
     frm = Frame(None)
     frm.load_plug(__file__, show=1)
     frm.load_plug(JeolCamera, show=0)
-    frm.load_plug(RigakuCamera, show=0)
     frm.Show()
     app.MainLoop()
