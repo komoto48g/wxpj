@@ -44,7 +44,7 @@ class Plugin(Layer):
         )
         self.grid.Selection = 0
         
-        self.text = TextCtrl(self, size=(140,60),
+        self.text = TextCtrl(self, size=(140,40),
                              style=wx.TE_READONLY|wx.TE_MULTILINE)
         self.layout((
                 Button(self, "1. Eval", _F(self.evaluate), icon='help', size=(72,-1)),
@@ -54,6 +54,7 @@ class Plugin(Layer):
                 self.score,
                 
                 Button(self, "3. Run", _F(self.run), icon='help', size=(72,-1)),
+                
                 Button(self, "Settings", _F(self.show_settings)),
             ),
             title="Evaluate step by step",
@@ -155,15 +156,16 @@ class Plugin(Layer):
         g = self.ldc.grid_params[0].value # [u/grid] image or 1/g :FFT
         g0 = eval(self.grid.Value)        # [u/grid] org
         if self.choice.Selection < 2: # FFT
+            h, w = frame.buffer.shape
             method = 'fft'
-            g = 1/g
+            M = 1/g/g0
+            u = 1/w/u
         else:
             method = 'cor'
-        M = g/g0
+            M = g/g0
         self.text.Value = '\n'.join((
             "Mag = {:,.0f} [{}]".format(M, method),
-            "grid: {:g} mm".format(g),
-            "({:g} m/pix)".format(u/M * 1e-3)
+            "({:g} A/pix)".format(u/M * 1e7)
         ))
         self.target_view.frame.update_attributes(
             parameters = self.parameters[:-1], # except the last text
@@ -198,7 +200,7 @@ class Plugin(Layer):
         else:
             method = 'cor'
             M = g/g0
-        self.text.Value = "{:g} m/pix [{}]".format(u/M * 1e-3, method)
+        self.text.Value = "({:g} A/pix) {}".format(u/M * 1e7, method)
     
     ## --------------------------------
     ## test/eval functions
