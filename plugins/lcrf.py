@@ -202,10 +202,7 @@ class Plugin(Layer):
         ## center = edi.centroid(src)
         if shift:
             nx, ny = frame.xytopixel(frame.selector)
-            if isinstance(nx, int): # for PY2
-                center = nx, ny
-            else:
-                center = nx[0], ny[0]
+            center = nx[0], ny[0]
         
         ## Search center and fit with model (twice at least)
         lo = h/2 * self.rmin.value

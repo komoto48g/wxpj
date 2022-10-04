@@ -120,12 +120,12 @@ class Plugin(Layer):
                     yy, xx = np.where(buf == np.amax(buf))
                     dy, dx = np.average(yy), np.average(xx)
                     
-                    xy.append(frame.xyfrompixel(xa+dx, ya+dy))
-                    
                     ## centroid of masked array
                     ## buf = np.ma.masked_array(buf, mask_ellipse(ra, rb, angle))
                     ## dx, dy = edi.centroid(buf)
-                    ## xy.append(frame.xyfrompixel(xa+dx, ya+dy))
+                    
+                    x, y = frame.xyfrompixel(xa+dx, ya+dy)
+                    xy.append((x[0], y[0]))
                     
             frame.markers = np.array(xy).T # scatter markers if any xy
 
