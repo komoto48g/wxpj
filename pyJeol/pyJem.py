@@ -272,9 +272,9 @@ class Imaging(Optics):
     MODES = OrderedDict((
         ('MAG',    mrange(1000, 1.2e6)),
         ('MAG2',   mrange(1000, 1.2e6)),
-        ('LOWMAG', mrange(  50,  6000)),
+        ('LOWMAG', mrange(  50,  50e3)),
         ('SAMAG',  mrange(1000, 500e3)),
-        ('DIFF',   mrange( 300,  3000)),
+        ('DIFF',   mrange( 300,  5000)),
     ))
     _get_mode = EOS.GetFunctionMode    # --> [0,'MAG']
     _set_mode = EOS.SelectFunctionMode # 
