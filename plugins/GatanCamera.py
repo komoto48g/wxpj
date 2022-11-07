@@ -110,7 +110,7 @@ class Plugin(Layer):
             type='vspin', lw=32, cw=-1, tw=40
         )
         self.layout((
-                Button(self, "Capture", self.capture_ex, icon='cam'),
+                Button(self, "Capture", self.capture_ex, icon='camera'),
                 self.dark_chk,
             ),
             row=2,

@@ -60,7 +60,7 @@ def init_mainframe(self):
     self.load_plug(viewfft)
     
     ## from pyJeol import legacy
-    ## legacy.set_host('localhost')
+    ## legacy.set_host('localhost', offline=0)
     
     self.notify.start()
     

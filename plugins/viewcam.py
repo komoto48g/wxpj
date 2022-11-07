@@ -23,7 +23,7 @@ class Plugin(Layer):
     def Init(self):
         self.viewer = Thread(self)
         
-        self.button = ToggleButton(self, "View camera", icon='cam',
+        self.button = ToggleButton(self, "View camera", icon='camera',
             handler=lambda v: self.viewer.Start(self.run)
                         if v.IsChecked() else self.viewer.Stop())
         
