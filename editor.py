@@ -37,7 +37,7 @@ class Plugin(Layer):
                 Button(self, "imconv", lambda v: self.test_imconv()),
                 Button(self, "imtrunc", lambda v: self.test_imtrunc()),
                 Button(self, "imcorr", lambda v: self.test_imcorr()),
-                Button(self, "ellipse", lambda v: self.test_ellipse(), icon="->"),
+                Button(self, "ellipse", lambda v: self.test_ellipse()),
             ),
             row=2,
         )

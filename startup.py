@@ -6,7 +6,7 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 import numpy as np 
 import wx
-from jgdk import Layer, Param, LParam, Button
+from jgdk import Layer, Param, LParam, Button, Icon
 from pyJeol.temisc import Environ
 
 
@@ -24,34 +24,25 @@ class Plugin(Layer):
         self.accv_param = Param("Acc.Voltage", (100e3, 200e3, 300e3), 300e3,
                 handler=self.set_htv,
                 fmt='{:,g}'.format,
-                tip="Acceleration voltage [V]")
+                tip="Acceleration voltage [V].")
         
         self.accv_param.reset() # -> call set_htv
         
-        self.unit_param = LParam("unit/pixel", (0,1,1e-4), self.graph.unit,
-                updater=self.set_localunit,
-                tip="Set localunit to the selected frame")
-        
-        self.cuts_param = LParam("cutoff [%]", (0,1,1e-2), self.graph.score_percentile,
-                updater=self.set_cutoff,
-                tip="Set cutoff score percentiles of the current frame\n"
-                    "to cut the upper/lower limits given by the tolerances[%]")
+        self.unit_param = LParam("unit/pix", (0,1,1e-4), self.graph.unit,
+                handler=None,
+                updater=self.set_unit,
+                tip="Set/unset localunit to the selected frame.")
         
         self.layout((
                 self.accv_param,
                 self.unit_param,
-                self.cuts_param,
             ),
             type='vspin', style='button', lw=66, tw=60, cw=-1
         )
         self.layout((
             Button(self, "Apply ALL",
-                lambda v: self.setup_all(), icon='v',
-                tip="Set globalunit and cutoff conditions to all frames"),
-            
-            Button(self, "Remove",
-                lambda v: self.del_localunit(), icon='x',
-                tip="Remove localunit"),
+                lambda v: self.setup_all(), icon=Icon('+'),
+                tip="Set globalunit to all frames."),
             ),
             row=2,
         )
@@ -72,8 +63,6 @@ class Plugin(Layer):
         def deactivate(*v):
             for win in self.parent.graphic_windows:
                 win.handler.remove(self.context)
-        
-        wx.CallAfter(self.setup_all)
     
     def on_unit_notify(self, frame):
         if frame:
@@ -84,37 +73,20 @@ class Plugin(Layer):
         self.__em = Environ(p.value)
         self.__em_std = Environ(p.std_value)
     
-    def set_localunit(self, p):
+    def set_unit(self, p):
         target = self.selected_view
         if target.frame:
-            target.frame.unit = self.unit_param.value
-            target.draw()
-    
-    def del_localunit(self):
-        target = self.selected_view
-        if target.frame:
-            target.frame.unit = None
-    
-    def set_cutoff(self, p):
-        target = self.selected_view
-        target.score_percentile = self.cuts_param.value
-        if target.frame:
-            target.frame.update_buffer()
+            u = p.value
+            if target.unit == u:
+                del target.frame.unit # unset localunit
+            elif target.frame.unit != u:
+                target.frame.unit = u # set localunit
             target.draw()
     
     def setup_all(self):
-        cuts = self.cuts_param.value
-        unit = self.unit_param.value
-        self.unit_param.std_value = unit
-        
+        u = self.unit_param.value
         target = self.selected_view
-        target.score_percentile = cuts
-        if unit is not np.nan:
-            target.unit = unit # reset globalunit (localunits remain, however)
-        for frame in target.all_frames:
-            if unit is np.nan:
-                frame.unit = None # remove localunits if none
-            frame.update_buffer() # update buffer cuts of floor/ceiling
+        target.unit = self.unit_param.std_value = u
         target.draw()
 
 
