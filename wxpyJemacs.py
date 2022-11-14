@@ -82,7 +82,7 @@ class MainFrame(Frame):
         self.notify = self.nfront.notify
         
         self.menubar["File"][-4:-4] = [
-            (wx.ID_NETWORK, "&Notifyee\tF11", "Notify logger", wx.ITEM_CHECK,
+            (wx.ID_NETWORK, "&Notify", "Notify logger", wx.ITEM_CHECK,
                 lambda v: self.nfront.Show(v.IsChecked()),
                 lambda v: v.Check(self.nfront.IsShown())),
         ]

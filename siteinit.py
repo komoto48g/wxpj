@@ -97,7 +97,7 @@ def init_mainframe(self):
                   filter = dict(self.notify.efilter.Info),
                  modestr = self.notify.modestr, # joined substr
         )
-        frame.name = "{acq_datetime:%Y%m%d-%H%M%S}-{mode},"\
+        frame.name = "{acq_datetime:%Y_%m%d_%H%M%S}-{mode},"\
                      "slit={filter[slit_width]}eV,bin{binning}-{exposure}s".format(
                      mode=self.notify.modestr, **frame.attributes)
 
