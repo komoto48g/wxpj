@@ -12,7 +12,6 @@ Wx Import Warning:
 """
 from collections import OrderedDict
 import sys
-import os
 import numpy as np
 from numpy import inf
 try:
@@ -22,21 +21,25 @@ except ImportError:
     from .temisc import mrange
     from .temisc import FLHex, OLHex
 try:
-    Offline = 1 # switch case when this modulue is tested in standalone
+    Offline = 0 # switch case when this modulue is tested in standalone
+    
     if 'PyJEM.offline' in sys.modules:
         print('Loading TEM3:offline module has already loaded.')
         from PyJEM.offline import TEM3
         Offline = True
+        
     elif 'PyJEM.TEM3' in sys.modules:
         print('Loading TEM3:online module has already loaded.')
         from PyJEM import TEM3
         Offline = False
+        
     else:
         print(__doc__)
         if Offline:
             from PyJEM.offline import TEM3
         else:
             from PyJEM import TEM3
+
 except ImportError as e:
     print(e)
     print("Current version is Python {}".format(sys.version))
@@ -344,7 +347,13 @@ class EOsys(object):
     ## for LAB6-2100, 動作未確認▲
     V1 = property(
         lambda self: FEG.GetBeamValve(),
-        lambda self,v: FEG.SetBeamValve(1 if v else 0))
+        lambda self,v: FEG.SetBeamValve(1 if v else 0),
+        doc="Status of V1 valve.")
+    
+    Screen = property(
+        lambda self: DET.GetScreen(),
+        lambda self,v: DET.SetScreen(v),
+        doc="Status of default screen.")
 
 
 class HTsys(object):
@@ -535,3 +544,5 @@ if __name__ == "__main__":
     g = Stage()
     fl = Filter()
     ht = HTsys()
+    
+    import mwx; mwx.deb()
