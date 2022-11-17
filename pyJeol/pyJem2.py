@@ -375,9 +375,9 @@ class EOsys(Device):
     _set_v1_state = Command("F811", "!H", None, device='VAC') # {0:close, 1:open}
     _get_v1_state = Command("F817", None, "!H", device='VAC')
     
-    _set_lscr = Command("C320", "!H", "!H", device='PHOTO') # o {0:0, 2:90(=extract)} deg,
-    _set_fscr = Command("C321", "!H", "!H", device='PHOTO') # ? {0:0, 2:90(=extract)} deg,
-    _get_scr = Command("C325", None, "!2H", device='PHOTO') # o {0:0, 2:90(=extract)} deg, FSCR={0:out. 1:in}
+    _set_fscr = Command("C321", "!H", "!H", device='PHOTO') # ? FSCR {0:out, 1:in}
+    _set_lscr = Command("C320", "!H", "!H", device='PHOTO') # o LSCR {0:0, 2:90} deg
+    _get_scr = Command("C325", None, "!2H", device='PHOTO') # o LSCR {0:0, 2:90} deg, FSCR {0:out, 1:in}.
     
     _set_det = Command("D170", "!25H", None, device='ASID') # x
     _get_det = Command("D171", None, "!25H", device='ASID') # x ▼not supported
@@ -386,15 +386,28 @@ class EOsys(Device):
     ## for LAB6-2100, V1open/close toggles emission
     V1 = property(
         lambda self: EOsys._get_v1_state()[0],
-        lambda self,v: EOsys._set_v1_state(1 if v else 0))
+        lambda self,v: EOsys._set_v1_state(1 if v else 0),
+        doc="Status of V1 valve.")
+    
+    LSCR = property(
+        lambda self: EOsys._get_scr()[0],
+        lambda self,v: EOsys._set_lscr(v if v else 0),
+        doc="Status of LSCR {0:0, 1:7, 2:90} degs.")
+    
+    FSCR = property(
+        lambda self: EOsys._get_scr()[1],
+        lambda self,v: EOsys._set_fscr(1 if v else 0),
+        doc="Status of FSCR {0:out, 1:in}.")
     
     @property
     def Screen(self):
+        """Status of default screen."""
         lscr, fscr = EOsys._get_scr()
-        return lscr<2 or fscr
+        return fscr==1 or lscr==0
     
     @Screen.setter
     def Screen(self, v):
+        ## EOsys._set_fscr(0 if v else 1) # deprecated ?
         EOsys._set_lscr(0 if v else 2)
 
 
@@ -653,7 +666,7 @@ class Filter(Device):
 
 if __name__ == "__main__":
     ## cmdl.HOST = cntf.HOST = '172.17.41.201'
-    cmdl.HOST = cntf.HOST = 'localhost'
+    ## cmdl.HOST = cntf.HOST = 'localhost'
     cmdl.open()
     cntf.open()
     
@@ -673,3 +686,5 @@ if __name__ == "__main__":
     g = Stage()
     fl = Filter()
     ht = HTsys()
+    
+    import mwx; mwx.deb()
