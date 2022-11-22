@@ -32,7 +32,7 @@ if 'mwx' not in sys.modules:
     for path in reversed(glob.glob(eggs)):
         sys.path.append(path)
 import mwx
-from mwx.graphman import Frame
+from jgdk import Frame
 from pyJeol.temsys import NotifyFront
 import pyJeol as pJ
 import pyDM3reader as DM3lib

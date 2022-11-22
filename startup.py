@@ -41,7 +41,7 @@ class Plugin(Layer):
         )
         self.layout((
             Button(self, "Apply ALL",
-                lambda v: self.setup_all(), icon=Icon('+'),
+                lambda v: self.setup_all(), icon=Icon('v'),
                 tip="Set globalunit to all frames."),
             ),
             row=2,
