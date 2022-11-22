@@ -35,7 +35,7 @@ class Plugin(Layer):
     em = property(lambda self: self.su.em)
     
     def Init(self):
-        _F = self.interactive_call
+        _F = self.funcall
         
         self.cmax = LParam("limit", (2, 50), 10,
                            updater=_F(self.calc_optvar),

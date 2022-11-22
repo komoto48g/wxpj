@@ -22,7 +22,7 @@ class Plugin(Layer):
     ldc = property(lambda self: self.parent.require('ld_cgrid'))
     
     def Init(self):
-        _F = self.interactive_call
+        _F = self.funcall
         
         self.choice = Choice(self, size=(60,-1),
                              choices=['FFT', 'FFT+', 'Cor'],

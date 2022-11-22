@@ -150,18 +150,18 @@ class Plugin(Layer):
     menukey = "CTF/"
     
     def Init(self):
-        _F = self.interactive_call
+        _F = self.funcall
         
         self.rmin = LParam("rmin", (0.001, 0.1, 0.001), 0.05,
-                           updater=_F(self.calc_ring, True),
+                           updater=_F(self.calc_ring),
                            tip="Ratio to the radius.")
         
         self.rmax = LParam("rmax", (0.1, 0.5, 0.01), 0.5,
-                           updater=_F(self.calc_ring, True),
+                           updater=_F(self.calc_ring),
                            tip="Ratio to the radius.")
         
         self.tol = LParam("tol", (0, 0.1, 0.001), 0.01,
-                           updater=_F(self.calc_peak, True),
+                           updater=_F(self.calc_peak),
                            tip="Ratio to the radius of blurring pixels.")
         
         self.layout((
@@ -181,7 +181,7 @@ class Plugin(Layer):
     def selected_roi(self):
         return fftresize(self.selected_frame.roi, maxsize=2048)
     
-    def calc_ring(self, show=False):
+    def calc_ring(self, show=True):
         """Calc log-polar of ring pattern
         """
         frame = self.selected_frame
@@ -216,7 +216,7 @@ class Plugin(Layer):
         self.stig = eps / m * np.exp(phi * 1j)
         print("$result(eps, phi) = {!r}".format((eps, phi)))
     
-    def calc_peak(self, show=False):
+    def calc_peak(self, show=True):
         """Calc min/max peak detection
         """
         N = self.data.size
