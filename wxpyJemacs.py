@@ -92,6 +92,18 @@ class MainFrame(Frame):
             (),
         ]
         self.menubar.reset()
+        
+        try:
+            sys.path[0:0] =['',             # 1. local
+                os.path.dirname(__file__),  # 2. system
+            ]
+            si = __import__('siteinit') # try import si:local first
+        except ImportError:
+            print("- No siteinit file.")
+            pass
+        else:
+            print("Executing {!r}".format(si.__file__))
+            si.init_mainframe(self)
     
     def Destroy(self):
         self.nfront.Destroy()
@@ -189,18 +201,11 @@ if __name__ == "__main__":
     ## 3. load session -> restore plugins
     app = wx.App()
     frm = MainFrame(None)
-    
-    sys.path.insert(0, '')
-    si = __import__('siteinit') # try import si:local first
-    print("Executing {!r}".format(si.__file__))
-    si.init_mainframe(frm)
-    
     if session:
         try:
             print("Starting session {!r}".format(session))
             frm.load_session(session, flush=False)
         except FileNotFoundError:
             print("- No such file {!r}".format(session))
-    
     frm.Show()
     app.MainLoop()
