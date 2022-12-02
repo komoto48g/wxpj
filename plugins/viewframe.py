@@ -52,6 +52,15 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         cols = range(self.ColumnCount)
         return [[self.GetItemText(j, k) for k in cols] for j in rows]
     
+    _alist = ( # assoc-list of column names
+        ("id", 42),
+        ("name", 160),
+        ("shape", 90),
+        ("dtype", 60),
+        ("Mb",   40),
+        ("unit", 60),
+        ("annotation", 240),
+    )
     def __init__(self, parent, target, **kwargs):
         CheckListCtrl.__init__(self, parent, size=(400,130),
                                style=wx.LC_REPORT|wx.LC_HRULES, **kwargs)
@@ -61,16 +70,7 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         self.parent = parent
         self.Target = target
         
-        self.alist = ( # assoc-list of column names
-            ("id", 42),
-            ("name", 160),
-            ("shape", 90),
-            ("dtype", 60),
-            ("Mb",   40),
-            ("unit", 60),
-            ("annotation", 240),
-        )
-        for k, (name, w) in enumerate(self.alist):
+        for k, (name, w) in enumerate(self._alist):
             self.InsertColumn(k, name, width=w)
         
         for j, frame in enumerate(self.Target.all_frames):
@@ -149,7 +149,7 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         del self.Target[self.selected_items]
     
     def OnSortItems(self, evt): #<wx._controls.ListEvent>
-        col = evt.GetColumn()
+        col = evt.Column
         if col == 0: # reverse the first column
             self.__dir = False
         self.__dir = not self.__dir # toggle 0:ascend/1:descend
@@ -167,7 +167,7 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
             frames[:] = [frames[int(c[0])] for c in la] # sort by new Id of items
             
             for j, c in enumerate(la):
-                self.Select(j, False)        # 1, deselect all items,
+                self.Select(j, False)         # 1, deselect all items,
                 for k, v in enumerate(c[1:]): # 2, except for id(0), update text:str
                     self.SetItem(j, k+1, v)
             self.Target.select(frame) # invokes [frame_shown] to select the item
