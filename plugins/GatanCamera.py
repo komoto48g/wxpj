@@ -255,14 +255,18 @@ class Plugin(Layer):
         Please close the curtain to prevent light leakage.
         """
         if not self.camera:
-            wx.MessageBox("The camera is not ready", self.__module__,
+            wx.MessageBox(
+                "The camera is not ready",
+                self.__module__,
                 style=wx.ICON_WARNING)
             return
         
         if verbose:
-            if wx.MessageBox("Proceeding new dark reference.", self.__module__,
-                style=wx.OK|wx.CANCEL|wx.ICON_INFORMATION) != wx.OK:
-                    return
+            if wx.MessageBox(
+                    "Proceeding new dark reference.",
+                    self.__module__,
+                    style=wx.ICON_INFORMATION) != wx.OK:
+                return
         
         f = self.dark_filename
         
