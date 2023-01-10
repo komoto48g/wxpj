@@ -53,14 +53,14 @@ class Plugin(Layer):
             self.lctf.tol,
             ),
             title="CTF step by step",
-            type='vspin', style='button', lw=28, tw=50,
+            type='vspin', style='button', cw=-1, lw=28, tw=50,
         )
         self.layout((
             self.ru,
             self.cs,
             ),
-            title="TEM/Image Cond.",
-            show=False, type='vspin', style='button', lw=28, tw=50,
+            title="TEM/Image Cond.", show=0,
+            type='vspin', style='button', cw=-1, lw=28, tw=50,
         )
         self.layout((
             self.cmax,
@@ -68,7 +68,8 @@ class Plugin(Layer):
             Button(self, "CTF", _F(self.run), icon='->'),
             Button(self, "clf", _F(edi.clear), icon='-'),
             ),
-            row=2, type='vspin', style='button', lw=32, tw=50,
+            row=2,
+            type='vspin', style='button', cw=-1, lw=32, tw=50,
         )
     
     def calc_sherzer(self):

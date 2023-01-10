@@ -53,8 +53,8 @@ class Plugin(Layer):
                 self.rate_param, self.hi,
                 self.size_param, self.lo,
             ),
-            title="Detection settings",
-            row=2, show=0, type='vspin', lw=-1, tw=40
+            title="Detection settings", row=2, show=0,
+            type='vspin', cw=-1, lw=-1, tw=40
         )
     
     def Destroy(self):

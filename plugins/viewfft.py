@@ -39,14 +39,9 @@ class Plugin(Layer):
         
         self.pix = Param("mask", (2,4,8,16,32,64))
         
-        self.layout(
-            (self.pchk,), title="normal FFT",
-            expand=1, show=1, vspacing=4
-        )
-        self.layout(
-            (self.pix,), title="inverse FFT",
-            expand=1, show=1, type=None, style='chkbox', tw=32
-        )
+        self.layout((self.pchk,), title="normal FFT")
+        self.layout((self.pix,), title="inverse FFT", type=None, style='chkbox', tw=32)
+        
         self.parent.define_key('C-f', self.newfft)
         self.parent.define_key('C-S-f', self.newifft)
     

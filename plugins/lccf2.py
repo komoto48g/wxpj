@@ -58,8 +58,8 @@ class Plugin(Layer):
         self.rmin = LParam("rmin", (0,1000,1), 2)
         self.rmax = LParam("rmax", (0,1000,1), 200)
         
-        self.layout(self.lgbt.params, title="blur-threshold", show=0, cw=0, lw=40, tw=40)
-        self.layout((self.rmin, self.rmax), title="radii", cw=0, lw=40, tw=48)
+        self.layout(self.lgbt.params, title="blur-threshold", cw=0, lw=40, tw=40, show=0)
+        self.layout((self.rmin, self.rmax), title="radii", cw=0, lw=40, tw=40)
         
         btn1 = wx.Button(self, label="+Bin", size=(40,22))
         btn1.Bind(wx.EVT_BUTTON, lambda v: self.lgbt.calc(otsu=wx.GetKeyState(wx.WXK_SHIFT)))

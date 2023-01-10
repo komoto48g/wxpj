@@ -31,7 +31,7 @@ class Plugin(Layer):
                 self.hi,
                 self.lo,
             ),
-            row=2, title="truncation", cw=0, lw=16, tw=40
+            title="truncation", row=2, cw=0, lw=16, tw=40
         )
         self.layout((
                 Button(self, "imconv", lambda v: self.test_imconv()),

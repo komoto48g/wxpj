@@ -57,15 +57,14 @@ class Plugin(Layer):
                 
                 Button(self, "Settings", _F(self.show_settings)),
             ),
-            title="Evaluate step by step",
-            row=2, show=1, type='vspin', tw=44, lw=0,
+            title="Evaluate step by step", row=2,
+            type='vspin', cw=-1, lw=0, tw=44,
         )
         self.layout((
                 self.grid,
                 self.text,
             ),
-            title="Output",
-            row=0, show=1, vspacing=2,
+            title="Output", row=0, show=1, vspacing=2,
         )
         self.lgbt.ksize.value = 5 # default blur window size
     

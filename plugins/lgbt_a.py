@@ -32,7 +32,7 @@ class Plugin(Layer):
         
         self.layout(
             self.params, title="blur-threshold",
-            type='vspin', cw=0, lw=48, tw=48
+            type='vspin', cw=0, lw=40, tw=40
         )
         self.layout(
             (self.hi, self.lo), title="cutoff [%]",

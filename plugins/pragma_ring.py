@@ -28,7 +28,7 @@ class Plugin(Layer):
                 (),
                 Button(self, "Setting", lambda v: self.show_setting()),
             ),
-            row=3
+            row=3,
         )
     
     def show_setting(self, force=0):

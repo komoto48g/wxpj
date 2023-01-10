@@ -37,7 +37,7 @@ class Plugin(Layer):
         )
         self.layout(
             (self.hi, self.lo), title="cutoff [%]",
-            visible=1, type='vspin', cw=-1, lw=16, tw=44
+            type='vspin', cw=-1, lw=16, tw=44
         )
         self.layout((btn,))
     

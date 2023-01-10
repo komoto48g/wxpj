@@ -267,7 +267,7 @@ class Plugin(Layer):
                 self.gain_selector,
             ),
             title="Acquire setting",
-            type='vspin', lw=32, cw=-1, tw=40
+            type='vspin', cw=-1, lw=32, tw=40
         )
         self.layout((
                 Button(self, "Capture", self.capture_ex, icon='camera'),
@@ -283,8 +283,8 @@ class Plugin(Layer):
                 Button(self, "Connect", self.connect, size=(-1,20)),
                 Button(self, "Prepare/dark", self.prepare_dark, size=(-1,20)),
             ),
-            title="Setup",
-            show=0, type=None, lw=-1, tw=50,
+            title="Setup", show=0,
+            type=None, lw=-1, tw=50,
         )
         self.__camera = None
     

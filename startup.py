@@ -37,7 +37,7 @@ class Plugin(Layer):
                 self.accv_param,
                 self.unit_param,
             ),
-            type='vspin', style='button', lw=66, tw=60, cw=-1
+            type='vspin', style='button', cw=-1, lw=66, tw=60,
         )
         self.layout((
             Button(self, "Apply ALL",

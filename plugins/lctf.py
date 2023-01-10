@@ -170,7 +170,7 @@ class Plugin(Layer):
                 self.tol,
             ),
             title="FFT Cond.",
-            type='vspin', style='button', lw=28, tw=50,
+            type='vspin', style='button', cw=-1, lw=28, tw=50,
         )
     
     @property
