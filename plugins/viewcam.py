@@ -23,13 +23,13 @@ class Plugin(Layer):
     def Init(self):
         self.viewer = Thread(self)
         
-        self.button = ToggleButton(self, "View camera", icon='camera',
-            handler=lambda v: self.viewer.Start(self.run)
-                        if v.IsChecked() else self.viewer.Stop())
+        def view(v):
+            if v.IsChecked():
+                self.viewer.Start(self.run)
+            else:
+                self.viewer.Stop()
         
-        self.sight_chk = wx.CheckBox(self, label="sight+") # 照準器
-        self.sight_chk.Value = 1
-        
+        self.button = ToggleButton(self, "View camera", icon='camera', handler=view)
         self.detect_chk = wx.CheckBox(self, label="detect")
         
         self.hi = LParam("hi", (0, 10, 0.01), 0.1)
@@ -42,21 +42,19 @@ class Plugin(Layer):
                 choices=['JeolCamera', 'RigakuCamera'], readonly=1)
         
         self.layout((
-                self.button, None,
-                self.sight_chk,
+                self.button,
+                4,
                 self.detect_chk,
             ),
-            row=2, cw=0, lw=16, tw=40
+            row=3,
         )
         self.layout((
-                self.camera_selector,
-                self.rate_param,
-                self.size_param,
-                self.hi,
-                self.lo,
+                self.camera_selector, None,
+                self.rate_param, self.hi,
+                self.size_param, self.lo,
             ),
-            title="Setting",
-            show=0, type='vspin', lw=40, tw=40, cw=-1
+            title="Detection settings",
+            row=2, show=0, type='vspin', lw=-1, tw=40
         )
     
     def Destroy(self):
@@ -72,14 +70,18 @@ class Plugin(Layer):
             
             while self.viewer.active:
                 buf = self.cameraman.capture()
+                
+                ## 画像サイズの縮小
                 src = edi.imconv(buf, self.hi.value, self.lo.value)
                 h, w = src.shape
                 H = self.size_param.value
                 W = H * w // h
                 dst = cv2.resize(src, (W, H), interpolation=cv2.INTER_AREA)
                 
-                ## 照準サークルを xor で足し合わせる
-                if self.sight_chk.Value:
+                ratio = H / h # dst/src 縮小率
+                
+                ## 照準器サークルを xor で足し合わせる
+                if 1:
                     c = 255 # white (xor) line 
                     cx, cy = W//2, H//2
                     buf = np.zeros((H, W), dtype=dst.dtype)
@@ -94,11 +96,6 @@ class Plugin(Layer):
                     ellipses = edi.find_ellipses(src, ksize=3, sortby='size')
                     if ellipses:
                         el = ellipses[0]
-                        R, n, s = edi.calc_ellipse(src, el)
-                        ## p = R * n/s
-                        ## q = R * (1-n)/(1-s)
-                        ## print("$(p, q) = {:g}, {:g}".format(p, q))
-                        ratio = H/h # dst/src 縮小率
                         cc, rc, angle = el
                         cc = np.int32(np.array(cc) * ratio)
                         rc = np.int32(np.array(rc) * ratio / 2)
@@ -110,12 +107,8 @@ class Plugin(Layer):
                 
                 if cv2.getWindowProperty(title, 0) < 0:
                     self.button.Value = False
-                    ## self.viewer.Stop()
                     break
         except Exception as e:
-            ## wx.MessageBox("The camera is not specified.\n\n",
-            ##               "Select a camera system from Setting",
-            ##               style=wx.ICON_ERROR)
             print(e)
         finally:
             self.viewer.Stop()

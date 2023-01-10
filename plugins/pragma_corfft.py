@@ -185,8 +185,8 @@ class Plugin(Layer):
             return
         x, y = frame.selector
         if len(x) < 2:
-            wx.MessageBox("Select two nearest spots."
-                          "\n\n{}".format(self.calc_ru.__doc__))
+            wx.MessageBox("Select two nearest spots.\n\n"
+                          "{}".format(self.calc_ru.__doc__))
             return
         
         u = frame.unit                      # [u/pix] or [u-1/pix] :FFT
