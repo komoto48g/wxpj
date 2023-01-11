@@ -10,26 +10,32 @@ from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from mwx import FSM, Frame, MiniFrame
 try:
     import pyJem2 as pj # Poor man's pyJem is not a PyJEM
-    from legacy import info, cntf, cmdl
+    from legacy import info as jinfo
+    from legacy import cntf, cmdl
 except ImportError:
     from . import pyJem2 as pj
-    from .legacy import info, cntf, cmdl
+    from .legacy import info as jinfo
+    from .legacy import cntf, cmdl
 
 
 class NotifyHandler(object):
     """Notify handler
     
-    The instance has both notify and request stream to communicate with TEM.
-    1. start() -> open the streams and update the information
-    2. update() -> update manually when config changed
-    3. bind/unbind transactions to the handler
-    4. stop() -> close the streams
+    This class has both notify and request stream.
+    To communicate with TEM, do the following steps:
     
-    thread : Notify thread instance
-   handler : Notify command handler instance
+        1. start() -> open the streams and update the information
+        2. update() -> update manually when config changed
+        3. bind/unbind transactions to the handler
+        4. stop() -> close the streams
     
-    Note: To check whether the streams are open,
-    see cmdl.STREAM, cntf.STREAM, and self.thread.active
+    Attributes:
+        thread  : Notify thread instance
+        handler : Notify command handler instance
+    
+    Note:
+        To check whether the streams are open,
+        see cmdl.STREAM, cntf.STREAM, and self.thread.active
     """
     thread = property(lambda self: self.__thread)
     handler = property(lambda self: self.__handler)
@@ -84,7 +90,7 @@ class NotifyHandler(object):
         
         TEM = 'TEM'
         STEM = 'ASID'
-        BUSY = ':busy'
+        BUSY = '-busy'
         
         self.__handler = FSM({
                 None : {
@@ -99,11 +105,10 @@ class NotifyHandler(object):
                      "det_info" : [ None ], # called when detectors are drived
                      "scr_info" : [ None ], # called when screen are drived (invalid for BK-TEMCENTER)▲
                    "gonio_info" : [ None ], # called when gonio is drived
-                  "filter_info" : [ None, self.on_degauss_fork ], # called when filter is drived
-                  "mode_notify" : [ None, self.on_mode_fork ], # called when optical mode changing/changed
+                  "filter_info" : [ None ], # called when filter is drived
                   "lens_notify" : [ None, lambda v: self.tem.lsys(v),
-                                          lambda v: self.tem.foci(v) ], # called when lenses data changed
-                  "defl_notify" : [ None, lambda v: self.tem.dsys(v) ], # called when deflectors data changed
+                                          lambda v: self.tem.foci(v) ], # called when lense data changed
+                  "defl_notify" : [ None, lambda v: self.tem.dsys(v) ], # called when deflector data changed
                   #"lfc_notify" : [ None ], # called when Lens Free Control is used (obsolete)
                      "fl_focus" : [ None ],
                      "br_focus" : [ None ],
@@ -143,6 +148,8 @@ class NotifyHandler(object):
             default = TEM
         )
         
+        ## pj で定義されている情報 (pmpj/Info) を参照する
+        
         self.illumination = pj.Illumination() # -> illumination_info
         self.imaging = pj.Imaging() # -> imaging_info
         self.omega = pj.Omega() # -> omega_info
@@ -158,11 +165,12 @@ class NotifyHandler(object):
         self.Apts = pj.ApertureEx
         
         ## pj で定義されない情報はここで実体を定義する
-        self.htsub_info = info.HTsub_info()
-        self.htsub2_info = info.HTsub2_info()
-        self.cur_info = info.Current_info()
-        self.scr_info = info.Screen_info()
-        self.det_info = info.Detector_info()
+        
+        self.htsub_info = jinfo.HTsub_info()
+        self.htsub2_info = jinfo.HTsub2_info()
+        self.cur_info = jinfo.Current_info()
+        self.scr_info = jinfo.Screen_info()
+        self.det_info = jinfo.Detector_info()
         
         _NC = cntf.NotifyCommand
         
@@ -181,12 +189,13 @@ class NotifyHandler(object):
             _NC("N197", "!5H", lambda v: self.handler("fl_focus", v)),
             ## _NC("N221", "!26H", lambda v: self.handler("lfc_notify", v)), # ▲使用しない STEM:!24H, TEM:!26H で異なる
             
-            _NC("N290", "!HH", lambda v: self.handler("mode_notify", v)),
+            _NC("N290", "!HH", lambda v: self.on_mode_fork),
             
             _NC("N184", None, lambda v: self.handler("relax begin", None)),
             _NC("N185", None, lambda v: self.handler("relax end", None)),
             
-            _NC("N162", "!2H2I2H2IH5dH", lambda v: self.handler("filter_info", self.efilter.Info(v))),
+            _NC("N162", "!2H2I2H2IH5dH", lambda v: self.on_filter_fork),
+            
             _NC("N140", "!3H798s", lambda v: self.handler("apt_info", pj.Aperture.Info(v))), # extype=0
             _NC("N141", None,     lambda v: self.handler("aptsel begin", v)), # extype=0
             _NC("N142", "3H798s", lambda v: self.handler("aptsel end", v)),   # extype=0
@@ -205,15 +214,28 @@ class NotifyHandler(object):
             _NC("N800", "!i", lambda v: self.handler("auto_htv", v)),
             _NC("N817", "!6H", lambda v: self.handler("auto_ems", v)),
         )
+        self.degauss_sw = 0
     
-    def on_degauss_fork(self, kwargv): #<filter_info>
-        self.handler("degauss {}".format("begin" if kwargv["status"] else "end"), kwargv)
+    def on_filter_fork(self, argv):
+        """Called when filter is drived."""
+        kwargv = self.efilter.Info(v)
+        if kwargv["status"]:
+            if not self.degauss_sw:
+                self.degauss_sw = 1
+                self.handler("degauss begin", kwargv)
+        elif self.degauss_sw:
+            self.degauss_sw = 0
+            self.handler("degauss end", kwargv)
+        else:
+            self.handler("filter_info", kwargv)
     
-    def on_mode_fork(self, kwargv): #<mode_notify>
-        id, trigger = kwargv
-        target = ('alpha', 'imode', 'mmode', 'mag', 'stem-mag', 'stem-cam')[id]
-        status = ('changing', 'changed') [trigger]
-        self.handler("{} {}".format(target, status), kwargv)
+    def on_mode_fork(self, argv):
+        """Called when optical mode is changing or changed."""
+        id, status = argv
+        if status:
+            self.handler("mode change", id)
+        else:
+            self.handler("mode changed", id)
     
     def on_htsub_fork(self, kwargv): #<htsub_info>
         self.handler('ht_info', self.hts.request())
