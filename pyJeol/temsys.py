@@ -189,12 +189,12 @@ class NotifyHandler(object):
             _NC("N197", "!5H", lambda v: self.handler("fl_focus", v)),
             ## _NC("N221", "!26H", lambda v: self.handler("lfc_notify", v)), # ▲使用しない STEM:!24H, TEM:!26H で異なる
             
-            _NC("N290", "!HH", lambda v: self.on_mode_fork),
+            ## _NC("N290", "!HH", self.on_mode_fork), # ▲ to be deprecated
             
             _NC("N184", None, lambda v: self.handler("relax begin", None)),
             _NC("N185", None, lambda v: self.handler("relax end", None)),
             
-            _NC("N162", "!2H2I2H2IH5dH", lambda v: self.on_filter_fork),
+            _NC("N162", "!2H2I2H2IH5dH", self.on_filter_fork),
             
             _NC("N140", "!3H798s", lambda v: self.handler("apt_info", pj.Aperture.Info(v))), # extype=0
             _NC("N141", None,     lambda v: self.handler("aptsel begin", v)), # extype=0
@@ -218,7 +218,9 @@ class NotifyHandler(object):
     
     def on_filter_fork(self, argv):
         """Called when filter is drived."""
-        kwargv = self.efilter.Info(v)
+        kwargv = self.efilter.Info(argv)
+        self.handler("filter_info", kwargv)
+        
         if kwargv["status"]:
             if not self.degauss_sw:
                 self.degauss_sw = 1
@@ -226,16 +228,14 @@ class NotifyHandler(object):
         elif self.degauss_sw:
             self.degauss_sw = 0
             self.handler("degauss end", kwargv)
-        else:
-            self.handler("filter_info", kwargv)
     
-    def on_mode_fork(self, argv):
-        """Called when optical mode is changing or changed."""
-        id, status = argv
-        if status:
-            self.handler("mode change", id)
-        else:
-            self.handler("mode changed", id)
+    ## def on_mode_fork(self, argv):
+    ##     """Called when optical mode is changing or changed."""
+    ##     id, status = argv
+    ##     if status == 0:
+    ##         self.handler("mode change", id)
+    ##     else:
+    ##         self.handler("mode changed", id)
     
     def on_htsub_fork(self, kwargv): #<htsub_info>
         self.handler('ht_info', self.hts.request())
