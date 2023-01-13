@@ -59,8 +59,9 @@ def init_mainframe(self):
     self.load_plug(viewframe)
     self.load_plug(viewfft)
     
-    ## from pyJeol import legacy
-    ## legacy.set_host('localhost', offline=0)
+    if 0:
+        from pyJeol import legacy
+        legacy.set_host('localhost', offline=0)
     
     self.notify.start()
     
@@ -92,7 +93,7 @@ def init_mainframe(self):
                    omega = dict(self.notify.omega.Info),
                      eos = dict(self.notify.eos.Info),
                       ht = dict(self.notify.hts.Info),
-                     apt = dict(self.notify.Apts.Info),
+                     apt = dict(self.notify.apts.Info),
                    gonio = dict(self.notify.gonio.Info),
                   filter = dict(self.notify.efilter.Info),
                  modestr = self.notify.modestr, # joined substr

@@ -57,10 +57,12 @@ class NotifyHandler(object):
     def update(self):
         """Request information from TEM server"""
         try:
-            self.on_illumination_notify(self.illumination.request())
-            self.on_imaging_notify(self.imaging.request())
-            self.on_omega_notify(self.omega.request()) # 最初の時点では OMEGA-TYPE 不明▲
-            self.efilter.request()
+            self.handler("illumination_info", self.illumination.request())
+            self.handler("imaging_info", self.imaging.request())
+            
+            ## 最初の時点では OMEGA-TYPE 不明▲
+            self.handler("omega_info", self.omega.request())
+            self.handler("filter_info", self.efilter.request())
         except IOError as e:
             print("- NotifyHandler failed to get filter info: {!r}.".format(e))
         
@@ -68,19 +70,17 @@ class NotifyHandler(object):
             self.tem.lsys.read()
             self.tem.dsys.read()
             self.tem.foci.read()
-            
             for lp in chain(self.tem.dsys, self.tem.lsys, self.tem.foci):
                 lp.std_value = None
             
-            self.eos.request() # -> update Info
-            self.hts.request()
-            self.gonio.request()
+            self.handler("ht_info", self.hts.request())
+            self.handler("eos_info", self.eos.request())
+            self.handler("gonio_info", self.gonio.request())
             
-            extype = bool(pj.ApertureEx._get_info()) # 最初の時点では APT-EXTYPE 不明▲
-            if extype:
-                self.Apts = pj.ApertureEx
-            else:
-                self.Apts = pj.Aperture
+            ## 最初の時点では APT-EXTYPE 不明▲
+            extype = bool(pj.ApertureEx._get_info())
+            self.apts = pj.ApertureEx if extype else pj.Aperture
+            self.handler("apt_info", self.apts.request())
         except IOError as e:
             print("- NotifyHandler failed to get TEM info: {!r}.".format(e))
     
@@ -160,9 +160,7 @@ class NotifyHandler(object):
         self.efilter = pj.Filter() # -> filter_info
         
         ## Aperture system typeinfo
-        ## self.Aperture = pj.Aperture
-        ## self.ApertureEx = pj.ApertureEx
-        self.Apts = pj.ApertureEx
+        self.apts = pj.ApertureEx
         
         ## pj で定義されない情報はここで実体を定義する
         
@@ -189,7 +187,7 @@ class NotifyHandler(object):
             _NC("N197", "!5H", lambda v: self.handler("fl_focus", v)),
             ## _NC("N221", "!26H", lambda v: self.handler("lfc_notify", v)), # ▲使用しない STEM:!24H, TEM:!26H で異なる
             
-            ## _NC("N290", "!HH", self.on_mode_fork), # ▲ to be deprecated
+            ## _NC("N290", "!HH", self.on_mode_fork), # ▲to be deprecated
             
             _NC("N184", None, lambda v: self.handler("relax begin", None)),
             _NC("N185", None, lambda v: self.handler("relax end", None)),
