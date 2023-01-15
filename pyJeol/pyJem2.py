@@ -379,7 +379,7 @@ class EOsys(Device):
     _set_lscr = Command("C320", "!H", "!H", device='PHOTO') # o LSCR {0:0, 2:90} deg
     _get_scr = Command("C325", None, "!2H", device='PHOTO') # o LSCR {0:0, 2:90} deg, FSCR {0:out, 1:in}.
     
-    _set_det = Command("D170", "!25H", None, device='ASID') # x
+    _set_det = Command("D170", "!25H", None, device='ASID') # x ▼not supported
     _get_det = Command("D171", None, "!25H", device='ASID') # x ▼not supported
     
     ## for FEG only

@@ -317,7 +317,7 @@ class Current_info(Infodict): #[N404] - ?
     """
 
 
-class Screen_info(Infodict): #[N401] - [C320][C325] ! WHITE-TEMCENTER only
+class Screen_info(Infodict): #[N401] - [C320,C321][C325] ! WHITE-TEMCENTER only
     """Screen status スクリーン情報
            pose : {0:0+, 1:7+, 2:90+} degs
           state : out/in
