@@ -59,11 +59,12 @@ def init_mainframe(self):
     self.load_plug(viewframe)
     self.load_plug(viewfft)
     
-    if 0:
-        from pyJeol import legacy
-        legacy.set_host('localhost', offline=0)
+    from pyJeol import legacy
+    legacy.cmdl.TIMEOUT = 1
+    ## legacy.set_host('localhost', offline=0)
     
     self.notify.start()
+    ## self.notify.handler.debug = 4
     
     ## --------------------------------
     ## global keymap
