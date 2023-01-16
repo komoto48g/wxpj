@@ -232,7 +232,7 @@ class DeflSystem(Systembase):
         self.__Lenses = [LensParam(name) for name in self.TAGS[:62]]
         
         for lp in self.Lenses:
-            lp.std_value = 0x8000
+            ## lp.std_value = 0x8000
             lp.bind(self.write)
     
     def read(self, stdbase=False):
