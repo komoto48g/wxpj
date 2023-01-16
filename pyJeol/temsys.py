@@ -68,10 +68,10 @@ class NotifyHandler(object):
         
         try:
             self.tem.lsys.read()
-            self.tem.dsys.read()
-            self.tem.foci.read()
-            for lp in chain(self.tem.dsys, self.tem.lsys, self.tem.foci):
-                lp.std_value = None
+            ## self.tem.dsys.read()
+            ## self.tem.foci.read()
+            self.handler("lens_notify", self.tem.foci.read())
+            self.handler("defl_notify", self.tem.dsys.read())
             
             self.handler("ht_info", self.hts.request())
             self.handler("eos_info", self.eos.request())
