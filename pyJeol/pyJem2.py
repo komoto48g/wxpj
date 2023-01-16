@@ -7,7 +7,7 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 from collections import OrderedDict
 import time
 import numpy as np
-from numpy import inf
+from numpy import inf, nan
 try:
     from temisc import mrange
     from temisc import FLHex, OLHex
@@ -524,7 +524,9 @@ class Aperture(Device):
     @property
     def dia(self):
         """selected hole diameter value"""
-        return self.holes[self.sel]
+        if self.sel is not None:
+            return self.holes[self.sel]
+        return nan
     
     @dia.setter
     def dia(self, v):
