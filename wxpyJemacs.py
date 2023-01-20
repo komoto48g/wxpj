@@ -34,21 +34,7 @@ if 'mwx' not in sys.modules:
 import mwx
 from jgdk import Frame
 from pyJeol.temsys import NotifyFront
-import pyJeol as pJ
 import pyDM3reader as DM3lib
-
-
-def version():
-    return '\n  '.join((
-        "<Python {}>".format(sys.version),
-        "wx version {}".format(wx.__version__),
-        "scipy/numpy version {}/{}".format(sp.__version__, np.__version__),
-        "matplotlib version {}/{}".format(mpl.__version__, mpl.get_backend()),
-        "Image version {}".format(Image.__version__),
-        "cv2 version {}".format(cv2.__version__),
-        "mwx {}".format(mwx.__version__),
-        "pJ {}".format(pJ.__version__),
-        ))
 
 
 class MainFrame(Frame):
@@ -161,8 +147,6 @@ class MainFrame(Frame):
 
 
 if __name__ == "__main__":
-    print(version())
-    
     session = None
     online = None
     try:

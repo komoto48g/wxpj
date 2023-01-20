@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """siteinit file
 """
-import builtins
 import sys
 
 
@@ -62,9 +61,11 @@ def init_mainframe(self):
     from pyJeol import legacy
     legacy.cmdl.TIMEOUT = 1
     ## legacy.set_host('localhost', offline=0)
-    
-    self.notify.start()
-    ## self.notify.handler.debug = 4
+    try:
+        self.notify.start()
+        ## self.notify.handler.debug = 4
+    except Exception as e:
+        print("$(e) = {!r}".format((e)))
     
     ## --------------------------------
     ## global keymap
