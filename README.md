@@ -19,7 +19,7 @@ These instructions will get you a copy of the project up and running on your loc
   pJ 0.50
 ```
 
-![setup](docfiles/images/net.png)
+![setup](./images/net.png)
 
 
 ### Prerequisites
