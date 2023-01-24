@@ -12,25 +12,12 @@ __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 
 import getopt
-import glob
 import sys
 import os
 import re
 import wx
 import wx.adv
-import cv2
 import numpy as np
-import scipy as sp
-import matplotlib as mpl
-from PIL import Image
-if 'mwx' not in sys.modules:
-    home = os.path.dirname(os.path.abspath(__file__))
-    if sys.version_info >= (3,8):
-        eggs = os.path.join(home, "nest/*-py3.8.egg")
-    else:
-        eggs = os.path.join(home, "nest/*-py3.5.egg")
-    for path in reversed(glob.glob(eggs)):
-        sys.path.append(path)
 import mwx
 from jgdk import Frame
 from pyJeol.temsys import NotifyFront
