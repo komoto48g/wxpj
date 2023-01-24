@@ -220,7 +220,7 @@ class Plugin(Layer):
     
     def capture(self):
         """Capture image
-        If `dark subtraction' is checked, the image is dark-subtracted,
+        If 'dark subtraction' is checked, the image is dark-subtracted,
         and the result image is dtype:float32, otherwise uint16.
         """
         buf = self.acquire()

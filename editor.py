@@ -119,7 +119,9 @@ def imtrunc(buf, hi=0, lo=0):
 
 
 def imconv(buf, hi=0, lo=0):
-    """Convert buffer to dst<uint8> := |(buf-a) * 255/(b-a)|.
+    """Convert buffer to dst<uint8>
+    
+    >>> dst = (src-a) * 255 / (b-a)
     
     hi/lo : cuts vlim with given tolerance score [%]
     """
@@ -369,7 +371,7 @@ def qrsp(x, y):
 
 def find_local_extremum(x, y, max=True):
     """2次式で極値の箇所を推定する．
-    Estimates the `max|min peak pos y[x] and the value.
+    Estimates the max/min peak pos y[x] and the value.
     
     x は昇順ソートされていること．少なくとも３点なくてはならない
     推定位置が範囲内になければ，範囲内の極値点と判定結果を返す
@@ -397,7 +399,7 @@ def find_local_extremum(x, y, max=True):
 
 def find_local_extremum2d(src, max=True):
     """2次式で極値の箇所を推定する．
-    Estimates the `max|min peak pos [x,y] and the value.
+    Estimates the max/min peak pos [x,y] and the value.
     
     推定位置が範囲内にあるとは限らない．
     max:凹，min:凸，および，鞍点の場合は None を返す
@@ -417,11 +419,11 @@ def find_local_extremum2d(src, max=True):
 
 
 def match_pattern(src, temp, method=cv2.TM_CCOEFF_NORMED):
-    """Match_pattern of image `src to template image.
+    """Match_pattern of src image to template image.
     
     The depth must be (CV_8U or CV_32F)
     
-    All the 6 methods for comparison in a list `method` must be in
+    The comparison method is one of the following:
         'TM_CCOEFF', 'TM_CCOEFF_NORMED',
         'TM_CCORR',  'TM_CCORR_NORMED',
         'TM_SQDIFF', 'TM_SQDIFF_NORMED',
@@ -437,7 +439,7 @@ def match_pattern(src, temp, method=cv2.TM_CCOEFF_NORMED):
 
 def eval_shift(src, src2, div=4):
     h, w = src.shape
-    ht, wt = h//div, w//div  # template pattern in the src divided by `div
+    ht, wt = h//div, w//div  # template pattern in the src divided by div
     xt = int((w - wt) / 2)   # template position lt = (xt, yt)
     yt = int((h - ht) / 2)   # 
     temp = src[yt:yt+ht, xt:xt+wt]

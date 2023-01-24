@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 """The frontend of Graph and Plug manager
 
-  Phase 1: Legacy (2015--2017) TEM control
-  Phase 2: Phoenix (2018--2020) Integrated system for image analysis
-  Phase 3: Analysis center phoenix (2020--2022)
-  Phase 4: Automation center phoenix (2022--)
+Development phase::
+
+    Phase 1. Legacy (2015--2017) TEM control
+    Phase 2. Phoenix (2018--2020) Integrated system for image analysis
+    Phase 3. Analysis center phoenix (2020--2022)
+    Phase 4. Automation center phoenix (2022--)
 """
 __version__ = "0.45rc"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"

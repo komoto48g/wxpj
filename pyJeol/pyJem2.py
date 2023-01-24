@@ -181,10 +181,10 @@ class TEM(object):
 class Optics(object):
     """Optics mode base(mixin) class
     
-    The inherited class must have `MODES and `Info which is to be notified.
-    The request command complementary to the notify must be defined as `_get_info.
-    The Mode.setter can only function if the class has a request command `_set_mode.
-    The Selector.setter can only function if the class has a request command `_set_index.
+    The inherited class must have MODES and Info which is to be notified.
+    The request command complementary to the notify must be defined as _get_info.
+    The Mode.setter can only function if the class has a request command _set_mode.
+    The Selector.setter can only function if the class has a request command _set_index.
     """
     @classmethod
     def request(self, key=None):

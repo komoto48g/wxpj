@@ -56,28 +56,32 @@ except AttributeError:
 ##   the second being a string that contains the response entity body.
 ## 
 HTTP = httplib2.Http()
-TEM_URL = "http://{}:49229/TEMService/TEM/{}".format
-CAM_URL = "http://{}:49230/CameraStationService/{}".format
-DET_URL = "http://{}:49226/DetectorRESTService/Detector/{}".format
-
 HEADER = {"connection" : "close"}
 
+def _TEM_URL(*args):
+    return "http://{}:49229/TEMService/TEM/{}".format(*args)
+
+def _CAM_URL(*args):
+    return "http://{}:49230/CameraStationService/{}".format(*args)
+
+def _DET_URL(*args):
+    return "http://{}:49226/DetectorRESTService/Detector/{}".format(*args)
 
 def StartCreateCache(host):
     """ライブ像のキャッシュを受け取るようにする処理の開始"""
-    url = DET_URL(host, "StartCreateRawDataCache")
+    url = _DET_URL(host, "StartCreateRawDataCache")
     res, con = HTTP.request(url, "POST", headers=HEADER)
     return con
 
 def StopCreateCache(host):
     """ライブ像のキャッシュを受け取るようにする処理の停止"""
-    url = DET_URL(host, "StopCreateRawDataCache")
+    url = _DET_URL(host, "StopCreateRawDataCache")
     res, con = HTTP.request(url, "POST", headers=HEADER)
     return con
 
 def CreateCache(host, name):
     """ライブ像のキャッシュを受け取る"""
-    url = DET_URL(host, name + "/CreateRawDataCache")
+    url = _DET_URL(host, name + "/CreateRawDataCache")
     res, data = HTTP.request(url, "GET", headers=HEADER)
     return data
 
@@ -98,18 +102,20 @@ typenames_info = { # 0:maxcnt, (pixel_size, bins, gains,
 class Camera(object):
     """Jeol Camera (proxy of Detector)
     
-    name : name of selected camera
-    host : localhost if offline (default) otherwise 172.17.41.1
-    cont : camera controller
+    Args:
+        name : name of selected camera
+        host : localhost if offline (default) otherwise 172.17.41.1
     
-Camera property:
-  pixel_size : raw pixel size [u/pix]
-  pixel_unit : pixel (with binning) size [u/pix]
-    exposure : exposure time [s]
-     binning : binning number (typ. 1,2,4) in bins <list>
-        gain : gain number (1 -- 10) in gains <list>
-       shape : (h,w) height and width of image
-   max_count : the maximum count (used to check if saturated)
+    Camera property::
+    
+        cont        : camera controller
+        pixel_size  : raw pixel size [u/pix]
+        pixel_unit  : pixel (with binning) size [u/pix]
+        exposure    : exposure time [s]
+        binning     : binning number (typ. 1,2,4) in bins <list>
+        gain        : gain number (1 -- 10) in gains <list>
+        shape       : (h,w) height and width of image
+        max_count   : the maximum count (used to check if saturated)
     """
     busy = 0
     bins = (1,2,4)
@@ -384,7 +390,7 @@ class Plugin(Layer):
     
     def capture(self):
         """Capture image
-        If `dark subtraction' is checked, the image is dark-subtracted,
+        If 'dark subtraction' is checked, the image is dark-subtracted,
         and the result image is dtype:float32, otherwise uint16.
         """
         buf = self.acquire()

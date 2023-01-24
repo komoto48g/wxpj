@@ -5,7 +5,7 @@
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 
 Wx Import Warning:
-    Please `import PyJEM` *before* the wx.App is created and enters mainloop.
+    Please ``import PyJEM`` *before* the wx.App is created and enters mainloop.
     Wx accepts TEM3 module only if it already loaded in process.
     Do *NOT* import PyJEM after the wx.App mainloop started,
     or else you can never expect it works correctly.
@@ -27,27 +27,22 @@ try:
         print('Loading TEM3:offline module has already loaded.')
         from PyJEM.offline import TEM3
         Offline = True
-        
     elif 'PyJEM.TEM3' in sys.modules:
         print('Loading TEM3:online module has already loaded.')
         from PyJEM import TEM3
         Offline = False
-        
     else:
         print(__doc__)
         if Offline:
             from PyJEM.offline import TEM3
         else:
             from PyJEM import TEM3
-
 except ImportError as e:
     print(e)
     print("Current version is Python {}".format(sys.version))
     Offline = None
     TEM3 = None
-
-
-if TEM3:
+else:
     APT  = TEM3.Apt3()
     LENS = TEM3.Lens3()
     DEFL = TEM3.Def3()
@@ -186,9 +181,9 @@ class TEM(object):
 class Optics(object):
     """Optics mode base(mixin) class
     
-    The inherited class must have `MODES.
-    The Mode can only function if the class has commands `_set_mode and `_get_mode.
-    The Selector can only function if the class has commands `_set_index and '_get_index.
+    The inherited class must have MODES.
+    The Mode can only function if the class has commands _set_mode and _get_mode.
+    The Selector can only function if the class has commands _set_index and _get_index.
     """
     @property
     def Name(self):
