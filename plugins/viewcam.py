@@ -35,7 +35,7 @@ class Plugin(Layer):
         self.hi = LParam("hi", (0, 10, 0.01), 0.1)
         self.lo = LParam("lo", (0, 10, 0.01), 0.0)
         
-        self.rate_param = LParam('rate', (100,500,100), 500, tip="refresh speed [ms] (>= 100ms)")
+        self.rate_param = LParam('rate', (0,500,50), 500, tip="refresh speed [ms] (>= 100ms)")
         self.size_param = Param('size', (128,256,512,1024), 512, tip="resizing view window (<= 1k)")
         
         self.camera_selector = Choice(self,
@@ -103,14 +103,13 @@ class Plugin(Layer):
                         cv2.ellipse(dst, cc, rc, angle, 0, 360, (192,192,0), 2) # cyan:"#00c0c0"
                 
                 cv2.imshow(title, dst)
-                cv2.waitKey(self.rate_param.value)
-                
+                cv2.waitKey(self.rate_param.value + 1)
                 if cv2.getWindowProperty(title, 0) < 0:
-                    self.button.Value = False
                     break
         except Exception as e:
             print(e)
         finally:
+            self.button.Value = False
             self.viewer.Stop()
             cv2.destroyAllWindows()
 
