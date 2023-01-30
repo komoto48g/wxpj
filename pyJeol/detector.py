@@ -15,7 +15,17 @@ HEADER = {"connection" : "close"}
 class Detector:
     """Detecgtor controller
     
-    Attributes reference keys::
+    Args:
+        name : detector name
+        host : host server (default to '172.17.41.1')
+    
+    Select one of the following detector names:
+    
+        - TVCAM_U
+        - TVCAM_SCR_L
+        - TVCAM_SCR_F
+    
+    Attributes reference keys:
     
         - OutputImageInformation <dict>
         - ExposureTimeValue [msec]
@@ -31,7 +41,7 @@ class Detector:
         res, con = HTTP.request(url, method, body, headers=HEADER)
         return con
     
-    def __init__(self, name, host):
+    def __init__(self, name, host=HOST):
         self.name = name
         self.HOST = host
     
