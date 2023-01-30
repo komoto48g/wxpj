@@ -3,7 +3,7 @@
 """Gatan Camera module
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
-Contributions by Hirofumi Iijima @JEOL.JP
+Contributions by Hirofumi Iijima/JEOL/JP
 """
 from datetime import datetime
 import time

@@ -3,88 +3,16 @@
 """Jeol Camera module
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
-Contributions by Hiroyuki Satoh @JEOL.JP
+Contributions by Hiroyuki Satoh/JEOL/JP
 """
 from datetime import datetime
 import time
-import sys
 import os
 import wx
-import httplib2
 import numpy as np
 from PIL import Image
 from jgdk import Layer, Param, LParam, Button, Choice
-
-try:
-    Offline = None
-    from PyJEM import detector
-
-except ImportError:
-    Offline = 1
-    try:
-        if 'PyJEM.offline' in sys.modules:
-            print('Loading PyJEM:offline module has already loaded.')
-            from PyJEM.offline import detector
-            Offline = True
-        
-        elif 'PyJEM' in sys.modules:
-            print('Loading PyJEM:online module has already loaded.')
-            from PyJEM import detector
-            Offline = False
-        
-        else: # the case when this modulue is tested in standalone
-            if Offline:
-                from PyJEM.offline import detector
-            else:
-                from PyJEM import detector
-        
-    except ImportError:
-        print("Current sys.version is Python {}".format(sys.version.split()[0]))
-        print("- PyJEM is supported under Python 3.5... sorry")
-        Offline = None
-        detector = None
-
-try:
-    detector.change_ip("172.17.41.1")
-except AttributeError:
-    pass
-
-## REST client
-##   Performs a single HTTP request.
-##   The return value is a tuple of (response, content),
-##   the first being an instance of the 'Response' class,
-##   the second being a string that contains the response entity body.
-## 
-HTTP = httplib2.Http()
-HEADER = {"connection" : "close"}
-
-def _TEM_URL(*args):
-    return "http://{}:49229/TEMService/TEM/{}".format(*args)
-
-def _CAM_URL(*args):
-    return "http://{}:49230/CameraStationService/{}".format(*args)
-
-def _DET_URL(*args):
-    return "http://{}:49226/DetectorRESTService/Detector/{}".format(*args)
-
-def StartCreateCache(host):
-    """ライブ像のキャッシュを受け取るようにする処理の開始"""
-    url = _DET_URL(host, "StartCreateRawDataCache")
-    res, con = HTTP.request(url, "POST", headers=HEADER)
-    return con
-
-def StopCreateCache(host):
-    """ライブ像のキャッシュを受け取るようにする処理の停止"""
-    url = _DET_URL(host, "StopCreateRawDataCache")
-    res, con = HTTP.request(url, "POST", headers=HEADER)
-    return con
-
-def CreateCache(host, name):
-    """ライブ像のキャッシュを受け取る"""
-    url = _DET_URL(host, name + "/CreateRawDataCache")
-    res, data = HTTP.request(url, "GET", headers=HEADER)
-    return data
-
+from pyJeol.detector import Detector
 
 hostnames = [
     'localhost',
@@ -124,10 +52,8 @@ class Camera(object):
     def __init__(self, name, host):
         self.name = name
         self.host = host
-        self.cont = detector.Detector(name)
+        self.cont = Detector(name, host)
         self.pixel_size = 0.05
-        self.__bin_index = 0
-        self.__gain_index = 0
         self.cached_time = 0
         self.cached_image = None
         self.cached_saturation = None
@@ -135,18 +61,15 @@ class Camera(object):
     
     def __del__(self):
         try:
-            StopCreateCache(self.host) # ▲不要みたいだがトレースバックがうぜえ
+            self.cont.StopCreateRawDataCache()
         except Exception:
             pass
     
     def start(self):
-        StartCreateCache(self.host) # check status
-        self.cont.livestart()
-        return True
+        self.cont.LiveStart()
     
     def stop(self):
-        StopCreateCache(self.host) # close connection
-        self.cont.livestop()
+        self.cont.LiveStop()
     
     def cache(self):
         """Cache of the current image <uint16>"""
@@ -158,8 +81,8 @@ class Camera(object):
                 if self.cached_image is not None:
                     return self.cached_image
             
-            StartCreateCache(self.host)
-            data = CreateCache(self.host, self.name)
+            self.cont.StartCreateRawDataCache()
+            data = self.cont.CreateRawDataCache()
             buf = np.frombuffer(data, dtype=np.uint16)
             buf.resize(self.shape)
             self.cached_image = buf
@@ -175,44 +98,45 @@ class Camera(object):
     
     @property
     def shape(self):
-        ji = self.cont.get_detectorsetting()
-        h = ji['OutputImageInformation']['ImageSize']['Height']
-        w = ji['OutputImageInformation']['ImageSize']['Width']
+        info = self.cont['OutputImageInformation']['ImageSize']
+        h = info['Height']
+        w = info['Width']
         return h, w
     
     @property
     def exposure(self):
-        ji = self.cont.get_detectorsetting()
-        return ji['ExposureTimeValue'] /1e3
+        return self.cont['ExposureTimeValue'] / 1e3
     
     @exposure.setter
     def exposure(self, sec):
         if abs(self.exposure - sec) > 1e-6:
-            self.cont.set_exposuretime_value(sec * 1e3) # set as <msec>
-    
+            self.cont['ExposureTimeValue'] = sec * 1e3
+        
     @property
     def binning(self):
-        ji = self.cont.get_detectorsetting()
-        return self.bins[ji.get('BinningIndex', self.__bin_index)]
+        try:
+            return self.bins[self.cont['BinningIndex']]
+        except KeyError:
+            pass
     
     @binning.setter
     def binning(self, v):
         if 0 < v <= self.bins[-1]:
-            j = np.searchsorted(self.bins, v)
-            self.__bin_index = j
-            self.cont.set_binningindex(int(j)) #<np.int64> crashes online▲
+            j = np.searchsorted(self.bins, v) #<np.int64> crashes online▲
+            self.cont['BinningIndex'] = int(j)
     
     @property
     def gain(self):
-        ji = self.cont.get_detectorsetting()
-        return self.gains[ji.get('GainIndex', self.__gain_index)]
+        try:
+            return self.gains[self.cont['GainIndex']]
+        except KeyError:
+            pass
     
     @gain.setter
     def gain(self, v):
         if 0 < v <= self.gains[-1]:
-            j = np.searchsorted(self.gains, v)
-            self.__gain_index = j
-            self.cont.set_gainindex(int(j)) #<np.int64> crashes online▲
+            j = np.searchsorted(self.gains, v) #<np.int64> crashes online▲
+            self.cont['GainIndex'] = int(j)
 
 
 class DummyCamera(object):
@@ -230,7 +154,7 @@ class DummyCamera(object):
     
     def cache(self):
         ## n = 2048 // self.binning
-        ## return np.uint16(np.random.randn(n,n) * self.max_count)
+        ## buf = np.uint16(np.random.randn(n, n) * self.max_count)
         buf = self.parent.graph.buffer
         self.cached_image = buf
         self.cached_time = time.time()
