@@ -6,10 +6,10 @@ Development phase::
 
     Phase 1. Legacy (2015--2017) TEM control
     Phase 2. Phoenix (2018--2020) Integrated system for image analysis
-    Phase 3. Analysis center phoenix (2020--2022)
-    Phase 4. Automation center phoenix (2022--)
+    Phase 3. Analysis center phoenix (2020--2021)
+    Phase 4. Automation center phoenix (2022--2023)
 """
-__version__ = "0.45rc"
+__version__ = "0.46rc"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 
@@ -166,7 +166,6 @@ if __name__ == "__main__":
                 import PyJEM.offline
         except ImportError as e:
             print("  {}... pass".format(e))
-            ## print("  PyJEM is supported under Python 3.5... sorry")
     
     ## Launch application
     ## 1. load si:siteinit -> initialize app settings

@@ -9,7 +9,7 @@ import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from mwx import FSM, Frame, MiniFrame
 try:
-    import pyJem2 as pj # Poor man's pyJem is not a PyJEM
+    import pyJem2 as pj
     from legacy import info as jinfo
     from legacy import cntf, cmdl
 except ImportError:
