@@ -96,7 +96,7 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     h, w = src.shape
     nx, ny = center if center is not None else (w//2, h//2)
     
-    dst = cv2.linearPolar(src, (nx,ny), w, cv2.WARP_FILL_OUTLIERS)
+    dst = cv2.linearPolar(src, (nx, ny), w, cv2.WARP_FILL_OUTLIERS)
     
     ## Mask X (radial) axis
     lo = int(max(lo, 0))
@@ -105,7 +105,8 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     dst[:,hi:] = 0
     
     ## Resize Y:angular axis (計算を軽くするためリサイズ)
-    rdst = cv2.resize(dst[:,lo:hi].astype(np.float32), (hi-lo, N), interpolation=cv2.INTER_AREA)
+    rdst = cv2.resize(dst[:,lo:hi].astype(np.float32),
+                      (hi-lo, N), interpolation=cv2.INTER_AREA)
     rdst -= rdst.mean()
     
     temp = rdst[0][::-1] # template of corr; distr at theta = 0
@@ -114,8 +115,8 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
         p = signal.fftconvolve(fr, temp, mode='same')
         data.append(p.argmax())
     
-    ## 相関の計算は上から行うので，2pi --> 0 の並びのリストになる
-    ##   最終的に返す計算結果は逆転させて，0 --> 2pi の並びにする
+    ## 相関の計算は上から行うので，2pi --> 0 の並びになる
+    ## 最終的に返す計算結果は逆転させて，0 --> 2pi の並びにする
     Y = np.array(data[::-1]) - (hi-lo)/2
     X = np.arange(0, 1, 1/len(Y)) * 2*pi
     
@@ -123,7 +124,7 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     ## if 0:
     ##     ym = np.median(Y)
     ##     ys = np.std(Y)
-    ##     xy = [(x,y) for x,y in zip(X,Y) if -ys < y-ym < ys]
+    ##     xy = [(x, y) for x, y in zip(X, Y) if -ys < y-ym < ys]
     ##     xx, yy = np.array(xy).T
     
     ## remove leaps(2): tol より小さいとびを許容する (画素サイズに比例)
@@ -139,13 +140,10 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     
     ## edi.plot(xx, yy, '+', X, fitting_curve(X))
     
-    a = fitting_curve.params[0] = 0 # :a=0 として(平均を基準とする)全体のオフセット量を評価する
+    a = fitting_curve.params[0] = 0 # (平均を基準とする) 全体のオフセット量
     b = fitting_curve.params[1]
     c = fitting_curve.params[2] % (2*pi)
     
-    ## t = c+pi if b>0 else c # 推定中心方向
-    ## nx -= abs(b) * cos(t)
-    ## ny += abs(b) * sin(t)
     t = c if b>0 else c+pi # tmax: 推定中心方向
     nx += abs(b) * cos(t)
     ny -= abs(b) * sin(t)
@@ -199,10 +197,9 @@ class Plugin(Layer):
         src = frame.buffer
         h, w = src.shape
         center = (w//2, h//2)
-        ## center = edi.centroid(src)
         if shift:
             nx, ny = frame.xytopixel(frame.selector)
-            center = nx[0], ny[0]
+            center = int(nx[0]), int(ny[0])
         
         ## Search center and fit with model (twice at least)
         lo = h/2 * self.rmin.value
@@ -218,8 +215,6 @@ class Plugin(Layer):
         rdist = fitting_curve.mod1d(buf)
         
         ## Find radial peaks in polar-converted buffer
-        ## peaks = signal.find_peaks_cwt(rdist, widths=np.arange(3,4))
-        ## peaks = [p for p in peaks if rdist[p] > rdist.mean()] # filtered by threshold
         rdist, peaks = find_radial_peaks(rdist)
         
         if self.chkplt.Value: # this should be called for MainThread

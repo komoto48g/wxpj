@@ -84,7 +84,7 @@ def find_ring_center(src, lo, hi, N=256, tol=0.01):
     
     ## edi.plot(xx, yy, '+', X, fitting_curve(X))
     
-    fitting_curve.params[0] = 0 # :a=0 として(平均を基準とする)全体のオフセット量を評価する
+    fitting_curve.params[0] = 0 # (平均を基準とする) 全体のオフセット量
     fitting_curve.params[1] = 0
     fitting_curve.params[2] = 0
     
