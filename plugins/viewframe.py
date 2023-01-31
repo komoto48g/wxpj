@@ -34,10 +34,11 @@ else:
 
 
 class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
-    """ CheckList of Graph buffers
+    """CheckList of Graph buffers.
     
-    list item order = buffer order
-    (リストアイテムとバッファの並び順 0..n は常に一致します)
+    Note:
+        list item order = buffer order.
+        (リストアイテムとバッファの並び順 0..n は常に一致します)
     """
     @property
     def selected_items(self):

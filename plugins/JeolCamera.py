@@ -1,6 +1,6 @@
 #! python3
 # -*- coding: utf-8 -*-
-"""Jeol Camera module
+"""Jeol Camera module.
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 Contributions by Hiroyuki Satoh/JEOL/JP
@@ -28,7 +28,7 @@ typenames_info = { # 0:maxcnt, (pixel_size, bins, gains,
 
 
 class Camera(object):
-    """Jeol Camera (proxy of Detector)
+    """Jeol camera (proxy of Detector).
     
     Args:
         name : name of selected camera
@@ -72,7 +72,7 @@ class Camera(object):
         self.cont.LiveStop()
     
     def cache(self):
-        """Cache of the current image <uint16>"""
+        """Cache of the current image <uint16>."""
         try:
             while Camera.busy:
                 time.sleep(0.01) # ここで通信待機
@@ -140,6 +140,8 @@ class Camera(object):
 
 
 class DummyCamera(object):
+    """Dummy camera (proxy of Detector).
+    """
     def __init__(self, parent):
         self.parent = parent
         self.name = 'camera'
@@ -170,7 +172,7 @@ class DummyCamera(object):
 
 
 class Plugin(Layer):
-    """Jeol camera manager
+    """Jeol camera manager.
     """
     menukey = "Cameras/&Jeol camera ver.2"
     
@@ -300,7 +302,7 @@ class Plugin(Layer):
         }
     
     def acquire(self):
-        """Acquire image with no dark subtraction"""
+        """Acquire image with no dark subtraction."""
         try:
             if self.camera is None:
                 self.connect()
@@ -313,7 +315,8 @@ class Plugin(Layer):
             print(self.message("- Failed to acquire image: {!r}".format(e)))
     
     def capture(self):
-        """Capture image
+        """Capture image.
+        
         If 'dark subtraction' is checked, the image is dark-subtracted,
         and the result image is dtype:float32, otherwise uint16.
         """
@@ -324,7 +327,7 @@ class Plugin(Layer):
         return buf
     
     def capture_ex(self, evt=None):
-        """Capture image and load to the target window
+        """Capture image and load to the target window.
         """
         self.message("Capturing image...")
         buf = self.capture()
@@ -344,7 +347,8 @@ class Plugin(Layer):
             self.dark_chk.Enable(0)
     
     def prepare_dark(self, evt=None, verbose=True):
-        """Prepare dark reference
+        """Prepare dark reference.
+        
         Before execution, blank the beam manually.
         Please close the curtain to prevent light leakage.
         """

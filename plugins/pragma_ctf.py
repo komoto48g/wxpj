@@ -10,7 +10,8 @@ import editor as edi
 
 
 def _make_indices(i, j, N):
-    """Indices list descentding order[i..j] and ascending order[j..k]"""
+    """Indices list descentding order[i..j] and ascending order[j..k].
+    """
     lhs = np.arange(i, np.floor(j), -1)
     n = N - len(lhs)
     j = np.ceil(j)
@@ -88,7 +89,7 @@ class Plugin(Layer):
               sep='\n')
     
     def calc_optvar(self, show=True):
-        """Calc optical variables
+        """Calc optical variables.
         """
         xx = self.lctf.lpoints[0] # selected peak points of x:ref
         ## yy = np.arange(len(xx)) # selected peak indices # ▲昇順のみを仮定している
@@ -201,10 +202,11 @@ class Plugin(Layer):
         ))
     
     def run(self):
-        """Execute all processes
-        1. Calc log-polar of ring pattern
-        2. Calc min/max peak detection
-        3. Calc optical variables
+        """Execute all processes.
+        
+        1. Calc log-polar of ring pattern.
+        2. Calc min/max peak detection.
+        3. Calc optical variables.
         """
         print('-' * 32)
         print('>', self.graph.frame.name)

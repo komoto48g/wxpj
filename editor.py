@@ -1,6 +1,6 @@
 #! python3
 # -*- coding: utf-8 -*-
-"""Editor's collection of wxpj
+"""Editor's collection of wxpj.
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -19,7 +19,7 @@ from jgdk import Layer, LParam, Button
 
 
 class Plugin(Layer):
-    """Plugin as testsuite for editors functions
+    """Plugin as testsuite for editors functions.
     """
     menukey = "Plugins/Functions/&Editor"
     
@@ -106,7 +106,7 @@ class Plugin(Layer):
 ## --------------------------------
 
 def imtrunc(buf, hi=0, lo=0):
-    """Truncate buffer hi/lo with given tolerance score [%]
+    """Truncate buffer hi/lo with given tolerance score [%].
     """
     if hi > 0 or lo > 0:
         a = np.percentile(buf, lo)
@@ -119,7 +119,7 @@ def imtrunc(buf, hi=0, lo=0):
 
 
 def imconv(buf, hi=0, lo=0):
-    """Convert buffer to dst<uint8>
+    """Convert buffer to dst<uint8>.
     
     >>> dst = (src-a) * 255 / (b-a)
     
@@ -154,35 +154,30 @@ def imshow(buf):
     plt.show()
 
 def plot(*args, **kwargs):
-    """mpl default plot"""
     plt.plot(*args, **kwargs)
     plt.grid(True)
     plt.show()
 
 def mplot(*args, **kwargs):
-    """mpl multiplot"""
     for x in args:
         plt.plot(x, **kwargs)
     plt.grid(True)
     plt.show()
 
 def splot(*args, **kwargs):
-    """mpl surface plot"""
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.plot_wireframe(*args, **kwargs)
     plt.show()
 
 def scatter(x, y, *args, **kwargs):
-    """mpl scatter"""
     art = plt.scatter(x, y, *args, **kwargs)
     plt.grid(True)
     plt.show()
 
 def clf():
-    """clear figure (and the stack of memory)
-    cf. plt.close()
-    """
+    """clear figure (and the stack of memory)."""
+    ## plt.close()
     plt.clf()
 
 clear = clf
@@ -198,14 +193,14 @@ def rotate(src, angle):
     return cv2.warpAffine(src, M, (w, h))
 
 ## def blur1d(src, lw=11, window=np.hanning):
-##     """smooth 1D array
+##     """Smooth 1D array.
 ##     window function: hanning, hamming, bartlett, blackman, or, None
 ##     """
 ##     w = np.ones(lw,'d') if not window else window(lw)
 ##     return np.convolve(w/w.sum(), src, mode='same')
 ## 
 ## def gaussian_blur1d(src, lw=11, p=1, sigma=4):
-##     """smooth 1D array with Gaussian window (cf. cv2.GaussianBlur)
+##     """Smooth 1D array with Gaussian window (cf. cv2.GaussianBlur).
 ##     lw : length of window
 ##      p : shape; p = 1 is identical to Normal gaussian,
 ##                 p = 1/2 the same as Laplace distribution.
@@ -217,15 +212,15 @@ def rotate(src, angle):
 
 
 def gradx(src, ksize=5):
-    """gradients: diff by Sobel (１次微分)"""
+    """Gradients: diff by Sobel (１次微分)."""
     return cv2.Sobel(src, cv2.CV_32F, 1, 0, ksize)
 
 def grady(src, ksize=5):
-    """gradients: diff by Sobel (１次微分)"""
+    """Gradients: diff by Sobel (１次微分)."""
     return cv2.Sobel(src, cv2.CV_32F, 0, 1, ksize)
 
 def grad2(src, ksize=5):
-    """gradients: diff by Laplacian (２次微分)"""
+    """Gradients: diff by Laplacian (２次微分)."""
     return cv2.Laplacian(src, cv2.CV_32F, ksize=ksize)
 
 
@@ -252,7 +247,7 @@ def Corr(src, tmp):
 ## --------------------------------
 
 def centroid(src):
-    """centroids (重心)
+    """centroids (重心).
     cf. ndi.measurements.center_of_mass
     """
     M = cv2.moments(src)

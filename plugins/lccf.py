@@ -8,10 +8,11 @@ from jgdk import Layer, LParam
 
 
 def find_circles(src, rmin, rmax, tol=0.75):
-    """Find circle with radius (rmin, rmax)
-    excluding circles at the edges of the image < tol*r
+    """Find circle with radius (rmin, rmax).
+    excluding circles at the edges of the image < tol*r.
     
-  retval -> list of (c:=(x,y), r) sorted by pos
+    Returns:
+        list of (c:=(cx,cy), r) sorted by pos.
     """
     ## Finds contours in binary image
     ## ▲ src は上書きされるので後で使うときは注意する
@@ -41,7 +42,7 @@ def find_circles(src, rmin, rmax, tol=0.75):
 
 
 class Plugin(Layer):
-    """Cetner of Circles finder
+    """Cetner of Circles finder.
     """
     menukey = "Plugins/&Basic Tools/"
     category = "Basic Tools"
@@ -69,7 +70,7 @@ class Plugin(Layer):
     maxcount = 256 # 選択する点の数を制限する
     
     def run(self, frame=None, otsu=0, invert=0):
-        """Search center of circles"""
+        """Search center of circles."""
         if not frame:
             frame = self.selected_view.frame
         del self.Arts

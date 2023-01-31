@@ -8,7 +8,8 @@ import plugins.ld_ring as base
 
 class Model(base.Model):
     def residual(self, fitting_params, x, y):
-        """最小自乗法の剰余函数"""
+        """最小自乗法の剰余函数
+        """
         xc, yc = 0, 0
         cam, ratio, phi = fitting_params
         z = base.calc_aspect(x + 1j*y, 1/ratio, phi) # z = x+iy --> 逆変換 1/r
@@ -34,7 +35,8 @@ class Model(base.Model):
 
 
 class Plugin(base.Plugin):
-    """Distortion fitting of ring (override) with fixed origin center
+    """Distortion fitting of ring.
+    (override) with fixed origin center.
     """
     Fitting_model = Model
     fitting_params = property(

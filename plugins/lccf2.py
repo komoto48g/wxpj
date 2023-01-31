@@ -10,13 +10,14 @@ from jgdk import Layer, LParam
 
 
 def find_ellipses(src, rmin, rmax, tol=0.75):
-    """Find ellipses with radius (rmin, rmax)
-    excluding circles at the edges of the image < tol*r
+    """Find ellipses with radius (rmin, rmax).
+    excluding circles at the edges of the image < tol*r.
     
-  retval -> list of (c:=(x,y), r:=(ra<rb), angle) sorted by pos
-    (cx,cy) : center of the rectangle [pix]
-    (ra,rb) : ra:width < rb:height of the rectangle [pix]
-      angle : rotation angle in clockwise (from 00:00 o'clock)
+    Returns:
+        list of (c:=(cx,cy), r:=(ra<rb), angle) sorted by pos.
+        cx,cy : center of the rectangle [pix]
+        ra,rb : ra:width < rb:height of the rectangle [pix]
+        angle : rotation angle in clockwise (from 00:00 o'clock)
     """
     ## Finds contours in binary image
     ## ▲ src は上書きされるので後で使うときは注意する
@@ -75,7 +76,7 @@ class Plugin(Layer):
     maxratio = 5.0 # ひずみの大きい楕円は除外する
     
     def run(self, frame=None, otsu=0, invert=0):
-        """Search center of circles"""
+        """Search center of circles."""
         if not frame:
             frame = self.selected_view.frame
         del self.Arts

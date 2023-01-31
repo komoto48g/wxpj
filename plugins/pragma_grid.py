@@ -5,8 +5,9 @@ from jgdk import Layer, Button
 
 
 class Plugin(Layer):
-    """To evaluate distortion of Mag-Grid pattern,
-  Run the following steps;
+    """Evaluate distortion of Mag-Grid pattern.
+    
+    Run the following steps:
     1. lccf.run to find contours of circles
     2. ld_grid.run to calc the aspect ratio
     """

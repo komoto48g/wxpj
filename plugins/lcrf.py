@@ -11,31 +11,8 @@ from jgdk import Layer, LParam
 import editor as edi
 
 
-def linpolar(src, r0, r1, center=None):
-    """Linear-Polar transform
-    The area radii [r0:r1] mapsto the same size of src image
-    
-    cf. cv2.linearPolar(src, (xc, yc), R, cv2.INTER_CUBIC)
-    """
-    h, w = src.shape
-    if center is None:
-        xc, yc = w//2, h//2
-    else:
-        xc, yc = center
-    
-    x = np.arange(w, dtype=np.float32) /w
-    y = np.arange(h, dtype=np.float32) * 2*pi /h
-    xx, yy = np.meshgrid(x, y)
-    
-    r = r0 + (r1 - r0) * xx
-    map_x = xc + r * np.cos(yy)
-    map_y = yc + r * np.sin(yy)
-    dst = cv2.remap(src.astype(np.float32), map_x, map_y, cv2.INTER_CUBIC)
-    return dst
-
-
 class Model(object):
-    """Cor-fitting model function
+    """Cor-fitting model function.
     """
     def __init__(self, x, y):
         params = [0.,] * 5
@@ -55,9 +32,11 @@ class Model(object):
         return res
     
     def mod2d(self, buf):
-        """Calculate modulated image
-        buf : polar-transformed output buffer
-      retval -> 2D-array of modulated image
+        """Calculate modulated image.
+        Args:
+            buf : polar-transformed output buffer
+        Returns:
+            2D-array of modulated image
         """
         h, w = buf.shape
         shift = [self(x) for x in np.arange(0,h)/h * 2*pi][::-1] # shift vector
@@ -69,9 +48,11 @@ class Model(object):
         return data
     
     def mod1d(self, buf):
-        """Calculate line profile averaged with modulation correction
-        buf : polar-transformed output buffer
-      retval -> 1D-array of modulated (+avr.) line profile
+        """Calculate line profile averaged with modulation correction.
+        Args:
+            buf : polar-transformed output buffer
+        Returns:
+            1D-array of modulated (+avr.) line profile
         """
         h, w = buf.shape
         data = sum(self.mod2d(buf))
@@ -79,18 +60,20 @@ class Model(object):
 
 
 def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
-    """find center of ring pattern in buffer
+    """Find center of ring pattern in buffer.
     
     極座標変換した後，角度セグメントに分割して相互相関をとる．
     center シフトを推定するために linear-polar を使用する．
     theta = 0 を基準として，相対変位 [pixels] を計算する．
     
-    src : source buffer
- center : initial value of center position [nx,ny]
-  lo-hi : masking size of radial axis
-      N : resizing of angular axis (total step in angle [0:2pi])
-    tol : remove peaks that leap greater than N * tol
-  retval ->
+    Args:
+        src     : source buffer
+        center  : initial value of center position [nx,ny]
+        lo-hi   : masking size of radial axis
+        N       : resizing of angular axis (total step in angle [0:2pi])
+        tol     : remove peaks that leap greater than N * tol
+    
+    Returns:
         dst(linear-polar-transformed image), guessed center, and fitting model
     """
     h, w = src.shape
@@ -148,8 +131,9 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
 
 
 def find_radial_peaks(data, tol=0.01):
-    """Find radial peaks in Polar-converted buffer
-    data : Polar-converted output buffer
+    """Find radial peaks in Polar-converted buffer.
+    Args:
+        data : polar-transformed output buffer
     """
     w = len(data)
     lw = int(max(3, tol * w/2))

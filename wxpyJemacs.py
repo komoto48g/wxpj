@@ -1,13 +1,13 @@
 #! python3
 # -*- coding: utf-8 -*-
-"""The frontend of Graph and Plug manager
+"""The frontend of Graph and Plug manager.
 
 Development phase::
 
-    Phase 1. Legacy (2015--2017) TEM control
-    Phase 2. Phoenix (2018--2020) Integrated system for image analysis
-    Phase 3. Analysis center phoenix (2020--2021)
-    Phase 4. Automation center phoenix (2022--2023)
+    Phase 1. Legacy (2015--2017) TEM control.
+    Phase 2. Phoenix (2018--2020) Integrated system for image analysis.
+    Phase 3. Analysis center phoenix (2020--2021).
+    Phase 4. Automation center phoenix (2022--2023).
 """
 __version__ = "0.46rc"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
@@ -27,7 +27,7 @@ import pyDM3reader as DM3lib
 
 
 class MainFrame(Frame):
-    """the Frontend of Graph and Plug manager
+    """Frontend of Graph and Plug manager.
     """
     Name = "pyJemacs"
     
@@ -98,7 +98,8 @@ class MainFrame(Frame):
     
     @staticmethod
     def read_buffer(path):
-        """Read a buffer from path file (override) +.dm3 extension"""
+        """Read a buffer from path file (override) +.dm3 extension.
+        """
         if path[-4:] in ('.dm3', '.dm4'):
             dmf = DM3lib.DM3(path)
             ## return dmf.image # PIL Image file
@@ -127,7 +128,8 @@ class MainFrame(Frame):
     
     @staticmethod
     def write_buffer(path, buf):
-        """Write a buffer to path file (override) +.dm3 extension"""
+        """Write a buffer to path file (override) +.dm3 extension.
+        """
         ext = path[-4:]
         if ext in ('.dm3', '.dm4', '.img'):
             raise NotImplementedError(

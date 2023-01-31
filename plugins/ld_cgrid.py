@@ -10,7 +10,8 @@ import plugins.ld_grid as base
 
 class Model(base.Model):
     def basegrid(self, params):
-        """描画範囲の基準グリッド (複素数配列の組)"""
+        """描画範囲の基準グリッド (複素数配列の組)
+        """
         grid, tilt, xc, yc = np.float32(params)
         u = grid * exp(1j * tilt * pi/180)
         N = self.nGrid
@@ -21,7 +22,8 @@ class Model(base.Model):
              + [(x + 1j * Y) for x in X]
     
     def residual(self, fitting_params, x, y):
-        """最小自乗法の剰余函数"""
+        """最小自乗法の剰余函数
+        """
         grid, tilt, ratio, phi = fitting_params
         xc, yc = 0, 0
         z = x + 1j*y
@@ -54,7 +56,8 @@ class Model(base.Model):
 
 
 class Plugin(base.Plugin):
-    """Distortion fitting of grid (override) with fixed origin center
+    """Distortion fitting of grid.
+    (override) with fixed origin center.
     """
     Fitting_model = Model
     fitting_params = property(

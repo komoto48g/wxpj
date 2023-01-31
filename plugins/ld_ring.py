@@ -25,7 +25,7 @@ def calc_aspect(u, r, t):
 
 
 def calc_fcc_spacings(a, N=10):
-    """ calc reciprocal lattice distance (lattice < N)
+    """Calc reciprocal lattice distance (lattice < N).
     a: lattice constant for FCC
     """
     ln = range(N)
@@ -38,9 +38,10 @@ def calc_fcc_spacings(a, N=10):
 
 class Model(object):
     """FCC 多結晶リングパターンモデル
-   Angles : scattering angles [rad] (n=0 included)
-      cam : camera length [mm]
-    xc,yc : position of center
+    
+    Angles  : scattering angles [rad] (n=0 included)
+    cam     : camera length [mm]
+    xc, yc  : position of center
     """
     nGrid = 10 # 逆格子グリッド
     Index = 2  # fitting ring index (default 3rd ring)
@@ -55,7 +56,7 @@ class Model(object):
         self.owner = parent
     
     def basegrid(self, params):
-        """描画範囲の基準グリッド (複素数配列の組) を返す
+        """描画範囲の基準グリッド (複素数配列の組) を返す．
         円の描画リストは n=0 を含む必要はないので [1:] を返す．
         """
         cam, xc, yc = _valist(params)
@@ -64,7 +65,8 @@ class Model(object):
         return [p + cam * a * exp(2j*t) for a in self.Angles]
     
     def residual(self, fitting_params, x, y):
-        """最小自乗法の剰余函数"""
+        """最小自乗法の剰余函数
+        """
         cam, xc, yc, ratio, phi = fitting_params
         z = calc_aspect(x + 1j*y, 1/ratio, phi) # z = x+iy --> 逆変換 1/r
         
@@ -89,7 +91,7 @@ class Model(object):
 
 
 class Plugin(Layer):
-    """Distortion fitting of ring
+    """Distortion fitting of ring.
     """
     menukey = "Plugins/&Measure Tools/"
     
@@ -145,8 +147,8 @@ class Plugin(Layer):
                   + [axes.plot([], [], 'r-',  lw=0.5, alpha=0.75)[0] for z in grid]
     
     def calc(self):
-        """アスペクト比： R1=Y/X, R2=Y2/X2 を計算する
-        アスペクト比ずれ＋３次歪率を考慮したグリッドデータに変換して描画する
+        """アスペクト比： R1=Y/X, R2=Y2/X2 を計算する．
+        アスペクト比ずれ＋３次歪率を考慮したグリッドデータに変換して描画する．
         """
         r, t = _valist(self.ratio_params)
         D, d = _valist(self.dist_params)
