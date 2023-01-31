@@ -94,13 +94,12 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
         dst(linear-polar-transformed image), guessed center, and fitting model
     """
     h, w = src.shape
-    nx, ny = center if center is not None else (w//2, h//2)
-    
-    dst = cv2.linearPolar(src, (nx, ny), w, cv2.WARP_FILL_OUTLIERS)
-    
-    ## Mask X (radial) axis
     lo = int(max(lo, 0))
     hi = int(min(hi, w//2))
+    
+    dst = cv2.linearPolar(src, center, w, cv2.WARP_FILL_OUTLIERS)
+    
+    ## Mask X (radial) axis
     dst[:,:lo] = 0
     dst[:,hi:] = 0
     
@@ -108,6 +107,10 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     rdst = cv2.resize(dst[:,lo:hi].astype(np.float32),
                       (hi-lo, N), interpolation=cv2.INTER_AREA)
     rdst -= rdst.mean()
+    
+    ## Mask spot noize (異常ピクセルぽいのをゼロにする > 5 sigma)
+    s = np.std(rdst)
+    rdst[(rdst < -5*s) | (rdst > 5*s)] = 0
     
     temp = rdst[0][::-1] # template of corr; distr at theta = 0
     data = []
@@ -119,13 +122,6 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     ## 最終的に返す計算結果は逆転させて，0 --> 2pi の並びにする
     Y = np.array(data[::-1]) - (hi-lo)/2
     X = np.arange(0, 1, 1/len(Y)) * 2*pi
-    
-    ## remove leaps(1): 急激な変化 (相関計算の結果のとび) を除外する
-    ## if 0:
-    ##     ym = np.median(Y)
-    ##     ys = np.std(Y)
-    ##     xy = [(x, y) for x, y in zip(X, Y) if -ys < y-ym < ys]
-    ##     xx, yy = np.array(xy).T
     
     ## remove leaps(2): tol より小さいとびを許容する (画素サイズに比例)
     if 1:
@@ -145,10 +141,10 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     c = fitting_curve.params[2] % (2*pi)
     
     t = c if b>0 else c+pi # tmax: 推定中心方向
+    nx, ny = center
     nx += abs(b) * cos(t)
     ny -= abs(b) * sin(t)
-    center = (nx, ny)
-    return dst, center, fitting_curve
+    return dst, (nx, ny), fitting_curve
 
 
 def find_radial_peaks(data, tol=0.01):
@@ -189,27 +185,32 @@ class Plugin(Layer):
         
         self.layout((btn, self.chkplt), row=2)
     
-    def run(self, frame=None, shift=0, maxloop=4):
+    def run(self, frame=None, shift=0, maxloop=5):
         if not frame:
             frame = self.selected_view.frame
         del self.Arts
         
         src = frame.buffer
         h, w = src.shape
-        center = (w//2, h//2)
         if shift:
             nx, ny = frame.xytopixel(frame.selector)
-            center = int(nx[0]), int(ny[0])
+            c = int(nx[0]), int(ny[0])
+        else:
+            c = (w//2, h//2)
         
         ## Search center and fit with model (twice at least)
         lo = h/2 * self.rmin.value
         hi = h/2 * self.rmax.value
         for i in range(maxloop):
-            buf, center, fitting_curve, = find_ring_center(src, center, lo, hi)
+            buf, _c, fitting_curve, = find_ring_center(src, c, lo, hi)
+            d = np.hypot(c[0]-_c[0], c[1]-_c[1])
+            if d < 1:
+                break
+            c = _c
         self.fitting_curve = fitting_curve
         
         self.output.load(buf, "*lin-polar*", localunit=1)
-        frame.selector = frame.xyfrompixel(center)
+        frame.selector = frame.xyfrompixel(_c)
         
         ## Find peaks in radial distribution
         rdist = fitting_curve.mod1d(buf)
@@ -228,7 +229,7 @@ class Plugin(Layer):
         a = np.linspace(0,1,100) * 2*pi
         nr = peaks[j] + fitting_curve(a)
         r = nr * frame.unit
-        xc, yc = frame.selector # center position
+        xc, yc = frame.selector
         X = xc + r * np.cos(a)
         Y = yc + r * np.sin(a)
         
