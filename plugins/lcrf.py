@@ -238,6 +238,8 @@ class Plugin(Layer):
         xc, yc = frame.selector
         if len(xc) == 0: # no selector
             xc, yc = 0, 0
+        else:
+            xc, yc = xc[0], yc[0]
         del self.Arts
         ## サークル描画 (確認用)
         self.attach_artists(frame.axes,
