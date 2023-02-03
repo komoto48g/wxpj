@@ -106,7 +106,7 @@ class Plugin(Layer):
             for (cx,cy), (ra,rb), angle in circles:
                 if ra and rb/ra < self.maxratio:
                     ## 不特定多数の円を描画する
-                    art = patches.Circle((0,0), 0, color='r', ls='dotted', lw=1, fill=0)
+                    art = patches.Circle((0, 0), 0, color='r', ls='dotted', lw=1, fill=0)
                     art.center = frame.xyfrompixel(cx, cy)
                     art.height = ra * frame.unit
                     art.width = rb * frame.unit

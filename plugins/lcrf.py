@@ -3,7 +3,7 @@
 import wx
 import cv2
 import numpy as np
-from numpy import pi,cos,sin
+from numpy import pi
 from scipy import optimize
 from scipy import signal
 from matplotlib import patches
@@ -23,7 +23,7 @@ class Model(object):
     
     def __call__(self, x):
         a,b,c,d,e = self.params
-        return a + b * cos(x-c) + d * cos(2*x-e)
+        return a + b * np.cos(x-c) + d * np.cos(2*x-e)
     
     def residual(self, params, x, y):
         self.params = params
@@ -125,8 +125,8 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     
     t = c if b>0 else c+pi # tmax: 推定中心方向
     nx, ny = center
-    nx += abs(b) * cos(t)
-    ny -= abs(b) * sin(t)
+    nx += abs(b) * np.cos(t)
+    ny -= abs(b) * np.sin(t)
     return dst, (nx, ny), fitting_curve
 
 
@@ -177,9 +177,14 @@ class Plugin(Layer):
         )
         self.layout((btn, self.chkplt), row=2)
     
+    target_view = None
+    
     def run(self, frame=None, shift=0, maxloop=5):
         if not frame:
             frame = self.selected_view.frame
+        if not frame:
+            return
+        self.target_view = frame.parent
         del self.Arts
         
         src = frame.buffer
@@ -201,8 +206,9 @@ class Plugin(Layer):
             c = _c
         self.fitting_curve = fitting_curve
         
+        frame.selector = frame.xyfrompixel(_c) # set seletor to the center
+        
         self.output.load(buf, "*lin-polar*", localunit=1)
-        frame.selector = frame.xyfrompixel(_c)
         
         ## Find peaks in radial distribution
         rdist = fitting_curve.mod1d(buf)
@@ -218,40 +224,38 @@ class Plugin(Layer):
         
         ## 強度の高いところにおおざっぱ (oz) にマーカーを打つ (100/3 程度)
         j = np.argmax(rdist[peaks])
-        a = np.linspace(0,1,100) * 2*pi
+        a = np.linspace(0, 1, 100) * 2*pi
         nr = peaks[j] + fitting_curve(a)
         r = nr * frame.unit
-        xc, yc = frame.selector
-        X = xc + r * np.cos(a)
-        Y = yc + r * np.sin(a)
+        c = frame.selector
+        X = c[0] + r * np.cos(a)
+        Y = c[1] + r * np.sin(a)
         
         l,r,b,t = frame.get_extent()
-        x, y = np.array([(x,y) for x,y in zip(X,Y) if l<x<r and b<y<t]).T
+        x, y = np.array([(x, y) for x, y in zip(X, Y) if l < x < r and b < y < t]).T
         z = frame.xytoc(x, y)
         oz = (z > 2 * rdist.mean())
         frame.markers = (x[oz][0:-1:3], y[oz][0:-1:3]) # scatter markers onto the arc
         
         ## サークル描画 (確認用)
         self.attach_artists(frame.axes,
-            patches.Circle((xc, yc), lo*frame.unit, color='c', ls='--', lw=1/2, fill=0),
-            patches.Circle((xc, yc), hi*frame.unit, color='c', ls='--', lw=1/2, fill=0),
+            patches.Circle(c, lo * frame.unit, color='c', ls='--', lw=1/2, fill=0),
+            patches.Circle(c, hi * frame.unit, color='c', ls='--', lw=1/2, fill=0),
         )
         self.Arts += frame.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75)
     
     def set_radii(self, p):
-        frame = self.selected_view.frame
+        if not self.target_view:
+            return
+        frame = self.target_view.frame
         h, w = frame.buffer.shape
-        lo = h/2 * self.rmin.value
-        hi = h/2 * self.rmax.value
-        xc, yc = frame.selector
-        if len(xc) == 0: # no selector
-            xc, yc = 0, 0
+        c = frame.selector
+        if len(c) == 0:
+            c = 0, 0
         else:
-            xc, yc = xc[0], yc[0]
-        del self.Arts
-        ## サークル描画 (確認用)
-        self.attach_artists(frame.axes,
-            patches.Circle((xc, yc), lo*frame.unit, color='c', ls='--', lw=1/2, fill=0),
-            patches.Circle((xc, yc), hi*frame.unit, color='c', ls='--', lw=1/2, fill=0),
-        )
+            c = c[:,0]
+        c1, c2 = self.Arts[:2]
+        c1.center = c2.center = c
+        c1.radius = h/2 * self.rmin.value * frame.unit
+        c2.radius = h/2 * self.rmax.value * frame.unit
         self.Draw()
