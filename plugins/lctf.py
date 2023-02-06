@@ -291,7 +291,8 @@ class Plugin(Layer):
                 del self.Arts
                 for x in self.lpoints[0,:10]:
                     r = N * np.sqrt(x)
-                    art = patches.Circle((0,0), 0, color='r', ls='--', lw=0.5, fill=0, alpha=0.5)
+                    art = patches.Circle((0, 0), 0, color='r',
+                                         ls='--', lw=0.5, fill=0, alpha=0.5)
                     art.width = 2 * r * (1 + eps) * u
                     art.height = 2 * r * (1 - eps) * u
                     art.angle = ang / 2

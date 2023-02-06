@@ -185,7 +185,6 @@ class Plugin(Layer):
         if not frame:
             return
         self.target_view = frame.parent
-        del self.Arts
         
         src = frame.buffer
         h, w = src.shape
@@ -238,6 +237,7 @@ class Plugin(Layer):
         frame.markers = (x[oz][0:-1:3], y[oz][0:-1:3]) # scatter markers onto the arc
         
         ## サークル描画 (確認用)
+        del self.Arts
         self.attach_artists(frame.axes,
             patches.Circle(c, lo * frame.unit, color='c', ls='--', lw=1/2, fill=0),
             patches.Circle(c, hi * frame.unit, color='c', ls='--', lw=1/2, fill=0),

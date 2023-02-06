@@ -96,13 +96,14 @@ class Plugin(Layer):
                 circles = circles[:N]
             
             xy = []
-            for (cx,cy),r in circles:
+            for (cx, cy), r in circles:
                 x, y = frame.xyfrompixel(cx, cy)
                 x, y = x[0], y[0]
-                r *= frame.unit
+                xy.append((x, y))
                 
                 ## 不特定多数の円を描画する
-                self.attach_artists(frame.axes,
-                    patches.Circle((x,y), r, color='r', ls='dotted', lw=1, fill=0))
-                xy.append((x,y))
+                art = patches.Circle((x, y), r * frame.unit,
+                                     color='r', ls='dotted', lw=1, fill=0)
+                self.attach_artists(frame.axes, art)
+            
             frame.markers = np.array(xy).T # scatter markers if any xy

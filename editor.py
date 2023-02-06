@@ -79,7 +79,7 @@ class Plugin(Layer):
             if art.axes is frame.axes:
                 break
         else:
-            art = patches.Circle((0,0), 0, color='r', ls='solid', lw=2, fill=0, zorder=2)
+            art = patches.Circle((0, 0), 0, color='r', ls='solid', lw=2, fill=0, zorder=2)
             self.attach_artists(frame.axes, art)
         
         (cx,cy), (ra,rb), angle = el
