@@ -5,8 +5,9 @@ from jgdk import Layer, Button
 
 
 class Plugin(Layer):
-    """To evaluate distortion of Diff-Ring pattern,
-  Run the following steps;
+    """Evaluate distortion of Diff-Ring pattern.
+    
+    Run the following steps;
     1. lcrf.run to find center of rings and the radial peaks
     2. ld_ring.run to calc the aspect ratio
     """

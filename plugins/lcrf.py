@@ -3,7 +3,7 @@
 import wx
 import cv2
 import numpy as np
-from numpy import pi,cos,sin
+from numpy import pi
 from scipy import optimize
 from scipy import signal
 from matplotlib import patches
@@ -11,31 +11,8 @@ from jgdk import Layer, LParam
 import editor as edi
 
 
-def linpolar(src, r0, r1, center=None):
-    """Linear-Polar transform
-    The area radii [r0:r1] mapsto the same size of src image
-    
-    cf. cv2.linearPolar(src, (xc, yc), R, cv2.INTER_CUBIC)
-    """
-    h, w = src.shape
-    if center is None:
-        xc, yc = w//2, h//2
-    else:
-        xc, yc = center
-    
-    x = np.arange(w, dtype=np.float32) /w
-    y = np.arange(h, dtype=np.float32) * 2*pi /h
-    xx, yy = np.meshgrid(x, y)
-    
-    r = r0 + (r1 - r0) * xx
-    map_x = xc + r * np.cos(yy)
-    map_y = yc + r * np.sin(yy)
-    dst = cv2.remap(src.astype(np.float32), map_x, map_y, cv2.INTER_CUBIC)
-    return dst
-
-
 class Model(object):
-    """Cor-fitting model function
+    """Cor-fitting model function.
     """
     def __init__(self, x, y):
         params = [0.,] * 5
@@ -46,7 +23,7 @@ class Model(object):
     
     def __call__(self, x):
         a,b,c,d,e = self.params
-        return a + b * cos(x-c) + d * cos(2*x-e)
+        return a + b * np.cos(x-c) + d * np.cos(2*x-e)
     
     def residual(self, params, x, y):
         self.params = params
@@ -55,9 +32,11 @@ class Model(object):
         return res
     
     def mod2d(self, buf):
-        """Calculate modulated image
-        buf : polar-transformed output buffer
-      retval -> 2D-array of modulated image
+        """Calculate modulated image.
+        Args:
+            buf : polar-transformed output buffer
+        Returns:
+            2D-array of modulated image
         """
         h, w = buf.shape
         shift = [self(x) for x in np.arange(0,h)/h * 2*pi][::-1] # shift vector
@@ -69,9 +48,11 @@ class Model(object):
         return data
     
     def mod1d(self, buf):
-        """Calculate line profile averaged with modulation correction
-        buf : polar-transformed output buffer
-      retval -> 1D-array of modulated (+avr.) line profile
+        """Calculate line profile averaged with modulation correction.
+        Args:
+            buf : polar-transformed output buffer
+        Returns:
+            1D-array of modulated (+avr.) line profile
         """
         h, w = buf.shape
         data = sum(self.mod2d(buf))
@@ -79,34 +60,40 @@ class Model(object):
 
 
 def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
-    """find center of ring pattern in buffer
+    """Find center of ring pattern in buffer.
     
     極座標変換した後，角度セグメントに分割して相互相関をとる．
     center シフトを推定するために linear-polar を使用する．
     theta = 0 を基準として，相対変位 [pixels] を計算する．
     
-    src : source buffer
- center : initial value of center position [nx,ny]
-  lo-hi : masking size of radial axis
-      N : resizing of angular axis (total step in angle [0:2pi])
-    tol : remove peaks that leap greater than N * tol
-  retval ->
+    Args:
+        src     : source buffer
+        center  : initial value of center position [nx,ny]
+        lo-hi   : masking size of radial axis
+        N       : resizing of angular axis (total step in angle [0:2pi])
+        tol     : remove peaks that leap greater than N * tol
+    
+    Returns:
         dst(linear-polar-transformed image), guessed center, and fitting model
     """
     h, w = src.shape
-    nx, ny = center if center is not None else (w//2, h//2)
-    
-    dst = cv2.linearPolar(src, (nx,ny), w, cv2.WARP_FILL_OUTLIERS)
-    
-    ## Mask X (radial) axis
     lo = int(max(lo, 0))
     hi = int(min(hi, w//2))
+    
+    dst = cv2.linearPolar(src, center, w, cv2.WARP_FILL_OUTLIERS)
+    
+    ## Mask X (radial) axis
     dst[:,:lo] = 0
     dst[:,hi:] = 0
     
     ## Resize Y:angular axis (計算を軽くするためリサイズ)
-    rdst = cv2.resize(dst[:,lo:hi].astype(np.float32), (hi-lo, N), interpolation=cv2.INTER_AREA)
+    rdst = cv2.resize(dst[:,lo:hi].astype(np.float32),
+                      (hi-lo, N), interpolation=cv2.INTER_AREA)
     rdst -= rdst.mean()
+    
+    ## Mask spot noize (異常ピクセルぽいのをゼロにする > 5 sigma)
+    s = np.std(rdst)
+    rdst[(rdst < -5*s) | (rdst > 5*s)] = 0
     
     temp = rdst[0][::-1] # template of corr; distr at theta = 0
     data = []
@@ -114,17 +101,10 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
         p = signal.fftconvolve(fr, temp, mode='same')
         data.append(p.argmax())
     
-    ## 相関の計算は上から行うので，2pi --> 0 の並びのリストになる
-    ##   最終的に返す計算結果は逆転させて，0 --> 2pi の並びにする
+    ## 相関の計算は上から行うので，2pi --> 0 の並びになる
+    ## 最終的に返す計算結果は逆転させて，0 --> 2pi の並びにする
     Y = np.array(data[::-1]) - (hi-lo)/2
     X = np.arange(0, 1, 1/len(Y)) * 2*pi
-    
-    ## remove leaps(1): 急激な変化 (相関計算の結果のとび) を除外する
-    ## if 0:
-    ##     ym = np.median(Y)
-    ##     ys = np.std(Y)
-    ##     xy = [(x,y) for x,y in zip(X,Y) if -ys < y-ym < ys]
-    ##     xx, yy = np.array(xy).T
     
     ## remove leaps(2): tol より小さいとびを許容する (画素サイズに比例)
     if 1:
@@ -139,23 +119,21 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     
     ## edi.plot(xx, yy, '+', X, fitting_curve(X))
     
-    a = fitting_curve.params[0] = 0 # :a=0 として(平均を基準とする)全体のオフセット量を評価する
+    a = fitting_curve.params[0] = 0 # (平均を基準とする) 全体のオフセット量
     b = fitting_curve.params[1]
     c = fitting_curve.params[2] % (2*pi)
     
-    ## t = c+pi if b>0 else c # 推定中心方向
-    ## nx -= abs(b) * cos(t)
-    ## ny += abs(b) * sin(t)
     t = c if b>0 else c+pi # tmax: 推定中心方向
-    nx += abs(b) * cos(t)
-    ny -= abs(b) * sin(t)
-    center = (nx, ny)
-    return dst, center, fitting_curve
+    nx, ny = center
+    nx += abs(b) * np.cos(t)
+    ny -= abs(b) * np.sin(t)
+    return dst, (nx, ny), fitting_curve
 
 
 def find_radial_peaks(data, tol=0.01):
-    """Find radial peaks in Polar-converted buffer
-    data : Polar-converted output buffer
+    """Find radial peaks in Polar-converted buffer.
+    Args:
+        data : polar-transformed output buffer
     """
     w = len(data)
     lw = int(max(3, tol * w/2))
@@ -180,46 +158,61 @@ class Plugin(Layer):
         self.rmin = LParam("rmin", (0, 1, 0.01), 0.1, handler=self.set_radii)
         self.rmax = LParam("rmax", (0, 2, 0.01), 1.0, handler=self.set_radii)
         
-        self.layout(self.lgbt.params, title="blur-threshold", cw=0, lw=40, tw=40, show=0)
-        self.layout((self.rmin, self.rmax), title="radii", cw=0, lw=40, tw=40)
-        
         btn = wx.Button(self, label="+Execute", size=(64,22))
-        btn.Bind(wx.EVT_BUTTON, lambda v: self.run(shift=wx.GetKeyState(wx.WXK_SHIFT)))
+        btn.Bind(wx.EVT_BUTTON,
+                 lambda v: self.run(shift=wx.GetKeyState(wx.WXK_SHIFT)))
         btn.SetToolTip("S-Lbutton to enter recursive centering")
         
         self.chkplt = wx.CheckBox(self, label="rdist")
         
+        self.layout(
+            self.lgbt.params,
+            title="blur-threshold", cw=0, lw=40, tw=40, show=0
+        )
+        self.layout((
+                self.rmin,
+                self.rmax
+            ),
+            title="radii", cw=0, lw=40, tw=40
+        )
         self.layout((btn, self.chkplt), row=2)
     
-    def run(self, frame=None, shift=0, maxloop=4):
+    target_view = None
+    
+    def run(self, frame=None, shift=0, maxloop=5):
         if not frame:
             frame = self.selected_view.frame
-        del self.Arts
+        if not frame:
+            return
+        self.target_view = frame.parent
         
         src = frame.buffer
         h, w = src.shape
-        center = (w//2, h//2)
-        ## center = edi.centroid(src)
         if shift:
             nx, ny = frame.xytopixel(frame.selector)
-            center = nx[0], ny[0]
+            c = int(nx[0]), int(ny[0])
+        else:
+            c = (w//2, h//2)
         
         ## Search center and fit with model (twice at least)
         lo = h/2 * self.rmin.value
         hi = h/2 * self.rmax.value
         for i in range(maxloop):
-            buf, center, fitting_curve, = find_ring_center(src, center, lo, hi)
+            buf, _c, fitting_curve, = find_ring_center(src, c, lo, hi)
+            d = np.hypot(c[0]-_c[0], c[1]-_c[1])
+            if d < 1:
+                break
+            c = _c
         self.fitting_curve = fitting_curve
         
+        frame.selector = frame.xyfrompixel(_c) # set seletor to the center
+        
         self.output.load(buf, "*lin-polar*", localunit=1)
-        frame.selector = frame.xyfrompixel(center)
         
         ## Find peaks in radial distribution
         rdist = fitting_curve.mod1d(buf)
         
         ## Find radial peaks in polar-converted buffer
-        ## peaks = signal.find_peaks_cwt(rdist, widths=np.arange(3,4))
-        ## peaks = [p for p in peaks if rdist[p] > rdist.mean()] # filtered by threshold
         rdist, peaks = find_radial_peaks(rdist)
         
         if self.chkplt.Value: # this should be called for MainThread
@@ -230,38 +223,39 @@ class Plugin(Layer):
         
         ## 強度の高いところにおおざっぱ (oz) にマーカーを打つ (100/3 程度)
         j = np.argmax(rdist[peaks])
-        a = np.linspace(0,1,100) * 2*pi
+        a = np.linspace(0, 1, 100) * 2*pi
         nr = peaks[j] + fitting_curve(a)
         r = nr * frame.unit
-        xc, yc = frame.selector # center position
-        X = xc + r * np.cos(a)
-        Y = yc + r * np.sin(a)
+        c = frame.selector
+        X = c[0] + r * np.cos(a)
+        Y = c[1] + r * np.sin(a)
         
         l,r,b,t = frame.get_extent()
-        x, y = np.array([(x,y) for x,y in zip(X,Y) if l<x<r and b<y<t]).T
+        x, y = np.array([(x, y) for x, y in zip(X, Y) if l < x < r and b < y < t]).T
         z = frame.xytoc(x, y)
         oz = (z > 2 * rdist.mean())
         frame.markers = (x[oz][0:-1:3], y[oz][0:-1:3]) # scatter markers onto the arc
         
         ## サークル描画 (確認用)
+        del self.Arts
         self.attach_artists(frame.axes,
-            patches.Circle((xc, yc), lo*frame.unit, color='c', ls='--', lw=1/2, fill=0),
-            patches.Circle((xc, yc), hi*frame.unit, color='c', ls='--', lw=1/2, fill=0),
+            patches.Circle(c, lo * frame.unit, color='c', ls='--', lw=1/2, fill=0),
+            patches.Circle(c, hi * frame.unit, color='c', ls='--', lw=1/2, fill=0),
         )
         self.Arts += frame.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75)
     
     def set_radii(self, p):
-        frame = self.selected_view.frame
+        if not self.target_view:
+            return
+        frame = self.target_view.frame
         h, w = frame.buffer.shape
-        lo = h/2 * self.rmin.value
-        hi = h/2 * self.rmax.value
-        xc, yc = frame.selector
-        if len(xc) == 0: # no selector
-            xc, yc = 0, 0
-        del self.Arts
-        ## サークル描画 (確認用)
-        self.attach_artists(frame.axes,
-            patches.Circle((xc, yc), lo*frame.unit, color='c', ls='--', lw=1/2, fill=0),
-            patches.Circle((xc, yc), hi*frame.unit, color='c', ls='--', lw=1/2, fill=0),
-        )
+        c = frame.selector
+        if len(c) == 0:
+            c = 0, 0
+        else:
+            c = c[:,0]
+        c1, c2 = self.Arts[:2]
+        c1.center = c2.center = c
+        c1.radius = h/2 * self.rmin.value * frame.unit
+        c2.radius = h/2 * self.rmax.value * frame.unit
         self.Draw()

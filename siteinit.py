@@ -35,6 +35,10 @@ def init_mainframe(self):
     ## Load plugins
     ## --------------------------------
     
+    ## global reference to output buffer
+    import editor as edi
+    edi.out = self.output
+    
     self.ed = self.require('editor')
     self.su = self.require('startup')
     self.si = sys.modules.get(__name__)
@@ -75,17 +79,17 @@ def init_mainframe(self):
     self.define_key('C-x s', self.save_session)
     self.define_key('C-x S-s', self.save_session_as)
     
-    @self.define_key('M-right', dir=1, doc="focus to next window")
-    @self.define_key('M-left', dir=-1, doc="focus to prev window")
-    def other_window(v, dir):
-        """Set focus to next/prev displayed window"""
-        ls = [w for w in self.graphic_windows if w.IsShownOnScreen()]
-        for j,w in enumerate(ls):
-            if w.canvas.HasFocus():
-                next = ls[(j+dir) % len(ls)]
-                return next.SetFocus()
-        else:
-            self.graph.SetFocus()
+    ## @self.define_key('M-right', dir=1, doc="focus to next window")
+    ## @self.define_key('M-left', dir=-1, doc="focus to prev window")
+    ## def other_window(v, dir):
+    ##     """Set focus to next/prev displayed window"""
+    ##     ls = [w for w in self.graphic_windows if w.IsShownOnScreen()]
+    ##     for j,w in enumerate(ls):
+    ##         if w.canvas.HasFocus():
+    ##             next = ls[(j+dir) % len(ls)]
+    ##             return next.SetFocus()
+    ##     else:
+    ##         self.graph.SetFocus()
     
     @self.handler.bind('frame_cached')
     def cache(frame):

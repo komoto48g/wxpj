@@ -23,10 +23,11 @@ def calc_aspect(u, r, t):
 
 
 class Model(object):
-    """グリッドパターンモデル [mm]
-     grid : length per grid [mm/gr]
-     tilt : rotation angles of pattern
-    xc,yc : position of center
+    """グリッドパターンモデル [mm].
+    
+    grid    : length per grid [mm/gr]
+    tilt    : rotation angles of pattern
+    xc, yc  : position of center
     """
     nGrid = 30 # number of grid (in x,y) --> (N+1) 本のグリッド線を引く
     
@@ -34,7 +35,8 @@ class Model(object):
         self.owner = parent
     
     def basegrid(self, params):
-        """描画範囲の基準グリッド (複素数配列の組)"""
+        """描画範囲の基準グリッド (複素数配列の組)
+        """
         grid, tilt, xc, yc = _valist(params)
         u = grid * exp(1j * tilt * pi/180)
         N = self.nGrid
@@ -46,7 +48,8 @@ class Model(object):
              + [(x + 1j * Y) for x in X]
     
     def residual(self, fitting_params, x, y):
-        """最小自乗法の剰余函数"""
+        """最小自乗法の剰余函数
+        """
         grid, tilt, xc, yc, ratio, phi, D, d = fitting_params
         z = x + 1j*y
         
@@ -78,7 +81,7 @@ class Model(object):
 
 
 class Plugin(Layer):
-    """Distortion fitting of grid
+    """Distortion fitting of grid.
     """
     menukey = "Plugins/&Measure Tools/"
     
@@ -132,8 +135,8 @@ class Plugin(Layer):
                   + [axes.plot([], [], 'r-',  lw=0.5, alpha=0.75)[0] for z in grid]
     
     def calc(self):
-        """アスペクト比： R1=Y/X, R2=Y2/X2 を計算する
-        アスペクト比ずれ＋３次歪率を考慮したグリッドデータに変換して描画する
+        """アスペクト比： R1=Y/X, R2=Y2/X2 を計算する．
+        アスペクト比ずれ＋３次歪率を考慮したグリッドデータに変換して描画する．
         """
         r, t = _valist(self.ratio_params)
         D, d = _valist(self.dist_params)
@@ -168,7 +171,6 @@ class Plugin(Layer):
     def run(self, frame=None, skip=False):
         if not frame:
             frame = self.selected_view.frame
-        del self.Arts
         
         x, y = frame.markers
         if not x.size:

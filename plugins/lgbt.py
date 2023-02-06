@@ -12,7 +12,7 @@ def _valist(params):
 
 
 class Plugin(Layer):
-    """Gaussian Blur and Threshold
+    """Gaussian Blur and Threshold.
     """
     menukey = "Plugins/&Basic Tools/"
     category = "Basic Tools"
@@ -44,10 +44,11 @@ class Plugin(Layer):
     params = property(lambda self: (self.ksize, self.sigma, self.thresh))
     
     def calc(self, frame=None, otsu=0, invert=0):
-        """Blur by Gaussian window and binarize
+        """Blur by Gaussian window and binarize.
+        
         otsu : True when using Otsu's algorithm
                float number (0 < r < 1) indicates the threshold percentile
-      invert : invert dst image (for dark-field image)
+        invert : invert dst image (for dark-field image)
         """
         if not frame:
             frame = self.selected_view.frame

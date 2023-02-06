@@ -1,6 +1,6 @@
 #! python3
 # -*- coding: utf-8 -*-
-"""startup utility
+"""Startup utility.
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -11,7 +11,7 @@ from pyJeol.temisc import Environ
 
 
 class Plugin(Layer):
-    """Plugins of startup settings
+    """Plugins of startup settings.
     """
     menukey = "File/Options/&Startup"
     category = "Option"

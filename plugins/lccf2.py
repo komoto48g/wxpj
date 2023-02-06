@@ -10,13 +10,14 @@ from jgdk import Layer, LParam
 
 
 def find_ellipses(src, rmin, rmax, tol=0.75):
-    """Find ellipses with radius (rmin, rmax)
-    excluding circles at the edges of the image < tol*r
+    """Find ellipses with radius (rmin, rmax).
+    excluding circles at the edges of the image < tol*r.
     
-  retval -> list of (c:=(x,y), r:=(ra<rb), angle) sorted by pos
-    (cx,cy) : center of the rectangle [pix]
-    (ra,rb) : ra:width < rb:height of the rectangle [pix]
-      angle : rotation angle in clockwise (from 00:00 o'clock)
+    Returns:
+        list of (c:=(cx,cy), r:=(ra<rb), angle) sorted by pos.
+        cx,cy : center of the rectangle [pix]
+        ra,rb : ra:width < rb:height of the rectangle [pix]
+        angle : rotation angle in clockwise (from 00:00 o'clock)
     """
     ## Finds contours in binary image
     ## ▲ src は上書きされるので後で使うときは注意する
@@ -58,24 +59,33 @@ class Plugin(Layer):
         self.rmin = LParam("rmin", (0,1000,1), 2)
         self.rmax = LParam("rmax", (0,1000,1), 200)
         
-        self.layout(self.lgbt.params, title="blur-threshold", cw=0, lw=40, tw=40, show=0)
-        self.layout((self.rmin, self.rmax), title="radii", cw=0, lw=40, tw=40)
-        
         btn1 = wx.Button(self, label="+Bin", size=(40,22))
-        btn1.Bind(wx.EVT_BUTTON, lambda v: self.lgbt.calc(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
+        btn1.Bind(wx.EVT_BUTTON,
+                  lambda v: self.lgbt.calc(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
         btn1.SetToolTip("S-Lbutton to estimate threshold using Otsu algorithm")
         
         btn2 = wx.Button(self, label="+Execute", size=(64,22))
-        btn2.Bind(wx.EVT_BUTTON, lambda v: self.run(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
+        btn2.Bind(wx.EVT_BUTTON,
+                  lambda v: self.run(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
         btn2.SetToolTip("S-Lbutton to estimate threshold using Otsu algorithm")
         
+        self.layout(
+            self.lgbt.params,
+            title="blur-threshold", cw=0, lw=40, tw=40, show=0
+        )
+        self.layout((
+                self.rmin,
+                self.rmax
+            ),
+            title="radii", cw=0, lw=40, tw=40
+        )
         self.layout((btn1, btn2), row=2)
     
     maxcount = 256 # 選択する点の数を制限する
     maxratio = 5.0 # ひずみの大きい楕円は除外する
     
     def run(self, frame=None, otsu=0, invert=0):
-        """Search center of circles"""
+        """Search center of circles."""
         if not frame:
             frame = self.selected_view.frame
         del self.Arts
@@ -93,10 +103,10 @@ class Plugin(Layer):
             
             h, w = src.shape
             xy = []
-            for (cx,cy), (ra,rb), angle in circles:
+            for (cx, cy), (ra, rb), angle in circles:
                 if ra and rb/ra < self.maxratio:
                     ## 不特定多数の円を描画する
-                    art = patches.Circle((0,0), 0, color='r', ls='dotted', lw=1, fill=0)
+                    art = patches.Circle((0, 0), 0, color='r', ls='dotted', lw=1, fill=0)
                     art.center = frame.xyfrompixel(cx, cy)
                     art.height = ra * frame.unit
                     art.width = rb * frame.unit

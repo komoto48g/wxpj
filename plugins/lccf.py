@@ -8,10 +8,11 @@ from jgdk import Layer, LParam
 
 
 def find_circles(src, rmin, rmax, tol=0.75):
-    """Find circle with radius (rmin, rmax)
-    excluding circles at the edges of the image < tol*r
+    """Find circle with radius (rmin, rmax).
+    excluding circles at the edges of the image < tol*r.
     
-  retval -> list of (c:=(x,y), r) sorted by pos
+    Returns:
+        list of (c:=(cx,cy), r) sorted by pos.
     """
     ## Finds contours in binary image
     ## ▲ src は上書きされるので後で使うときは注意する
@@ -41,7 +42,7 @@ def find_circles(src, rmin, rmax, tol=0.75):
 
 
 class Plugin(Layer):
-    """Cetner of Circles finder
+    """Cetner of Circles finder.
     """
     menukey = "Plugins/&Basic Tools/"
     category = "Basic Tools"
@@ -53,23 +54,32 @@ class Plugin(Layer):
         self.rmin = LParam("rmin", (0,1000,1), 20)
         self.rmax = LParam("rmax", (0,1000,1), 500)
         
-        self.layout(self.lgbt.params, title="blur-threshold", cw=0, lw=40, tw=40, show=0)
-        self.layout((self.rmin, self.rmax), title="radii", cw=0, lw=40, tw=40)
-        
         btn1 = wx.Button(self, label="+Bin", size=(40,22))
-        btn1.Bind(wx.EVT_BUTTON, lambda v: self.lgbt.calc(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
+        btn1.Bind(wx.EVT_BUTTON,
+                  lambda v: self.lgbt.calc(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
         btn1.SetToolTip("S-Lbutton to estimate threshold using Otsu algorithm")
         
         btn2 = wx.Button(self, label="+Execute", size=(64,22))
-        btn2.Bind(wx.EVT_BUTTON, lambda v: self.run(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
+        btn2.Bind(wx.EVT_BUTTON,
+                  lambda v: self.run(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
         btn2.SetToolTip("S-Lbutton to estimate threshold using Otsu algorithm")
         
+        self.layout(
+            self.lgbt.params,
+            title="blur-threshold", cw=0, lw=40, tw=40, show=0
+        )
+        self.layout((
+                self.rmin,
+                self.rmax
+            ),
+            title="radii", cw=0, lw=40, tw=40
+        )
         self.layout((btn1, btn2), row=2)
     
     maxcount = 256 # 選択する点の数を制限する
     
     def run(self, frame=None, otsu=0, invert=0):
-        """Search center of circles"""
+        """Search center of circles."""
         if not frame:
             frame = self.selected_view.frame
         del self.Arts
@@ -86,13 +96,14 @@ class Plugin(Layer):
                 circles = circles[:N]
             
             xy = []
-            for (cx,cy),r in circles:
+            for (cx, cy), r in circles:
                 x, y = frame.xyfrompixel(cx, cy)
                 x, y = x[0], y[0]
-                r *= frame.unit
+                xy.append((x, y))
                 
                 ## 不特定多数の円を描画する
-                self.attach_artists(frame.axes,
-                    patches.Circle((x,y), r, color='r', ls='dotted', lw=1, fill=0))
-                xy.append((x,y))
+                art = patches.Circle((x, y), r * frame.unit,
+                                     color='r', ls='dotted', lw=1, fill=0)
+                self.attach_artists(frame.axes, art)
+            
             frame.markers = np.array(xy).T # scatter markers if any xy

@@ -11,8 +11,9 @@ import editor as edi
 FFT_FRAME_NAME = "*result of fft*"
 COR_FRAME_NAME = "*result of cor*"
 
+
 class Plugin(Layer):
-    """Plugin for magcal
+    """Plugin for magcal.
     """
     menukey = "Plugins/&Pragma Tools/"
     
@@ -86,15 +87,16 @@ class Plugin(Layer):
     ## Before calculating Mags, check unit length [mm/pixel]
     
     def show_settings(self):
-        """Show settings to check
-        1. lccf radii [rmin:rmax] for marking spots
-        2. unit length [mm/pixel] for calculating mags
+        """Show settings to check.
+        
+        - lccf radii [rmin:rmax] for marking spots
+        - unit length [mm/pixel] for calculating mags
         """
         self.su.Show()
         self.lccf.Show()
     
     def run(self):
-        """Run the fitting procedure"""
+        """Run the fitting procedure."""
         try:
             busy = wx.BusyCursor()
             self.ldc.reset_params()
@@ -103,11 +105,13 @@ class Plugin(Layer):
             del busy
     
     def evaluate(self, frame=None):
-        """Evaluation using the selected method
-        Select evaluation method
-          :FFT evaluates using FFT method. Use when grid is small
-          :FFT+ in addition to FFT method, corss-cut the center (十文字きりちょんぱ)
-          :Cor evaluates using Cor (pattern matching) method. Use when grid is large
+        """Evaluation using the selected method.
+        
+        Select evaluation method:
+        
+        - :FFT evaluates using FFT method. Use when grid is small
+        - :FFT+ in addition to FFT method, corss-cut the center (十文字きりちょんぱ)
+        - :Cor evaluates using Cor (pattern matching) method. Use when grid is large
         """
         if not frame:
             frame = self.graph.frame
@@ -119,8 +123,9 @@ class Plugin(Layer):
             self.test_cor(frame)
     
     def calc_mark(self):
-        """Set parameter of socre at percentile
-        score: the ratio [%] to maximum count for extracting spots
+        """Set parameter of socre at percentile.
+        
+        Ratio [%] to maximum count for extracting spots.
         """
         frame = self.result_frame
         if not frame:
@@ -145,7 +150,7 @@ class Plugin(Layer):
         frame.parent.select(frame)
     
     def calc_mag(self):
-        """Calculate Mags from the grid length [mm/grid]
+        """Calculate Mags from the grid length [mm/grid].
         """
         frame = self.result_frame
         if not frame:
@@ -173,7 +178,8 @@ class Plugin(Layer):
         )
     
     def calc_ru(self):
-        """Estimate [u/pix] on specimen from two spots
+        """Estimate [u/pix] on specimen from two spots.
+        
         1. Select the *result* frame
         2. Draw line from orign to the nearest spot
         3. Press to estimate the unit length [u/pix]

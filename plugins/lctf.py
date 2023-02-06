@@ -13,8 +13,8 @@ import editor as edi
 
 
 def logpolar(src, r0, r1, center=None):
-    """Log-Polar transform
-    The area radii [r0:r1] of radius N/2 mapsto the same size of src image
+    """Log-Polar transform.
+    The area radii [r0:r1] of radius N/2 mapsto the same size of src image.
     
     cf. cv2.logPolar(src, (nx,ny), M, cv2.INTER_CUBIC)
     """
@@ -38,17 +38,19 @@ def logpolar(src, r0, r1, center=None):
 
 
 def find_ring_center(src, lo, hi, N=256, tol=0.01):
-    """find ring pattern in buffer with fixed center
+    """Find ring pattern in src image with fixed center.
     
     Polar 変換した後，角度セグメントに分割して相互相関をとる．
     center 固定，楕円を計測するために log-polar を使用する．
     theta = 0 を基準として，相対変位 [pixels] を計算する．
     
-    src : source buffer (typ. log(abs(fft)))
-  lo-hi : masking size of radial axis
-      N : resizing of angular axis (total step in angle [0:2pi])
-    tol : remove peaks that leap greater than N * tol
-  retval ->
+    Args:
+        src     : source buffer (typ. log(abs(fft)))
+        lo-hi   : masking size of radial axis
+        N       : resizing of angular axis (total step in angle [0:2pi])
+        tol     : remove peaks that leap greater than N * tol
+    
+    Returns:
         dst(log-polar-transformed image) and fitting model
     """
     h, w = src.shape
@@ -84,7 +86,7 @@ def find_ring_center(src, lo, hi, N=256, tol=0.01):
     
     ## edi.plot(xx, yy, '+', X, fitting_curve(X))
     
-    fitting_curve.params[0] = 0 # :a=0 として(平均を基準とする)全体のオフセット量を評価する
+    fitting_curve.params[0] = 0 # (平均を基準とする) 全体のオフセット量
     fitting_curve.params[1] = 0
     fitting_curve.params[2] = 0
     
@@ -119,8 +121,8 @@ def blur1d(data, tol=0.01):
 
 
 def find_radial_peaks(data, tol=0.01):
-    """find local maxima/minim's
-    smoothing with Gaussian window (signal.windows.gaussian)
+    """Find local maxima/minima in data.
+    smoothing with Gaussian window (signal.windows.gaussian).
     """
     w = len(data)
     lw = int(max(3, tol * w/2))
@@ -182,7 +184,7 @@ class Plugin(Layer):
         return fftresize(self.selected_frame.roi, maxsize=2048)
     
     def calc_ring(self, show=True):
-        """Calc log-polar of ring pattern
+        """Calc log-polar of ring pattern.
         """
         frame = self.selected_frame
         src = self.selected_roi
@@ -217,7 +219,7 @@ class Plugin(Layer):
         print("$result(eps, phi) = {!r}".format((eps, phi)))
     
     def calc_peak(self, show=True):
-        """Calc min/max peak detection
+        """Calc min/max peak detection.
         """
         N = self.data.size
         R0 = self.rmin.value
@@ -289,7 +291,8 @@ class Plugin(Layer):
                 del self.Arts
                 for x in self.lpoints[0,:10]:
                     r = N * np.sqrt(x)
-                    art = patches.Circle((0,0), 0, color='r', ls='--', lw=0.5, fill=0, alpha=0.5)
+                    art = patches.Circle((0, 0), 0, color='r',
+                                         ls='--', lw=0.5, fill=0, alpha=0.5)
                     art.width = 2 * r * (1 + eps) * u
                     art.height = 2 * r * (1 - eps) * u
                     art.angle = ang / 2

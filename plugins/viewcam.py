@@ -8,7 +8,7 @@ import editor as edi
 
 
 class Plugin(Layer):
-    """Plugins of camera viewer
+    """Plugins of camera viewer.
     """
     menukey = "Cameras/"
     

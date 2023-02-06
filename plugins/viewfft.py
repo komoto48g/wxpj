@@ -1,6 +1,6 @@
 #! python3
 # -*- coding: utf-8 -*-
-"""View of FFT/iFFT
+"""View of FFT/iFFT.
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
@@ -13,7 +13,7 @@ from jgdk import Layer, Param
 
 
 def fftresize(src, maxsize=None):
-    """Resize src image to 2**n squared ROI"""
+    """Resize src image to 2**n squared ROI."""
     h, w = src.shape
     if not maxsize:
         maxsize = w
@@ -23,9 +23,9 @@ def fftresize(src, maxsize=None):
 
 
 class Plugin(Layer):
-    """FFT view
+    """FFT view.
     
-    FFT src (graph.buffer) to dst (output.buffer)
+    FFT src (graph.buffer) to dst (output.buffer).
     Note:
         Rectangular regions will result in distorted patterns.
         長方形のリージョンは歪んだパターンになるので要注意
@@ -51,7 +51,7 @@ class Plugin(Layer):
         return Layer.Destroy(self)
     
     def newfft(self, evt):
-        """New FFT of graph to output"""
+        """New FFT of graph to output."""
         frame = self.graph.frame
         if frame:
             self.message("FFT execution...")
@@ -69,7 +69,7 @@ class Plugin(Layer):
             self.message("\b done")
     
     def newifft(self, evt):
-        """New inverse FFT of output to graph"""
+        """New inverse FFT of output to graph."""
         frame = self.output.frame
         if frame:
             self.message("iFFT execution...")
