@@ -13,10 +13,11 @@ Makefile
 exclude_files
 
 # Resources
-docs*/
+docs/
 docfiles*/
 plugins/RigakuCamera.py
 pyJeol/legacy/src/
+!requirements.txt
 
 # Byte-compiled files
 __pycache__/
