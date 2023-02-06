@@ -41,8 +41,8 @@ class Plugin(Layer):
             ),
             row=2,
         )
-        ## self.circ = patches.Circle((0,0), 0, color='r', ls='solid', lw=2, fill=0, zorder=2)
-        ## self.attach_artists(self.graph.axes, self.circ)
+        art = patches.Circle((0, 0), 0, color='r', lw=2, fill=0)
+        self.attach_artists(self.graph.axes, art)
     
     def test_imconv(self):
         src = self.graph.buffer
@@ -74,13 +74,8 @@ class Plugin(Layer):
         print(self.message('\b')) # Show the last message.
     
     def draw_ellipse(self, el, src, frame):
-        ## Check if an art is attached to the frame.axes.
-        for art in self.Arts:
-            if art.axes is frame.axes:
-                break
-        else:
-            art = patches.Circle((0, 0), 0, color='r', ls='solid', lw=2, fill=0, zorder=2)
-            self.attach_artists(frame.axes, art)
+        art = self.Arts[0]
+        self.attach_artists(frame.axes, art)
         
         (cx,cy), (ra,rb), angle = el
         R, n, s = calc_ellipse(src, el)
