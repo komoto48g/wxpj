@@ -220,16 +220,16 @@ class NotifyHandler(object):
     
     def on_filter_fork(self, argv):
         """Called when filter is drived."""
-        kwargv = self.efilter.Info(argv)
-        self.handler("filter_info", kwargv)
+        info = self.efilter.Info(argv)
+        self.handler("filter_info", info)
         
-        if kwargv["status"]:
+        if info["status"]:
             if not self.degauss_sw:
                 self.degauss_sw = 1
-                self.handler("degauss begin", kwargv)
+                self.handler("degauss begin", info)
         elif self.degauss_sw:
             self.degauss_sw = 0
-            self.handler("degauss end", kwargv)
+            self.handler("degauss end", info)
     
     ## def on_mode_fork(self, argv):
     ##     """Called when optical mode is changing or changed."""
@@ -239,19 +239,19 @@ class NotifyHandler(object):
     ##     else:
     ##         self.handler("mode changed", id)
     
-    def on_htsub_fork(self, kwargv): #<htsub_info>
+    def on_htsub_fork(self, info): #<htsub_info>
         self.handler('ht_info', self.hts.request())
     
-    def on_illumination_notify(self, kwargv): #<illumination_info>
-        self.substr[0] = "{mode_name}[{spot}-{alpha}]".format(**kwargv)
+    def on_illumination_notify(self, info): #<illumination_info>
+        self.substr[0] = "{mode_name}[{spot}-{alpha}]".format(**info)
         self.__parent.statusbar(self.modestr)
     
-    def on_imaging_notify(self, kwargv): #<imaging_info>
-        self.substr[1] = "{mode_name}[{submodestr}]".format(**kwargv)
+    def on_imaging_notify(self, info): #<imaging_info>
+        self.substr[1] = "{mode_name}[{submodestr}]".format(**info)
         self.__parent.statusbar(self.modestr)
     
-    def on_omega_notify(self, kwargv): #<omega_info>
-        self.substr[2] = "{mode_name}[{submodestr}]".format(**kwargv).replace('/','_')
+    def on_omega_notify(self, info): #<omega_info>
+        self.substr[2] = "{mode_name}[{submodestr}]".format(**info).replace('/','_')
         self.__parent.statusbar(self.modestr)
 
 
