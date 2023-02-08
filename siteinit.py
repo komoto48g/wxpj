@@ -3,6 +3,7 @@
 """siteinit file
 """
 import sys
+import numpy as np
 
 
 def init_mainframe(self):
@@ -11,6 +12,8 @@ def init_mainframe(self):
     self.Editor = "C:/usr/home/bin/xyzzy/xyzzy.exe"
     sys.path.append(r"C:\usr\home\workspace\tem13\gdk-aero")
     sys.path.append(r"C:\usr\home\workspace\tem13\wxpj-data")
+    
+    np.set_printoptions(linewidth=256)
     
     ## Film/CCD [mm/pixel]
     ## 0.0820 mm/pixel - Jenoptik
