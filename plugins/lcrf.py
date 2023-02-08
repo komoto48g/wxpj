@@ -249,13 +249,13 @@ class Plugin(Layer):
             return
         frame = self.target_view.frame
         h, w = frame.buffer.shape
-        c = frame.selector
-        if len(c) == 0:
-            c = 0, 0
-        else:
-            c = c[:,0]
+        ## c = frame.selector
+        ## if len(c) == 0:
+        ##     c = 0, 0
+        ## else:
+        ##     c = c[:,0]
         c1, c2 = self.Arts[:2]
-        c1.center = c2.center = c
+        ## c1.center = c2.center = c
         c1.radius = h/2 * self.rmin.value * frame.unit
         c2.radius = h/2 * self.rmax.value * frame.unit
         self.Draw()
