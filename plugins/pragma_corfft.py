@@ -75,7 +75,7 @@ class Plugin(Layer):
             name = FFT_FRAME_NAME
         else:
             name = COR_FRAME_NAME
-        return self.output.get_frame(name)
+        return self.output.find_frame(name)
     
     target_view = None          # given at evaluation time
     output_view = Layer.output  # property
