@@ -103,7 +103,7 @@ class MainFrame(Frame):
         if path[-4:] in ('.dm3', '.dm4'):
             dmf = DM3lib.DM3(path)
             ## return dmf.image # PIL Image file
-            return dmf.imagedata, {'header':dmf.info}
+            return dmf.imagedata, {'header': dmf.info}
         
         if path[-4:] == '.img':
             with open(path, 'rb') as i:
@@ -122,7 +122,7 @@ class MainFrame(Frame):
                     raise Exception("unexpected data type {!r}".format(type))
                 buf = np.frombuffer(i.read(), dtype)
                 buf.resize(h, w)
-                return buf, {'header':info}
+                return buf, {'header': info}
         
         return Frame.read_buffer(path)
     
@@ -139,12 +139,33 @@ class MainFrame(Frame):
 
 if __name__ == "__main__":
     session = None
-    opts, args = getopt.gnu_getopt(sys.argv[1:], "s:")
+    online = None
+    opts, args = getopt.gnu_getopt(sys.argv[1:], "s:", ["pyjem="])
+    ## opts, args = getopt.gnu_getopt(sys.argv[1:], "s:")
     for k, v in opts:
         if k == "-s":
             if not v.endswith(".jssn"):
                 v += '.jssn'
             session = v
+        if k == "--pyjem":
+            online = eval(v)
+
+    ## Please import TEM3 before the wx.App, or else you never do it hereafter.
+    ## switch --pyjem: 0(=offline), 1(=online), 2(=online+TEM3)
+    if online is not None:
+        try:
+            if online > 1:
+                print("Loading PyJEM.TEM3 module...")
+                from PyJEM import TEM3
+            elif online:
+                print("Loading PyJEM...")
+                import PyJEM
+            else:
+                print("Loading PyJEM.offline...")
+                import PyJEM.offline
+        except ImportError as e:
+            print("  {}... pass".format(e))
+            ## print("  PyJEM is supported under Python 3.8... sorry")
 
     app = wx.App()
     frm = MainFrame(None)
