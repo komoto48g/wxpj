@@ -11,8 +11,10 @@ import os
 import wx
 import numpy as np
 from PIL import Image
+
 from jgdk import Layer, Param, LParam, Button, Choice
 from pyGatan import gatan
+
 
 hostnames = [
     'localhost',

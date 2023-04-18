@@ -11,8 +11,10 @@ import os
 import wx
 import numpy as np
 from PIL import Image
+
 from jgdk import Layer, Param, LParam, Button, Choice
 from pyJeol.detector import Detector
+
 
 hostnames = [
     'localhost',
@@ -58,10 +60,14 @@ class Camera(object):
         self.cached_image = None
         self.cached_saturation = None
         self.max_count = typenames_info[self.name][0]
+        try:
+            self.cont.StartCreateRawDataCache() # setup cache
+        except Exception:
+            pass
     
     def __del__(self):
         try:
-            self.cont.StopCreateRawDataCache()
+            self.cont.StopCreateRawDataCache()  # close cache
         except Exception:
             pass
     
@@ -81,7 +87,6 @@ class Camera(object):
                 if self.cached_image is not None:
                     return self.cached_image
             
-            self.cont.StartCreateRawDataCache()
             data = self.cont.CreateRawDataCache()
             buf = np.frombuffer(data, dtype=np.uint16)
             buf.resize(self.shape)
