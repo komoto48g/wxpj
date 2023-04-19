@@ -61,13 +61,13 @@ class Camera(object):
         self.cached_saturation = None
         self.max_count = typenames_info[self.name][0]
         try:
-            self.cont.StartCreateRawDataCache() # setup cache
+            self.cont.StartCache() # setup cache
         except Exception:
             pass
     
     def __del__(self):
         try:
-            self.cont.StopCreateRawDataCache()  # close cache
+            self.cont.StopCache()  # close cache
         except Exception:
             pass
     
@@ -87,7 +87,7 @@ class Camera(object):
                 if self.cached_image is not None:
                     return self.cached_image
             
-            data = self.cont.CreateRawDataCache()
+            data = self.cont.Cache()
             buf = np.frombuffer(data, dtype=np.uint16)
             buf.resize(self.shape)
             self.cached_image = buf

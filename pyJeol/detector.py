@@ -58,15 +58,15 @@ class Detector:
         """Set detector setting attributes."""
         return self._request("Setting", "POST", json.dumps({attr: value}))
     
-    def StartCreateRawDataCache(self):
+    def StartCache(self):
         """Start processing to receive live image cache."""
         return self._request_cache("StartCreateRawDataCache", "POST")
     
-    def StopCreateRawDataCache(self):
+    def StopCache(self):
         """Stop processing to receive live image cache."""
         return self._request_cache("StopCreateRawDataCache", "POST")
     
-    def CreateRawDataCache(self):
+    def Cache(self):
         """Returns a live image cache."""
         return self._request("CreateRawDataCache", "GET")
     
