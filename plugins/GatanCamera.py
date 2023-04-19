@@ -11,8 +11,10 @@ import os
 import wx
 import numpy as np
 from PIL import Image
+
 from jgdk import Layer, Param, LParam, Button, Choice
 from pyGatan import gatan
+
 
 hostnames = [
     'localhost',
@@ -211,10 +213,7 @@ class Plugin(Layer):
         try:
             if self.camera is None:
                 self.connect()
-            try:
-                return self.camera.cache()
-            except Exception:
-                pass
+            return self.camera.cache()
         except Exception as e:
             print(self.message("- Failed to acquire image: {!r}".format(e)))
     
@@ -239,6 +238,7 @@ class Plugin(Layer):
             frame = self.graph.load(buf,
                 localunit=self.camera.pixel_unit, **self.attributes)
             self.parent.handler('frame_cached', frame)
+            return frame
     
     def preset_dark(self, evt=None): # internal use only
         f = self.dark_filename

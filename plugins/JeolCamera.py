@@ -11,8 +11,10 @@ import os
 import wx
 import numpy as np
 from PIL import Image
+
 from jgdk import Layer, Param, LParam, Button, Choice
 from pyJeol.detector import Detector
+
 
 hostnames = [
     'localhost',
@@ -58,10 +60,14 @@ class Camera(object):
         self.cached_image = None
         self.cached_saturation = None
         self.max_count = typenames_info[self.name][0]
+        try:
+            self.cont.StartCache() # setup cache
+        except Exception:
+            pass
     
     def __del__(self):
         try:
-            self.cont.StopCreateRawDataCache()
+            self.cont.StopCache()  # close cache
         except Exception:
             pass
     
@@ -81,8 +87,7 @@ class Camera(object):
                 if self.cached_image is not None:
                     return self.cached_image
             
-            self.cont.StartCreateRawDataCache()
-            data = self.cont.CreateRawDataCache()
+            data = self.cont.Cache()
             buf = np.frombuffer(data, dtype=np.uint16)
             buf.resize(self.shape)
             self.cached_image = buf
@@ -306,11 +311,7 @@ class Plugin(Layer):
         try:
             if self.camera is None:
                 self.connect()
-            try:
-                return self.camera.cache()
-            except Exception:
-                self.camera.start()
-                return self.camera.cache()
+            return self.camera.cache()
         except Exception as e:
             print(self.message("- Failed to acquire image: {!r}".format(e)))
     
@@ -335,6 +336,7 @@ class Plugin(Layer):
             frame = self.graph.load(buf,
                 localunit=self.camera.pixel_unit, **self.attributes)
             self.parent.handler('frame_cached', frame)
+            return frame
     
     def preset_dark(self, evt=None): # internal use only
         f = self.dark_filename
