@@ -5,8 +5,10 @@ import cv2
 import numpy as np
 from numpy import nan
 from numpy.fft import fft2,fftshift
+
 from jgdk import Layer, LParam, Button, TextCtrl, Choice
 import editor as edi
+
 
 FFT_FRAME_NAME = "*result of fft*"
 COR_FRAME_NAME = "*result of cor*"

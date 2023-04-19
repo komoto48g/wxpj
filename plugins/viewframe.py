@@ -8,8 +8,10 @@ from pprint import pformat
 import wx
 from wx import aui
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
+
 from jgdk import Layer, Icon, Clipboard
 from mwx.framework import CtrlInterface
+
 
 if wx.VERSION < (4,1,0):
     from wx.lib.mixins.listctrl import CheckListCtrlMixin

@@ -6,10 +6,11 @@ from numpy import pi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 from scipy import signal
 from matplotlib import patches
+
 from jgdk import Layer, LParam
-from plugins.viewfft import fftresize
-from plugins.lcrf import Model
 import editor as edi
+from plugins.lcrf import Model
+from plugins.viewfft import fftresize
 
 
 def logpolar(src, r0, r1, center=None):

@@ -10,11 +10,11 @@ from numpy import pi,cos,sin
 from scipy import signal
 ## from numpy.fft import fft,ifft,fftfreq
 ## from numpy.fft import fft2,ifft2,fftshift
-from mpl_toolkits.mplot3d import axes3d
+## from mpl_toolkits.mplot3d import axes3d
 from matplotlib import pyplot as plt
 from matplotlib import patches
 from matplotlib import cm
-## from PIL import Image
+
 from jgdk import Layer, LParam, Button
 
 

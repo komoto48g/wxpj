@@ -15,12 +15,11 @@ def init_mainframe(self):
     
     np.set_printoptions(linewidth=256)
     
-    ## Film/CCD [mm/pixel]
-    ## 0.0820 mm/pixel - Jenoptik
-    ## 0.0428 mm/pixel - FLASH 1181
-    ## 0.435 mm/pixel - LSCR Z300FSC
-    self.graph.unit = 0.0428
-    self.output.unit = 0.0428
+    ## Film/CCD [mm/pix]
+    ## 0.042 mm/pix - FLASH @JEM-3300
+    ## 0.365 mm/pix - LSCR @JEM-Z300FSC
+    self.graph.unit = 0.042
+    self.output.unit = 0.042
     
     ## Cutoff tolerance of the score at a given percentile
     self.graph.score_percentile = 0.01

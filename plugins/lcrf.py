@@ -7,6 +7,7 @@ from numpy import pi
 from scipy import optimize
 from scipy import signal
 from matplotlib import patches
+
 from jgdk import Layer, LParam
 import editor as edi
 

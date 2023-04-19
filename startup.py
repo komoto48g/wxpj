@@ -4,8 +4,9 @@
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
-import numpy as np 
+import numpy as np
 import wx
+
 from jgdk import Layer, Param, LParam, Button, Icon
 from pyJeol.temisc import Environ
 

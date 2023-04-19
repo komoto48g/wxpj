@@ -4,6 +4,7 @@ import wx
 import cv2
 import numpy as np
 from matplotlib import patches
+
 from jgdk import Layer, LParam
 
 

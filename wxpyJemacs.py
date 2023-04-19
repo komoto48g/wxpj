@@ -20,6 +20,7 @@ import re
 import wx
 import wx.adv
 import numpy as np
+
 import mwx
 from jgdk import Frame
 from pyJeol.temsys import NotifyFront
