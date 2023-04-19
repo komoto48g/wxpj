@@ -33,8 +33,13 @@ class Detector:
         - OffsetIndex <int>
         - BinningIndex <int>
     """
-    HOST = "171.17.41.1"
+    HOST = "172.17.41.1"
     PORT = "49226/DetectorRESTService/Detector" # host:port/path/
+    
+    def _request_cache(self, command, method="GET", body=None):
+        url = f"http://{self.HOST}:{self.PORT}/{command}" # name is not needed
+        res, con = HTTP.request(url, method, body, headers=HEADER)
+        return con
     
     def _request(self, command, method="GET", body=None):
         url = f"http://{self.HOST}:{self.PORT}/{self.name}/{command}"
@@ -55,11 +60,11 @@ class Detector:
     
     def StartCreateRawDataCache(self):
         """Start processing to receive live image cache."""
-        return self._request("StartCreateRawDataCache", "POST")
+        return self._request_cache("StartCreateRawDataCache", "POST")
     
     def StopCreateRawDataCache(self):
         """Stop processing to receive live image cache."""
-        return self._request("StopCreateRawDataCache", "POST")
+        return self._request_cache("StopCreateRawDataCache", "POST")
     
     def CreateRawDataCache(self):
         """Returns a live image cache."""
