@@ -38,8 +38,8 @@ class Camera(gatan.GatanSocket):
     pixel_unit = property(lambda self: self.pixel_size * self.binning)
     
     def __init__(self, name, host):
-        gatan.HOST = host
-        gatan.GatanSocket.__init__(self)
+        gatan.GatanSocket.__init__(self, host)
+        
         self.name = name
         self.info = typenames_info[name]
         self.pixel_size = self.info[0]
