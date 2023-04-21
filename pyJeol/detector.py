@@ -36,7 +36,7 @@ class Detector:
     HOST = "172.17.41.1"
     PORT = "49226/DetectorRESTService/Detector" # host:port/path/
     
-    def _request_cache(self, command, method="GET", body=None):
+    def _requests(self, command, method="GET", body=None):
         url = f"http://{self.HOST}:{self.PORT}/{command}" # name is not needed
         res, con = HTTP.request(url, method, body, headers=HEADER)
         return con
@@ -60,11 +60,11 @@ class Detector:
     
     def StartCache(self):
         """Start processing to receive live image cache."""
-        return self._request_cache("StartCreateRawDataCache", "POST")
+        return self._requests("StartCreateRawDataCache", "POST")
     
     def StopCache(self):
         """Stop processing to receive live image cache."""
-        return self._request_cache("StopCreateRawDataCache", "POST")
+        return self._requests("StopCreateRawDataCache", "POST")
     
     def Cache(self):
         """Returns a live image cache."""

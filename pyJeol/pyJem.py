@@ -13,7 +13,7 @@ Wx Import Warning:
 from collections import OrderedDict
 import sys
 import numpy as np
-from numpy import inf, nan
+from numpy import inf
 try:
     from temisc import mrange
     from temisc import FLHex, OLHex
@@ -424,7 +424,6 @@ class Aperture(object):
         """selected hole diameter value"""
         if self.sel is not None:
             return self.holes[self.sel]
-        return nan
     
     @dia.setter
     def dia(self, v):
