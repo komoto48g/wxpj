@@ -27,6 +27,7 @@ typenames_info = { # [mm/pix], h, w, (bins,
       "SC200" : (0.0074, 2048, 2048),
          "K2" : (0.0050, 3710, 3838),
          "K3" : (0.0050, 4092, 5760),
+    "OneView" : (0.0150, 4096, 4096),
 }
 
 
@@ -46,13 +47,15 @@ class Camera(gatan.GatanSocket):
         self.shape = self.info[1:3]
         self.binning = 1
         self.exposure = 0.05
-        if name in ('K2', 'K3'):
+        if name in ('OneView', 'K2', 'K3'):
             self.SetK2Parameters(
-                    readMode = 0,   # 0:Linear, 1:Counted, 2:SuperRes,
+                    # [K2] 0:Linear, 1:Counting, 2:S/Res
+                    # [K3] 3:linear, 4:S/Res
+                    readMode = 3 if name == 'K3' else 0,
                      scaling = 1.0,
-                hardwareProc = 3,
+                hardwareProc = 2,
                     doseFrac = 0,
-                   frameTime = 0.2,
+                   frameTime = 0.01,
                  alignFrames = 0,
                   saveFrames = 0,
             )
