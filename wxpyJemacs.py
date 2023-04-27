@@ -176,5 +176,10 @@ if __name__ == "__main__":
             frm.load_session(session, flush=False)
         except FileNotFoundError:
             print("- No such file {!r}".format(session))
+    try:
+        from wxpyNautilus import debut
+        debut.main(frm.shellframe)
+    except ImportError:
+        pass
     frm.Show()
     app.MainLoop()
