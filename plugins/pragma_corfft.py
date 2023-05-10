@@ -222,8 +222,7 @@ class Plugin(Layer):
     ##     tmp = cv2.GaussianBlur(src, (111,111), 0)
     ##     bkg = edi.Corr(tmp, tmp)
     ##     dst = edi.imconv(buf - bkg)
-    ##     return frame.parent.load(dst, COR_FRAME_NAME,
-    ##                              pos=0, localunit=frame.unit)
+    ##     return frame.parent.load(dst, COR_FRAME_NAME, pos=0, localunit=frame.unit)
     
     def test_cor(self, frame):
         src = frame.buffer
@@ -240,8 +239,7 @@ class Plugin(Layer):
         
         ## <float32> to <uint8>
         dst = edi.imconv(dst, hi=0)
-        return self.output.load(dst, COR_FRAME_NAME,
-                                     localunit=frame.unit)
+        return self.output.load(dst, COR_FRAME_NAME, localunit=frame.unit)
     
     def test_fft(self, frame, crossline=0):
         src = frame.roi
@@ -295,8 +293,7 @@ class Plugin(Layer):
         ## 逆空間：論理スケール [ru/pixel] に変換する
         ## Don't cut hi/lo: 強度重心を正しくとるため，飽和させないこと
         ## dst = edi.imconv(dst, hi=0, lo=0)
-        return self.output.load(dst, FFT_FRAME_NAME,
-                                     localunit=1/w/frame.unit)
+        return self.output.load(dst, FFT_FRAME_NAME, localunit=1/w/frame.unit)
 
 
 if __name__ == "__main__":

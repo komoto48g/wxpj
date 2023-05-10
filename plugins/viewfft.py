@@ -66,7 +66,7 @@ class Plugin(Layer):
             if self.pchk.Value:
                 u /= frame.unit
             self.output.load(dst, "*fft of {}*".format(frame.name),
-                             localunit=u)
+                                  localunit=u)
             self.message("\b done")
     
     def newifft(self, evt):
@@ -79,7 +79,6 @@ class Plugin(Layer):
             if self.pix.check:
                 y, x = np.ogrid[-h/2:h/2, -w/2:w/2]
                 mask = np.hypot(y,x) > w/self.pix.value
-                ## src = cv2.bitwise_and(src, src, mask.astype(np.uint8)) !! unsupported <complex>
                 frame.roi[mask] = 0
                 frame.update_buffer()
                 frame.parent.draw()
@@ -87,7 +86,7 @@ class Plugin(Layer):
             
             self.message("\b Loading image...")
             self.graph.load(dst.real, "*ifft of {}*".format(frame.name),
-                            localunit=1/w/frame.unit)
+                                      localunit=1/w/frame.unit)
             self.message("\b done")
 
 
