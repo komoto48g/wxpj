@@ -7,7 +7,7 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 import numpy as np
 import wx
 
-from jgdk import Layer, Param, LParam, Button, Icon
+from jgdk import Layer, Graph, Param, LParam, Button, Icon
 from pyJeol.temisc import Environ
 
 
@@ -27,16 +27,29 @@ class Plugin(Layer):
                 fmt='{:,g}'.format,
                 tip="Acceleration voltage [V].")
         
-        self.accv_param.reset() # -> call set_htv
+        ## self.accv_param.reset() # -> call set_htv
+        self.set_htv(self.accv_param)
         
         self.unit_param = LParam("unit/pix", (0,1,1e-4), self.graph.unit,
-                handler=None,
                 updater=self.set_unit,
-                tip="Set/unset localunit to the selected frame.")
+                tip="Set the localunit to the selected frame.")
+        
+        self.cuts_param = LParam("cutoff [%]", (0,1,1e-2), Graph.score_percentile,
+                handler=self.set_cutoff,
+                # Press [f5] to update_buffer.
+                tip="Set cutoff score percentiles of a frame.\n"
+                    "Upper/lower limits given by the tolerances[%].")
+        
+        self.threshold_param = LParam("image [Mb]", (1,24,1), Graph.nbytes_threshold/1e6,
+                handler=self.set_nbytes,
+                # Press [f5] to update_buffer.
+                tip="Set the max bytes for the image in a frame.")
         
         self.layout((
                 self.accv_param,
                 self.unit_param,
+                self.cuts_param,
+                self.threshold_param,
             ),
             type='vspin', style='button', cw=-1, lw=66, tw=60,
         )
@@ -75,20 +88,24 @@ class Plugin(Layer):
         self.__em_std = Environ(p.std_value)
     
     def set_unit(self, p):
-        target = self.selected_view
-        if target.frame:
+        view = self.selected_view
+        if view.frame:
             u = p.value
-            if target.unit == u:
-                del target.frame.unit # unset localunit
-            elif target.frame.unit != u:
-                target.frame.unit = u # set localunit
-            target.draw()
+            if view.unit == u:
+                view.frame.unit = None  # del localunit
+            elif view.frame.unit != u:
+                view.frame.unit = u     # set localunit
+    
+    def set_cutoff(self, p):
+        Graph.score_percentile = self.cuts_param.value
+    
+    def set_nbytes(self, p):
+        Graph.nbytes_threshold = self.threshold_param.value * 1e6
     
     def setup_all(self):
         u = self.unit_param.value
-        target = self.selected_view
-        target.unit = self.unit_param.std_value = u
-        target.draw()
+        view = self.selected_view
+        view.unit = self.unit_param.std_value = u
 
 
 if __name__ == "__main__":
