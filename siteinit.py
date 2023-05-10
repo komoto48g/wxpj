@@ -21,14 +21,13 @@ def init_mainframe(self):
     self.graph.unit = 0.042
     self.output.unit = 0.042
     
-    ## Cutoff tolerance of the score at a given percentile
-    self.graph.score_percentile = 0.01
-    self.output.score_percentile = 0.01
+    ## Local cutoff tolerance score percentiles.
+    ## self.graph.score_percentile = 0.01
+    ## self.output.score_percentile = 0.01
     
-    ## matplotlib wxagg backend
-    ## to restrict imshow sizes max typically < 24e6 (bytes)
-    self.graph.nbytes_threshold = 8e6
-    self.output.nbytes_threshold = 8e6
+    ## Local max image size (matplotlib/WXAgg) typically < 24e6 (bytes).
+    ## self.graph.nbytes_threshold = 8e6
+    ## self.output.nbytes_threshold = 8e6
     
     ## window layout
     self.histogram.modeline.Show()

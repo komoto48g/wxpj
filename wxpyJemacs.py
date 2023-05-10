@@ -70,9 +70,7 @@ class MainFrame(Frame):
         self.menubar.reset()
         
         try:
-            sys.path[0:0] =['',             # 1. local
-                os.path.dirname(__file__),  # 2. system
-            ]
+            sys.path.insert(0, '')      # Add local.
             si = __import__('siteinit') # try import si:local first
         except ImportError:
             print("- No siteinit file.")
