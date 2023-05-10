@@ -2,13 +2,11 @@
 # -*- coding: utf-8 -*-
 from itertools import chain
 import wx
-import cv2
 import numpy as np
 from numpy import pi,exp,cos,sin
 from scipy import optimize
 
 from jgdk import Layer, Thread, LParam
-import editor as edi
 
 
 def _valist(params):
@@ -223,10 +221,7 @@ class Plugin(Layer):
     
     def find_near_maximum(self, src, nx, ny, n=5, times=2):
         h, w = src.shape
-        k = h // 200
-        k += k%2 + 1
-        buf = edi.imconv(src, hi=0.01, lo=0.01)
-        src = cv2.GaussianBlur(buf, (k,k), 0)
+        
         ## Note: Gaussian をかけるので実際のピーク位置とずれることがある．
         for x in range(times):
             pp = []
