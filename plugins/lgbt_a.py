@@ -46,12 +46,15 @@ class Plugin(Layer):
         
         k, s, block, C = _valist(self.params)
         src = frame.buffer
-        buf = edi.imconv(src, self.hi.value, self.lo.value)
         if k > 1:
-            buf = cv2.GaussianBlur(buf, (k,k), s)
+            ## CV2 normally accepts uint8/16 and float32/64.
+            if src.dtype in (np.uint32, np.int32): src = src.astype(np.float32)
+            if src.dtype in (np.uint64, np.int64): src = src.astype(np.float64)
+            src = cv2.GaussianBlur(src, (k, k), s)
+        buf = edi.imconv(src, self.hi.value, self.lo.value)
         self.output.load(buf, "*Gauss*", localunit=frame.unit)
         
         dst = cv2.adaptiveThreshold(buf, 255,
-            cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, block, C)
+                cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, block, C)
         self.output.load(dst, "*threshold*", localunit=frame.unit)
         return dst
