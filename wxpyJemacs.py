@@ -9,7 +9,7 @@ Development phase::
     Phase 3. Analysis center phoenix (2020--2021).
     Phase 4. Automation center phoenix (2022--2023).
 """
-__version__ = "0.46rc"
+__version__ = "0.50rc"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 
