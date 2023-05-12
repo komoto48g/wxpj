@@ -46,19 +46,22 @@ class Camera(gatan.GatanSocket):
         self.pixel_size = self.info[0]
         self.shape = self.info[1:3]
         self.binning = 1
-        self.exposure = 0.05
-        if name in ('OneView', 'K2', 'K3'):
-            self.SetK2Parameters(
-                    # [K2] 0:Linear, 1:Counting, 2:S/Res
-                    # [K3] 3:linear, 4:S/Res
-                    readMode = 3 if name == 'K3' else 0,
-                     scaling = 1.0,
-                hardwareProc = 2,
-                    doseFrac = 0,
-                   frameTime = 0.01,
-                 alignFrames = 0,
-                  saveFrames = 0,
-            )
+        self.exposure = 0.1
+        if name == 'K3':
+            # [K2] 0:Linear, 1:Counting, 2:S/Res
+            # [K3] 3:linear, 4:S/Res
+            self.mode = 4
+        else:
+            self.mode = 0
+        self.SetK2Parameters(
+                readMode = self.mode,
+                 scaling = 1.0,
+            hardwareProc = 4,
+                doseFrac = 0,
+               frameTime = 0.1,
+             alignFrames = 0,
+              saveFrames = 0,
+        )
     
     def cache(self):
         """Cache of the current image."""
@@ -67,12 +70,17 @@ class Camera(gatan.GatanSocket):
                 time.sleep(0.01) # ここで通信待機
             Camera.busy += 1
             
-            h, w = self.shape
+            h, w = H, W = self.shape
             bin = self.binning
+            if self.mode == 4:
+                ## [K3] Defaults to 4 (S/Res mode).
+                H *= 2
+                W *= 2
+                bin *= 2
             buf = self.GetImage(
-              processing = 'gain normalized', # no effect? [dark subtracted or unprocessed]
-                  height = h//bin,
-                   width = w//bin,
+              processing = 'gain normalized',
+                  height = H//bin,
+                   width = W//bin,
                  binning = bin,
                      top = 0,
                     left = 0,
