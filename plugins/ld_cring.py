@@ -1,10 +1,9 @@
 #! python3
 # -*- coding: utf-8 -*-
 from itertools import chain
-import plugins.ld_ring as base
 
-## import importlib
-## importlib.reload(base)
+import ld_ring as base
+
 
 class Model(base.Model):
     def residual(self, fitting_params, x, y):

@@ -9,8 +9,8 @@ from matplotlib import patches
 
 from jgdk import Layer, LParam
 import editor as edi
-from plugins.lcrf import Model
-from plugins.viewfft import fftresize
+from lcrf import Model
+from viewfft import fftresize
 
 
 def logpolar(src, r0, r1, center=None):

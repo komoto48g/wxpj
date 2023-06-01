@@ -3,10 +3,9 @@
 from itertools import chain
 import numpy as np
 from numpy import pi,exp
-import plugins.ld_grid as base
 
-## import importlib
-## importlib.reload(base)
+import ld_grid as base
+
 
 class Model(base.Model):
     def basegrid(self, params):
