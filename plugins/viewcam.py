@@ -30,13 +30,13 @@ class Plugin(Layer):
             else:
                 self.viewer.Stop()
         
-        self.button = ToggleButton(self, "View camera", icon='camera', handler=view)
-        self.detect_chk = wx.CheckBox(self, label="detect")
+        self.button = ToggleButton(self, "View", icon='camera', handler=view)
+        self.detect_chk = wx.CheckBox(self, label="det")
         
         self.hi = LParam("hi", (0, 10, 0.01), 0.1)
         self.lo = LParam("lo", (0, 10, 0.01), 0.0)
         
-        self.rate_param = LParam('rate', (0,500,50), 500, tip="refresh speed [ms] (>= 100ms)")
+        self.rate_param = LParam('rate', (0,500,50), 500, tip="refresh rate [ms] (>= 100ms)")
         self.size_param = Param('size', (128,256,512,1024), 512, tip="resizing view window (<= 1k)")
         
         self.camera_selector = Choice(self,
@@ -50,12 +50,14 @@ class Plugin(Layer):
             row=3,
         )
         self.layout((
-                self.camera_selector, None,
-                self.rate_param, self.hi,
-                self.size_param, self.lo,
+                self.camera_selector,
+                self.rate_param,
+                self.size_param,
+                self.hi,
+                self.lo,
             ),
-            title="Detection settings", row=2, show=0,
-            type='vspin', cw=-1, lw=-1, tw=40
+            title="Detection settings", row=1, show=0,
+            type='vspin', cw=-1, lw=40, tw=40
         )
     
     def Destroy(self):
@@ -145,6 +147,8 @@ class Plugin(Layer):
         if flags & cv2.EVENT_FLAG_SHIFTKEY: mod += "S-"
         
         try:
+            ## title = self.__module__
+            ## x, y, w, h = print(cv2.getWindowImageRect(title))
             r = self._ratio
             self.parent.notify.handler('det/{}{}'.format(mod, key), x/r, y/r)
         except Exception:
