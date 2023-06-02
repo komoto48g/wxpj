@@ -71,8 +71,7 @@ class Plugin(Layer):
         title = self.__module__
         try:
             cv2.namedWindow(title)
-            cv2.setMouseCallback(title, self.on_mouse_button)
-            
+            ## cv2.startWindowThread()
             while self.viewer.active:
                 buf = self.cameraman.capture()
                 if buf is not None:
@@ -80,12 +79,14 @@ class Plugin(Layer):
                 cv2.waitKey(self.rate_param.value + 1)
                 if cv2.getWindowProperty(title, 0) < 0:
                     break
+            else:
+                cv2.destroyWindow(title)
         except cv2.error:
             pass
         finally:
             self.button.Value = False
             self.viewer.Stop()
-            cv2.destroyAllWindows()
+            ## cv2.destroyAllWindows()
     
     def display(self, title, buf):
         ## 画像サイズの縮小
@@ -120,39 +121,6 @@ class Plugin(Layer):
                 cv2.ellipse(dst, cc, rc, angle, 0, 360, (192,192,0), 2) # cyan:"#00c0c0"
         
         cv2.imshow(title, dst)
-    
-    def on_mouse_button(self, event, x, y, flags, param):
-        """Cv2 mouse callback method.
-        Triggers [det/mod-key] (x, y) notify events.
-        """
-        if event == 0: key = 'motion'
-        elif event in (1,4,7): key = 'Lbutton'
-        elif event in (2,5,8): key = 'Rbutton'
-        elif event in (3,6,9): key = 'Mbutton'
-        ## elif event == 10:
-        ##     key = 'wheel' + ('up' if flags > 0 else 'down')
-        ## elif event == 11:
-        ##     key = 'wheel' + ('right' if flags > 0 else 'left')
-        else:
-            return
-        
-        if event > 0:
-            if event < 4: key += ' pressed'
-            elif event < 7: key += ' released'
-            elif event < 10: key += ' dblclick'
-        
-        mod = ''
-        if flags & cv2.EVENT_FLAG_CTRLKEY:  mod += "C-"
-        if flags & cv2.EVENT_FLAG_ALTKEY:   mod += "M-"
-        if flags & cv2.EVENT_FLAG_SHIFTKEY: mod += "S-"
-        
-        try:
-            ## title = self.__module__
-            ## x, y, w, h = print(cv2.getWindowImageRect(title))
-            r = self._ratio
-            self.parent.notify.handler('det/{}{}'.format(mod, key), x/r, y/r)
-        except Exception:
-            pass
 
 
 if __name__ == "__main__":
