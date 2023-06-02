@@ -89,7 +89,6 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         
         self.handler.update({
             0 : {
-                            '*' : (0, lambda v: v.Skip()),
              'Lbutton dblclick' : (0, self.OnShowItems), # -> frame_shown
                 'enter pressed' : (0, self.OnShowItems), # -> frame_shown
                'delete pressed' : (0, self.OnRemoveItems), # -> frame_removed/shown
