@@ -106,15 +106,3 @@ class Plugin(Layer):
         u = self.unit_param.value
         view = self.selected_view
         view.unit = self.unit_param.std_value = u
-
-
-if __name__ == "__main__":
-    from jgdk import Frame
-    
-    app = wx.App()
-    frm = Frame(None)
-    frm.load_plug(__file__, show=1, dock=4)
-    frm.load_buffer(u"C:/usr/home/workspace/images/sample_grid.tif")
-    frm.load_buffer(u"C:/usr/home/workspace/images/sample_diff.tif")
-    frm.Show()
-    app.MainLoop()

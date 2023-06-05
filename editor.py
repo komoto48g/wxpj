@@ -467,15 +467,3 @@ if __name__ == "__main__":
     p = np.poly1d((a,b,c))
     xx = np.linspace(2*x[0],2*x[-1],100)
     plot(xx, p(xx), x, y)
-
-
-if __name__ == "__main__":
-    import wx
-    from jgdk import Frame
-    
-    app = wx.App()
-    frm = Frame(None)
-    frm.load_plug(__file__, show=1, dock=4)
-    frm.load_buffer(u"C:/usr/home/workspace/images/sample.bmp")
-    frm.Show()
-    app.MainLoop()

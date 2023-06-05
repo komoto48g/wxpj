@@ -108,16 +108,3 @@ def init_mainframe(self):
         frame.name = "{acq_datetime:%Y_%m%d_%H%M%S}-{mode},"\
                      "slit={filter[slit_width]}eV,bin{binning}-{exposure:g}s".format(
                      mode=self.notify.modestr, **frame.attributes)
-
-
-if __name__ == "__main__":
-    import wx
-    from jgdk import Frame
-    
-    app = wx.App()
-    frm = Frame(None)
-    init_frame(frm)
-    frm.load_buffer("C:/usr/home/workspace/images/sample.bmp")
-    frm.load_buffer("C:/usr/home/workspace/images/sample_circ.bmp")
-    frm.Show()
-    app.MainLoop()
