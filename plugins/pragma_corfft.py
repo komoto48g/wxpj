@@ -299,11 +299,10 @@ class Plugin(Layer):
 if __name__ == "__main__":
     import glob
     from jgdk import Frame
-    
+
     app = wx.App()
     frm = Frame(None)
     frm.load_plug(__file__, show=1, dock=4)
-    for path in glob.glob(r"C:/usr/home/workspace/images/*.bmp"):
-        frm.load_buffer(path)
+    frm.load_frame(glob.glob(r"C:/usr/home/workspace/images/*.bmp"))
     frm.Show()
     app.MainLoop()
