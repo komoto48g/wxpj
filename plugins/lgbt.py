@@ -17,7 +17,6 @@ class Plugin(Layer):
     """
     menukey = "Plugins/&Basic Tools/"
     category = "Basic Tools"
-    unloadable = False
     
     def Init(self):
         self.ksize = LParam("ksize", (1,99,2), 13)

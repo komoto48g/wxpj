@@ -47,7 +47,6 @@ class Plugin(Layer):
     """
     menukey = "Plugins/&Basic Tools/"
     category = "Basic Tools"
-    unloadable = False
     
     lgbt = property(lambda self: self.parent.require('lgbt'))
     

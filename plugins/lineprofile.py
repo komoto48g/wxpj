@@ -14,7 +14,6 @@ class Plugin(Layer):
     menukey = "Plugins/Extensions/&Line profile\tCtrl+l"
     caption = "Line profile"
     dockable = False
-    unloadable = False
     
     def Init(self):
         self.plot = LineProfile(self, log=self.message, size=(300,200))

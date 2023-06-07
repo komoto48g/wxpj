@@ -230,7 +230,6 @@ class Plugin(Layer):
     menukey = "Plugins/Extensions/&Buffer listbox\tCtrl+b"
     caption = "Property list"
     dockable = False
-    unloadable = False
     
     @property
     def all_pages(self):
