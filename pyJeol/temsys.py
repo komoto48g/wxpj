@@ -297,6 +297,11 @@ class NotifyLogger(wx.ListCtrl, ListCtrlAutoWidthMixin):
             self.__items.append(item)
             self.InsertItem(i, str(name))
         
+        ## Note: This method is called in threaded NotifyThread.run.
+        ##       A RuntimeError can occur while terminating the main thread.
+        ## RuntimeError: wrapped C/C++ object of type NotifyLogger has been deleted
+        if not self:
+            return
         for j, v in enumerate(item):
             self.SetItem(i, j, str(v))
         self.blink(i)
