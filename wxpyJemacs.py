@@ -12,7 +12,10 @@ Development phase::
 __version__ = "0.50rc"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
-
+__license__ = """\
+This program is under MIT license
+see https://opensource.org/licenses/MIT
+"""
 import getopt
 import sys
 import os
@@ -37,8 +40,8 @@ class MainFrame(Frame):
         info.Name = self.Name
         info.Version = __version__
         info.Copyright = __copyright__ +' '+ __author__
+        info.License = __license__
         info.Description = __doc__
-        info.License = '\n'.join((mwx.__doc__ , ))
         info.Developers = []
         info.DocWriters = []
         info.Artists = []
@@ -77,7 +80,7 @@ class MainFrame(Frame):
         except ImportError:
             print("- No siteinit file.")
         else:
-            print("Executing {!r}".format(si.__file__))
+            print(f"Executing {si.__file__!r}")
             si.init_mainframe(self)
     
     def Destroy(self):
@@ -164,17 +167,17 @@ if __name__ == "__main__":
                 print("Loading PyJEM.offline...")
                 import PyJEM.offline
         except ImportError as e:
-            print("  {}... pass".format(e))
+            print(e)
             ## print("  PyJEM is supported under Python 3.8... sorry")
 
     app = wx.App()
     frm = MainFrame(None)
     if session:
         try:
-            print("Starting session {!r}".format(session))
+            print(f"Starting session {session!r}")
             frm.load_session(session, flush=False)
         except FileNotFoundError:
-            print("- No such file {!r}".format(session))
+            print(f"- No such file {session!r}")
     try:
         from wxpyNautilus import debut
         debut.main(frm.shellframe)
