@@ -48,11 +48,6 @@ class MainFrame(Frame):
     def __init__(self, *args, **kwargs):
         Frame.__init__(self, *args, **kwargs)
         
-        home = os.path.dirname(os.path.abspath(__file__))
-        icon = os.path.join(home, "Jun.ico")
-        if os.path.exists(icon):
-            self.SetIcon(wx.Icon(icon, wx.BITMAP_TYPE_ICO))
-        
         ## Notify process
         self.nfront = NotifyFront(self)
         self.notify = self.nfront.notify
@@ -69,12 +64,18 @@ class MainFrame(Frame):
         ]
         self.menubar.reset()
         
+        home = os.path.dirname(__file__)
+        
+        icon = os.path.join(home, "Jun.ico")
+        if os.path.exists(icon):
+            self.SetIcon(wx.Icon(icon, wx.BITMAP_TYPE_ICO))
+        
+        sys.path.insert(0, os.path.join(home, 'plugins'))
+        sys.path.insert(0, '') # Add local . to import si:local first
         try:
-            sys.path.insert(0, '')      # Add local.
-            si = __import__('siteinit') # try import si:local first
+            si = __import__('siteinit')
         except ImportError:
             print("- No siteinit file.")
-            pass
         else:
             print("Executing {!r}".format(si.__file__))
             si.init_mainframe(self)
