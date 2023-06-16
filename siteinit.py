@@ -33,7 +33,7 @@ def init_mainframe(self):
     self.histogram.modeline.Show()
     
     ## --------------------------------
-    ## Load plugins
+    ## Plugins
     ## --------------------------------
     
     ## global reference to output buffer
@@ -73,7 +73,7 @@ def init_mainframe(self):
         print("$(e) = {!r}".format((e)))
     
     ## --------------------------------
-    ## global keymap
+    ## Global keymap of the main Frame 
     ## --------------------------------
     
     self.define_key('C-x o', self.load_session)

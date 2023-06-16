@@ -50,11 +50,15 @@ class Environ(object):
 
 
 def mrange(*args):
-    """10(Log)-step mag numbers as jeol style
-    args: i,j,k,...l,m ---> [0:i),[i:j),[j:k),...[l:m]
-       splits list in ranges, accespts mag values in [1e-1:1e+9)
-    mrange(a,b) ---> [a:b]
-    mrange(a,b,c) ---> [a:b), [b:c]
+    """10(Log)-step mag numbers as jeol style.
+    Returns a split list of ranges that accept mag values in [1e-1:1e+9).
+    
+    Args:
+        args: i,j,k,...l,m
+              -> [0:i),[i:j),[j:k),...[l:m]
+    
+    >>> mrange(a,b) # -> [a:b]
+    >>> mrange(a,b,c) # -> [a:b), [b:c]
     """
     if len(args) == 2:
         a, b = args
@@ -102,10 +106,12 @@ class FLHex(HexadecimalMixin):
     HI: ■□□□■□□□■□□□                FFF<<7 = 524,160
     LO:               ■□□□■□□□■□□□  FFF    =   4,095
     
-    Init with a pare of hex values := (coarse, fine) as follows;
-        Hex(hi, lo[, validate]);
-     or Hex(0, value) with one decimal value.
-    If validate is True, lo is forced become near the medium point
+    Init with a pare of hex values := (coarse, fine).
+    If validate is True, lo is forced become near the medium point.
+    
+    >>> Hex(hi, lo, validate)
+    # or
+    >>> Hex(0, value) # with one decimal value
     """
     HI = 0xfff
     LO = 0xfff
@@ -120,10 +126,12 @@ class OLHex(HexadecimalMixin):
     HI: ■□□□■□□□■□□□■□□□            FFFF<<5 = 2,097,120
     LO:           ■□□□■□□□■□□□■□□□  FFFF    =    65,535
     
-    Init with a pare of hex values := (coarse, fine) as follows;
-        Hex(hi, lo[, validate]);
-     or Hex(0, value) with one decimal value.
-    If validate is True, lo is forced become near the medium point
+    Init with a pare of hex values := (coarse, fine).
+    If validate is True, lo is forced become near the medium point.
+    
+    >>> Hex(hi, lo, validate)
+    # or
+    >>> Hex(0, value) # with one decimal value
     """
     HI = 0xffff
     LO = 0xffff
