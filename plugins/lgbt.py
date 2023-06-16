@@ -46,9 +46,10 @@ class Plugin(Layer):
     def calc(self, frame=None, otsu=0, invert=0):
         """Blur by Gaussian window and binarize.
         
-        otsu : True when using Otsu's algorithm
-               float number (0 < r < 1) indicates the threshold percentile
-        invert : invert dst image (for dark-field image)
+        Args:
+            otsu : True when using Otsu's algorithm
+                   float number (0 < r < 1) indicates the threshold percentile
+            invert : invert dst image (for dark-field image)
         """
         if not frame:
             frame = self.selected_view.frame
