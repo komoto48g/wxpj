@@ -7,30 +7,16 @@ A package for Image analysis and TEM control
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-<!--
-私の環境では 2022/9/9 現在，以下のバージョンで動作しています．
-```
-<Python 3.8.6 (tags/v3.8.6:db45529, Sep 23 2020, 15:52:53) [MSC v.1927 64 bit (AMD64)]>
-  wx version 4.1.1
-  scipy/numpy version 1.7.3/1.20.1
-  matplotlib version 3.4.0/WXAgg
-  Image version 8.1.0
-  cv2 version 4.5.1
-  mwx 0.71.3
-  pJ 0.50
-```
--->
-私の環境では 2023/2/28 現在，以下のバージョンで動作しています．
-```Python 3.10.8
-  <Python 3.10.8 (tags/v3.10.8:aaaf517, Oct 11 2022, 16:50:30) [MSC v.1933 64 bit (AMD64)]>
-  wx version 4.2.1a1.dev5545+a3b6cfec msw (phoenix) wxWidgets 3.2.1
-  scipy/numpy version 1.10.0/1.24.2
-  matplotlib version 3.6.3/WXAgg
-  Image version 9.4.0
+私の環境では 2023/6/20 現在，以下のバージョンで動作しています．
+```Python 3.10.11
+  <Python 3.10.11 (tags/v3.10.11:7d4cc5a, Apr  5 2023, 00:38:17) [MSC v.1929 64 bit (AMD64)]>
+  wx version 4.2.1 msw (phoenix) wxWidgets 3.2.2.1
+  scipy/numpy version 1.10.1/1.24.2
+  matplotlib version 3.7.1/WXAgg
+  Image version 9.5.0
   cv2 version 4.7.0
-  mwx 0.79.5
+  mwx 0.85.6
 ```
-
 
 ![setup](./images/net.png)
 
@@ -44,7 +30,7 @@ These instructions will get you a copy of the project up and running on your loc
 * ~~[Python 3.8.6 for Windows](https://www.python.org/downloads/release/python-386/)  
     if you use PyJEM, this version is recommended.~~
 
-* [Python 3.10.8 for Windows](https://www.python.org/downloads/release/python-3108/)  
+* [Python 3.10.11 for Windows](https://www.python.org/downloads/release/python-31011/)  
     This version is for `GOOD BYE PYJEM`.
 
 * [Git for Windows](https://git-scm.com/)  
@@ -57,35 +43,45 @@ Create a workspace or venv to install.
 
 1. Install Python packages (from pypi) using batch files  
 
-    To install PY38+ packages:
+    To install PY310+ packages:
     ```
-    py -m pip install -U pip
-    py -m pip install scipy opencv-python pillow matplotlib wxpython
-    py -m pip install pywin32 flake8 httplib2
-    py -m pip install -U mwxlib
+    python -m pip install -U pip
+    python -m pip install -U scipy opencv-python pillow matplotlib wxpython
+    python -m pip install -U pywin32 httplib2
+    python -m pip install -U mwxlib
     git clone https://github.com/komoto48g/wxpj.git
     ```
 
 
 #### Note (for internal use only)
 
-- 社内からインストールする場合プロキシが見つからない為に失敗するかもしれません．
-  その場合はまず次の設定を行ってください
-```
-set HTTPS_PROXY=http://i-net.jeol.co.jp:80
-set HTTP_PROXY=http://i-net.jeol.co.jp:80
-```
+社内からインストールする場合プロキシが見つからない為に失敗するかもしれません．
+その場合はまず次の設定を行ってください
+
+
+    set HTTPS_PROXY=http://i-net.jeol.co.jp:80
+    set HTTP_PROXY=http://i-net.jeol.co.jp:80
 
 
 ### Updating
 
-To update your packages, follow the steps above again.
+To update packages, follow the steps above again.
+<!--
 Remove the wxpj directory before updating. Otherwise the latest wxpj will not be cloned.
+-->
+To update wxpj:
+
+    $ cd wxpj
+    $ git pulls
 
 
 ## How to execute wxpyJemacs
 
-Launch `wxpj/wxpyJemacs.py`.
+Here, let "~/" be the directory the main program is cloned.
+
+Launch the program:
+
+    $ python ~/wxpyJemacs.py
 
 
 ## How to terminate wxpyJemacs
@@ -99,20 +95,12 @@ Click [OK]. Then, the next time you start the program with the session file, you
 
 ## How to restart the session
 
-Suppose the session file is "user.jssn".
-Start from the command prompt in your workdir:
-```
-py /(your-workdir)/wxpj/wxpyjemacs.py -suser
-```
-<!--
-The meanings of the command arguments are:
+To restart the session, launch the program with -s switch:
 
-    -sxxx: Start xxx session
--->
-If `.jssn` is associated with the batch file (pJ.cmd), you can double-click the session file to restart the program easily. The pJ.cmd file would be like this:
-```
-py /(your-workdir)/wxpj/wxpyJemacs.py -s%*
-```
+    $ python ~/wxpyJemacs.py -s<session file.jssn>
+
+Then, the program will start in the same state as when the session was saved.
+
 
 ## Deployment
 
