@@ -262,7 +262,9 @@ class Plugin(Layer):
         
         def copy(all=True):
             page = self.nb.CurrentPage
-            frame = page.Target.all_frames[page.focused_item]
+            frames = page.Target.all_frames
+            if frames:
+                frame = frames[page.focused_item]
             if all:
                 text = pformat(frame.attributes, sort_dicts=0)
             else:
