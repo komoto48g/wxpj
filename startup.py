@@ -22,28 +22,22 @@ class Plugin(Layer):
     em_std = property(lambda self: self.__em_std)
     
     def Init(self):
+        _F = self.funcall
+        
         self.accv_param = Param("Acc.Voltage", (100e3, 200e3, 300e3), 300e3,
-                handler=self.set_htv,
-                fmt='{:,g}'.format,
-                tip="Acceleration voltage [V].")
+                handler=self.set_htv)
         
         ## self.accv_param.reset() # -> call set_htv
         self.set_htv(self.accv_param)
         
         self.unit_param = LParam("unit/pix", (0,1,1e-4), self.graph.unit,
-                updater=self.set_unit,
-                tip="Set the localunit to the selected frame.")
+                updater=self.set_unit)
         
         self.cuts_param = LParam("cutoff [%]", (0,1,1e-2), Graph.score_percentile,
-                handler=self.set_cutoff,
-                # Press [f5] to update_buffer.
-                tip="Set cutoff score percentiles of a frame.\n"
-                    "Upper/lower limits given by the tolerances[%].")
+                handler=self.set_cutoff)
         
         self.threshold_param = LParam("image [Mb]", (1,24,1), Graph.nbytes_threshold/1e6,
-                handler=self.set_nbytes,
-                # Press [f5] to update_buffer.
-                tip="Set the max bytes for the image in a frame.")
+                handler=self.set_nbytes)
         
         self.layout((
                 self.accv_param,
@@ -55,8 +49,7 @@ class Plugin(Layer):
         )
         self.layout((
             Button(self, "Apply ALL",
-                lambda v: self.setup_all(), icon=Icon('v'),
-                tip="Set globalunit to all frames."),
+                _F(self.setup_all), icon=Icon('v')),
             ),
             row=2,
         )
@@ -84,10 +77,12 @@ class Plugin(Layer):
             self.unit_param.std_value = frame.parent.unit
     
     def set_htv(self, p):
+        """Acceleration voltage [V]."""
         self.__em = Environ(p.value)
         self.__em_std = Environ(p.std_value)
     
     def set_unit(self, p):
+        """Set the localunit to the selected frame."""
         view = self.selected_view
         if view.frame:
             u = p.value
@@ -97,12 +92,20 @@ class Plugin(Layer):
                 view.frame.unit = u     # set localunit
     
     def set_cutoff(self, p):
+        """Set cutoff score percentiles of a frame.
+        Upper/lower limits given by the tolerances[%].
+        Press [f5] to update_buffer.
+        """
         Graph.score_percentile = self.cuts_param.value
     
     def set_nbytes(self, p):
+        """Set the max bytes for the image in a frame.
+        Press [f5] to update_buffer.
+        """
         Graph.nbytes_threshold = self.threshold_param.value * 1e6
     
     def setup_all(self):
+        """Set globalunit to all frames."""
         u = self.unit_param.value
         view = self.selected_view
         view.unit = self.unit_param.std_value = u

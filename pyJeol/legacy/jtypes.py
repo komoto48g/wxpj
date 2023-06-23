@@ -16,11 +16,11 @@ Command = cmdl.Command
 class LensParam(LParam):
     """Base class of lens/defl linear param
     
-     name : specified in *TAGS*
-     flag : WR flag (=check) in recv/send signal
-std_value : standard (fixed) value (default None)
-    value : total value := std_value + offset
-   offset : offset from std/v
+    name        : specified in *TAGS*
+    flag        : WR flag (=check) in recv/send signal
+    std_value   : standard (fixed) value (default None)
+    value       : total value := std_value + offset
+    offset      : offset from std/v
     """
     @property
     def flag(self):

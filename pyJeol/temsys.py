@@ -29,16 +29,12 @@ class NotifyHandler(object):
         3. bind/unbind transactions to the handler
         4. stop() -> close the streams
     
-    Attributes:
-        thread  : Notify thread instance
-        handler : Notify command handler instance
-    
     Note:
         To check whether the streams are open,
         see cmdl.STREAM, cntf.STREAM, and self.thread.active
     """
-    thread = property(lambda self: self.__thread)
-    handler = property(lambda self: self.__handler)
+    thread = property(lambda self: self.__thread)   #: Notify thread instance
+    handler = property(lambda self: self.__handler) #: Notify command handler instance
     
     substr = [''] * 3 # 3-fields for mode:str
     modestr = property(lambda self: ' '.join(self.substr).strip())
