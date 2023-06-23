@@ -291,10 +291,6 @@ class Plugin(Layer):
             if target is lc.Target:
                 self.nb.DeletePage(k)
     
-    def show_page(self, target):
-        self.nb.SetSelection(next((k
-            for k, lc in enumerate(self.all_pages) if target is lc.Target), -1))
-    
     def ask(self, prompt='Enter an annotation'):
         """Get response from the user using a dialog box."""
         page = self.nb.CurrentPage

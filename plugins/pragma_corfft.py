@@ -47,7 +47,7 @@ class Plugin(Layer):
         )
         self.grid.Selection = 0
         
-        self.text = TextCtrl(self, size=(140,40),
+        self.text = wx.TextCtrl(self, size=(140,40),
                              style=wx.TE_READONLY|wx.TE_MULTILINE)
         self.layout((
                 Button(self, "1. Eval", _F(self.evaluate), icon='help', size=(72,-1)),
