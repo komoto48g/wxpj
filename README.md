@@ -45,10 +45,7 @@ Create a workspace or venv to install.
 
     To install PY310+ packages:
     ```
-    python -m pip install -U pip
-    python -m pip install -U scipy opencv-python pillow matplotlib wxpython
-    python -m pip install -U pywin32 httplib2
-    python -m pip install -U mwxlib
+    pip install -U pywin32 httplib2 mwxlib
     git clone https://github.com/komoto48g/wxpj.git
     ```
 
@@ -72,7 +69,7 @@ Remove the wxpj directory before updating. Otherwise the latest wxpj will not be
 To update wxpj:
 
     $ cd wxpj
-    $ git pulls
+    $ git pull
 
 
 ## How to execute wxpyJemacs

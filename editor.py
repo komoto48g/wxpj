@@ -24,7 +24,7 @@ class Plugin(Layer):
     menukey = "Plugins/Functions/&Editor"
     
     def Init(self):
-        self.hi = LParam("hi", (0, 10 ,0.005), 0.1)
+        self.hi = LParam("hi", (0, 10, 0.005), 0.1)
         self.lo = LParam("lo", (0, 10, 0.005), 0.0)
         
         self.layout((
