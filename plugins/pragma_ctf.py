@@ -37,17 +37,15 @@ class Plugin(Layer):
     em = property(lambda self: self.su.em)
     
     def Init(self):
-        _F = self.funcall
-        
         self.cmax = LParam("limit", (2, 50), 10,
-                           updater=_F(self.calc_optvar),
+                           updater=self.calc_optvar,
                            tip="Set maximum index for fitting")
         
         self.ru = LParam("A/pix", (0, 2, 0.001), 0.5, fmt="{:5.3f}".format,
                          tip="Angstrom per pixel")
         
         self.cs = LParam("Cs", (0, 5, 0.01), 1.0, fmt="{:5.2f}".format,
-                         updater=_F(self.calc_sherzer),
+                         updater=self.calc_sherzer,
                          tip="Design value of Cs")
         
         self.layout((
@@ -67,8 +65,8 @@ class Plugin(Layer):
         self.layout((
             self.cmax,
             None,
-            Button(self, "CTF", _F(self.run), icon='->'),
-            Button(self, "clf", _F(edi.clear), icon='-'),
+            Button(self, "CTF", self.run, icon='->'),
+            Button(self, "clf", edi.clear, icon='-'),
             ),
             row=2,
             type='vspin', style='button', cw=-1, lw=32, tw=50,

@@ -25,8 +25,6 @@ class Plugin(Layer):
     ldc = property(lambda self: self.parent.require('ld_cgrid'))
     
     def Init(self):
-        _F = self.funcall
-        
         self.choice = Choice(self, size=(60,-1),
                              choices=['FFT', 'FFT+', 'Cor'],
                              readonly=1)
@@ -50,15 +48,15 @@ class Plugin(Layer):
         self.text = wx.TextCtrl(self, size=(140,40),
                              style=wx.TE_READONLY|wx.TE_MULTILINE)
         self.layout((
-                Button(self, "1. Eval", _F(self.evaluate), icon='help', size=(72,-1)),
+                Button(self, "1. Eval", self.evaluate, icon='help', size=(72,-1)),
                 self.choice,
                 
-                Button(self, "2. Mark", _F(self.calc_mark), icon='help', size=(72,-1)),
+                Button(self, "2. Mark", self.calc_mark, icon='help', size=(72,-1)),
                 self.score,
                 
-                Button(self, "3. Run", _F(self.run), icon='help', size=(72,-1)),
+                Button(self, "3. Run", self.run, icon='help', size=(72,-1)),
                 
-                Button(self, "Settings", _F(self.show_settings)),
+                Button(self, "Settings", self.show_settings),
             ),
             title="Evaluate step by step", row=2,
             type='vspin', cw=-1, lw=0, tw=44,

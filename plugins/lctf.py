@@ -154,18 +154,16 @@ class Plugin(Layer):
     menukey = "CTF/"
     
     def Init(self):
-        _F = self.funcall
-        
         self.rmin = LParam("rmin", (0.001, 0.1, 0.001), 0.05,
-                           updater=_F(self.calc_ring),
+                           updater=self.calc_ring,
                            tip="Ratio to the radius.")
         
         self.rmax = LParam("rmax", (0.1, 0.5, 0.01), 0.5,
-                           updater=_F(self.calc_ring),
+                           updater=self.calc_ring,
                            tip="Ratio to the radius.")
         
         self.tol = LParam("tol", (0, 0.1, 0.001), 0.01,
-                           updater=_F(self.calc_peak),
+                           updater=self.calc_peak,
                            tip="Ratio to the radius of blurring pixels.")
         
         self.layout((

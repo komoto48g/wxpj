@@ -22,8 +22,6 @@ class Plugin(Layer):
     em_std = property(lambda self: self.__em_std)
     
     def Init(self):
-        _F = self.funcall
-        
         self.accv_param = Param("Acc.Voltage", (100e3, 200e3, 300e3), 300e3,
                 handler=self.set_htv)
         
@@ -49,7 +47,7 @@ class Plugin(Layer):
         )
         self.layout((
             Button(self, "Apply ALL",
-                _F(self.setup_all), icon=Icon('v')),
+                   self.setup_all, icon=Icon('v')),
             ),
             row=2,
         )
