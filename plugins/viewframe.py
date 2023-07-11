@@ -228,8 +228,7 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
             with wx.TextEntryDialog(self, prompt,
                 caption='Input Dialog', value=frame.annotation) as dlg:
                 if dlg.ShowModal() == wx.ID_OK:
-                    for j in self.selected_items:
-                        frames[j].annotation = dlg.Value
+                    frame.annotation = dlg.Value
     
     ## --------------------------------
     ## Actions of frame-handler
