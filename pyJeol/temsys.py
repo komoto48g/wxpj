@@ -74,8 +74,10 @@ class NotifyHandler(object):
             self.handler("gonio_info", self.gonio.request())
             
             self.handler("beam_valve", self.eos._get_v1_state())
-            self.handler("scr_info", self.eos._get_scr())
+            ## self.handler("scr_info", self.eos._get_scr())
             ## self.handler("det_info", self.eos._get_det()) # ▼not supported
+            
+            self.handler("scr_info", self.scr_info(self.eos._get_scr()))
             
             ## 最初の時点では APT-EXTYPE 不明▲
             extype = bool(pj.ApertureEx._get_info())
