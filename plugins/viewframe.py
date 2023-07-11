@@ -9,8 +9,8 @@ import wx
 from wx import aui
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
-from jgdk import Layer, Icon, Clipboard
-from mwx.framework import CtrlInterface
+from jgdk import Layer, Icon, Icon2, Clipboard
+from mwx.framework import CtrlInterface, Menu
 
 
 if wx.VERSION < (4,1,0):
@@ -92,6 +92,7 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
              'Lbutton dblclick' : (0, self.OnShowItems), # -> frame_shown
                 'enter pressed' : (0, self.OnShowItems), # -> frame_shown
                'delete pressed' : (0, self.OnRemoveItems), # -> frame_removed/shown
+                   'f2 pressed' : (0, self.OnEditAnnotation),
                   'C-a pressed' : (0, self.OnSelectAllItems),
                   'C-o pressed' : (0, self.OnLoadItems),
                   'C-s pressed' : (0, self.OnSaveItems),
@@ -119,6 +120,31 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
             }
         }
         self.Target.handler.append(self.context)
+        
+        def copy(all=True):
+            frames = self.Target.all_frames
+            if frames:
+                frame = frames[self.focused_item]
+                if all:
+                    text = pformat(frame.attributes, sort_dicts=0)
+                else:
+                    text = "{}\n{}".format(frame.name, frame.annotation)
+                Clipboard.write(text)
+        
+        self.menu = [
+            (101, "&Edit annotation", "Edit annotation", Icon('pencil'),
+                self.OnEditAnnotation),
+            (),
+            (102, "Copy info", Icon('copy'),
+                lambda v: copy(0),
+                lambda v: v.Enable(len(list(self.selected_items)))),
+                
+            (103, "Copy ALL data", Icon2('copy', '+'),
+                lambda v: copy(),
+                lambda v: v.Enable(len(list(self.selected_items)))),
+        ]
+        self.Bind(wx.EVT_CONTEXT_MENU,
+                  lambda v: Menu.Popup(self, self.menu))
     
     def Destroy(self):
         self.Target.handler.remove(self.context)
@@ -195,6 +221,16 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         selected_frames = [frames[j] for j in self.selected_items]
         self.parent.parent.export_index(frames=selected_frames)
     
+    def OnEditAnnotation(self, evt, prompt='Enter an annotation'):
+        frames = self.Target.all_frames
+        if frames:
+            frame = frames[self.focused_item]
+            with wx.TextEntryDialog(self, prompt,
+                caption='Input Dialog', value=frame.annotation) as dlg:
+                if dlg.ShowModal() == wx.ID_OK:
+                    for j in self.selected_items:
+                        frames[j].annotation = dlg.Value
+    
     ## --------------------------------
     ## Actions of frame-handler
     ## --------------------------------
@@ -259,27 +295,6 @@ class Plugin(Layer):
             v.Skip()
         
         self.nb.Bind(wx.EVT_CHILD_FOCUS, on_focus_set)
-        
-        def copy(all=True):
-            page = self.nb.CurrentPage
-            frames = page.Target.all_frames
-            if frames:
-                frame = frames[page.focused_item]
-            if all:
-                text = pformat(frame.attributes, sort_dicts=0)
-            else:
-                text = "{}\n{}".format(frame.name, frame.annotation)
-            Clipboard.write(text)
-        
-        self.menu[0:0] = [
-            (101, "&Edit annotation", "Edit annotation", Icon('edit'),
-                lambda v: self.ask()),
-            (),
-            ("Copy attributes", Icon('copy'), (
-                (102, "ALL data", Icon('copy'), lambda v: copy()),
-                (103, "row data", Icon('edit'), lambda v: copy(0)),
-            )),
-        ]
     
     def attach(self, target, caption):
         if target not in [lc.Target for lc in self.all_pages]:
@@ -290,18 +305,6 @@ class Plugin(Layer):
         for k, lc in enumerate(self.all_pages):
             if target is lc.Target:
                 self.nb.DeletePage(k)
-    
-    def ask(self, prompt='Enter an annotation'):
-        """Get response from the user using a dialog box."""
-        page = self.nb.CurrentPage
-        frames = page.Target.all_frames
-        if frames:
-            frame = frames[page.focused_item]
-            with wx.TextEntryDialog(self, prompt,
-                caption='Input Dialog', value=frame.annotation) as dlg:
-                if dlg.ShowModal() == wx.ID_OK:
-                    for j in page.selected_items:
-                        frames[j].annotation = dlg.Value
 
 
 if __name__ == "__main__":
@@ -310,7 +313,7 @@ if __name__ == "__main__":
 
     app = wx.App()
     frm = Frame(None)
-    frm.load_plug(__file__, show=1, dock=0)
+    frm.load_plug(__file__, show=1)
     frm.load_frame(glob.glob(r"C:/usr/home/workspace/images/*.bmp"))
     frm.Show()
     app.MainLoop()

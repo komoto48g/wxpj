@@ -8,7 +8,7 @@ import os
 
 from mwx.framework import StatusBar
 from mwx.graphman import Frame, Layer, Thread, Graph
-from mwx.controls import Param, LParam, Knob, Icon, Clipboard
+from mwx.controls import Param, LParam, Knob, Icon, Icon2, Clipboard
 from mwx.controls import Button, ToggleButton, TextCtrl, Choice, Gauge, Indicator
 
 home = os.path.dirname(os.path.abspath(__file__))
