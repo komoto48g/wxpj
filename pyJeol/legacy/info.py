@@ -159,15 +159,14 @@ class Aperture_info(Infodict): #[N140] - [E405]
         Infodict.__call__(self, argv, decode=0)
         try:
             def chop(i):
+                info = self['_info']
                 _cor,_cx,_cy,_t,_bx,_by, sel, psel = struct.unpack("!100s7H", info[i:i+114])
                 return sel
             
-            info = self['_info']
             ls = "NULL,CLA,OLA,HCA,SAA,ENTA,HXA".split(',')
             for i,name in enumerate(ls):
                 self[name] = chop(i * 114)
-            del self['_info'] # delete big-bytes info after chop and extracting data
-            
+            self['_info'] = None # clear big-bytes after chopping and extracting data
             self['selected_name'] = ls[self['csid']]
         finally:
             return self
