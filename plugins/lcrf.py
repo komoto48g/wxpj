@@ -34,8 +34,10 @@ class Model(object):
     
     def mod2d(self, buf):
         """Calculate modulated image.
+        
         Args:
             buf : polar-transformed output buffer
+        
         Returns:
             2D-array of modulated image
         """
@@ -50,8 +52,10 @@ class Model(object):
     
     def mod1d(self, buf):
         """Calculate line profile averaged with modulation correction.
+        
         Args:
             buf : polar-transformed output buffer
+        
         Returns:
             1D-array of modulated (+avr.) line profile
         """
@@ -132,7 +136,8 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
 
 
 def find_radial_peaks(data, tol=0.01):
-    """Find radial peaks in Polar-converted buffer.
+    """Find radial peaks in polar-transformed buffer.
+    
     Args:
         data : polar-transformed output buffer
     """
@@ -159,9 +164,8 @@ class Plugin(Layer):
         self.rmax = LParam("rmax", (0, 2, 0.01), 1.0, handler=self.set_radii)
         
         btn = wx.Button(self, label="+Execute", size=(64,22))
-        btn.Bind(wx.EVT_BUTTON,
-                 lambda v: self.run(shift=wx.GetKeyState(wx.WXK_SHIFT)))
-        btn.SetToolTip("S-Lbutton to enter recursive centering")
+        btn.Bind(wx.EVT_BUTTON, lambda v: self.run())
+        btn.SetToolTip(self.run.__doc__.strip())
         
         self.chkplt = wx.CheckBox(self, label="rdist")
         
@@ -179,22 +183,38 @@ class Plugin(Layer):
     
     target_view = None
     
-    def run(self, frame=None, shift=0, maxloop=5):
+    def run(self, frame=None, shift=None, maxloop=5):
+        """Set markers on the diffraction ring.
+        
+        Search center position and fit the model paramters.
+        Find peaks in radial distribution using polar-transformed buffer.
+        [S-Lbutton] Use the selector as the initial center position.
+        
+        Args:
+            frame   : target frame
+                      If not spcified, the last selected frame is given.
+            shift   : The selector is used as the initial center position.
+                      True is given if the shift key is being pressed.
+            maxloop : maximum number of loops to search for the center position.
+        """
         if not frame:
             frame = self.selected_view.frame
         if not frame:
             return
         self.target_view = frame.parent
         
+        if shift is None:
+            shift = wx.GetKeyState(wx.WXK_SHIFT)
+        
         src = frame.buffer
         h, w = src.shape
-        if shift:
+        if shift and frame.selector.size > 0:
             nx, ny = frame.xytopixel(frame.selector)
             c = int(nx[0]), int(ny[0])
         else:
             c = (w//2, h//2)
         
-        ## Search center and fit with model (twice at least)
+        ## Search center and fit with model
         lo = h/2 * self.rmin.value
         hi = h/2 * self.rmax.value
         for i in range(maxloop):
@@ -212,7 +232,7 @@ class Plugin(Layer):
         ## Find peaks in radial distribution
         rdist = fitting_curve.mod1d(buf)
         
-        ## Find radial peaks in polar-converted buffer
+        ## Find radial peaks in polar-transformed buffer
         rdist, peaks = find_radial_peaks(rdist)
         
         if self.chkplt.Value: # this should be called for MainThread
@@ -245,15 +265,13 @@ class Plugin(Layer):
         self.Arts += frame.axes.plot(x, y, 'c-', lw=0.5, alpha=0.75)
     
     def set_radii(self, p):
+        """Set threshold ratio of [min:max] radii that gives a peak search range.
+        Default is [0.1:1.0] to the image height.
+        """
         if not self.target_view:
             return
         frame = self.target_view.frame
         h, w = frame.buffer.shape
-        ## c = frame.selector
-        ## if len(c) == 0:
-        ##     c = 0, 0
-        ## else:
-        ##     c = c[:,0]
         c1, c2 = self.Arts[:2]
         ## c1.center = c2.center = c
         c1.radius = h/2 * self.rmin.value * frame.unit
