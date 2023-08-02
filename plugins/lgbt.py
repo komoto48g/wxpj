@@ -27,9 +27,8 @@ class Plugin(Layer):
         self.lo = LParam("lo", (0, 1, 0.005), 0)
         
         btn = wx.Button(self, label="+Bin", size=(40,22))
-        btn.Bind(wx.EVT_BUTTON, lambda v: self.calc(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
-        btn.SetToolTip("Test blur and threshold;\n"
-                        "S-Lbutton to estimate threshold using Otsu algorithm")
+        btn.Bind(wx.EVT_BUTTON, lambda v: self.calc())
+        btn.SetToolTip(self.calc.__doc__.strip())
         
         self.layout(
             self.params, title="blur-threshold",
@@ -43,16 +42,25 @@ class Plugin(Layer):
     
     params = property(lambda self: (self.ksize, self.sigma, self.thresh))
     
-    def calc(self, frame=None, otsu=0, invert=0):
-        """Blur by Gaussian window and binarize.
+    def calc(self, frame=None, otsu=None, invert=0):
+        """GaussianBlur and binarize using threshold.
+        
+        [S-Lbutton] Estimate the threshold using Otsu's algorithm.
         
         Args:
-            otsu : True when using Otsu's algorithm
-                   float number (0 < r < 1) indicates the threshold percentile
-            invert : invert dst image (for dark-field image)
+            otsu    : float number (0 < r < 1) indicating threshold percentile
+                      Set True (1) to use Otsu's algorithm.
+                      Set False (0) to use the specified threshold value.
+            invert  : Invert dst image (for dark-field image or DFI).
+        
+        Returns:
+            blurred and binarized dst image <uint8>
         """
         if not frame:
             frame = self.selected_view.frame
+        
+        if otsu is None:
+            otsu = wx.GetKeyState(wx.WXK_SHIFT)
         
         k, s, t = _valist(self.params)
         src = frame.buffer

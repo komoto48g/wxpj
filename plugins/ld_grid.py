@@ -87,6 +87,7 @@ class Plugin(Layer):
     menukey = "Plugins/&Measure Tools/"
     
     Fitting_model = Model
+    
     fitting_params = property(
         lambda self: self.grid_params + self.ratio_params + self.dist_params)
     
@@ -112,10 +113,8 @@ class Plugin(Layer):
             lp.bind(lambda v: self.calc())
         
         self.btn = wx.Button(self, label="+Execute", size=(80,22))
-        self.btn.Bind(wx.EVT_BUTTON,
-            lambda v: self.thread.Start(self.run, skip=wx.GetKeyState(wx.WXK_SHIFT)))
-        
-        self.btn.SetToolTip("S-Lbutton to skip estimating grid params")
+        self.btn.Bind(wx.EVT_BUTTON, lambda v: self.thread.Start(self.run))
+        self.btn.SetToolTip(self.run.__doc__.strip())
         
         self.order = LParam("order", (0,6,1), 3)
         
@@ -136,7 +135,9 @@ class Plugin(Layer):
                   + [axes.plot([], [], 'r-',  lw=0.5, alpha=0.75)[0] for z in grid]
     
     def calc(self):
-        """アスペクト比： R1=Y/X, R2=Y2/X2 を計算する．
+        """Calculate aspect ratio.
+        
+        アスペクト比： R1=Y/X, R2=Y2/X2 を計算する．
         アスペクト比ずれ＋３次歪率を考慮したグリッドデータに変換して描画する．
         """
         r, t = _valist(self.ratio_params)
@@ -170,8 +171,20 @@ class Plugin(Layer):
         return R1, R2
     
     def run(self, frame=None, skip=False):
+        """Calculate parameters for fitting markers as a grid pattern.
+        
+        [S-Lbutton] Skip estimation of the initial grid params.
+        
+        Args:
+            frame   : target frame
+                      If not spcified, the last selected frame is given.
+            skip    : Skip `find_init_grid` order(0) process.
+                      True is given if the shift key is being pressed.
+        """
         if not frame:
             frame = self.selected_view.frame
+        
+        skip = skip or wx.GetKeyState(wx.WXK_SHIFT)
         
         x, y = frame.markers
         if not x.size:
@@ -185,7 +198,7 @@ class Plugin(Layer):
             ## 初期グリッドパラメータの見積もり
             if not skip:
                 print("estimating initial grid paramtres... order(0)")
-                self.find_near_grid(x, y)
+                self.find_init_grid(x, y)
             
             ## 最適グリッドパラメータの見積もり
             order = self.order.value
@@ -196,7 +209,7 @@ class Plugin(Layer):
                 for lp, v in zip(self.fitting_params, result[0]):
                     lp.value = v
             
-            ## check final result
+            ## check the final result
             res = self.model.residual(_valist(self.fitting_params), x, y)
             
             print("... refined with order({})".format(order),
@@ -208,7 +221,8 @@ class Plugin(Layer):
                 annotation = ', '.join(self.text.Value.splitlines()),
             )
     
-    def find_near_grid(self, x, y):
+    def find_init_grid(self, x, y):
+        """Find the initial grid position."""
         lx = []
         ly = []
         ld = []

@@ -59,15 +59,9 @@ class Plugin(Layer):
         self.rmin = LParam("rmin", (0,1000,1), 2)
         self.rmax = LParam("rmax", (0,1000,1), 200)
         
-        btn1 = wx.Button(self, label="+Bin", size=(40,22))
-        btn1.Bind(wx.EVT_BUTTON,
-                  lambda v: self.lgbt.calc(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
-        btn1.SetToolTip("S-Lbutton to estimate threshold using Otsu algorithm")
-        
         btn2 = wx.Button(self, label="+Execute", size=(64,22))
-        btn2.Bind(wx.EVT_BUTTON,
-                  lambda v: self.run(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
-        btn2.SetToolTip("S-Lbutton to estimate threshold using Otsu algorithm")
+        btn2.Bind(wx.EVT_BUTTON, lambda v: self.run())
+        btn2.SetToolTip(self.run.__doc__.strip())
         
         self.layout(
             self.lgbt.params,
@@ -79,16 +73,31 @@ class Plugin(Layer):
             ),
             title="radii", cw=0, lw=40, tw=40
         )
-        self.layout((btn1, btn2), row=2)
+        self.layout((btn2,), row=2)
     
     maxcount = 256 # 選択する点の数を制限する
     maxratio = 5.0 # ひずみの大きい楕円は除外する
     
-    def run(self, frame=None, otsu=0, invert=0):
-        """Search center of circles."""
+    def run(self, frame=None, otsu=None, invert=0):
+        """Set markers at the peak position in ellipses.
+        
+        Search ellipses patterns.
+        Find the average position of the peaks within the masked areas.
+        [S-Lbutton] Estimate the threshold using Otsu's algorithm.
+        
+        Args:
+            frame   : target frame
+                      If not spcified, the last selected frame is given.
+            otsu    : Use Otsu's algorithm.
+                      True is given if the shift key is being pressed.
+            invert  : Invert image contrast (for DFI).
+        """
         if not frame:
             frame = self.selected_view.frame
         del self.Arts
+        
+        if otsu is None:
+            otsu = wx.GetKeyState(wx.WXK_SHIFT)
         
         src = self.lgbt.calc(frame, otsu, invert) # image <uint8>
         
