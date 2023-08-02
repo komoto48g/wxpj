@@ -8,9 +8,10 @@ from jgdk import Layer, Button
 class Plugin(Layer):
     """Evaluate distortion of Diff-Ring pattern.
     
-    Run the following steps;
-    1. lcrf.run to find center of rings and the radial peaks
-    2. ld_ring.run to calc the aspect ratio
+    Run the following steps:
+    
+    1. :meth:`plugins.lcrf.Plugin.run` to find center of rings and the radial peaks
+    2. :meth:`plugins.ld_ring.Plugin.run` to calc the aspect ratio
     """
     menukey = "Plugins/&Pragma Tools/"
     category = "Pragma Tools"
@@ -24,22 +25,23 @@ class Plugin(Layer):
         self.chkfit.Value = True
         
         self.layout((
-                Button(self, "+Run",
-                    lambda v: self.run(shift=wx.GetKeyState(wx.WXK_SHIFT))),
+                Button(self, "Run", self.run),
                 self.chkfit,
                 (),
-                Button(self, "Setting", lambda v: self.show_setting()),
+                Button(self, "Setting", self.show_setting),
             ),
             row=3,
         )
     
     def show_setting(self, force=0):
+        """Show the settings."""
         b = force or not self.ld.IsShown()
         self.ld.Show(b)
         self.lcrf.Show(1)
     
-    def run(self, shift=0):
-        self.lcrf.run(shift=shift)
+    def run(self):
+        """Run scripts."""
+        self.lcrf.run()
         if self.chkfit.Value:
             self.ld.thread.Start(self.ld.run)
             self.show_setting(1)
