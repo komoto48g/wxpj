@@ -25,10 +25,10 @@ class Plugin(Layer):
         self.chkfit.Value = True
         
         self.layout((
-                Button(self, "+Run", lambda v: self.run()),
+                Button(self, "Run", self.run),
                 self.chkfit,
                 (),
-                Button(self, "Setting", lambda v: self.show_setting()),
+                Button(self, "Setting", self.show_setting),
             ),
             row=3,
         )
