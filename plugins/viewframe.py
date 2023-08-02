@@ -62,15 +62,6 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         for j in rows:
             yield [self.GetItemText(j, k) for k in cols]
     
-    _alist = ( # assoc-list of column names
-        ("id", 42),
-        ("name", 160),
-        ("shape", 90),
-        ("dtype", 60),
-        ("Mb",   40),
-        ("unit", 60),
-        ("annotation", 240),
-    )
     def __init__(self, parent, target, **kwargs):
         CheckListCtrl.__init__(self, parent, size=(400,130),
                                style=wx.LC_REPORT|wx.LC_HRULES, **kwargs)
@@ -80,7 +71,16 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         self.parent = parent
         self.Target = target
         
-        for k, (name, w) in enumerate(self._alist):
+        _alist = ( # assoc-list of column names
+            ("id", 42),
+            ("name", 160),
+            ("shape", 90),
+            ("dtype", 60),
+            ("Mb",   40),
+            ("unit", 60),
+            ("annotation", 240),
+        )
+        for k, (name, w) in enumerate(_alist):
             self.InsertColumn(k, name, width=w)
         
         for j, frame in enumerate(self.Target.all_frames):
@@ -221,12 +221,12 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         selected_frames = [frames[j] for j in self.selected_items]
         self.parent.parent.export_index(frames=selected_frames)
     
-    def OnEditAnnotation(self, evt, prompt='Enter an annotation'):
+    def OnEditAnnotation(self, evt):
         frames = self.Target.all_frames
         if frames:
             frame = frames[self.focused_item]
-            with wx.TextEntryDialog(self, prompt,
-                caption='Input Dialog', value=frame.annotation) as dlg:
+            with wx.TextEntryDialog(self, frame.name,
+                    'Enter an annotation', frame.annotation) as dlg:
                 if dlg.ShowModal() == wx.ID_OK:
                     frame.annotation = dlg.Value
     
