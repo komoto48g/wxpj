@@ -177,7 +177,7 @@ class Plugin(Layer):
         
         Args:
             frame   : target frame
-                      If not spcified, the last selected frame is given.
+                      If not specified, the last selected frame is given.
             skip    : Skip `find_init_grid` order(0) process.
                       True is given if the shift key is being pressed.
         """

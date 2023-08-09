@@ -7,11 +7,6 @@ from jgdk import Layer, Button
 
 class Plugin(Layer):
     """Evaluate distortion of Diff-Ring pattern.
-    
-    Run the following steps:
-    
-    1. :meth:`plugins.lcrf.Plugin.run` to find center of rings and the radial peaks
-    2. :meth:`plugins.ld_ring.Plugin.run` to calc the aspect ratio
     """
     menukey = "Plugins/&Pragma Tools/"
     category = "Pragma Tools"

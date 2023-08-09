@@ -186,13 +186,14 @@ class Plugin(Layer):
     def run(self, frame=None, shift=None, maxloop=5):
         """Set markers on the diffraction ring.
         
-        Search center position and fit the model paramters.
-        Find peaks in radial distribution using polar-transformed buffer.
+        Search center position and fit the model parameters.
+        Find the peaks in the radial distribution using polar-transformation.
+        Plot some markers on the ring pattern.
         [S-Lbutton] Use the selector as the initial center position.
         
         Args:
             frame   : target frame
-                      If not spcified, the last selected frame is given.
+                      If not specified, the last selected frame is given.
             shift   : The selector is used as the initial center position.
                       True is given if the shift key is being pressed.
             maxloop : maximum number of loops to search for the center position.

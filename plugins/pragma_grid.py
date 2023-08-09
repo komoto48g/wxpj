@@ -7,11 +7,6 @@ from jgdk import Layer, Button
 
 class Plugin(Layer):
     """Evaluate distortion of Mag-Grid pattern.
-    
-    Run the following steps:
-    
-    1. :meth:`plugins.lccf.Plugin.run` to find contours of circles
-    2. :meth:`plugins.ld_grid.Plugin.run` to calc the aspect ratio
     """
     menukey = "Plugins/&Pragma Tools/"
     category = "Pragma Tools"

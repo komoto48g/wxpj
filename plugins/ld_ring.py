@@ -182,13 +182,13 @@ class Plugin(Layer):
         return R1, R2
     
     def run(self, frame=None, skip=False):
-        """Calculate parameters for fitting markers as a ring pattern.
+        """Caluculate ellipse parameters for fitting the plotted markers.
         
         [S-Lbutton] Skip estimation of the nearest maximum peak.
         
         Args:
             frame   : target frame
-                      If not spcified, the last selected frame is given.
+                      If not specified, the last selected frame is given.
             skip    : Skip `find_near_maximum` process.
                       True is given if the shift key is being pressed.
         """

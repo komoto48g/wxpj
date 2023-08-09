@@ -87,7 +87,7 @@ class Plugin(Layer):
         
         Args:
             frame   : target frame
-                      If not spcified, the last selected frame is given.
+                      If not specified, the last selected frame is given.
             otsu    : Use Otsu's algorithm.
                       True is given if the shift key is being pressed.
             invert  : Invert image contrast (for DFI).

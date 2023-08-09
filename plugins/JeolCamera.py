@@ -226,7 +226,7 @@ class Plugin(Layer):
         self.__camera = None
     
     ## --------------------------------
-    ## Camera Attribtues
+    ## Camera Attributes
     ## --------------------------------
     @property
     def camera(self):

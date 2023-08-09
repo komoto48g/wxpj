@@ -181,7 +181,7 @@ class Plugin(Layer):
         """Estimate [u/pix] on specimen from two spots.
         
         1. Select the *result* frame
-        2. Draw line from orign to the nearest spot
+        2. Draw line from origin to the nearest spot
         3. Press to estimate the unit length [u/pix]
         """
         frame = self.result_frame
