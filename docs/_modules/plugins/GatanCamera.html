@@ -1,0 +1,399 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>plugins.GatanCamera &#8212; wxpj  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
+    
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">wxpj  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.GatanCamera</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for plugins.GatanCamera</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Gatan Camera module.</span>
+
+<span class="sd">Author: Kazuya O&#39;moto &lt;komoto@jeol.co.jp&gt;</span>
+<span class="sd">Contributions by Hirofumi Iijima/JEOL/JP</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">wx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+
+<span class="kn">from</span> <span class="nn">jgdk</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Param</span><span class="p">,</span> <span class="n">LParam</span><span class="p">,</span> <span class="n">Button</span><span class="p">,</span> <span class="n">Choice</span>
+<span class="kn">from</span> <span class="nn">pyGatan</span> <span class="kn">import</span> <span class="n">gatan</span>
+
+
+<span class="n">hostnames</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;localhost&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;172.17.41.3&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;172.17.41.13&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">typenames_info</span> <span class="o">=</span> <span class="p">{</span> <span class="c1"># [mm/pix], h, w, (bins,</span>
+    <span class="s2">&quot;USC1000&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="mf">0.0140</span><span class="p">,</span> <span class="mi">2048</span><span class="p">,</span> <span class="mi">2048</span><span class="p">),</span>
+      <span class="s2">&quot;SC200&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="mf">0.0074</span><span class="p">,</span> <span class="mi">2048</span><span class="p">,</span> <span class="mi">2048</span><span class="p">),</span>
+         <span class="s2">&quot;K2&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="mf">0.0050</span><span class="p">,</span> <span class="mi">3710</span><span class="p">,</span> <span class="mi">3838</span><span class="p">),</span>
+         <span class="s2">&quot;K3&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="mf">0.0050</span><span class="p">,</span> <span class="mi">4092</span><span class="p">,</span> <span class="mi">5760</span><span class="p">),</span>
+    <span class="s2">&quot;OneView&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="mf">0.0150</span><span class="p">,</span> <span class="mi">4096</span><span class="p">,</span> <span class="mi">4096</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="Camera"><a class="viewcode-back" href="../../plugins.html#plugins.GatanCamera.Camera">[docs]</a><span class="k">class</span> <span class="nc">Camera</span><span class="p">(</span><span class="n">gatan</span><span class="o">.</span><span class="n">GatanSocket</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gatan camera (proxy of Detector).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">busy</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="n">pixel_unit</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">binning</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">host</span><span class="p">):</span>
+        <span class="n">gatan</span><span class="o">.</span><span class="n">GatanSocket</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="n">typenames_info</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binning</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exposure</span> <span class="o">=</span> <span class="mf">0.1</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;K3&#39;</span><span class="p">:</span>
+            <span class="c1"># [K2] 0:Linear, 1:Counting, 2:S/Res</span>
+            <span class="c1"># [K3] 3:linear, 4:S/Res</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetK2Parameters</span><span class="p">(</span>
+                <span class="n">readMode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span>
+                 <span class="n">scaling</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">hardwareProc</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+                <span class="n">doseFrac</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+               <span class="n">frameTime</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+             <span class="n">alignFrames</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+              <span class="n">saveFrames</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+    
+<div class="viewcode-block" id="Camera.cache"><a class="viewcode-back" href="../../plugins.html#plugins.GatanCamera.Camera.cache">[docs]</a>    <span class="k">def</span> <span class="nf">cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cache of the current image.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">Camera</span><span class="o">.</span><span class="n">busy</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span> <span class="c1"># ここで通信待機</span>
+            <span class="n">Camera</span><span class="o">.</span><span class="n">busy</span> <span class="o">+=</span> <span class="mi">1</span>
+            
+            <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">H</span><span class="p">,</span> <span class="n">W</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span>
+            <span class="nb">bin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">binning</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="c1">## [K3] Defaults to 4 (S/Res mode).</span>
+                <span class="n">H</span> <span class="o">*=</span> <span class="mi">2</span>
+                <span class="n">W</span> <span class="o">*=</span> <span class="mi">2</span>
+                <span class="nb">bin</span> <span class="o">*=</span> <span class="mi">2</span>
+            <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetImage</span><span class="p">(</span>
+              <span class="n">processing</span> <span class="o">=</span> <span class="s1">&#39;gain normalized&#39;</span><span class="p">,</span>
+                  <span class="n">height</span> <span class="o">=</span> <span class="n">H</span><span class="o">//</span><span class="nb">bin</span><span class="p">,</span>
+                   <span class="n">width</span> <span class="o">=</span> <span class="n">W</span><span class="o">//</span><span class="nb">bin</span><span class="p">,</span>
+                 <span class="n">binning</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">,</span>
+                     <span class="n">top</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="n">left</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                  <span class="n">bottom</span> <span class="o">=</span> <span class="n">h</span><span class="o">//</span><span class="nb">bin</span><span class="p">,</span>
+                   <span class="n">right</span> <span class="o">=</span> <span class="n">w</span><span class="o">//</span><span class="nb">bin</span><span class="p">,</span>
+                <span class="n">exposure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure</span><span class="p">,</span>
+            <span class="n">shutterDelay</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">buf</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">Camera</span><span class="o">.</span><span class="n">busy</span> <span class="o">-=</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../plugins.html#plugins.GatanCamera.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gatan camera manager.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">menukey</span> <span class="o">=</span> <span class="s2">&quot;Cameras/&amp;Gatan camera ver.2&quot;</span>
+    
+<div class="viewcode-block" id="Plugin.Init"><a class="viewcode-back" href="../../plugins.html#plugins.GatanCamera.Plugin.Init">[docs]</a>    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binning_selector</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="s2">&quot;bin&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">set_binning</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exposure_selector</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;exp&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">set_exposure</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">dark_chk</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;dark&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dark_chk</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_selector</span> <span class="o">=</span> <span class="n">Choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">choices</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">typenames_info</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">22</span><span class="p">),</span> <span class="n">readonly</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">handler</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_selector</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">typenames_info</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">Value</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_selector</span> <span class="o">=</span> <span class="n">Choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">choices</span><span class="o">=</span><span class="n">hostnames</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">22</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">unit_selector</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;mm/pix&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">1e-4</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">binning_selector</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">exposure_selector</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Acquire setting&quot;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;vspin&#39;</span><span class="p">,</span> <span class="n">cw</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">tw</span><span class="o">=</span><span class="mi">40</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span>
+                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Capture&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture_ex</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s1">&#39;camera&#39;</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dark_chk</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">name_selector</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_selector</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">unit_selector</span><span class="p">,</span>
+                
+                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Connect&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">20</span><span class="p">)),</span>
+                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Prepare/dark&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_dark</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">20</span><span class="p">)),</span>
+                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Insert camera&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">20</span><span class="p">)),</span>
+            <span class="p">),</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Setup&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lw</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">tw</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__camera</span> <span class="o">=</span> <span class="kc">None</span></div>
+    
+    <span class="c1">## --------------------------------</span>
+    <span class="c1">## Camera Attributes</span>
+    <span class="c1">## --------------------------------</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">camera</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__camera</span>
+    
+<div class="viewcode-block" id="Plugin.set_exposure"><a class="viewcode-back" href="../../plugins.html#plugins.GatanCamera.Plugin.set_exposure">[docs]</a>    <span class="k">def</span> <span class="nf">set_exposure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mf">0.01</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">exposure</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">value</span></div>
+    
+<div class="viewcode-block" id="Plugin.set_binning"><a class="viewcode-back" href="../../plugins.html#plugins.GatanCamera.Plugin.set_binning">[docs]</a>    <span class="k">def</span> <span class="nf">set_binning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">binning</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preset_dark</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="Plugin.connect"><a class="viewcode-back" href="../../plugins.html#plugins.GatanCamera.Plugin.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_selector</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_selector</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;- Camera name is not specified.&quot;</span><span class="p">))</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__camera</span> <span class="o">=</span> <span class="n">Camera</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">host</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;Connected to </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2"> GMS ver.</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">GetDMVersion</span><span class="p">()))</span>
+            
+            <span class="c1">## &lt;--- set camera parameter</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">binning</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">binning_selector</span><span class="o">.</span><span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">exposure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_selector</span><span class="o">.</span><span class="n">value</span>
+            
+            <span class="c1">## ---&gt; get camera info from system</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unit_selector</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">pixel_size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preset_dark</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span>
+        
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;- Connection failed; </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__camera</span> <span class="o">=</span> <span class="kc">None</span></div>
+    
+<div class="viewcode-block" id="Plugin.insert"><a class="viewcode-back" href="../../plugins.html#plugins.GatanCamera.Plugin.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ins</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ins</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">IsCameraInserted</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">InsertCamera</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">InsertCamera</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+    <span class="c1">## --------------------------------</span>
+    <span class="c1">## Camera Interface</span>
+    <span class="c1">## --------------------------------</span>
+    <span class="n">dark_image</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dark_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">binning</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">binning</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_selector</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">binning</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">binning_selector</span><span class="o">.</span><span class="n">value</span>
+            
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">-dark-bin</span><span class="si">{}</span><span class="s2">.tif&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">binning</span><span class="p">)</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;camera&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                 <span class="s1">&#39;pixel&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">,</span>
+               <span class="s1">&#39;binning&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">binning</span><span class="p">,</span>
+              <span class="s1">&#39;exposure&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">exposure</span><span class="p">,</span>
+          <span class="s1">&#39;acq_datetime&#39;</span> <span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="c1"># acquired datetime stamp</span>
+        <span class="p">}</span>
+    
+<div class="viewcode-block" id="Plugin.acquire"><a class="viewcode-back" href="../../plugins.html#plugins.GatanCamera.Plugin.acquire">[docs]</a>    <span class="k">def</span> <span class="nf">acquire</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Acquire image with no dark subtraction.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;- Failed to acquire image: </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span></div>
+    
+<div class="viewcode-block" id="Plugin.capture"><a class="viewcode-back" href="../../plugins.html#plugins.GatanCamera.Plugin.capture">[docs]</a>    <span class="k">def</span> <span class="nf">capture</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Capture image.</span>
+<span class="sd">        </span>
+<span class="sd">        If &#39;dark subtraction&#39; is checked, the image is dark-subtracted,</span>
+<span class="sd">        and the result image is dtype:float32, otherwise uint16.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">buf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_chk</span><span class="o">.</span><span class="n">Value</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">buf</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_image</span>
+        <span class="k">return</span> <span class="n">buf</span></div>
+    
+<div class="viewcode-block" id="Plugin.capture_ex"><a class="viewcode-back" href="../../plugins.html#plugins.GatanCamera.Plugin.capture_ex">[docs]</a>    <span class="k">def</span> <span class="nf">capture_ex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Capture image and load to the target window.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;Capturing image...&quot;</span><span class="p">)</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">buf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span>
+                <span class="n">localunit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">pixel_unit</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s1">&#39;frame_cached&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">frame</span></div>
+    
+<div class="viewcode-block" id="Plugin.preset_dark"><a class="viewcode-back" href="../../plugins.html#plugins.GatanCamera.Plugin.preset_dark">[docs]</a>    <span class="k">def</span> <span class="nf">preset_dark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="c1"># internal use only</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_filename</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dark_image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="c1"># cf. read_buffer</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dark_chk</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dark_chk</span><span class="o">.</span><span class="n">SetToolTip</span><span class="p">(</span><span class="s2">&quot;Subtract dark: </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">## self.message(&quot;- No such file: {!r}&quot;.format(f))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dark_chk</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Plugin.prepare_dark"><a class="viewcode-back" href="../../plugins.html#plugins.GatanCamera.Plugin.prepare_dark">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_dark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare dark reference.</span>
+<span class="sd">        </span>
+<span class="sd">        Before execution, blank the beam manually.</span>
+<span class="sd">        Please close the curtain to prevent light leakage.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="p">:</span>
+            <span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">(</span>
+                <span class="s2">&quot;The camera is not ready&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span>
+                <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">ICON_WARNING</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">(</span>
+                    <span class="s2">&quot;Proceeding new dark reference.&quot;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span>
+                    <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">ICON_INFORMATION</span><span class="p">)</span> <span class="o">!=</span> <span class="n">wx</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
+                <span class="k">return</span>
+        
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_filename</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">dark_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="c1"># for underflow in subtraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dark_chk</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dark_chk</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dark_chk</span><span class="o">.</span><span class="n">SetToolTip</span><span class="p">(</span><span class="s2">&quot;Subtract dark: </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        
+        <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dark_image</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="c1"># cf. write_buffer</span>
+        
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dark_image</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">f</span><span class="p">,</span>
+            <span class="n">localunit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">pixel_unit</span><span class="p">,</span> <span class="n">pathname</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s1">&#39;frame_cached&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;dark ref saved to </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">))</span></div></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../0_how-to-start.html">1. Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../1_how-to-use.html">2. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_image-processing.html">3. Image Analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../wxpyJemacs.html">wxpyJemacs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins.html">plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyJeol.html">pyJeol package</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">wxpj  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.GatanCamera</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

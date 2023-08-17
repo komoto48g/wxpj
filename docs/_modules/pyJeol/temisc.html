@@ -1,0 +1,276 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyJeol.temisc &#8212; wxpj  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
+    
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">wxpj  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyJeol.temisc</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyJeol.temisc</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Editor&#39;s collection of TEM miscellaneous functions</span>
+
+<span class="sd">Author: Kazuya O&#39;moto &lt;komoto@jeol.co.jp&gt;</span>
+<span class="sd">see also: scipy.constants</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span><span class="n">sqrt</span>
+
+
+<span class="n">P_HBAR</span>      <span class="o">=</span> <span class="mf">1.054589e-34</span>  <span class="c1"># J.s</span>
+<span class="n">P_H</span>         <span class="o">=</span> <span class="mf">6.626176e-34</span>  <span class="c1"># J.s</span>
+<span class="n">P_C</span>         <span class="o">=</span> <span class="mf">2.997925e+8</span>   <span class="c1"># c [m/s]</span>
+<span class="n">P_E</span>         <span class="o">=</span> <span class="mf">1.602189e-19</span>  <span class="c1"># electron.charge [C]</span>
+<span class="n">P_K</span>         <span class="o">=</span> <span class="mf">1.380662e-23</span>  <span class="c1"># Boltzmann const k [J/K]</span>
+<span class="n">P_DE</span>        <span class="o">=</span> <span class="mf">8.854185e-12</span>  <span class="c1"># dielectric const 1/cc/MU</span>
+<span class="n">P_MU</span>        <span class="o">=</span> <span class="mf">1.256637e-6</span>   <span class="c1"># magnetic permeability 4pi * E-7</span>
+<span class="n">P_EM</span>        <span class="o">=</span> <span class="mf">9.109534e-31</span>  <span class="c1"># electron.mass [kg]</span>
+<span class="n">P_PM</span>        <span class="o">=</span> <span class="mf">1.672649e-27</span>  <span class="c1"># proton.mass [kg]</span>
+<span class="n">P_NM</span>        <span class="o">=</span> <span class="mf">1.674929e-27</span>  <span class="c1"># neutron.mass [kg]</span>
+<span class="n">P_UM</span>        <span class="o">=</span> <span class="mf">1.6605390e-27</span> <span class="c1"># unified atomic mass (=1Da,1u) 1/12 of C12</span>
+
+<span class="n">P_e_m</span>       <span class="o">=</span> <span class="mf">1.758805e+11</span>  <span class="c1"># e/m</span>
+<span class="n">P_m_e</span>       <span class="o">=</span> <span class="mf">5.685680e-12</span>  <span class="c1"># m/e</span>
+<span class="n">P_e_2mcc</span>    <span class="o">=</span> <span class="mf">9.784667e-7</span>   <span class="c1"># e/2mcc</span>
+<span class="n">P_e_2m_sqrt</span> <span class="o">=</span> <span class="mf">2.965472e+5</span>   <span class="c1"># sqrt(e/2m) [m/s]</span>
+
+
+<div class="viewcode-block" id="Environ"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temisc.Environ">[docs]</a><span class="k">class</span> <span class="nc">Environ</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Electro-optik environment base class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">acc_v</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ustar</span> <span class="o">=</span> <span class="n">u</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">P_e_2mcc</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cstar</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">P_e_2mcc</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">P_e_2mcc</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elambda</span> <span class="o">=</span> <span class="n">P_H</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">P_EM</span> <span class="o">*</span> <span class="n">P_E</span> <span class="o">*</span> <span class="n">u</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elgamma</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">P_e_2mcc</span> <span class="o">*</span> <span class="n">v</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elbeta</span>  <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">elgamma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="c1">## Xb = mv/e = sqrt(2mU/e) [ T.m ]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Xb</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">P_EM</span> <span class="o">*</span> <span class="n">u</span> <span class="o">/</span> <span class="n">P_E</span><span class="p">)</span>
+        
+        <span class="c1">## Xe = mvv/e = (2U/gamma) [ V ]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Xe</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">u</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">elgamma</span>
+        
+        <span class="c1">## Round lens rotation angle coefficient [deg/A]</span>
+        <span class="c1">## j2deg := sqrt(e/8mU) mu * j = (1/2Xb * mu) * j</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">j2deg</span> <span class="o">=</span> <span class="mi">180</span><span class="o">/</span><span class="n">pi</span> <span class="o">*</span> <span class="n">P_MU</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">Xb</span></div>
+
+
+<div class="viewcode-block" id="mrange"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temisc.mrange">[docs]</a><span class="k">def</span> <span class="nf">mrange</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;10(Log)-step mag numbers as jeol style.</span>
+<span class="sd">    Returns a split list of ranges that accept mag values in [1e-1:1e+9).</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        args: i,j,k,...l,m</span>
+<span class="sd">              -&gt; [0:i),[i:j),[j:k),...[l:m]</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; mrange(a,b) # -&gt; [a:b]</span>
+<span class="sd">    &gt;&gt;&gt; mrange(a,b,c) # -&gt; [a:b), [b:c]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">mrange</span><span class="o">.</span><span class="n">mags</span> <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">b</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">lm</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">lm</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.02</span>  <span class="c1"># 最後の引数は含めるようにかさ上げしておく</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">mrange</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">-</span><span class="mf">0.01</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">lm</span><span class="p">,</span> <span class="n">lm</span><span class="p">[</span><span class="mi">1</span><span class="p">:])]</span></div>
+
+<span class="n">mrange</span><span class="o">.</span><span class="n">mags</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="o">*</span> <span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mf">1.2</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mf">2.5</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">)]</span>
+
+
+<div class="viewcode-block" id="HexadecimalMixin"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temisc.HexadecimalMixin">[docs]</a><span class="k">class</span> <span class="nc">HexadecimalMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hi</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">hi</span><span class="p">,</span> <span class="n">lo</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hi</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">lo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">hi</span> <span class="o">&lt;&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">BITS</span><span class="p">)</span> <span class="o">+</span> <span class="n">lo</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">validate</span> <span class="ow">and</span> <span class="n">lo</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LO</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coarse</span> <span class="o">=</span> <span class="n">hi</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fine</span> <span class="o">=</span> <span class="n">lo</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">HI</span> <span class="o">&lt;&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">BITS</span> <span class="c1"># 上位 BIT 最大値</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LO</span> <span class="o">//</span> <span class="mi">2</span>         <span class="c1"># 下位 BIT 中間値</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;</span> <span class="n">c</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coarse</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="n">m</span> <span class="o">+</span> <span class="n">c</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coarse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">HI</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="n">m</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">hi</span><span class="p">,</span> <span class="n">lo</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coarse</span> <span class="o">=</span> <span class="n">hi</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fine</span> <span class="o">=</span> <span class="n">lo</span> <span class="o">+</span> <span class="n">c</span>
+    
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+    
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{:,d}</span><span class="s2"> (</span><span class="si">{:04X}</span><span class="s2">,</span><span class="si">{:04X}</span><span class="s2">) &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coarse</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fine</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FLHex"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temisc.FLHex">[docs]</a><span class="k">class</span> <span class="nc">FLHex</span><span class="p">(</span><span class="n">HexadecimalMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;FL hex 19bit/12bit</span>
+<span class="sd">    </span>
+<span class="sd">    HI: ■□□□■□□□■□□□                FFF&lt;&lt;7 = 524,160</span>
+<span class="sd">    LO:               ■□□□■□□□■□□□  FFF    =   4,095</span>
+<span class="sd">    </span>
+<span class="sd">    Init with a pare of hex values := (coarse, fine).</span>
+<span class="sd">    If validate is True, lo is forced become near the medium point.</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; Hex(hi, lo, validate)</span>
+<span class="sd">    # or</span>
+<span class="sd">    &gt;&gt;&gt; Hex(0, value) # with one decimal value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">HI</span> <span class="o">=</span> <span class="mh">0xfff</span>
+    <span class="n">LO</span> <span class="o">=</span> <span class="mh">0xfff</span>
+    <span class="n">BITS</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">BITS</span><span class="p">)</span>
+    <span class="n">maxval</span> <span class="o">=</span> <span class="p">(</span><span class="n">HI</span> <span class="o">&lt;&lt;</span> <span class="n">BITS</span><span class="p">)</span> <span class="o">+</span> <span class="n">LO</span></div>
+
+
+<div class="viewcode-block" id="OLHex"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temisc.OLHex">[docs]</a><span class="k">class</span> <span class="nc">OLHex</span><span class="p">(</span><span class="n">HexadecimalMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;OL hex 21bit/16bit</span>
+<span class="sd">    </span>
+<span class="sd">    HI: ■□□□■□□□■□□□■□□□            FFFF&lt;&lt;5 = 2,097,120</span>
+<span class="sd">    LO:           ■□□□■□□□■□□□■□□□  FFFF    =    65,535</span>
+<span class="sd">    </span>
+<span class="sd">    Init with a pare of hex values := (coarse, fine).</span>
+<span class="sd">    If validate is True, lo is forced become near the medium point.</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; Hex(hi, lo, validate)</span>
+<span class="sd">    # or</span>
+<span class="sd">    &gt;&gt;&gt; Hex(0, value) # with one decimal value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">HI</span> <span class="o">=</span> <span class="mh">0xffff</span>
+    <span class="n">LO</span> <span class="o">=</span> <span class="mh">0xffff</span>
+    <span class="n">BITS</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">BITS</span><span class="p">)</span>
+    <span class="n">maxval</span> <span class="o">=</span> <span class="p">(</span><span class="n">HI</span> <span class="o">&lt;&lt;</span> <span class="n">BITS</span><span class="p">)</span> <span class="o">+</span> <span class="n">LO</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">hbar</span> <span class="o">=</span> <span class="n">P_HBAR</span>
+    <span class="n">h</span>    <span class="o">=</span> <span class="n">P_H</span>
+    <span class="n">c</span>    <span class="o">=</span> <span class="n">P_C</span>
+    <span class="n">e</span>    <span class="o">=</span> <span class="n">P_E</span>
+    <span class="n">k</span>    <span class="o">=</span> <span class="n">P_K</span>
+    <span class="n">m</span>    <span class="o">=</span> <span class="n">P_EM</span>
+    <span class="n">de</span>   <span class="o">=</span> <span class="n">P_DE</span>
+    <span class="n">mu</span>   <span class="o">=</span> <span class="n">P_MU</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">mrange</span><span class="o">.</span><span class="n">mags</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">mrange</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mf">100e3</span><span class="p">)))</span>
+    
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mrange</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span><span class="mf">10e3</span><span class="p">,</span><span class="mf">100e3</span><span class="p">,</span><span class="mf">1e6</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+    
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="n">FLHex</span><span class="p">(</span><span class="mh">0xccc</span><span class="p">,</span> <span class="mh">0xccc</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="n">FLHex</span><span class="p">(</span><span class="mh">0xccc</span><span class="p">,</span> <span class="mh">0xccc</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+        <span class="n">FLHex</span><span class="p">(</span><span class="mh">0xfff</span><span class="p">,</span> <span class="mh">0xfff</span><span class="p">),</span>
+        <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">FLHex</span><span class="p">(</span><span class="mh">0xffff</span><span class="p">,</span> <span class="mh">0xfff</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="n">FLHex</span><span class="p">(</span><span class="mh">0xffff</span><span class="p">,</span> <span class="mh">0xfff</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+        <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">FLHex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0xfff</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="n">FLHex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0xfff</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+        <span class="n">FLHex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0xffff</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="n">FLHex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0xffff</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+        <span class="n">FLHex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">528256</span><span class="p">),</span>
+        <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../0_how-to-start.html">1. Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../1_how-to-use.html">2. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_image-processing.html">3. Image Analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../wxpyJemacs.html">wxpyJemacs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins.html">plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyJeol.html">pyJeol package</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">wxpj  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyJeol.temisc</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

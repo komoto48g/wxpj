@@ -1,0 +1,1921 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>plugins package &#8212; wxpj  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script src="_static/jquery.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pyJeol package" href="pyJeol.html" />
+    <link rel="prev" title="wxpyJemacs module" href="wxpyJemacs.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyJeol.html" title="pyJeol package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="wxpyJemacs.html" title="wxpyJemacs module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="plugins-package">
+<h1>plugins package<a class="headerlink" href="#plugins-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-plugins.GatanCamera">
+<span id="plugins-gatancamera-module"></span><h2>plugins.GatanCamera module<a class="headerlink" href="#module-plugins.GatanCamera" title="Permalink to this heading"></a></h2>
+<p>Gatan Camera module.</p>
+<p>Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#37;&#52;&#48;jeol&#46;co&#46;jp">komoto<span>&#64;</span>jeol<span>&#46;</span>co<span>&#46;</span>jp</a>&gt;
+Contributions by Hirofumi Iijima/JEOL/JP</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Camera">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.GatanCamera.</span></span><span class="sig-name descname"><span class="pre">Camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/GatanCamera.html#Camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.GatanCamera.Camera" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">GatanSocket</span></code></p>
+<p>Gatan camera (proxy of Detector).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Camera.busy">
+<span class="sig-name descname"><span class="pre">busy</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#plugins.GatanCamera.Camera.busy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Camera.pixel_unit">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pixel_unit</span></span><a class="headerlink" href="#plugins.GatanCamera.Camera.pixel_unit" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Camera.cache">
+<span class="sig-name descname"><span class="pre">cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/GatanCamera.html#Camera.cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.GatanCamera.Camera.cache" title="Permalink to this definition"></a></dt>
+<dd><p>Cache of the current image.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.GatanCamera.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/GatanCamera.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.GatanCamera.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Gatan camera manager.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Cameras/&amp;Gatan</span> <span class="pre">camera</span> <span class="pre">ver.2'</span></em><a class="headerlink" href="#plugins.GatanCamera.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/GatanCamera.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.GatanCamera.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.camera">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">camera</span></span><a class="headerlink" href="#plugins.GatanCamera.Plugin.camera" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.set_exposure">
+<span class="sig-name descname"><span class="pre">set_exposure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/GatanCamera.html#Plugin.set_exposure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.GatanCamera.Plugin.set_exposure" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.set_binning">
+<span class="sig-name descname"><span class="pre">set_binning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/GatanCamera.html#Plugin.set_binning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.GatanCamera.Plugin.set_binning" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/GatanCamera.html#Plugin.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.GatanCamera.Plugin.connect" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/GatanCamera.html#Plugin.insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.GatanCamera.Plugin.insert" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.dark_image">
+<span class="sig-name descname"><span class="pre">dark_image</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#plugins.GatanCamera.Plugin.dark_image" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.dark_filename">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dark_filename</span></span><a class="headerlink" href="#plugins.GatanCamera.Plugin.dark_filename" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.attributes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">attributes</span></span><a class="headerlink" href="#plugins.GatanCamera.Plugin.attributes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/GatanCamera.html#Plugin.acquire"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.GatanCamera.Plugin.acquire" title="Permalink to this definition"></a></dt>
+<dd><p>Acquire image with no dark subtraction.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.capture">
+<span class="sig-name descname"><span class="pre">capture</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/GatanCamera.html#Plugin.capture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.GatanCamera.Plugin.capture" title="Permalink to this definition"></a></dt>
+<dd><p>Capture image.</p>
+<p>If ‘dark subtraction’ is checked, the image is dark-subtracted,
+and the result image is dtype:float32, otherwise uint16.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.capture_ex">
+<span class="sig-name descname"><span class="pre">capture_ex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/GatanCamera.html#Plugin.capture_ex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.GatanCamera.Plugin.capture_ex" title="Permalink to this definition"></a></dt>
+<dd><p>Capture image and load to the target window.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.preset_dark">
+<span class="sig-name descname"><span class="pre">preset_dark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/GatanCamera.html#Plugin.preset_dark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.GatanCamera.Plugin.preset_dark" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.GatanCamera.Plugin.prepare_dark">
+<span class="sig-name descname"><span class="pre">prepare_dark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/GatanCamera.html#Plugin.prepare_dark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.GatanCamera.Plugin.prepare_dark" title="Permalink to this definition"></a></dt>
+<dd><p>Prepare dark reference.</p>
+<p>Before execution, blank the beam manually.
+Please close the curtain to prevent light leakage.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.JeolCamera">
+<span id="plugins-jeolcamera-module"></span><h2>plugins.JeolCamera module<a class="headerlink" href="#module-plugins.JeolCamera" title="Permalink to this heading"></a></h2>
+<p>Jeol Camera module.</p>
+<p>Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#37;&#52;&#48;jeol&#46;co&#46;jp">komoto<span>&#64;</span>jeol<span>&#46;</span>co<span>&#46;</span>jp</a>&gt;
+Contributions by Hiroyuki Satoh/JEOL/JP</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Camera">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.JeolCamera.</span></span><span class="sig-name descname"><span class="pre">Camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Camera" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Jeol camera (proxy of Detector).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name of selected camera</p></li>
+<li><p><strong>host</strong> – localhost if offline (default) otherwise 172.17.41.1</p></li>
+</ul>
+</dd>
+</dl>
+<p>Camera property:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cont</span>        <span class="p">:</span> <span class="n">camera</span> <span class="n">controller</span>
+<span class="n">pixel_size</span>  <span class="p">:</span> <span class="n">raw</span> <span class="n">pixel</span> <span class="n">size</span> <span class="p">[</span><span class="n">u</span><span class="o">/</span><span class="n">pix</span><span class="p">]</span>
+<span class="n">pixel_unit</span>  <span class="p">:</span> <span class="n">pixel</span> <span class="p">(</span><span class="k">with</span> <span class="n">binning</span><span class="p">)</span> <span class="n">size</span> <span class="p">[</span><span class="n">u</span><span class="o">/</span><span class="n">pix</span><span class="p">]</span>
+<span class="n">exposure</span>    <span class="p">:</span> <span class="n">exposure</span> <span class="n">time</span> <span class="p">[</span><span class="n">s</span><span class="p">]</span>
+<span class="n">binning</span>     <span class="p">:</span> <span class="n">binning</span> <span class="n">number</span> <span class="p">(</span><span class="n">typ</span><span class="o">.</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span> <span class="ow">in</span> <span class="n">bins</span> <span class="o">&lt;</span><span class="nb">list</span><span class="o">&gt;</span>
+<span class="n">gain</span>        <span class="p">:</span> <span class="n">gain</span> <span class="n">number</span> <span class="p">(</span><span class="mi">1</span> <span class="o">--</span> <span class="mi">10</span><span class="p">)</span> <span class="ow">in</span> <span class="n">gains</span> <span class="o">&lt;</span><span class="nb">list</span><span class="o">&gt;</span>
+<span class="n">shape</span>       <span class="p">:</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">w</span><span class="p">)</span> <span class="n">height</span> <span class="ow">and</span> <span class="n">width</span> <span class="n">of</span> <span class="n">image</span>
+<span class="n">max_count</span>   <span class="p">:</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">count</span> <span class="p">(</span><span class="n">used</span> <span class="n">to</span> <span class="n">check</span> <span class="k">if</span> <span class="n">saturated</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Camera.busy">
+<span class="sig-name descname"><span class="pre">busy</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#plugins.JeolCamera.Camera.busy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Camera.bins">
+<span class="sig-name descname"><span class="pre">bins</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(1,</span> <span class="pre">2,</span> <span class="pre">4)</span></em><a class="headerlink" href="#plugins.JeolCamera.Camera.bins" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Camera.gains">
+<span class="sig-name descname"><span class="pre">gains</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">array([</span> <span class="pre">1.</span> <span class="pre">,</span>&#160; <span class="pre">1.5,</span>&#160; <span class="pre">2.</span> <span class="pre">,</span>&#160; <span class="pre">2.5,</span>&#160; <span class="pre">3.</span> <span class="pre">,</span>&#160; <span class="pre">3.5,</span>&#160; <span class="pre">4.</span> <span class="pre">,</span>&#160; <span class="pre">4.5,</span>&#160; <span class="pre">5.</span> <span class="pre">,</span>&#160; <span class="pre">5.5,</span>&#160; <span class="pre">6.</span> <span class="pre">,</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">6.5,</span>&#160; <span class="pre">7.</span> <span class="pre">,</span>&#160; <span class="pre">7.5,</span>&#160; <span class="pre">8.</span> <span class="pre">,</span>&#160; <span class="pre">8.5,</span>&#160; <span class="pre">9.</span> <span class="pre">,</span>&#160; <span class="pre">9.5,</span> <span class="pre">10.</span> <span class="pre">])</span></em><a class="headerlink" href="#plugins.JeolCamera.Camera.gains" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Camera.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Camera.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Camera.start" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Camera.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Camera.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Camera.stop" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Camera.cache">
+<span class="sig-name descname"><span class="pre">cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Camera.cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Camera.cache" title="Permalink to this definition"></a></dt>
+<dd><p>Cache of the current image &lt;uint16&gt;.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Camera.pixel_size">
+<span class="sig-name descname"><span class="pre">pixel_size</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.05</span></em><a class="headerlink" href="#plugins.JeolCamera.Camera.pixel_size" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Camera.pixel_unit">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pixel_unit</span></span><a class="headerlink" href="#plugins.JeolCamera.Camera.pixel_unit" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Camera.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#plugins.JeolCamera.Camera.shape" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Camera.exposure">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exposure</span></span><a class="headerlink" href="#plugins.JeolCamera.Camera.exposure" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Camera.binning">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">binning</span></span><a class="headerlink" href="#plugins.JeolCamera.Camera.binning" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Camera.gain">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gain</span></span><a class="headerlink" href="#plugins.JeolCamera.Camera.gain" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.JeolCamera.DummyCamera">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.JeolCamera.</span></span><span class="sig-name descname"><span class="pre">DummyCamera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#DummyCamera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.DummyCamera" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Dummy camera (proxy of Detector).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.DummyCamera.cache">
+<span class="sig-name descname"><span class="pre">cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#DummyCamera.cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.DummyCamera.cache" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.JeolCamera.DummyCamera.pixel_size">
+<span class="sig-name descname"><span class="pre">pixel_size</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.05</span></em><a class="headerlink" href="#plugins.JeolCamera.DummyCamera.pixel_size" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.JeolCamera.DummyCamera.pixel_unit">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pixel_unit</span></span><a class="headerlink" href="#plugins.JeolCamera.DummyCamera.pixel_unit" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.JeolCamera.DummyCamera.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#plugins.JeolCamera.DummyCamera.shape" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.JeolCamera.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Jeol camera manager.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Cameras/&amp;Jeol</span> <span class="pre">camera</span> <span class="pre">ver.2'</span></em><a class="headerlink" href="#plugins.JeolCamera.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.camera">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">camera</span></span><a class="headerlink" href="#plugins.JeolCamera.Plugin.camera" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.set_exposure">
+<span class="sig-name descname"><span class="pre">set_exposure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Plugin.set_exposure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Plugin.set_exposure" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.set_binning">
+<span class="sig-name descname"><span class="pre">set_binning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Plugin.set_binning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Plugin.set_binning" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.set_gain">
+<span class="sig-name descname"><span class="pre">set_gain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Plugin.set_gain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Plugin.set_gain" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.set_pixsize">
+<span class="sig-name descname"><span class="pre">set_pixsize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Plugin.set_pixsize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Plugin.set_pixsize" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Plugin.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Plugin.connect" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.dark_image">
+<span class="sig-name descname"><span class="pre">dark_image</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#plugins.JeolCamera.Plugin.dark_image" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.dark_filename">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dark_filename</span></span><a class="headerlink" href="#plugins.JeolCamera.Plugin.dark_filename" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.attributes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">attributes</span></span><a class="headerlink" href="#plugins.JeolCamera.Plugin.attributes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Plugin.acquire"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Plugin.acquire" title="Permalink to this definition"></a></dt>
+<dd><p>Acquire image with no dark subtraction.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.capture">
+<span class="sig-name descname"><span class="pre">capture</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Plugin.capture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Plugin.capture" title="Permalink to this definition"></a></dt>
+<dd><p>Capture image.</p>
+<p>If ‘dark subtraction’ is checked, the image is dark-subtracted,
+and the result image is dtype:float32, otherwise uint16.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.capture_ex">
+<span class="sig-name descname"><span class="pre">capture_ex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Plugin.capture_ex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Plugin.capture_ex" title="Permalink to this definition"></a></dt>
+<dd><p>Capture image and load to the target window.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.preset_dark">
+<span class="sig-name descname"><span class="pre">preset_dark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Plugin.preset_dark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Plugin.preset_dark" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.JeolCamera.Plugin.prepare_dark">
+<span class="sig-name descname"><span class="pre">prepare_dark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/JeolCamera.html#Plugin.prepare_dark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.JeolCamera.Plugin.prepare_dark" title="Permalink to this definition"></a></dt>
+<dd><p>Prepare dark reference.</p>
+<p>Before execution, blank the beam manually.
+Please close the curtain to prevent light leakage.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.adist">
+<span id="plugins-adist-module"></span><h2>plugins.adist module<a class="headerlink" href="#module-plugins.adist" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.adist.calc_dist">
+<span class="sig-prename descclassname"><span class="pre">plugins.adist.</span></span><span class="sig-name descname"><span class="pre">calc_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/adist.html#calc_dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.adist.calc_dist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.adist.calc_aspect">
+<span class="sig-prename descclassname"><span class="pre">plugins.adist.</span></span><span class="sig-name descname"><span class="pre">calc_aspect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/adist.html#calc_aspect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.adist.calc_aspect" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.adist.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.adist.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/adist.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.adist.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Adistortion.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.adist.Plugin.grid">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">grid</span></span><a class="headerlink" href="#plugins.adist.Plugin.grid" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.adist.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/adist.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.adist.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.adist.Plugin.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/adist.html#Plugin.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.adist.Plugin.run" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.lccf">
+<span id="plugins-lccf-module"></span><h2>plugins.lccf module<a class="headerlink" href="#module-plugins.lccf" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.lccf.find_circles">
+<span class="sig-prename descclassname"><span class="pre">plugins.lccf.</span></span><span class="sig-name descname"><span class="pre">find_circles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lccf.html#find_circles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lccf.find_circles" title="Permalink to this definition"></a></dt>
+<dd><p>Find circle with radius (rmin, rmax).
+excluding circles at the edges of the image &lt; tol*r.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>=(cx,cy), r) sorted by pos.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of (c</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.lccf.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.lccf.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lccf.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lccf.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Cetner of Circles finder.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lccf.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Plugins/&amp;Basic</span> <span class="pre">Tools/'</span></em><a class="headerlink" href="#plugins.lccf.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lccf.Plugin.category">
+<span class="sig-name descname"><span class="pre">category</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Basic</span> <span class="pre">Tools'</span></em><a class="headerlink" href="#plugins.lccf.Plugin.category" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.lccf.Plugin.lgbt">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lgbt</span></span><a class="headerlink" href="#plugins.lccf.Plugin.lgbt" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lccf.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lccf.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lccf.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lccf.Plugin.maxcount">
+<span class="sig-name descname"><span class="pre">maxcount</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">256</span></em><a class="headerlink" href="#plugins.lccf.Plugin.maxcount" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lccf.Plugin.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">otsu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lccf.html#Plugin.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lccf.Plugin.run" title="Permalink to this definition"></a></dt>
+<dd><p>Set markers at the center of circles.</p>
+<p>[S-Lbutton] Estimate the threshold using Otsu’s algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frame</strong> – target frame
+If not specified, the last selected frame is given.</p></li>
+<li><p><strong>otsu</strong> – Use Otsu’s algorithm.
+True is given if the shift key is being pressed.</p></li>
+<li><p><strong>invert</strong> – Invert image contrast (for DFI).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.lccf2">
+<span id="plugins-lccf2-module"></span><h2>plugins.lccf2 module<a class="headerlink" href="#module-plugins.lccf2" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.lccf2.find_ellipses">
+<span class="sig-prename descclassname"><span class="pre">plugins.lccf2.</span></span><span class="sig-name descname"><span class="pre">find_ellipses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lccf2.html#find_ellipses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lccf2.find_ellipses" title="Permalink to this definition"></a></dt>
+<dd><p>Find ellipses with radius (rmin, rmax).
+excluding circles at the edges of the image &lt; tol*r.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>=(cx,cy), r:=(ra&lt;rb), angle) sorted by pos.
+cx,cy : center of the rectangle [pix]
+ra,rb : ra:width &lt; rb:height of the rectangle [pix]
+angle : rotation angle in clockwise (from 00:00 o’clock)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of (c</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.lccf2.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.lccf2.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lccf2.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lccf2.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Cetner of Circles (Ellipses) finder ver.2</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lccf2.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Plugins/&amp;Basic</span> <span class="pre">Tools/'</span></em><a class="headerlink" href="#plugins.lccf2.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lccf2.Plugin.category">
+<span class="sig-name descname"><span class="pre">category</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Basic</span> <span class="pre">Tools'</span></em><a class="headerlink" href="#plugins.lccf2.Plugin.category" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.lccf2.Plugin.lgbt">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lgbt</span></span><a class="headerlink" href="#plugins.lccf2.Plugin.lgbt" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lccf2.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lccf2.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lccf2.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lccf2.Plugin.maxcount">
+<span class="sig-name descname"><span class="pre">maxcount</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">256</span></em><a class="headerlink" href="#plugins.lccf2.Plugin.maxcount" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lccf2.Plugin.maxratio">
+<span class="sig-name descname"><span class="pre">maxratio</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5.0</span></em><a class="headerlink" href="#plugins.lccf2.Plugin.maxratio" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lccf2.Plugin.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">otsu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lccf2.html#Plugin.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lccf2.Plugin.run" title="Permalink to this definition"></a></dt>
+<dd><p>Set markers at the peak position in ellipses.</p>
+<p>Search ellipses patterns.
+Find the average position of the peaks within the masked areas.
+[S-Lbutton] Estimate the threshold using Otsu’s algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frame</strong> – target frame
+If not specified, the last selected frame is given.</p></li>
+<li><p><strong>otsu</strong> – Use Otsu’s algorithm.
+True is given if the shift key is being pressed.</p></li>
+<li><p><strong>invert</strong> – Invert image contrast (for DFI).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.lccf2.mask_ellipse">
+<span class="sig-prename descclassname"><span class="pre">plugins.lccf2.</span></span><span class="sig-name descname"><span class="pre">mask_ellipse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lccf2.html#mask_ellipse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lccf2.mask_ellipse" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-plugins.lcrf">
+<span id="plugins-lcrf-module"></span><h2>plugins.lcrf module<a class="headerlink" href="#module-plugins.lcrf" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.lcrf.Model">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.lcrf.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lcrf.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lcrf.Model" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Cor-fitting model function.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lcrf.Model.residual">
+<span class="sig-name descname"><span class="pre">residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lcrf.html#Model.residual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lcrf.Model.residual" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lcrf.Model.mod2d">
+<span class="sig-name descname"><span class="pre">mod2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lcrf.html#Model.mod2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lcrf.Model.mod2d" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate modulated image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buf</strong> – polar-transformed output buffer</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>2D-array of modulated image</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lcrf.Model.mod1d">
+<span class="sig-name descname"><span class="pre">mod1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lcrf.html#Model.mod1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lcrf.Model.mod1d" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate line profile averaged with modulation correction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buf</strong> – polar-transformed output buffer</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>1D-array of modulated (+avr.) line profile</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.lcrf.find_ring_center">
+<span class="sig-prename descclassname"><span class="pre">plugins.lcrf.</span></span><span class="sig-name descname"><span class="pre">find_ring_center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lcrf.html#find_ring_center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lcrf.find_ring_center" title="Permalink to this definition"></a></dt>
+<dd><p>Find center of ring pattern in buffer.</p>
+<p>極座標変換した後，角度セグメントに分割して相互相関をとる．
+center シフトを推定するために linear-polar を使用する．
+theta = 0 を基準として，相対変位 [pixels] を計算する．</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src</strong> – source buffer</p></li>
+<li><p><strong>center</strong> – initial value of center position [nx,ny]</p></li>
+<li><p><strong>lo-hi</strong> – masking size of radial axis</p></li>
+<li><p><strong>N</strong> – resizing of angular axis (total step in angle [0:2pi])</p></li>
+<li><p><strong>tol</strong> – remove peaks that leap greater than N * tol</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dst(linear-polar-transformed image), guessed center, and fitting model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.lcrf.find_radial_peaks">
+<span class="sig-prename descclassname"><span class="pre">plugins.lcrf.</span></span><span class="sig-name descname"><span class="pre">find_radial_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lcrf.html#find_radial_peaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lcrf.find_radial_peaks" title="Permalink to this definition"></a></dt>
+<dd><p>Find radial peaks in polar-transformed buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – polar-transformed output buffer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.lcrf.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.lcrf.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lcrf.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lcrf.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Center of Rings finder ver 1.0</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lcrf.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Plugins/&amp;Basic</span> <span class="pre">Tools/'</span></em><a class="headerlink" href="#plugins.lcrf.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lcrf.Plugin.category">
+<span class="sig-name descname"><span class="pre">category</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Basic</span> <span class="pre">Tools'</span></em><a class="headerlink" href="#plugins.lcrf.Plugin.category" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.lcrf.Plugin.lgbt">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lgbt</span></span><a class="headerlink" href="#plugins.lcrf.Plugin.lgbt" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lcrf.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lcrf.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lcrf.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lcrf.Plugin.target_view">
+<span class="sig-name descname"><span class="pre">target_view</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#plugins.lcrf.Plugin.target_view" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lcrf.Plugin.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxloop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lcrf.html#Plugin.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lcrf.Plugin.run" title="Permalink to this definition"></a></dt>
+<dd><p>Set markers on the diffraction ring.</p>
+<p>Search center position and fit the model parameters.
+Find the peaks in the radial distribution using polar-transformation.
+Plot some markers on the ring pattern.
+[S-Lbutton] Use the selector as the initial center position.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frame</strong> – target frame
+If not specified, the last selected frame is given.</p></li>
+<li><p><strong>shift</strong> – The selector is used as the initial center position.
+True is given if the shift key is being pressed.</p></li>
+<li><p><strong>maxloop</strong> – maximum number of loops to search for the center position.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lcrf.Plugin.set_radii">
+<span class="sig-name descname"><span class="pre">set_radii</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lcrf.html#Plugin.set_radii"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lcrf.Plugin.set_radii" title="Permalink to this definition"></a></dt>
+<dd><p>Set threshold ratio of [min:max] radii that gives a peak search range.
+Default is [0.1:1.0] to the image height.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.lctf">
+<span id="plugins-lctf-module"></span><h2>plugins.lctf module<a class="headerlink" href="#module-plugins.lctf" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.lctf.logpolar">
+<span class="sig-prename descclassname"><span class="pre">plugins.lctf.</span></span><span class="sig-name descname"><span class="pre">logpolar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lctf.html#logpolar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lctf.logpolar" title="Permalink to this definition"></a></dt>
+<dd><p>Log-Polar transform.
+The area radii [r0:r1] of radius N/2 mapsto the same size of src image.</p>
+<p>cf. cv2.logPolar(src, (nx,ny), M, cv2.INTER_CUBIC)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.lctf.find_ring_center">
+<span class="sig-prename descclassname"><span class="pre">plugins.lctf.</span></span><span class="sig-name descname"><span class="pre">find_ring_center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lctf.html#find_ring_center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lctf.find_ring_center" title="Permalink to this definition"></a></dt>
+<dd><p>Find ring pattern in src image with fixed center.</p>
+<p>Polar 変換した後，角度セグメントに分割して相互相関をとる．
+center 固定，楕円を計測するために log-polar を使用する．
+theta = 0 を基準として，相対変位 [pixels] を計算する．</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src</strong> – source buffer (typ. log(abs(fft)))</p></li>
+<li><p><strong>lo-hi</strong> – masking size of radial axis</p></li>
+<li><p><strong>N</strong> – resizing of angular axis (total step in angle [0:2pi])</p></li>
+<li><p><strong>tol</strong> – remove peaks that leap greater than N * tol</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dst(log-polar-transformed image) and fitting model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.lctf.smooth1d">
+<span class="sig-prename descclassname"><span class="pre">plugins.lctf.</span></span><span class="sig-name descname"><span class="pre">smooth1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lctf.html#smooth1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lctf.smooth1d" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.lctf.blur1d">
+<span class="sig-prename descclassname"><span class="pre">plugins.lctf.</span></span><span class="sig-name descname"><span class="pre">blur1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lctf.html#blur1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lctf.blur1d" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.lctf.find_radial_peaks">
+<span class="sig-prename descclassname"><span class="pre">plugins.lctf.</span></span><span class="sig-name descname"><span class="pre">find_radial_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lctf.html#find_radial_peaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lctf.find_radial_peaks" title="Permalink to this definition"></a></dt>
+<dd><p>Find local maxima/minima in data.
+smoothing with Gaussian window (signal.windows.gaussian).</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.lctf.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.lctf.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lctf.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lctf.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>CTF finder ver 1.0</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lctf.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CTF/'</span></em><a class="headerlink" href="#plugins.lctf.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lctf.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lctf.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lctf.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.lctf.Plugin.selected_frame">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selected_frame</span></span><a class="headerlink" href="#plugins.lctf.Plugin.selected_frame" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.lctf.Plugin.selected_roi">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selected_roi</span></span><a class="headerlink" href="#plugins.lctf.Plugin.selected_roi" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lctf.Plugin.calc_ring">
+<span class="sig-name descname"><span class="pre">calc_ring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lctf.html#Plugin.calc_ring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lctf.Plugin.calc_ring" title="Permalink to this definition"></a></dt>
+<dd><p>Calc log-polar of ring pattern.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lctf.Plugin.calc_peak">
+<span class="sig-name descname"><span class="pre">calc_peak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lctf.html#Plugin.calc_peak"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lctf.Plugin.calc_peak" title="Permalink to this definition"></a></dt>
+<dd><p>Calc min/max peak detection.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.ld_cgrid">
+<span id="plugins-ld-cgrid-module"></span><h2>plugins.ld_cgrid module<a class="headerlink" href="#module-plugins.ld_cgrid" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.ld_cgrid.Model">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.ld_cgrid.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_cgrid.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_cgrid.Model" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_cgrid.Model.basegrid">
+<span class="sig-name descname"><span class="pre">basegrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_cgrid.html#Model.basegrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_cgrid.Model.basegrid" title="Permalink to this definition"></a></dt>
+<dd><p>描画範囲の基準グリッド (複素数配列の組)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_cgrid.Model.residual">
+<span class="sig-name descname"><span class="pre">residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitting_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_cgrid.html#Model.residual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_cgrid.Model.residual" title="Permalink to this definition"></a></dt>
+<dd><p>最小自乗法の剰余函数</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.ld_cgrid.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.ld_cgrid.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_cgrid.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_cgrid.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Plugin</span></code></p>
+<p>Distortion fitting of grid.
+(override) with fixed origin center.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.ld_cgrid.Plugin.Fitting_model">
+<span class="sig-name descname"><span class="pre">Fitting_model</span></span><a class="headerlink" href="#plugins.ld_cgrid.Plugin.Fitting_model" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#plugins.ld_cgrid.Model" title="plugins.ld_cgrid.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.ld_cgrid.Plugin.fitting_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fitting_params</span></span><a class="headerlink" href="#plugins.ld_cgrid.Plugin.fitting_params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_cgrid.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_cgrid.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_cgrid.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.ld_cring">
+<span id="plugins-ld-cring-module"></span><h2>plugins.ld_cring module<a class="headerlink" href="#module-plugins.ld_cring" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.ld_cring.Model">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.ld_cring.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_cring.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_cring.Model" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_cring.Model.residual">
+<span class="sig-name descname"><span class="pre">residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitting_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_cring.html#Model.residual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_cring.Model.residual" title="Permalink to this definition"></a></dt>
+<dd><p>最小自乗法の剰余函数</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.ld_cring.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.ld_cring.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_cring.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_cring.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Plugin</span></code></p>
+<p>Distortion fitting of ring.
+(override) with fixed origin center.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.ld_cring.Plugin.Fitting_model">
+<span class="sig-name descname"><span class="pre">Fitting_model</span></span><a class="headerlink" href="#plugins.ld_cring.Plugin.Fitting_model" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#plugins.ld_cring.Model" title="plugins.ld_cring.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.ld_cring.Plugin.fitting_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fitting_params</span></span><a class="headerlink" href="#plugins.ld_cring.Plugin.fitting_params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_cring.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_cring.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_cring.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.ld_grid">
+<span id="plugins-ld-grid-module"></span><h2>plugins.ld_grid module<a class="headerlink" href="#module-plugins.ld_grid" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.ld_grid.calc_dist">
+<span class="sig-prename descclassname"><span class="pre">plugins.ld_grid.</span></span><span class="sig-name descname"><span class="pre">calc_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_grid.html#calc_dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_grid.calc_dist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.ld_grid.calc_aspect">
+<span class="sig-prename descclassname"><span class="pre">plugins.ld_grid.</span></span><span class="sig-name descname"><span class="pre">calc_aspect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_grid.html#calc_aspect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_grid.calc_aspect" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.ld_grid.Model">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.ld_grid.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_grid.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_grid.Model" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>グリッドパターンモデル [mm].</p>
+<p>grid    : length per grid [mm/gr]
+tilt    : rotation angles of pattern
+xc, yc  : position of center</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.ld_grid.Model.nGrid">
+<span class="sig-name descname"><span class="pre">nGrid</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">30</span></em><a class="headerlink" href="#plugins.ld_grid.Model.nGrid" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_grid.Model.basegrid">
+<span class="sig-name descname"><span class="pre">basegrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_grid.html#Model.basegrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_grid.Model.basegrid" title="Permalink to this definition"></a></dt>
+<dd><p>描画範囲の基準グリッド (複素数配列の組)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_grid.Model.residual">
+<span class="sig-name descname"><span class="pre">residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitting_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_grid.html#Model.residual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_grid.Model.residual" title="Permalink to this definition"></a></dt>
+<dd><p>最小自乗法の剰余函数</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.ld_grid.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.ld_grid.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_grid.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_grid.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Distortion fitting of grid.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.ld_grid.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Plugins/&amp;Measure</span> <span class="pre">Tools/'</span></em><a class="headerlink" href="#plugins.ld_grid.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.ld_grid.Plugin.Fitting_model">
+<span class="sig-name descname"><span class="pre">Fitting_model</span></span><a class="headerlink" href="#plugins.ld_grid.Plugin.Fitting_model" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#plugins.ld_grid.Model" title="plugins.ld_grid.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.ld_grid.Plugin.fitting_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fitting_params</span></span><a class="headerlink" href="#plugins.ld_grid.Plugin.fitting_params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_grid.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_grid.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_grid.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_grid.Plugin.init_grid">
+<span class="sig-name descname"><span class="pre">init_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_grid.html#Plugin.init_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_grid.Plugin.init_grid" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_grid.Plugin.calc">
+<span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_grid.html#Plugin.calc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_grid.Plugin.calc" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate aspect ratio.</p>
+<p>アスペクト比： R1=Y/X, R2=Y2/X2 を計算する．
+アスペクト比ずれ＋３次歪率を考慮したグリッドデータに変換して描画する．</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_grid.Plugin.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_grid.html#Plugin.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_grid.Plugin.run" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate parameters for fitting markers as a grid pattern.</p>
+<p>[S-Lbutton] Skip estimation of the initial grid params.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frame</strong> – target frame
+If not specified, the last selected frame is given.</p></li>
+<li><p><strong>skip</strong> – Skip <cite>find_init_grid</cite> order(0) process.
+True is given if the shift key is being pressed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_grid.Plugin.find_init_grid">
+<span class="sig-name descname"><span class="pre">find_init_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_grid.html#Plugin.find_init_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_grid.Plugin.find_init_grid" title="Permalink to this definition"></a></dt>
+<dd><p>Find the initial grid position.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.ld_ring">
+<span id="plugins-ld-ring-module"></span><h2>plugins.ld_ring module<a class="headerlink" href="#module-plugins.ld_ring" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.ld_ring.calc_dist">
+<span class="sig-prename descclassname"><span class="pre">plugins.ld_ring.</span></span><span class="sig-name descname"><span class="pre">calc_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_ring.html#calc_dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_ring.calc_dist" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.ld_ring.calc_aspect">
+<span class="sig-prename descclassname"><span class="pre">plugins.ld_ring.</span></span><span class="sig-name descname"><span class="pre">calc_aspect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_ring.html#calc_aspect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_ring.calc_aspect" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.ld_ring.calc_fcc_spacings">
+<span class="sig-prename descclassname"><span class="pre">plugins.ld_ring.</span></span><span class="sig-name descname"><span class="pre">calc_fcc_spacings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_ring.html#calc_fcc_spacings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_ring.calc_fcc_spacings" title="Permalink to this definition"></a></dt>
+<dd><p>Calc reciprocal lattice distance (lattice &lt; N).
+a: lattice constant for FCC</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.ld_ring.Model">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.ld_ring.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_ring.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_ring.Model" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>FCC 多結晶リングパターンモデル</p>
+<p>Angles  : scattering angles [rad] (n=0 included)
+cam     : camera length [mm]
+xc, yc  : position of center</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.ld_ring.Model.nGrid">
+<span class="sig-name descname"><span class="pre">nGrid</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#plugins.ld_ring.Model.nGrid" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.ld_ring.Model.Index">
+<span class="sig-name descname"><span class="pre">Index</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#plugins.ld_ring.Model.Index" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.ld_ring.Model.Angles">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Angles</span></span><a class="headerlink" href="#plugins.ld_ring.Model.Angles" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_ring.Model.basegrid">
+<span class="sig-name descname"><span class="pre">basegrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_ring.html#Model.basegrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_ring.Model.basegrid" title="Permalink to this definition"></a></dt>
+<dd><p>描画範囲の基準グリッド (複素数配列の組) を返す．
+円の描画リストは n=0 を含む必要はないので [1:] を返す．</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_ring.Model.residual">
+<span class="sig-name descname"><span class="pre">residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitting_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_ring.html#Model.residual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_ring.Model.residual" title="Permalink to this definition"></a></dt>
+<dd><p>最小自乗法の剰余函数</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.ld_ring.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.ld_ring.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_ring.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_ring.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Distortion fitting of ring.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.ld_ring.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Plugins/&amp;Measure</span> <span class="pre">Tools/'</span></em><a class="headerlink" href="#plugins.ld_ring.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.ld_ring.Plugin.su">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">su</span></span><a class="headerlink" href="#plugins.ld_ring.Plugin.su" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.ld_ring.Plugin.em">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">em</span></span><a class="headerlink" href="#plugins.ld_ring.Plugin.em" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.ld_ring.Plugin.Fitting_model">
+<span class="sig-name descname"><span class="pre">Fitting_model</span></span><a class="headerlink" href="#plugins.ld_ring.Plugin.Fitting_model" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#plugins.ld_ring.Model" title="plugins.ld_ring.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.ld_ring.Plugin.fitting_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fitting_params</span></span><a class="headerlink" href="#plugins.ld_ring.Plugin.fitting_params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_ring.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_ring.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_ring.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_ring.Plugin.init_grid">
+<span class="sig-name descname"><span class="pre">init_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_ring.html#Plugin.init_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_ring.Plugin.init_grid" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_ring.Plugin.calc">
+<span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_ring.html#Plugin.calc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_ring.Plugin.calc" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate aspect ratio.</p>
+<p>アスペクト比： R1=Y/X, R2=Y2/X2 を計算する．
+アスペクト比ずれ＋３次歪率を考慮したグリッドデータに変換して描画する．</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_ring.Plugin.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_ring.html#Plugin.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_ring.Plugin.run" title="Permalink to this definition"></a></dt>
+<dd><p>Caluculate ellipse parameters for fitting the plotted markers.</p>
+<p>[S-Lbutton] Skip estimation of the nearest maximum peak.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frame</strong> – target frame
+If not specified, the last selected frame is given.</p></li>
+<li><p><strong>skip</strong> – Skip <cite>find_near_maximum</cite> process.
+True is given if the shift key is being pressed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.ld_ring.Plugin.find_near_maximum">
+<span class="sig-name descname"><span class="pre">find_near_maximum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/ld_ring.html#Plugin.find_near_maximum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.ld_ring.Plugin.find_near_maximum" title="Permalink to this definition"></a></dt>
+<dd><p>Find the nearest maximum peak position
+in the specified region and number of loops.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.lgbt">
+<span id="plugins-lgbt-module"></span><h2>plugins.lgbt module<a class="headerlink" href="#module-plugins.lgbt" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.lgbt.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.lgbt.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lgbt.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lgbt.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Gaussian Blur and Threshold.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lgbt.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Plugins/&amp;Basic</span> <span class="pre">Tools/'</span></em><a class="headerlink" href="#plugins.lgbt.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lgbt.Plugin.category">
+<span class="sig-name descname"><span class="pre">category</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Basic</span> <span class="pre">Tools'</span></em><a class="headerlink" href="#plugins.lgbt.Plugin.category" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lgbt.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lgbt.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lgbt.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.lgbt.Plugin.params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">params</span></span><a class="headerlink" href="#plugins.lgbt.Plugin.params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lgbt.Plugin.calc">
+<span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">otsu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lgbt.html#Plugin.calc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lgbt.Plugin.calc" title="Permalink to this definition"></a></dt>
+<dd><p>GaussianBlur and binarize using threshold.</p>
+<p>[S-Lbutton] Estimate the threshold using Otsu’s algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>otsu</strong> – float number (0 &lt; r &lt; 1) indicating threshold percentile
+Set True (1) to use Otsu’s algorithm.
+Set False (0) to use the specified threshold value.</p></li>
+<li><p><strong>invert</strong> – Invert dst image (for dark-field image or DFI).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>blurred and binarized dst image &lt;uint8&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.lgbt_a">
+<span id="plugins-lgbt-a-module"></span><h2>plugins.lgbt_a module<a class="headerlink" href="#module-plugins.lgbt_a" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.lgbt_a.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.lgbt_a.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lgbt_a.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lgbt_a.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Gaussian Blur and Threshold –adaptive.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lgbt_a.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Plugins/&amp;Basic</span> <span class="pre">Tools/'</span></em><a class="headerlink" href="#plugins.lgbt_a.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lgbt_a.Plugin.category">
+<span class="sig-name descname"><span class="pre">category</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Basic</span> <span class="pre">Tools'</span></em><a class="headerlink" href="#plugins.lgbt_a.Plugin.category" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lgbt_a.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lgbt_a.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lgbt_a.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lgbt_a.Plugin.calc">
+<span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lgbt_a.html#Plugin.calc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lgbt_a.Plugin.calc" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.lineprofile">
+<span id="plugins-lineprofile-module"></span><h2>plugins.lineprofile module<a class="headerlink" href="#module-plugins.lineprofile" title="Permalink to this heading"></a></h2>
+<p>Line profile</p>
+<p>Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#37;&#52;&#48;jeol&#46;co&#46;jp">komoto<span>&#64;</span>jeol<span>&#46;</span>co<span>&#46;</span>jp</a>&gt;</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.lineprofile.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.lineprofile.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lineprofile.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lineprofile.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Line profile of the currently selected buffers.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lineprofile.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Plugins/Extensions/&amp;Line</span> <span class="pre">profile\tCtrl+l'</span></em><a class="headerlink" href="#plugins.lineprofile.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lineprofile.Plugin.caption">
+<span class="sig-name descname"><span class="pre">caption</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Line</span> <span class="pre">profile'</span></em><a class="headerlink" href="#plugins.lineprofile.Plugin.caption" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.lineprofile.Plugin.dockable">
+<span class="sig-name descname"><span class="pre">dockable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#plugins.lineprofile.Plugin.dockable" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.lineprofile.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/lineprofile.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.lineprofile.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.pragma_corfft">
+<span id="plugins-pragma-corfft-module"></span><h2>plugins.pragma_corfft module<a class="headerlink" href="#module-plugins.pragma_corfft" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.pragma_corfft.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_corfft.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_corfft.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Plugin for magcal.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Plugins/&amp;Pragma</span> <span class="pre">Tools/'</span></em><a class="headerlink" href="#plugins.pragma_corfft.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.su">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">su</span></span><a class="headerlink" href="#plugins.pragma_corfft.Plugin.su" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.lgbt">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lgbt</span></span><a class="headerlink" href="#plugins.pragma_corfft.Plugin.lgbt" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.lccf">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lccf</span></span><a class="headerlink" href="#plugins.pragma_corfft.Plugin.lccf" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.ldc">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ldc</span></span><a class="headerlink" href="#plugins.pragma_corfft.Plugin.ldc" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_corfft.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_corfft.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.result_frame">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">result_frame</span></span><a class="headerlink" href="#plugins.pragma_corfft.Plugin.result_frame" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.target_view">
+<span class="sig-name descname"><span class="pre">target_view</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#plugins.pragma_corfft.Plugin.target_view" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.output_view">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">output_view</span></span><a class="headerlink" href="#plugins.pragma_corfft.Plugin.output_view" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.show_settings">
+<span class="sig-name descname"><span class="pre">show_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_corfft.html#Plugin.show_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_corfft.Plugin.show_settings" title="Permalink to this definition"></a></dt>
+<dd><p>Show settings to check.</p>
+<ul class="simple">
+<li><p>lccf radii [rmin:rmax] for marking spots</p></li>
+<li><p>unit length [mm/pixel] for calculating mags</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_corfft.html#Plugin.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_corfft.Plugin.run" title="Permalink to this definition"></a></dt>
+<dd><p>Run the fitting procedure.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_corfft.html#Plugin.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_corfft.Plugin.evaluate" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluation using the selected method.</p>
+<p>Select evaluation method:</p>
+<ul class="simple">
+<li><p>:FFT evaluates using FFT method. Use when grid is small</p></li>
+<li><p>:FFT+ in addition to FFT method, corss-cut the center (十文字きりちょんぱ)</p></li>
+<li><p>:Cor evaluates using Cor (pattern matching) method. Use when grid is large</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.calc_mark">
+<span class="sig-name descname"><span class="pre">calc_mark</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_corfft.html#Plugin.calc_mark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_corfft.Plugin.calc_mark" title="Permalink to this definition"></a></dt>
+<dd><p>Set parameter of socre at percentile.</p>
+<p>Ratio [%] to maximum count for extracting spots.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.calc_fit">
+<span class="sig-name descname"><span class="pre">calc_fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_corfft.html#Plugin.calc_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_corfft.Plugin.calc_fit" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.calc_mag">
+<span class="sig-name descname"><span class="pre">calc_mag</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_corfft.html#Plugin.calc_mag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_corfft.Plugin.calc_mag" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate Mags from the grid length [mm/grid].</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.calc_ru">
+<span class="sig-name descname"><span class="pre">calc_ru</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_corfft.html#Plugin.calc_ru"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_corfft.Plugin.calc_ru" title="Permalink to this definition"></a></dt>
+<dd><p>Estimate [u/pix] on specimen from two spots.</p>
+<ol class="arabic simple">
+<li><p>Select the <em>result</em> frame</p></li>
+<li><p>Draw line from origin to the nearest spot</p></li>
+<li><p>Press to estimate the unit length [u/pix]</p></li>
+</ol>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.test_cor">
+<span class="sig-name descname"><span class="pre">test_cor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_corfft.html#Plugin.test_cor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_corfft.Plugin.test_cor" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_corfft.Plugin.test_fft">
+<span class="sig-name descname"><span class="pre">test_fft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crossline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_corfft.html#Plugin.test_fft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_corfft.Plugin.test_fft" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.pragma_ctf">
+<span id="plugins-pragma-ctf-module"></span><h2>plugins.pragma_ctf module<a class="headerlink" href="#module-plugins.pragma_ctf" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.pragma_ctf.make_indices_matrix">
+<span class="sig-prename descclassname"><span class="pre">plugins.pragma_ctf.</span></span><span class="sig-name descname"><span class="pre">make_indices_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_ctf.html#make_indices_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_ctf.make_indices_matrix" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.pragma_ctf.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.pragma_ctf.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_ctf.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_ctf.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Plugin test of CTF ver.2</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.pragma_ctf.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CTF/'</span></em><a class="headerlink" href="#plugins.pragma_ctf.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.pragma_ctf.Plugin.debug">
+<span class="sig-name descname"><span class="pre">debug</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#plugins.pragma_ctf.Plugin.debug" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.pragma_ctf.Plugin.lctf">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lctf</span></span><a class="headerlink" href="#plugins.pragma_ctf.Plugin.lctf" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.pragma_ctf.Plugin.su">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">su</span></span><a class="headerlink" href="#plugins.pragma_ctf.Plugin.su" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.pragma_ctf.Plugin.em">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">em</span></span><a class="headerlink" href="#plugins.pragma_ctf.Plugin.em" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_ctf.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_ctf.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_ctf.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_ctf.Plugin.calc_sherzer">
+<span class="sig-name descname"><span class="pre">calc_sherzer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_ctf.html#Plugin.calc_sherzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_ctf.Plugin.calc_sherzer" title="Permalink to this definition"></a></dt>
+<dd><p>Sherzer focus [m] defined as sin(2*pi/3) = 0.866</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_ctf.Plugin.calc_optvar">
+<span class="sig-name descname"><span class="pre">calc_optvar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_ctf.html#Plugin.calc_optvar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_ctf.Plugin.calc_optvar" title="Permalink to this definition"></a></dt>
+<dd><p>Calc optical variables.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_ctf.Plugin.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_ctf.html#Plugin.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_ctf.Plugin.run" title="Permalink to this definition"></a></dt>
+<dd><p>Execute all processes.</p>
+<ol class="arabic simple">
+<li><p>Calc log-polar of ring pattern.</p></li>
+<li><p>Calc min/max peak detection.</p></li>
+<li><p>Calc optical variables.</p></li>
+</ol>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.pragma_grid">
+<span id="plugins-pragma-grid-module"></span><h2>plugins.pragma_grid module<a class="headerlink" href="#module-plugins.pragma_grid" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.pragma_grid.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.pragma_grid.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_grid.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_grid.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Evaluate distortion of Mag-Grid pattern.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.pragma_grid.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Plugins/&amp;Pragma</span> <span class="pre">Tools/'</span></em><a class="headerlink" href="#plugins.pragma_grid.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.pragma_grid.Plugin.category">
+<span class="sig-name descname"><span class="pre">category</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Pragma</span> <span class="pre">Tools'</span></em><a class="headerlink" href="#plugins.pragma_grid.Plugin.category" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.pragma_grid.Plugin.caption">
+<span class="sig-name descname"><span class="pre">caption</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Grid'</span></em><a class="headerlink" href="#plugins.pragma_grid.Plugin.caption" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.pragma_grid.Plugin.lccf">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lccf</span></span><a class="headerlink" href="#plugins.pragma_grid.Plugin.lccf" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.pragma_grid.Plugin.ld">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ld</span></span><a class="headerlink" href="#plugins.pragma_grid.Plugin.ld" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_grid.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_grid.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_grid.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_grid.Plugin.show_setting">
+<span class="sig-name descname"><span class="pre">show_setting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_grid.html#Plugin.show_setting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_grid.Plugin.show_setting" title="Permalink to this definition"></a></dt>
+<dd><p>Show the settings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_grid.Plugin.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_grid.html#Plugin.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_grid.Plugin.run" title="Permalink to this definition"></a></dt>
+<dd><p>Run scripts.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.pragma_ring">
+<span id="plugins-pragma-ring-module"></span><h2>plugins.pragma_ring module<a class="headerlink" href="#module-plugins.pragma_ring" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.pragma_ring.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.pragma_ring.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_ring.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_ring.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Evaluate distortion of Diff-Ring pattern.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.pragma_ring.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Plugins/&amp;Pragma</span> <span class="pre">Tools/'</span></em><a class="headerlink" href="#plugins.pragma_ring.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.pragma_ring.Plugin.category">
+<span class="sig-name descname"><span class="pre">category</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Pragma</span> <span class="pre">Tools'</span></em><a class="headerlink" href="#plugins.pragma_ring.Plugin.category" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.pragma_ring.Plugin.caption">
+<span class="sig-name descname"><span class="pre">caption</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Ring'</span></em><a class="headerlink" href="#plugins.pragma_ring.Plugin.caption" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.pragma_ring.Plugin.lcrf">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lcrf</span></span><a class="headerlink" href="#plugins.pragma_ring.Plugin.lcrf" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.pragma_ring.Plugin.ld">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ld</span></span><a class="headerlink" href="#plugins.pragma_ring.Plugin.ld" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_ring.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_ring.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_ring.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_ring.Plugin.show_setting">
+<span class="sig-name descname"><span class="pre">show_setting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_ring.html#Plugin.show_setting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_ring.Plugin.show_setting" title="Permalink to this definition"></a></dt>
+<dd><p>Show the settings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.pragma_ring.Plugin.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/pragma_ring.html#Plugin.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.pragma_ring.Plugin.run" title="Permalink to this definition"></a></dt>
+<dd><p>Run scripts.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.viewcam">
+<span id="plugins-viewcam-module"></span><h2>plugins.viewcam module<a class="headerlink" href="#module-plugins.viewcam" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.viewcam.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.viewcam.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewcam.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewcam.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Plugins of camera viewer.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.viewcam.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Cameras/'</span></em><a class="headerlink" href="#plugins.viewcam.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.viewcam.Plugin.cameraman">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cameraman</span></span><a class="headerlink" href="#plugins.viewcam.Plugin.cameraman" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewcam.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewcam.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewcam.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewcam.Plugin.Destroy">
+<span class="sig-name descname"><span class="pre">Destroy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/plugins/viewcam.html#Plugin.Destroy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewcam.Plugin.Destroy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewcam.Plugin.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewcam.html#Plugin.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewcam.Plugin.run" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewcam.Plugin.display">
+<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewcam.html#Plugin.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewcam.Plugin.display" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.viewfft">
+<span id="plugins-viewfft-module"></span><h2>plugins.viewfft module<a class="headerlink" href="#module-plugins.viewfft" title="Permalink to this heading"></a></h2>
+<p>View of FFT/iFFT.</p>
+<p>Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#37;&#52;&#48;jeol&#46;co&#46;jp">komoto<span>&#64;</span>jeol<span>&#46;</span>co<span>&#46;</span>jp</a>&gt;</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="plugins.viewfft.fftresize">
+<span class="sig-prename descclassname"><span class="pre">plugins.viewfft.</span></span><span class="sig-name descname"><span class="pre">fftresize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewfft.html#fftresize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewfft.fftresize" title="Permalink to this definition"></a></dt>
+<dd><p>Resize src image to 2**n squared ROI.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.viewfft.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.viewfft.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewfft.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewfft.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>FFT view.</p>
+<p>FFT src (graph.buffer) to dst (output.buffer).
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Rectangular</span> <span class="n">regions</span> <span class="n">will</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">distorted</span> <span class="n">patterns</span><span class="o">.</span>
+<span class="n">長方形のリージョンは歪んだパターンになるので要注意</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.viewfft.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Plugins/Extensions/&amp;FFT</span> <span class="pre">view'</span></em><a class="headerlink" href="#plugins.viewfft.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.viewfft.Plugin.caption">
+<span class="sig-name descname"><span class="pre">caption</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'FFT</span> <span class="pre">view'</span></em><a class="headerlink" href="#plugins.viewfft.Plugin.caption" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewfft.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewfft.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewfft.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewfft.Plugin.Destroy">
+<span class="sig-name descname"><span class="pre">Destroy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/plugins/viewfft.html#Plugin.Destroy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewfft.Plugin.Destroy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewfft.Plugin.newfft">
+<span class="sig-name descname"><span class="pre">newfft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewfft.html#Plugin.newfft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewfft.Plugin.newfft" title="Permalink to this definition"></a></dt>
+<dd><p>New FFT of graph to output.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewfft.Plugin.newifft">
+<span class="sig-name descname"><span class="pre">newifft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewfft.html#Plugin.newifft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewfft.Plugin.newifft" title="Permalink to this definition"></a></dt>
+<dd><p>New inverse FFT of output to graph.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins.viewframe">
+<span id="plugins-viewframe-module"></span><h2>plugins.viewframe module<a class="headerlink" href="#module-plugins.viewframe" title="Permalink to this heading"></a></h2>
+<p>Property list of buffers</p>
+<p>Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#37;&#52;&#48;jeol&#46;co&#46;jp">komoto<span>&#64;</span>jeol<span>&#46;</span>co<span>&#46;</span>jp</a>&gt;</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckListCtrl">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.viewframe.</span></span><span class="sig-name descname"><span class="pre">CheckListCtrl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckListCtrl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckListCtrl" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ListCtrl</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.viewframe.</span></span><span class="sig-name descname"><span class="pre">CheckList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#plugins.viewframe.CheckListCtrl" title="plugins.viewframe.CheckListCtrl"><code class="xref py py-class docutils literal notranslate"><span class="pre">CheckListCtrl</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ListCtrlAutoWidthMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CtrlInterface</span></code></p>
+<p>CheckList of Graph buffers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>list item order = buffer order.
+(リストアイテムとバッファの並び順 0..n は常に一致します)</p>
+</div>
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.selected_items">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selected_items</span></span><a class="headerlink" href="#plugins.viewframe.CheckList.selected_items" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.checked_items">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">checked_items</span></span><a class="headerlink" href="#plugins.viewframe.CheckList.checked_items" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.focused_item">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">focused_item</span></span><a class="headerlink" href="#plugins.viewframe.CheckList.focused_item" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.all_items">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_items</span></span><a class="headerlink" href="#plugins.viewframe.CheckList.all_items" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.Destroy">
+<span class="sig-name descname"><span class="pre">Destroy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.Destroy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.Destroy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.UpdateInfo">
+<span class="sig-name descname"><span class="pre">UpdateInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.UpdateInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.UpdateInfo" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.OnMotion">
+<span class="sig-name descname"><span class="pre">OnMotion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.OnMotion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.OnMotion" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.OnShowItems">
+<span class="sig-name descname"><span class="pre">OnShowItems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.OnShowItems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.OnShowItems" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.OnRemoveItems">
+<span class="sig-name descname"><span class="pre">OnRemoveItems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.OnRemoveItems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.OnRemoveItems" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.OnSortItems">
+<span class="sig-name descname"><span class="pre">OnSortItems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.OnSortItems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.OnSortItems" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.OnSelectAllItems">
+<span class="sig-name descname"><span class="pre">OnSelectAllItems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.OnSelectAllItems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.OnSelectAllItems" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.OnLoadItems">
+<span class="sig-name descname"><span class="pre">OnLoadItems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.OnLoadItems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.OnLoadItems" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.OnSaveItems">
+<span class="sig-name descname"><span class="pre">OnSaveItems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.OnSaveItems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.OnSaveItems" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.OnEditAnnotation">
+<span class="sig-name descname"><span class="pre">OnEditAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.OnEditAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.OnEditAnnotation" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.on_frame_loaded">
+<span class="sig-name descname"><span class="pre">on_frame_loaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.on_frame_loaded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.on_frame_loaded" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.on_frame_shown">
+<span class="sig-name descname"><span class="pre">on_frame_shown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.on_frame_shown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.on_frame_shown" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.on_frame_hidden">
+<span class="sig-name descname"><span class="pre">on_frame_hidden</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.on_frame_hidden"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.on_frame_hidden" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.on_frames_removed">
+<span class="sig-name descname"><span class="pre">on_frames_removed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.on_frames_removed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.on_frames_removed" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.viewframe.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.viewframe.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Property list of Grpah buffers.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.viewframe.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Plugins/Extensions/&amp;Buffer</span> <span class="pre">listbox\tCtrl+b'</span></em><a class="headerlink" href="#plugins.viewframe.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.viewframe.Plugin.caption">
+<span class="sig-name descname"><span class="pre">caption</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Property</span> <span class="pre">list'</span></em><a class="headerlink" href="#plugins.viewframe.Plugin.caption" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.viewframe.Plugin.dockable">
+<span class="sig-name descname"><span class="pre">dockable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#plugins.viewframe.Plugin.dockable" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.viewframe.Plugin.all_pages">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_pages</span></span><a class="headerlink" href="#plugins.viewframe.Plugin.all_pages" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.viewframe.Plugin.selected_buffers">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selected_buffers</span></span><a class="headerlink" href="#plugins.viewframe.Plugin.selected_buffers" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.viewframe.Plugin.focused_buffer">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">focused_buffer</span></span><a class="headerlink" href="#plugins.viewframe.Plugin.focused_buffer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.Plugin.attach">
+<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caption</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#Plugin.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.Plugin.attach" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.Plugin.detach">
+<span class="sig-name descname"><span class="pre">detach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#Plugin.detach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.Plugin.detach" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-plugins">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-plugins" title="Permalink to this heading"></a></h2>
+<p>Collection of wxpj plugins</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="0_how-to-start.html">1. Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_how-to-use.html">2. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_image-processing.html">3. Image Analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="wxpyJemacs.html">wxpyJemacs module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">plugins package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.GatanCamera">plugins.GatanCamera module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.JeolCamera">plugins.JeolCamera module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.adist">plugins.adist module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.lccf">plugins.lccf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.lccf2">plugins.lccf2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.lcrf">plugins.lcrf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.lctf">plugins.lctf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.ld_cgrid">plugins.ld_cgrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.ld_cring">plugins.ld_cring module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.ld_grid">plugins.ld_grid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.ld_ring">plugins.ld_ring module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.lgbt">plugins.lgbt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.lgbt_a">plugins.lgbt_a module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.lineprofile">plugins.lineprofile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.pragma_corfft">plugins.pragma_corfft module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.pragma_ctf">plugins.pragma_ctf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.pragma_grid">plugins.pragma_grid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.pragma_ring">plugins.pragma_ring module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.viewcam">plugins.viewcam module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.viewfft">plugins.viewfft module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins.viewframe">plugins.viewframe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plugins">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyJeol.html">pyJeol package</a></li>
+</ul>
+
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="wxpyJemacs.html"
+                          title="previous chapter">wxpyJemacs module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="pyJeol.html"
+                          title="next chapter">pyJeol package</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/plugins.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyJeol.html" title="pyJeol package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="wxpyJemacs.html" title="wxpyJemacs module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

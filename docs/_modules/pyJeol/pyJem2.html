@@ -1,0 +1,793 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyJeol.pyJem2 &#8212; wxpj  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
+    
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">wxpj  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyJeol.pyJem2</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyJeol.pyJem2</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;PyJEM facade of the Poor man&#39;s PyJEM</span>
+
+<span class="sd">Author: Kazuya O&#39;moto &lt;komoto@jeol.co.jp&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">inf</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">temisc</span> <span class="kn">import</span> <span class="n">mrange</span>
+    <span class="kn">from</span> <span class="nn">temisc</span> <span class="kn">import</span> <span class="n">FLHex</span><span class="p">,</span> <span class="n">OLHex</span>
+    <span class="kn">from</span> <span class="nn">legacy</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">cmdl</span><span class="p">,</span> <span class="n">cntf</span> 
+    <span class="kn">from</span> <span class="nn">legacy</span> <span class="kn">import</span> <span class="n">LensSystem</span><span class="p">,</span> <span class="n">DeflSystem</span><span class="p">,</span> <span class="n">FocusSystem</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.temisc</span> <span class="kn">import</span> <span class="n">mrange</span>
+    <span class="kn">from</span> <span class="nn">.temisc</span> <span class="kn">import</span> <span class="n">FLHex</span><span class="p">,</span> <span class="n">OLHex</span>
+    <span class="kn">from</span> <span class="nn">.legacy</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">cmdl</span><span class="p">,</span> <span class="n">cntf</span> 
+    <span class="kn">from</span> <span class="nn">.legacy</span> <span class="kn">import</span> <span class="n">LensSystem</span><span class="p">,</span> <span class="n">DeflSystem</span><span class="p">,</span> <span class="n">FocusSystem</span>
+
+<span class="n">Command</span> <span class="o">=</span> <span class="n">cmdl</span><span class="o">.</span><span class="n">Command</span>
+<span class="n">NotifyCommand</span> <span class="o">=</span> <span class="n">cntf</span><span class="o">.</span><span class="n">NotifyCommand</span>
+
+<span class="n">ioget</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;X900&quot;</span><span class="p">,</span> <span class="s2">&quot;!I&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Get I/O data&quot;</span><span class="p">)</span>
+<span class="n">ioset</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;X901&quot;</span><span class="p">,</span> <span class="s2">&quot;!IH&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Set I/O data&quot;</span><span class="p">)</span>
+
+
+<span class="c1">## --------------------------------</span>
+<span class="c1">## PMPJ GLOBAL NAME AND THE CLASSE </span>
+<span class="c1">## --------------------------------</span>
+<span class="c1">## MAJOR_MODE = &#39;TEM&#39;, &#39;STEM&#39;</span>
+<span class="c1">## USER_MODE  = &#39;MAINT&#39;, &#39;USER&#39;, &#39;STDBASE&#39;</span>
+
+<div class="viewcode-block" id="uhex"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.uhex">[docs]</a><span class="k">def</span> <span class="nf">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mh">0xffff</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">vmax</span><span class="p">:</span> <span class="k">return</span> <span class="n">vmax</span>
+    <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="staticproperty"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.staticproperty">[docs]</a><span class="k">def</span> <span class="nf">staticproperty</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">def</span> <span class="nf">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="static2property"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.static2property">[docs]</a><span class="k">def</span> <span class="nf">static2property</span><span class="p">(</span><span class="n">xname</span><span class="p">,</span> <span class="n">yname</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">dsys</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">TEM</span><span class="o">.</span><span class="n">dsys</span><span class="p">[</span><span class="n">xname</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                         <span class="n">TEM</span><span class="o">.</span><span class="n">dsys</span><span class="p">[</span><span class="n">yname</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">dsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">xname</span><span class="p">,</span> <span class="n">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">dsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">yname</span><span class="p">,</span> <span class="n">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TEM"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.TEM">[docs]</a><span class="k">class</span> <span class="nc">TEM</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;TEM Lens/Defl system</span>
+<span class="sd">    </span>
+<span class="sd">    通常は，このクラスを基底クラスとしてプロパティを継承／使用するが，</span>
+<span class="sd">    self に依存しないので静的プロパティ (static property) としてアクセス可．</span>
+<span class="sd">    </span>
+<span class="sd">    Normally, properties are inherited/used with this class as the base class,</span>
+<span class="sd">    but since they do not depend on self, they can be accessed as static properties.</span>
+<span class="sd">    </span>
+<span class="sd">    [Lens/Defl]</span>
+<span class="sd">    LensParam は，アクセスされるたびに値を読み取るように動作しますが，</span>
+<span class="sd">    一つのコイルにアクセスすると，システムクラスの全コイルが更新されます．</span>
+<span class="sd">    オーバーヘッドを避けるため，いったん，コイルの値にアクセスしたら，</span>
+<span class="sd">    その後はシステムクラスから値を取得できます．</span>
+<span class="sd">    </span>
+<span class="sd">    LensParam works to read the value each time it is accessed,</span>
+<span class="sd">    but accessing one coil updates the entire system class coils.</span>
+<span class="sd">    To avoid overhead, once the value of a coil is accessed,</span>
+<span class="sd">    the value can be retrieved from the system class.</span>
+<span class="sd">    </span>
+<span class="sd">    [foci/lsys/dsys]</span>
+<span class="sd">    通常 system によって 0.5s 以内に通知が行われます．</span>
+<span class="sd">    読み出し速度が重要でないい場合は，これらのオブジェクトを参照してください．</span>
+<span class="sd">    </span>
+<span class="sd">    Normally, the system will notify them within 0.5s.</span>
+<span class="sd">    If read speed is not important, refer to these objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">## _set_br_defocus = Command(&quot;E151&quot;, &quot;!h&quot;, None) # Brightness:link 相対値</span>
+    <span class="c1">## _set_ol_defocus = Command(&quot;E154&quot;, &quot;!h&quot;, None) # OBJ  Focus:link 相対値</span>
+    <span class="c1">## _set_df_defocus = Command(&quot;E157&quot;, &quot;!h&quot;, None) # DIFF Focus:link 相対値</span>
+    <span class="n">_set_il_focus</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E159&quot;</span><span class="p">,</span> <span class="s2">&quot;!h&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="c1"># IL Focus</span>
+    <span class="n">_set_pl_focus</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E162&quot;</span><span class="p">,</span> <span class="s2">&quot;!h&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="c1"># PL Focus</span>
+    <span class="n">_set_fl_focus</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E165&quot;</span><span class="p">,</span> <span class="s2">&quot;!h&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="c1"># FL Focus</span>
+    
+    <span class="n">lsys</span> <span class="o">=</span> <span class="n">LensSystem</span><span class="p">()</span>  <span class="c1"># Lens Free Control System</span>
+    <span class="n">dsys</span> <span class="o">=</span> <span class="n">DeflSystem</span><span class="p">()</span>  <span class="c1"># Deflector system</span>
+    <span class="n">foci</span> <span class="o">=</span> <span class="n">FocusSystem</span><span class="p">()</span> <span class="c1"># Focus system</span>
+    
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    
+    <span class="n">GUNA1</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;GUNA1X&#39;</span><span class="p">,</span> <span class="s1">&#39;GUNA1Y&#39;</span><span class="p">)</span>
+    <span class="n">GUNA2</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;GUNA2X&#39;</span><span class="p">,</span> <span class="s1">&#39;GUNA2Y&#39;</span><span class="p">)</span>
+    <span class="n">SPOTA</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;SPOTAX&#39;</span><span class="p">,</span> <span class="s1">&#39;SPOTAY&#39;</span><span class="p">)</span>
+    <span class="n">CLA1</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;CLA1X&#39;</span><span class="p">,</span> <span class="s1">&#39;CLA1Y&#39;</span><span class="p">)</span>
+    <span class="n">CLA2</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;CLA2X&#39;</span><span class="p">,</span> <span class="s1">&#39;CLA2Y&#39;</span><span class="p">)</span>
+    <span class="n">SHIFT</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;SHIFTX&#39;</span><span class="p">,</span> <span class="s1">&#39;SHIFTY&#39;</span><span class="p">)</span>
+    <span class="n">TILT</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;TILTX&#39;</span><span class="p">,</span> <span class="s1">&#39;TILTY&#39;</span><span class="p">)</span>
+    <span class="n">ANGLE</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;ANGLEX&#39;</span><span class="p">,</span> <span class="s1">&#39;ANGLEY&#39;</span><span class="p">)</span>
+    <span class="n">CLS</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;CLSX&#39;</span><span class="p">,</span> <span class="s1">&#39;CLSY&#39;</span><span class="p">)</span>
+    <span class="n">OLS</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;OLSX&#39;</span><span class="p">,</span> <span class="s1">&#39;OLSY&#39;</span><span class="p">)</span>
+    <span class="n">ILS</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;ILSX&#39;</span><span class="p">,</span> <span class="s1">&#39;ILSY&#39;</span><span class="p">)</span>
+    <span class="n">IS1</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;IS1X&#39;</span><span class="p">,</span> <span class="s1">&#39;IS1Y&#39;</span><span class="p">)</span>
+    <span class="n">IS2</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;IS2X&#39;</span><span class="p">,</span> <span class="s1">&#39;IS2Y&#39;</span><span class="p">)</span>
+    <span class="n">PLA</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;PLAX&#39;</span><span class="p">,</span> <span class="s1">&#39;PLAY&#39;</span><span class="p">)</span>
+    <span class="n">FLA1</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;FLA1X&#39;</span><span class="p">,</span> <span class="s1">&#39;FLA1Y&#39;</span><span class="p">)</span>
+    <span class="n">FLA2</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;FLA2X&#39;</span><span class="p">,</span> <span class="s1">&#39;FLA2Y&#39;</span><span class="p">)</span>
+    <span class="n">FLS1</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;FLS1X&#39;</span><span class="p">,</span> <span class="s1">&#39;FLS1Y&#39;</span><span class="p">)</span>
+    <span class="n">FLS2</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;FLS2X&#39;</span><span class="p">,</span> <span class="s1">&#39;FLS2Y&#39;</span><span class="p">)</span>
+    
+    <span class="n">SCAN1</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;SCAN1X&#39;</span><span class="p">,</span> <span class="s1">&#39;SCAN1Y&#39;</span><span class="p">)</span> <span class="c1"># No getter</span>
+    <span class="n">SCAN2</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;SCAN2X&#39;</span><span class="p">,</span> <span class="s1">&#39;SCAN2Y&#39;</span><span class="p">)</span> <span class="c1"># No getter</span>
+    <span class="n">STEMIS</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;STEMISX&#39;</span><span class="p">,</span> <span class="s1">&#39;STEMISY&#39;</span><span class="p">)</span>
+    <span class="n">MagAdjust</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;MagAdjust_H&#39;</span><span class="p">,</span> <span class="s1">&#39;MagAdjust_V&#39;</span><span class="p">)</span> <span class="c1"># No setter</span>
+    <span class="n">Correction</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;Correction_H&#39;</span><span class="p">,</span> <span class="s1">&#39;Correction_V&#39;</span><span class="p">)</span> <span class="c1"># No setter</span>
+    <span class="n">Rotation</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;Rotation_H&#39;</span><span class="p">,</span> <span class="s1">&#39;Rotation_V&#39;</span><span class="p">)</span> <span class="c1"># No setter</span>
+    <span class="n">Offset</span> <span class="o">=</span> <span class="n">static2property</span><span class="p">(</span><span class="s1">&#39;Offset_H&#39;</span><span class="p">,</span> <span class="s1">&#39;Offset_V&#39;</span><span class="p">)</span> <span class="c1"># No setter</span>
+    
+    <span class="n">CL1</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;CL1&#39;</span><span class="p">)</span>
+    <span class="n">CL2</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;CL2&#39;</span><span class="p">)</span>
+    <span class="n">CL3</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;CL3&#39;</span><span class="p">)</span>
+    <span class="n">CM</span>  <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;CM&#39;</span> <span class="p">)</span>
+    <span class="n">OLC</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;OLC&#39;</span><span class="p">)</span>
+    <span class="n">OLF</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;OLF&#39;</span><span class="p">)</span>
+    <span class="n">OM</span>  <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;OM1&#39;</span><span class="p">)</span>
+    <span class="n">IL1</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;IL1&#39;</span><span class="p">)</span>
+    <span class="n">IL2</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;IL2&#39;</span><span class="p">)</span>
+    <span class="n">IL3</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;IL3&#39;</span><span class="p">)</span>
+    <span class="n">IL4</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;IL4&#39;</span><span class="p">)</span>
+    <span class="n">PL1</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;PL1&#39;</span><span class="p">)</span>
+    <span class="n">PL2</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;PL2&#39;</span><span class="p">)</span>
+    <span class="n">PL3</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;PL3&#39;</span><span class="p">)</span>
+    <span class="n">FLC</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;FLC&#39;</span><span class="p">)</span>
+    <span class="n">FLF</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;FLF&#39;</span><span class="p">)</span>
+    <span class="n">FLCOMP1</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;FLCOMP1&#39;</span><span class="p">)</span>
+    <span class="n">FLCOMP2</span> <span class="o">=</span> <span class="n">staticproperty</span><span class="p">(</span><span class="s1">&#39;FLCOMP2&#39;</span><span class="p">)</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">FL</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">FLHex</span><span class="p">(</span><span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="p">[</span><span class="s1">&#39;FLC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                     <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="p">[</span><span class="s1">&#39;FLF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    
+    <span class="nd">@FL</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">FL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">FLHex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">FLHex</span><span class="o">.</span><span class="n">maxval</span><span class="p">))</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;FLC&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">coarse</span><span class="p">)</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;FLF&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">fine</span><span class="p">)</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">OL</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">OLHex</span><span class="p">(</span><span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="p">[</span><span class="s1">&#39;OLC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                     <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="p">[</span><span class="s1">&#39;OLF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    
+    <span class="nd">@OL</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">OL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">OLHex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">OLHex</span><span class="o">.</span><span class="n">maxval</span><span class="p">))</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;OLC&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">coarse</span><span class="p">)</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;OLF&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">fine</span><span class="p">)</span>
+    
+    <span class="n">Brightness</span> <span class="o">=</span> <span class="n">CL3</span>
+    <span class="n">DiffFocus</span> <span class="o">=</span> <span class="n">IL1</span>
+    <span class="n">ObjFocus</span> <span class="o">=</span> <span class="n">OL</span>
+    <span class="n">ILFocus</span> <span class="o">=</span> <span class="bp">NotImplemented</span>
+    <span class="n">PLFocus</span> <span class="o">=</span> <span class="n">PL1</span>
+    <span class="n">FLFocus</span> <span class="o">=</span> <span class="n">FL</span></div>
+
+
+<div class="viewcode-block" id="Optics"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Optics">[docs]</a><span class="k">class</span> <span class="nc">Optics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optics mode base(mixin) class</span>
+<span class="sd">    </span>
+<span class="sd">    The inherited class must have MODES and Info which is to be notified.</span>
+<span class="sd">    The request command complementary to the notify must be defined as _get_info.</span>
+<span class="sd">    The Mode.setter can only function if the class has a request command _set_mode.</span>
+<span class="sd">    The Selector.setter can only function if the class has a request command _set_index.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Optics.request"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Optics.request">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_info</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">i</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">key</span> <span class="k">else</span> <span class="n">i</span></div>
+    
+    <span class="c1">## @classmethod</span>
+    <span class="c1">## def refer(self, key=None):</span>
+    <span class="c1">##     i = self.Info</span>
+    <span class="c1">##     return i[key] if key else i</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;mode-specific name&quot;&quot;&quot;</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Mode</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MODES</span><span class="p">)[</span><span class="n">j</span><span class="p">]</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;mode-specific index&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;mode&#39;</span><span class="p">)</span>
+    
+    <span class="nd">@Mode</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">Mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MODES</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MODES</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">j</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Mode</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_set_mode</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Mode index out of range&quot;</span><span class="p">)</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Selector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;submode-specifc index e.g., spot/alpha, mag, cam, and disp&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+    
+    <span class="nd">@Selector</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">Selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_index</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">v</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_index</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;mode-specific range&quot;&quot;&quot;</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Mode</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MODES</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="n">j</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Illumination"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Illumination">[docs]</a><span class="k">class</span> <span class="nc">Illumination</span><span class="p">(</span><span class="n">Optics</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Illumination system</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span> <span class="c1"># number of (spot, alpha)</span>
+        <span class="p">(</span><span class="s1">&#39;TEM&#39;</span><span class="p">,</span>     <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;Koehler&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+    <span class="p">))</span>
+    
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Illumination_info</span><span class="p">()</span>
+    
+    <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E055&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!H10sHH10s&quot;</span><span class="p">)</span>
+    <span class="n">_set_mode</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E050&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">)</span>
+    <span class="n">_set_spot</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E054&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">)</span>
+    <span class="n">_set_alpha</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E052&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_set_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Spot</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Alpha</span> <span class="o">=</span> <span class="n">v</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Spot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;spot&#39;</span><span class="p">)</span>
+    
+    <span class="nd">@Spot</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">Spot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">v</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Spot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_spot</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">)</span>
+    
+    <span class="nd">@Alpha</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">Alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">v</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Alpha</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_alpha</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Imaging"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Imaging">[docs]</a><span class="k">class</span> <span class="nc">Imaging</span><span class="p">(</span><span class="n">Optics</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Imaging system</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span>
+        <span class="p">(</span><span class="s1">&#39;MAG&#39;</span><span class="p">,</span>    <span class="n">mrange</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mf">1.2e6</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;MAG2&#39;</span><span class="p">,</span>   <span class="n">mrange</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mf">1.2e6</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;LOWMAG&#39;</span><span class="p">,</span> <span class="n">mrange</span><span class="p">(</span>  <span class="mi">50</span><span class="p">,</span>  <span class="mf">50e3</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;SAMAG&#39;</span><span class="p">,</span>  <span class="n">mrange</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mf">500e3</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;DIFF&#39;</span><span class="p">,</span>   <span class="n">mrange</span><span class="p">(</span> <span class="mi">300</span><span class="p">,</span>  <span class="mi">5000</span><span class="p">)),</span>
+    <span class="p">))</span>
+    
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Imaging_info</span><span class="p">()</span>
+    
+    <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E015&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!H10sHI10s10s&quot;</span><span class="p">)</span>
+    <span class="n">_set_mode</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E010&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">)</span>
+    <span class="n">_set_index</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E012&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">)</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Mag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+    
+    <span class="nd">@Mag</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">Mag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Mag</span><span class="p">:</span>
+            <span class="n">lm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Range</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">lm</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lm</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_set_index</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Mag index is out of range: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Omega"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Omega">[docs]</a><span class="k">class</span> <span class="nc">Omega</span><span class="p">(</span><span class="n">Optics</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Omega/Projection system</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span>
+        <span class="p">(</span><span class="s1">&#39;Imaging&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,)),</span>
+        <span class="p">(</span><span class="s1">&#39;Spectrum&#39;</span><span class="p">,</span> <span class="n">mrange</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">250</span><span class="p">)),</span> <span class="c1"># um/eV</span>
+    <span class="p">))</span>
+    
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Omega_info</span><span class="p">()</span>
+    
+    <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E016&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!HH10sHI10s10s&quot;</span><span class="p">)</span>
+    <span class="n">_set_mode</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E620&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!2H2I2H2IH5dH&quot;</span><span class="p">)</span>
+    <span class="n">_set_index</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E614&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="Omega.isEnabled"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Omega.isEnabled">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">isEnabled</span><span class="p">():</span>
+        <span class="k">return</span> <span class="s1">&#39;Spectrum&#39;</span> <span class="ow">in</span> <span class="n">Omega</span><span class="o">.</span><span class="n">MODES</span></div>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Dispersion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+    
+    <span class="nd">@Dispersion</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">Dispersion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Dispersion</span><span class="p">:</span>
+            <span class="n">lm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Range</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">lm</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lm</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_set_index</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Dispersion index is out of range: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
+
+
+<span class="c1">## --------------------------------</span>
+<span class="c1">## PMPJ GLOBAL INSTRUMENTAL CLASSE </span>
+<span class="c1">## --------------------------------</span>
+
+<div class="viewcode-block" id="Device"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Device">[docs]</a><span class="k">class</span> <span class="nc">Device</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Device base class mixin</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Device.request"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Device.request">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_info</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">i</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">key</span> <span class="k">else</span> <span class="n">i</span></div></div>
+    
+    <span class="c1">## @classmethod</span>
+    <span class="c1">## def refer(self, key=None):</span>
+    <span class="c1">##     i = self.Info</span>
+    <span class="c1">##     return i[key] if key else i</span>
+
+
+<div class="viewcode-block" id="EOsys"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.EOsys">[docs]</a><span class="k">class</span> <span class="nc">EOsys</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;EM device system</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Eos_info</span><span class="p">()</span>
+    
+    <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E090&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!16HIH&quot;</span><span class="p">)</span>
+    
+    <span class="n">_set_mode</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E000&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;ASID&#39;</span><span class="p">)</span> <span class="c1"># {0:TEM, 1:ASID}</span>
+    <span class="n">_get_mode</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E001&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;ASID&#39;</span><span class="p">)</span> <span class="c1"># =&gt; Info[&#39;major_mode&#39;]</span>
+    
+    <span class="c1">## _get_v1_status = Command(&quot;F818&quot;, None, &quot;!5I&quot;, device=&#39;VAC&#39;) # (V1,_,_,_,_,_)</span>
+    <span class="c1">## _get_v1_ready = staticmethod(lambda: EOsys._get_v1_status()[0] &amp; 0b1011 == 0) # V1 all clear</span>
+    
+    <span class="n">_set_v1_state</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;F811&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;VAC&#39;</span><span class="p">)</span> <span class="c1"># {0:close, 1:open}</span>
+    <span class="n">_get_v1_state</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;F817&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;VAC&#39;</span><span class="p">)</span>
+    
+    <span class="n">_set_fscr</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;C321&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;PHOTO&#39;</span><span class="p">)</span> <span class="c1"># ? FSCR {0:out, 1:in}</span>
+    <span class="n">_set_lscr</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;C320&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;PHOTO&#39;</span><span class="p">)</span> <span class="c1"># o LSCR {0:0, 2:90} deg</span>
+    <span class="n">_get_scr</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;C325&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!2H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;PHOTO&#39;</span><span class="p">)</span> <span class="c1"># o LSCR {0:0, 2:90} deg, FSCR {0:out, 1:in}.</span>
+    
+    <span class="n">_set_det</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;D170&quot;</span><span class="p">,</span> <span class="s2">&quot;!25H&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;ASID&#39;</span><span class="p">)</span> <span class="c1"># x ▼not supported</span>
+    <span class="n">_get_det</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;D171&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!25H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;ASID&#39;</span><span class="p">)</span> <span class="c1"># x ▼not supported</span>
+    
+    <span class="c1">## for FEG only</span>
+    <span class="c1">## for LAB6-2100, V1open/close toggles emission</span>
+    <span class="n">V1</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="n">EOsys</span><span class="o">.</span><span class="n">_get_v1_state</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">EOsys</span><span class="o">.</span><span class="n">_set_v1_state</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Status of V1 valve.&quot;</span><span class="p">)</span>
+    
+    <span class="n">LSCR</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="n">EOsys</span><span class="o">.</span><span class="n">_get_scr</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">EOsys</span><span class="o">.</span><span class="n">_set_lscr</span><span class="p">(</span><span class="n">v</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Status of LSCR {0:0, 1:7, 2:90} degs.&quot;</span><span class="p">)</span>
+    
+    <span class="n">FSCR</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="n">EOsys</span><span class="o">.</span><span class="n">_get_scr</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">EOsys</span><span class="o">.</span><span class="n">_set_fscr</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Status of FSCR {0:out, 1:in}.&quot;</span><span class="p">)</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Screen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Status of default screen.&quot;&quot;&quot;</span>
+        <span class="n">lscr</span><span class="p">,</span> <span class="n">fscr</span> <span class="o">=</span> <span class="n">EOsys</span><span class="o">.</span><span class="n">_get_scr</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">fscr</span><span class="o">==</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">lscr</span><span class="o">==</span><span class="mi">0</span>
+    
+    <span class="nd">@Screen</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">Screen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="c1">## EOsys._set_fscr(0 if v else 1) # deprecated ?</span>
+        <span class="n">EOsys</span><span class="o">.</span><span class="n">_set_lscr</span><span class="p">(</span><span class="mi">0</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HTsys"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.HTsys">[docs]</a><span class="k">class</span> <span class="nc">HTsys</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;HT system</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">HT_info</span><span class="p">()</span>
+    
+    <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;F902&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!19hi5h&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;HT&#39;</span><span class="p">)</span>
+    <span class="n">_set_htv</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;F502&quot;</span><span class="p">,</span> <span class="s2">&quot;!I&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;HT&#39;</span><span class="p">,</span> <span class="n">cmdtype</span><span class="o">=</span><span class="s1">&#39;ACK&#39;</span><span class="p">)</span> <span class="c1"># [0:130000:10V]</span>
+    
+    <span class="n">_set_ems_state</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;F200&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;HT&#39;</span><span class="p">)</span> <span class="c1"># {0:off, 1:on}</span>
+    <span class="n">_get_ems_state</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">HTsys</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;ems_state&quot;</span><span class="p">))</span>
+    
+    <span class="n">_set_a1</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;F220&quot;</span><span class="p">,</span> <span class="s2">&quot;!h&quot;</span><span class="p">,</span> <span class="s2">&quot;!h&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;HT&#39;</span><span class="p">)</span>      <span class="c1"># x [0:1000:10V] ▼not supported</span>
+    <span class="n">_set_a2</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;F221&quot;</span><span class="p">,</span> <span class="s2">&quot;!h&quot;</span><span class="p">,</span> <span class="s2">&quot;!h&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;HT&#39;</span><span class="p">)</span>      <span class="c1"># o [0:1000:10V]</span>
+    <span class="n">_set_a1_rel</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;F210&quot;</span><span class="p">,</span> <span class="s2">&quot;!h&quot;</span><span class="p">,</span> <span class="s2">&quot;!h&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;HT&#39;</span><span class="p">)</span>  <span class="c1"># x [-1:1:10V] ▼not supported</span>
+    <span class="n">_set_a2_rel</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;F211&quot;</span><span class="p">,</span> <span class="s2">&quot;!h&quot;</span><span class="p">,</span> <span class="s2">&quot;!h&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;HT&#39;</span><span class="p">)</span>  <span class="c1"># o [-1:1:10V]</span>
+    
+    <span class="c1">## _start_cfeg_emission = Command(&quot;F204&quot;, &quot;!H&quot;, &quot;!H&quot;, device=&#39;HT&#39;)</span>
+    
+    <span class="n">ht_value</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="n">HTsys</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;ht_value&#39;</span><span class="p">),</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">HTsys</span><span class="o">.</span><span class="n">_set_htv</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="mi">10</span><span class="p">)))</span>
+    
+    <span class="n">A1</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="n">HTsys</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;A1&#39;</span><span class="p">))</span>
+    
+    <span class="n">A2</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="n">HTsys</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;A2&#39;</span><span class="p">),</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">HTsys</span><span class="o">.</span><span class="n">_set_a2</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="Aperture"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture">[docs]</a><span class="k">class</span> <span class="nc">Aperture</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Aperture system: Normal type (extype=0)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">APERTURES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span>
+        <span class="p">(</span><span class="s1">&#39;NULL&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
+        <span class="p">(</span> <span class="s1">&#39;CLA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
+        <span class="p">(</span> <span class="s1">&#39;OLA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span>  <span class="mi">40</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span>  <span class="mi">5</span><span class="p">)),</span>
+        <span class="p">(</span> <span class="s1">&#39;HCA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span>  <span class="mi">5</span><span class="p">)),</span>
+        <span class="p">(</span> <span class="s1">&#39;SAA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span>  <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;ENTA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
+        <span class="p">(</span> <span class="s1">&#39;HXA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">)),</span>
+    <span class="p">))</span>
+    
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Aperture_info</span><span class="p">()</span>
+    
+    <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E405&quot;</span><span class="p">,</span> <span class="kc">None</span> <span class="p">,</span><span class="s2">&quot;!3H798s&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span> <span class="c1"># extype=0</span>
+    <span class="n">_select_apt</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E400&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span>
+    <span class="n">_set_sel</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E401&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span>
+    <span class="n">_get_sel</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E406&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span>
+    <span class="n">_get_pos</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E407&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!2H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span>
+    <span class="n">_set_pos</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E402&quot;</span><span class="p">,</span> <span class="s2">&quot;!2H&quot;</span><span class="p">,</span> <span class="s2">&quot;!2H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="Aperture.stop"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture.stop">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">ioset</span><span class="p">(</span><span class="mh">0xffff01c4</span> <span class="o">+</span> <span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">ioset</span><span class="p">(</span><span class="mh">0xffff01c4</span> <span class="o">+</span> <span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Aperture.select_apt_name"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture.select_apt_name">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">select_apt_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_apt</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">APERTURES</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">APERTURES</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Id</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">APERTURES</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="Aperture.select"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_select_apt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+    
+<div class="viewcode-block" id="Aperture.select_hole"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture.select_hole">[docs]</a>    <span class="k">def</span> <span class="nf">select_hole</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_apt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Id</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_sel</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">holes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">APERTURES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;selected hole position [2:int]&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_pos</span><span class="p">())</span>
+    
+    <span class="nd">@pos</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_pos</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_pos</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            
+            <span class="c1">## 目標値と最終値は一致するとは限らない▼停止まで待つ</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span> <span class="c1"># timeout</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span>
+                <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">v</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># wait until stopped</span>
+                    <span class="k">break</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">u</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c1">## else:</span>
+            <span class="c1">##     self.stop() #▲非常停止</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;selected hole number index&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    
+    <span class="nd">@sel</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_hole</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dia</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;selected hole diameter value&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">]</span>
+    
+    <span class="nd">@dia</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dia</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_hole</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="ApertureEx"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.ApertureEx">[docs]</a><span class="k">class</span> <span class="nc">ApertureEx</span><span class="p">(</span><span class="n">Aperture</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Aperture system: Extended type (extype=1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">APERTURES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span>
+        <span class="p">(</span> <span class="s1">&#39;CLA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;CLA2&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span>  <span class="mi">40</span><span class="p">,</span>  <span class="mi">30</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>
+        <span class="p">(</span> <span class="s1">&#39;OLA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span>  <span class="mi">40</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span>  <span class="mi">5</span><span class="p">)),</span>
+        <span class="p">(</span> <span class="s1">&#39;HCA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span>  <span class="mi">5</span><span class="p">)),</span>
+        <span class="p">(</span> <span class="s1">&#39;SAA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span>  <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;ENTA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
+        <span class="p">(</span> <span class="s1">&#39;HXA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">)),</span>
+    <span class="p">))</span>
+    
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">ApertureEx_info</span><span class="p">()</span>
+    
+    <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E423&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!15H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span> <span class="c1"># extype=1</span>
+    <span class="n">_select_apt</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E421&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span>
+    <span class="c1">## _select_hole2 = Command(&quot;E422&quot;, &quot;!2H&quot;, &quot;!2H&quot;, device=&#39;APT&#39;) # x ▼not supported</span>
+    
+<div class="viewcode-block" id="ApertureEx.stop"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.ApertureEx.stop">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">():</span>
+        <span class="c1">## 拡張絞りタイプ</span>
+        <span class="n">ioset</span><span class="p">(</span><span class="mh">0xffff084e</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># x</span>
+        <span class="n">ioset</span><span class="p">(</span><span class="mh">0xffff085e</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># y</span></div></div>
+
+
+<div class="viewcode-block" id="Stage"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Stage">[docs]</a><span class="k">class</span> <span class="nc">Stage</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stage (Gonio) system</span>
+<span class="sd">    </span>
+<span class="sd">    X,Y,Z unit [um] and TX,TY [deg]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Gonio_info</span><span class="p">()</span>
+    
+    <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;G921&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!7d&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;GONIO&#39;</span><span class="p">)</span>
+    <span class="n">_get_status</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;G920&quot;</span><span class="p">,</span> <span class="kc">None</span> <span class="p">,</span><span class="s2">&quot;!11H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;GONIO&#39;</span><span class="p">)</span> <span class="c1"># (X,Y,Z,TX,TY,M/P,X+,Y+,Z+,TX+,TY+)</span>
+    
+    <span class="c1">## _set_gonio = Command(&quot;G630&quot;, &quot;!H5d&quot;, None, device=&#39;GONIO&#39;) # (0b11111,X,Y,Z,TX,TY) ▼not supported</span>
+    <span class="n">_set_xpos</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;G631&quot;</span><span class="p">,</span> <span class="s2">&quot;!d&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;GONIO&#39;</span><span class="p">)</span>
+    <span class="n">_set_ypos</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;G632&quot;</span><span class="p">,</span> <span class="s2">&quot;!d&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;GONIO&#39;</span><span class="p">)</span>
+    <span class="n">_set_zpos</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;G633&quot;</span><span class="p">,</span> <span class="s2">&quot;!d&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;GONIO&#39;</span><span class="p">)</span>
+    <span class="n">_set_xtilt</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;G634&quot;</span><span class="p">,</span> <span class="s2">&quot;!d&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;GONIO&#39;</span><span class="p">)</span>
+    <span class="n">_set_ytilt</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;G635&quot;</span><span class="p">,</span> <span class="s2">&quot;!d&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;GONIO&#39;</span><span class="p">)</span>
+    
+    <span class="c1">## _set_gonio_rel = Command(&quot;G680&quot;, &quot;!H5d&quot;, None, device=&#39;GONIO&#39;) # (0b11111,X,Y,Z,TX,TY) ▼not supported</span>
+    <span class="n">_set_xpos_rel</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;G681&quot;</span><span class="p">,</span> <span class="s2">&quot;!d&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;GONIO&#39;</span><span class="p">)</span>
+    <span class="n">_set_ypos_rel</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;G682&quot;</span><span class="p">,</span> <span class="s2">&quot;!d&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;GONIO&#39;</span><span class="p">)</span>
+    <span class="n">_set_zpos_rel</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;G683&quot;</span><span class="p">,</span> <span class="s2">&quot;!d&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;GONIO&#39;</span><span class="p">)</span>
+    <span class="n">_set_xtilt_rel</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;G684&quot;</span><span class="p">,</span> <span class="s2">&quot;!d&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;GONIO&#39;</span><span class="p">)</span>
+    <span class="n">_set_ytilt_rel</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;G685&quot;</span><span class="p">,</span> <span class="s2">&quot;!d&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;GONIO&#39;</span><span class="p">)</span>
+    
+    <span class="n">X</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e3</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">_set_xpos</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">))</span>
+    
+    <span class="n">Y</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e3</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">_set_ypos</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">))</span>
+    
+    <span class="n">Z</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e3</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">_set_zpos</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">))</span>
+    
+    <span class="n">TX</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;TX&#39;</span><span class="p">),</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">_set_xtilt</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)))</span>
+    
+    <span class="n">TY</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;TY&#39;</span><span class="p">),</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">_set_ytilt</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)))</span>
+    
+    <span class="n">dX</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">_set_xpos_rel</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">))</span>
+    
+    <span class="n">dY</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">_set_ypos_rel</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">))</span>
+    
+    <span class="n">dZ</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">_set_zpos_rel</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">))</span>
+    
+    <span class="n">dTX</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">_set_xtilt_rel</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)))</span>
+    
+    <span class="n">dTY</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">_set_ytilt_rel</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="Filter"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Filter">[docs]</a><span class="k">class</span> <span class="nc">Filter</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter system</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Filter_info</span><span class="p">()</span>
+    
+    <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E630&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!2H2I2H2IH5dH&quot;</span><span class="p">)</span>
+    <span class="n">_set_slit</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E621&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!2H2I2H2IH5dH&quot;</span><span class="p">)</span>
+    <span class="n">_set_slitw</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E623&quot;</span><span class="p">,</span> <span class="s2">&quot;!I&quot;</span><span class="p">,</span> <span class="s2">&quot;!2H2I2H2IH5dH&quot;</span><span class="p">)</span> <span class="c1"># slit width [0.01eV]</span>
+    <span class="n">_set_slitp</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E624&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!2H2I2H2IH5dH&quot;</span><span class="p">)</span> <span class="c1"># slit position (rel)</span>
+    
+    <span class="n">_set_es</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;F520&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;HT&#39;</span><span class="p">)</span> <span class="c1"># energy shift off/on</span>
+   <span class="c1">#_set_esv = Command(&quot;F522&quot;, &quot;!h&quot;, &quot;!h&quot;, device=&#39;HT&#39;) # energy shift [-15000:15000:0.2V]</span>
+    <span class="n">_set_esv</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;F524&quot;</span><span class="p">,</span> <span class="s2">&quot;!d&quot;</span><span class="p">,</span> <span class="s2">&quot;!2H2I2H2IH5dH&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;HT&#39;</span><span class="p">)</span> <span class="c1"># energy shift [-3000:3000:1V]</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">slit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Filter</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;slit_state&#39;</span><span class="p">)</span>
+    
+    <span class="nd">@slit_state</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">slit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="n">Filter</span><span class="o">.</span><span class="n">_set_slit</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">slit_width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Filter</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;slit_width&#39;</span><span class="p">)</span>
+    
+    <span class="nd">@slit_width</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">slit_width</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="n">Filter</span><span class="o">.</span><span class="n">_set_slitw</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">energy_shift</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Filter</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;energy_shift&#39;</span><span class="p">)</span>
+    
+    <span class="nd">@energy_shift</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">energy_shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Filter</span><span class="o">.</span><span class="n">_set_esv</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Filter</span><span class="o">.</span><span class="n">_set_es</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># energy shift off</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1">## cmdl.HOST = cntf.HOST = &#39;172.17.41.201&#39;</span>
+    <span class="c1">## cmdl.HOST = cntf.HOST = &#39;localhost&#39;</span>
+    <span class="n">cmdl</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+    <span class="n">cntf</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+    
+    <span class="n">extype</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ApertureEx</span><span class="o">.</span><span class="n">_get_info</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;extype =&quot;</span><span class="p">,</span> <span class="n">extype</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">extype</span><span class="p">:</span>
+        <span class="n">Aperture</span> <span class="o">=</span> <span class="n">ApertureEx</span>
+    
+    <span class="n">eos</span> <span class="o">=</span> <span class="n">EOsys</span><span class="p">()</span>
+    <span class="n">tem</span> <span class="o">=</span> <span class="n">TEM</span><span class="p">()</span>
+    <span class="n">ca</span> <span class="o">=</span> <span class="n">Aperture</span><span class="p">(</span><span class="s1">&#39;CLA&#39;</span><span class="p">)</span>
+    <span class="n">sa</span> <span class="o">=</span> <span class="n">Aperture</span><span class="p">(</span><span class="s1">&#39;SAA&#39;</span><span class="p">)</span>
+    <span class="n">oa</span> <span class="o">=</span> <span class="n">Aperture</span><span class="p">(</span><span class="s1">&#39;OLA&#39;</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">Illumination</span><span class="p">()</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="n">Imaging</span><span class="p">()</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">Omega</span><span class="p">()</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">Stage</span><span class="p">()</span>
+    <span class="n">fl</span> <span class="o">=</span> <span class="n">Filter</span><span class="p">()</span>
+    <span class="n">ht</span> <span class="o">=</span> <span class="n">HTsys</span><span class="p">()</span>
+    
+    <span class="kn">import</span> <span class="nn">mwx</span><span class="p">;</span> <span class="n">mwx</span><span class="o">.</span><span class="n">deb</span><span class="p">()</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../0_how-to-start.html">1. Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../1_how-to-use.html">2. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_image-processing.html">3. Image Analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../wxpyJemacs.html">wxpyJemacs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins.html">plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyJeol.html">pyJeol package</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">wxpj  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyJeol.pyJem2</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

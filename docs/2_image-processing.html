@@ -1,0 +1,268 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>3. Image Analysis &#8212; wxpj  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script src="_static/jquery.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="wxpyJemacs module" href="wxpyJemacs.html" />
+    <link rel="prev" title="2. User Interface" href="1_how-to-use.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="wxpyJemacs.html" title="wxpyJemacs module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="1_how-to-use.html" title="2. User Interface"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">3. </span>Image Analysis</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="image-analysis">
+<h1><span class="section-number">3. </span>Image Analysis<a class="headerlink" href="#image-analysis" title="Permalink to this heading"></a></h1>
+<section id="pitch">
+<h2><span class="section-number">3.1. </span>Pitch<a class="headerlink" href="#pitch" title="Permalink to this heading"></a></h2>
+<section id="visualization-and-validation">
+<h3><span class="section-number">3.1.1. </span>Visualization and Validation<a class="headerlink" href="#visualization-and-validation" title="Permalink to this heading"></a></h3>
+<p>If you input an image into the software (black box), it will output numerical values.</p>
+<dl class="field-list">
+<dt class="field-odd">Q<span class="colon">:</span></dt>
+<dd class="field-odd"><p>How can we check its accuracy?</p>
+</dd>
+<dt class="field-even">A<span class="colon">:</span></dt>
+<dd class="field-even"><p>With your eyes ^^.</p>
+<p>Image processing should not be treated as a black box.
+It is important to see the results visually.</p>
+</dd>
+</dl>
+<figure class="align-default">
+<img alt="_images/2-0_image-processing.png" src="_images/2-0_image-processing.png" />
+</figure>
+<p>The basic procedure for image analysis is as follows:</p>
+<ol class="arabic simple">
+<li><p>Image processing.</p></li>
+<li><p>Extract features from processed images.</p></li>
+<li><p>Evaluate the image features.</p></li>
+<li><p>Validate results.</p></li>
+</ol>
+</section>
+</section>
+<section id="roundness-of-diff-patterns">
+<h2><span class="section-number">3.2. </span>Roundness of DIFF patterns<a class="headerlink" href="#roundness-of-diff-patterns" title="Permalink to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Load <a class="reference internal" href="plugins.html#module-plugins.pragma_ring" title="plugins.pragma_ring"><code class="xref py py-mod docutils literal notranslate"><span class="pre">plugins.pragma_ring</span></code></a>.
+The plugin is displaed in [Pragma Tools/Ring] panel.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can load plugins by DnD.
+The standard modules are included in &lt;wxpj&gt;/plugiuns/.</p>
+</div>
+</li>
+<li><p>Pressing [Setting] popups:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="plugins.html#plugins.lcrf.Plugin" title="plugins.lcrf.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">plugins.lcrf.Plugin</span></code></a> [Basic Tools/lcrf] panel,</p></li>
+<li><p><a class="reference internal" href="plugins.html#plugins.ld_ring.Plugin" title="plugins.ld_ring.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">plugins.ld_ring.Plugin</span></code></a> [ld_ring] panel.</p></li>
+</ul>
+</li>
+<li><p>Press [Run] button.
+Then, the following steps are performed:</p>
+<ol class="arabic simple">
+<li><p>Search center position and fit the model parameters.</p></li>
+<li><p>Find peaks in radial distribution and plot some markers on the ring pattern.</p></li>
+<li><p>Caluculate ellipse parameters for fitting the plotted markers.</p></li>
+</ol>
+<p>If succeeded, the roundness values will be displayed in [ld_ring] panel.</p>
+<figure class="align-default" id="pragma-ring">
+<img alt="_images/2-1_pragma_ring.png" src="_images/2-1_pragma_ring.png" />
+</figure>
+<ul>
+<li><p>[rmin] [rmax] in [Basic Tools/lcrf] set the radius ratio thresholds
+that give the peak search range (indicated by the two blue lines).</p></li>
+<li><p>Roundness of an ellipse <cite>C</cite> is evaluated using two ratios: Y/X and Y2/X2,
+where <cite>C</cite> is a representative diffraction ring that has the maximum peak
+in the radial distribution within the search radii.</p>
+<p>真円度は Y/X, Y2/X2 の二つの比で評価される．ここで，
+楕円 C は検索半径内において動径方向分布で最大ピークとなる代表円
+(もしくは回折リング)．</p>
+</li>
+</ul>
+<figure class="align-default" id="pragma-ring-figure">
+<a class="reference internal image-reference" href="_images/2-1_pragma_ring-fig.png"><img alt="_images/2-1_pragma_ring-fig.png" src="_images/2-1_pragma_ring-fig.png" style="width: 512.25px; height: 309.75px;" /></a>
+</figure>
+</li>
+</ol>
+<video controls src="./_static/2-1_pragma_ring_clip.mp4" width=800>
+</video><div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>To add a marker, select a pixel and press [c].
+To remove a marker, select it and press [delete].</p>
+<p>cf. Marker-mode bindings:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="n">move</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="nb">next</span><span class="o">-</span><span class="n">marker</span><span class="o">.</span>
+<span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="n">move</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">previoius</span><span class="o">-</span><span class="n">marker</span><span class="o">.</span>
+<span class="p">[</span><span class="n">delete</span><span class="p">]</span> <span class="n">Remove</span> <span class="n">the</span> <span class="n">selected</span> <span class="n">marker</span><span class="o">.</span>
+<span class="p">[</span><span class="n">escape</span><span class="p">]</span> <span class="n">Exit</span> <span class="n">marker</span><span class="o">-</span><span class="n">mode</span><span class="o">.</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="distortion-of-mag-images">
+<h2><span class="section-number">3.3. </span>Distortion of MAG images<a class="headerlink" href="#distortion-of-mag-images" title="Permalink to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Load <a class="reference internal" href="plugins.html#module-plugins.pragma_grid" title="plugins.pragma_grid"><code class="xref py py-mod docutils literal notranslate"><span class="pre">plugins.pragma_grid</span></code></a>.
+The plugin is displaed in [Pragma Tools/Grid] panel.</p></li>
+<li><p>Pressing [Setting] popups:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="plugins.html#plugins.lccf.Plugin" title="plugins.lccf.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">plugins.lccf.Plugin</span></code></a> [Basic Tools/lccf] panel,</p></li>
+<li><p><a class="reference internal" href="plugins.html#plugins.ld_grid.Plugin" title="plugins.ld_grid.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">plugins.ld_grid.Plugin</span></code></a> [ld_grid] panel.</p></li>
+</ul>
+</li>
+<li><p>Press [Run] button.
+Then, the following steps are performed:</p>
+<ol class="arabic simple">
+<li><p>Find circles and plot some markers on the center positions.</p></li>
+<li><p>Caluculate grid parameters for fitting the plotted markers.</p></li>
+</ol>
+<p>If succeeded, the roundness values will be displayed in [ld_grid] panel.</p>
+<figure class="align-default" id="pragma-grid">
+<img alt="_images/2-2_pragma_grid.png" src="_images/2-2_pragma_grid.png" />
+</figure>
+</li>
+</ol>
+<video controls src="./_static/2-2_pragma_grid_clip.mp4" width=800>
+</video></section>
+<section id="appendix">
+<h2><span class="section-number">3.4. </span>Appendix<a class="headerlink" href="#appendix" title="Permalink to this heading"></a></h2>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The annotation is displayed in the infobar (bottom side of the image).</p>
+<p>You can toggle the display of annotations by pressing [S-a].</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can also use the bufer list view [C-b] to see the annotations.</p>
+<figure class="align-default">
+<img alt="_images/2-a_buffer-listview.png" src="_images/2-a_buffer-listview.png" />
+</figure>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="0_how-to-start.html">1. Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_how-to-use.html">2. User Interface</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Image Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pitch">3.1. Pitch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#visualization-and-validation">3.1.1. Visualization and Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#roundness-of-diff-patterns">3.2. Roundness of DIFF patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#distortion-of-mag-images">3.3. Distortion of MAG images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#appendix">3.4. Appendix</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="wxpyJemacs.html">wxpyJemacs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyJeol.html">pyJeol package</a></li>
+</ul>
+
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="1_how-to-use.html"
+                          title="previous chapter"><span class="section-number">2. </span>User Interface</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="wxpyJemacs.html"
+                          title="next chapter">wxpyJemacs module</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/2_image-processing.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="wxpyJemacs.html" title="wxpyJemacs module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="1_how-to-use.html" title="2. User Interface"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">3. </span>Image Analysis</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>
