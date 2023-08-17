@@ -1,0 +1,350 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>editor module &#8212; wxpj  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script src="_static/jquery.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">editor module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-editor">
+<span id="editor-module"></span><h1>editor module<a class="headerlink" href="#module-editor" title="Permalink to this heading"></a></h1>
+<p>Editor’s collection of wxpj.</p>
+<p>Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#37;&#52;&#48;jeol&#46;co&#46;jp">komoto<span>&#64;</span>jeol<span>&#46;</span>co<span>&#46;</span>jp</a>&gt;</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="editor.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Plugin as testsuite for editors functions.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="editor.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Plugins/Functions/&amp;Editor'</span></em><a class="headerlink" href="#editor.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="editor.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="editor.Plugin.test_imconv">
+<span class="sig-name descname"><span class="pre">test_imconv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#Plugin.test_imconv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.Plugin.test_imconv" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="editor.Plugin.test_imtrunc">
+<span class="sig-name descname"><span class="pre">test_imtrunc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#Plugin.test_imtrunc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.Plugin.test_imtrunc" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="editor.Plugin.test_imcorr">
+<span class="sig-name descname"><span class="pre">test_imcorr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#Plugin.test_imcorr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.Plugin.test_imcorr" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="editor.Plugin.test_ellipse">
+<span class="sig-name descname"><span class="pre">test_ellipse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#Plugin.test_ellipse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.Plugin.test_ellipse" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="editor.Plugin.draw_ellipse">
+<span class="sig-name descname"><span class="pre">draw_ellipse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">el</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#Plugin.draw_ellipse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.Plugin.draw_ellipse" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.imtrunc">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">imtrunc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#imtrunc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.imtrunc" title="Permalink to this definition"></a></dt>
+<dd><p>Truncate buffer hi/lo with given tolerance score [%].</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.imconv">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">imconv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#imconv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.imconv" title="Permalink to this definition"></a></dt>
+<dd><p>Convert buffer to dst&lt;uint8&gt;.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dst</span> <span class="o">=</span> <span class="p">(</span><span class="n">src</span><span class="o">-</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span> <span class="o">/</span> <span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>hi/lo : cuts vlim with given tolerance score [%]</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.imshow">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">imshow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#imshow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.imshow" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.plot">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.plot" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.mplot">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">mplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#mplot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.mplot" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.splot">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">splot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#splot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.splot" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.scatter">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#scatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.scatter" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.clf">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">clf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#clf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.clf" title="Permalink to this definition"></a></dt>
+<dd><p>clear figure (and the stack of memory).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.clear">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#editor.clear" title="Permalink to this definition"></a></dt>
+<dd><p>clear figure (and the stack of memory).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.rotate">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#rotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.rotate" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.gradx">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">gradx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#gradx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.gradx" title="Permalink to this definition"></a></dt>
+<dd><p>Gradients: diff by Sobel (１次微分).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.grady">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">grady</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#grady"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.grady" title="Permalink to this definition"></a></dt>
+<dd><p>Gradients: diff by Sobel (１次微分).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.grad2">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">grad2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#grad2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.grad2" title="Permalink to this definition"></a></dt>
+<dd><p>Gradients: diff by Laplacian (２次微分).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.Corr">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">Corr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#Corr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.Corr" title="Permalink to this definition"></a></dt>
+<dd><p>Correlation product
+using an fft-based array flipped convolution (i.e. correlation).</p>
+<p>cf. cv2.phaseCorrelate: translational shifts between two images</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.centroid">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">centroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#centroid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.centroid" title="Permalink to this definition"></a></dt>
+<dd><p>centroids (重心).
+cf. ndi.measurements.center_of_mass</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.find_ellipses">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">find_ellipses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sortby</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'size'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#find_ellipses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.find_ellipses" title="Permalink to this definition"></a></dt>
+<dd><p>Find the rotated rectangle in which the ellipse is inscribed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frmin</strong> – min threshold ratio (to src.shape) of ellipses to find</p></li>
+<li><p><strong>frmax</strong> – max threshold</p></li>
+<li><p><strong>ksize</strong> – size of blur window</p></li>
+<li><p><strong>sortby</strong> – key of sorted list (pos or size:default)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>(cx,cy), (ra,rb), angle</p>
+<p>(cx,cy) : center of the rectangle [pix]
+(ra,rb) : ra:width &lt; rb:height of the rectangle [pix]
+angle   : rotation angle in clockwise (from 00:00 o’clock)</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>RotatedRect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.calc_ellipse">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">calc_ellipse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ellipse</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#calc_ellipse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.calc_ellipse" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the count density.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>averaged count/pixel (N/S)
+n : ratio of count / N
+s : ratio of pixel / S</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>R</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To get power density p:inside, q:outside,
+p = R * n/s
+q = R * (1-n)/(1-s)</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.qrsp">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">qrsp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#qrsp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.qrsp" title="Permalink to this definition"></a></dt>
+<dd><p>x[3],y[3]: x,y 近接した３点から 2次式で極値の箇所を推定する．</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>中央位置 x[1] からの差分値 (dx,dy)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.find_local_extremum">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">find_local_extremum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#find_local_extremum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.find_local_extremum" title="Permalink to this definition"></a></dt>
+<dd><p>2次式で極値の箇所を推定する．
+Estimates the max/min peak pos y[x] and the value.</p>
+<p>x は昇順ソートされていること．少なくとも３点なくてはならない
+推定位置が範囲内になければ，範囲内の極値点と判定結果を返す</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>極値が凸：極大であるかどうか a&lt;0 ?
+valid  : 求める推定値 (最大／最小) 存在し，かつ，範囲内に収まっているか ?</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>convex</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.find_local_extremum2d">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">find_local_extremum2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#find_local_extremum2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.find_local_extremum2d" title="Permalink to this definition"></a></dt>
+<dd><p>2次式で極値の箇所を推定する．
+Estimates the max/min peak pos [x,y] and the value.</p>
+<p>推定位置が範囲内にあるとは限らない．
+max:凹，min:凸，および，鞍点の場合は None を返す</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.match_pattern">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">match_pattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#match_pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.match_pattern" title="Permalink to this definition"></a></dt>
+<dd><p>Match_pattern of src image to template image.</p>
+<p>The depth must be (CV_8U or CV_32F)</p>
+<dl class="simple">
+<dt>The comparison method is one of the following:</dt><dd><p>‘TM_CCOEFF’, ‘TM_CCOEFF_NORMED’,
+‘TM_CCORR’,  ‘TM_CCORR_NORMED’,
+‘TM_SQDIFF’, ‘TM_SQDIFF_NORMED’,</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="editor.eval_shift">
+<span class="sig-prename descclassname"><span class="pre">editor.</span></span><span class="sig-name descname"><span class="pre">eval_shift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">div</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/editor.html#eval_shift"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#editor.eval_shift" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="0_how-to-start.html">1. Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_how-to-use.html">2. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_image-processing.html">3. Image Analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="wxpyJemacs.html">wxpyJemacs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyJeol.html">pyJeol package</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/editor.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">editor module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

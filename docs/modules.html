@@ -1,0 +1,814 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>gdk &#8212; wxpj  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script src="_static/jquery.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">gdk</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="gdk">
+<h1>gdk<a class="headerlink" href="#gdk" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="editor.html">editor module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="editor.html#editor.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="editor.html#editor.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="editor.html#editor.Plugin.test_imconv"><code class="docutils literal notranslate"><span class="pre">Plugin.test_imconv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="editor.html#editor.Plugin.test_imtrunc"><code class="docutils literal notranslate"><span class="pre">Plugin.test_imtrunc()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="editor.html#editor.Plugin.test_imcorr"><code class="docutils literal notranslate"><span class="pre">Plugin.test_imcorr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="editor.html#editor.Plugin.test_ellipse"><code class="docutils literal notranslate"><span class="pre">Plugin.test_ellipse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="editor.html#editor.Plugin.draw_ellipse"><code class="docutils literal notranslate"><span class="pre">Plugin.draw_ellipse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.imtrunc"><code class="docutils literal notranslate"><span class="pre">imtrunc()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.imconv"><code class="docutils literal notranslate"><span class="pre">imconv()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.imshow"><code class="docutils literal notranslate"><span class="pre">imshow()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.plot"><code class="docutils literal notranslate"><span class="pre">plot()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.mplot"><code class="docutils literal notranslate"><span class="pre">mplot()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.splot"><code class="docutils literal notranslate"><span class="pre">splot()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.scatter"><code class="docutils literal notranslate"><span class="pre">scatter()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.clf"><code class="docutils literal notranslate"><span class="pre">clf()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.clear"><code class="docutils literal notranslate"><span class="pre">clear()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.rotate"><code class="docutils literal notranslate"><span class="pre">rotate()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.gradx"><code class="docutils literal notranslate"><span class="pre">gradx()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.grady"><code class="docutils literal notranslate"><span class="pre">grady()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.grad2"><code class="docutils literal notranslate"><span class="pre">grad2()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.Corr"><code class="docutils literal notranslate"><span class="pre">Corr()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.centroid"><code class="docutils literal notranslate"><span class="pre">centroid()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.find_ellipses"><code class="docutils literal notranslate"><span class="pre">find_ellipses()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.calc_ellipse"><code class="docutils literal notranslate"><span class="pre">calc_ellipse()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.qrsp"><code class="docutils literal notranslate"><span class="pre">qrsp()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.find_local_extremum"><code class="docutils literal notranslate"><span class="pre">find_local_extremum()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.find_local_extremum2d"><code class="docutils literal notranslate"><span class="pre">find_local_extremum2d()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.match_pattern"><code class="docutils literal notranslate"><span class="pre">match_pattern()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="editor.html#editor.eval_shift"><code class="docutils literal notranslate"><span class="pre">eval_shift()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="jgdk.html">jgdk module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">plugins package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.GatanCamera">plugins.GatanCamera module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Camera"><code class="docutils literal notranslate"><span class="pre">Camera</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Camera.busy"><code class="docutils literal notranslate"><span class="pre">Camera.busy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Camera.pixel_unit"><code class="docutils literal notranslate"><span class="pre">Camera.pixel_unit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Camera.cache"><code class="docutils literal notranslate"><span class="pre">Camera.cache()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.camera"><code class="docutils literal notranslate"><span class="pre">Plugin.camera</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.set_exposure"><code class="docutils literal notranslate"><span class="pre">Plugin.set_exposure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.set_binning"><code class="docutils literal notranslate"><span class="pre">Plugin.set_binning()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.connect"><code class="docutils literal notranslate"><span class="pre">Plugin.connect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.insert"><code class="docutils literal notranslate"><span class="pre">Plugin.insert()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.dark_image"><code class="docutils literal notranslate"><span class="pre">Plugin.dark_image</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.dark_filename"><code class="docutils literal notranslate"><span class="pre">Plugin.dark_filename</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.attributes"><code class="docutils literal notranslate"><span class="pre">Plugin.attributes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.acquire"><code class="docutils literal notranslate"><span class="pre">Plugin.acquire()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.capture"><code class="docutils literal notranslate"><span class="pre">Plugin.capture()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.capture_ex"><code class="docutils literal notranslate"><span class="pre">Plugin.capture_ex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.preset_dark"><code class="docutils literal notranslate"><span class="pre">Plugin.preset_dark()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.GatanCamera.Plugin.prepare_dark"><code class="docutils literal notranslate"><span class="pre">Plugin.prepare_dark()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.JeolCamera">plugins.JeolCamera module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Camera"><code class="docutils literal notranslate"><span class="pre">Camera</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Camera.busy"><code class="docutils literal notranslate"><span class="pre">Camera.busy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Camera.bins"><code class="docutils literal notranslate"><span class="pre">Camera.bins</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Camera.gains"><code class="docutils literal notranslate"><span class="pre">Camera.gains</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Camera.start"><code class="docutils literal notranslate"><span class="pre">Camera.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Camera.stop"><code class="docutils literal notranslate"><span class="pre">Camera.stop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Camera.cache"><code class="docutils literal notranslate"><span class="pre">Camera.cache()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Camera.pixel_size"><code class="docutils literal notranslate"><span class="pre">Camera.pixel_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Camera.pixel_unit"><code class="docutils literal notranslate"><span class="pre">Camera.pixel_unit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Camera.shape"><code class="docutils literal notranslate"><span class="pre">Camera.shape</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Camera.exposure"><code class="docutils literal notranslate"><span class="pre">Camera.exposure</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Camera.binning"><code class="docutils literal notranslate"><span class="pre">Camera.binning</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Camera.gain"><code class="docutils literal notranslate"><span class="pre">Camera.gain</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.JeolCamera.DummyCamera"><code class="docutils literal notranslate"><span class="pre">DummyCamera</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.DummyCamera.cache"><code class="docutils literal notranslate"><span class="pre">DummyCamera.cache()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.DummyCamera.pixel_size"><code class="docutils literal notranslate"><span class="pre">DummyCamera.pixel_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.DummyCamera.pixel_unit"><code class="docutils literal notranslate"><span class="pre">DummyCamera.pixel_unit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.DummyCamera.shape"><code class="docutils literal notranslate"><span class="pre">DummyCamera.shape</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.camera"><code class="docutils literal notranslate"><span class="pre">Plugin.camera</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.set_exposure"><code class="docutils literal notranslate"><span class="pre">Plugin.set_exposure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.set_binning"><code class="docutils literal notranslate"><span class="pre">Plugin.set_binning()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.set_gain"><code class="docutils literal notranslate"><span class="pre">Plugin.set_gain()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.set_pixsize"><code class="docutils literal notranslate"><span class="pre">Plugin.set_pixsize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.connect"><code class="docutils literal notranslate"><span class="pre">Plugin.connect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.dark_image"><code class="docutils literal notranslate"><span class="pre">Plugin.dark_image</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.dark_filename"><code class="docutils literal notranslate"><span class="pre">Plugin.dark_filename</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.attributes"><code class="docutils literal notranslate"><span class="pre">Plugin.attributes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.acquire"><code class="docutils literal notranslate"><span class="pre">Plugin.acquire()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.capture"><code class="docutils literal notranslate"><span class="pre">Plugin.capture()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.capture_ex"><code class="docutils literal notranslate"><span class="pre">Plugin.capture_ex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.preset_dark"><code class="docutils literal notranslate"><span class="pre">Plugin.preset_dark()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.JeolCamera.Plugin.prepare_dark"><code class="docutils literal notranslate"><span class="pre">Plugin.prepare_dark()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.adist">plugins.adist module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.adist.calc_dist"><code class="docutils literal notranslate"><span class="pre">calc_dist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.adist.calc_aspect"><code class="docutils literal notranslate"><span class="pre">calc_aspect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.adist.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.adist.Plugin.grid"><code class="docutils literal notranslate"><span class="pre">Plugin.grid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.adist.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.adist.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.lccf">plugins.lccf module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lccf.find_circles"><code class="docutils literal notranslate"><span class="pre">find_circles()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lccf.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lccf.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lccf.Plugin.category"><code class="docutils literal notranslate"><span class="pre">Plugin.category</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lccf.Plugin.lgbt"><code class="docutils literal notranslate"><span class="pre">Plugin.lgbt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lccf.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lccf.Plugin.maxcount"><code class="docutils literal notranslate"><span class="pre">Plugin.maxcount</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lccf.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.lccf2">plugins.lccf2 module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lccf2.find_ellipses"><code class="docutils literal notranslate"><span class="pre">find_ellipses()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lccf2.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lccf2.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lccf2.Plugin.category"><code class="docutils literal notranslate"><span class="pre">Plugin.category</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lccf2.Plugin.lgbt"><code class="docutils literal notranslate"><span class="pre">Plugin.lgbt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lccf2.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lccf2.Plugin.maxcount"><code class="docutils literal notranslate"><span class="pre">Plugin.maxcount</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lccf2.Plugin.maxratio"><code class="docutils literal notranslate"><span class="pre">Plugin.maxratio</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lccf2.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lccf2.mask_ellipse"><code class="docutils literal notranslate"><span class="pre">mask_ellipse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.lcrf">plugins.lcrf module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lcrf.Model"><code class="docutils literal notranslate"><span class="pre">Model</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lcrf.Model.residual"><code class="docutils literal notranslate"><span class="pre">Model.residual()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lcrf.Model.mod2d"><code class="docutils literal notranslate"><span class="pre">Model.mod2d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lcrf.Model.mod1d"><code class="docutils literal notranslate"><span class="pre">Model.mod1d()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lcrf.find_ring_center"><code class="docutils literal notranslate"><span class="pre">find_ring_center()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lcrf.find_radial_peaks"><code class="docutils literal notranslate"><span class="pre">find_radial_peaks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lcrf.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lcrf.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lcrf.Plugin.category"><code class="docutils literal notranslate"><span class="pre">Plugin.category</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lcrf.Plugin.lgbt"><code class="docutils literal notranslate"><span class="pre">Plugin.lgbt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lcrf.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lcrf.Plugin.target_view"><code class="docutils literal notranslate"><span class="pre">Plugin.target_view</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lcrf.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lcrf.Plugin.set_radii"><code class="docutils literal notranslate"><span class="pre">Plugin.set_radii()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.lctf">plugins.lctf module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lctf.logpolar"><code class="docutils literal notranslate"><span class="pre">logpolar()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lctf.find_ring_center"><code class="docutils literal notranslate"><span class="pre">find_ring_center()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lctf.smooth1d"><code class="docutils literal notranslate"><span class="pre">smooth1d()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lctf.blur1d"><code class="docutils literal notranslate"><span class="pre">blur1d()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lctf.find_radial_peaks"><code class="docutils literal notranslate"><span class="pre">find_radial_peaks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lctf.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lctf.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lctf.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lctf.Plugin.selected_frame"><code class="docutils literal notranslate"><span class="pre">Plugin.selected_frame</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lctf.Plugin.selected_roi"><code class="docutils literal notranslate"><span class="pre">Plugin.selected_roi</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lctf.Plugin.calc_ring"><code class="docutils literal notranslate"><span class="pre">Plugin.calc_ring()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lctf.Plugin.calc_peak"><code class="docutils literal notranslate"><span class="pre">Plugin.calc_peak()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.ld_cgrid">plugins.ld_cgrid module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.ld_cgrid.Model"><code class="docutils literal notranslate"><span class="pre">Model</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_cgrid.Model.basegrid"><code class="docutils literal notranslate"><span class="pre">Model.basegrid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_cgrid.Model.residual"><code class="docutils literal notranslate"><span class="pre">Model.residual()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.ld_cgrid.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_cgrid.Plugin.Fitting_model"><code class="docutils literal notranslate"><span class="pre">Plugin.Fitting_model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_cgrid.Plugin.fitting_params"><code class="docutils literal notranslate"><span class="pre">Plugin.fitting_params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_cgrid.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.ld_cring">plugins.ld_cring module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.ld_cring.Model"><code class="docutils literal notranslate"><span class="pre">Model</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_cring.Model.residual"><code class="docutils literal notranslate"><span class="pre">Model.residual()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.ld_cring.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_cring.Plugin.Fitting_model"><code class="docutils literal notranslate"><span class="pre">Plugin.Fitting_model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_cring.Plugin.fitting_params"><code class="docutils literal notranslate"><span class="pre">Plugin.fitting_params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_cring.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.ld_grid">plugins.ld_grid module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.ld_grid.calc_dist"><code class="docutils literal notranslate"><span class="pre">calc_dist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.ld_grid.calc_aspect"><code class="docutils literal notranslate"><span class="pre">calc_aspect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.ld_grid.Model"><code class="docutils literal notranslate"><span class="pre">Model</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_grid.Model.nGrid"><code class="docutils literal notranslate"><span class="pre">Model.nGrid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_grid.Model.basegrid"><code class="docutils literal notranslate"><span class="pre">Model.basegrid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_grid.Model.residual"><code class="docutils literal notranslate"><span class="pre">Model.residual()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.ld_grid.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_grid.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_grid.Plugin.Fitting_model"><code class="docutils literal notranslate"><span class="pre">Plugin.Fitting_model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_grid.Plugin.fitting_params"><code class="docutils literal notranslate"><span class="pre">Plugin.fitting_params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_grid.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_grid.Plugin.init_grid"><code class="docutils literal notranslate"><span class="pre">Plugin.init_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_grid.Plugin.calc"><code class="docutils literal notranslate"><span class="pre">Plugin.calc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_grid.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_grid.Plugin.find_init_grid"><code class="docutils literal notranslate"><span class="pre">Plugin.find_init_grid()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.ld_ring">plugins.ld_ring module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.ld_ring.calc_dist"><code class="docutils literal notranslate"><span class="pre">calc_dist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.ld_ring.calc_aspect"><code class="docutils literal notranslate"><span class="pre">calc_aspect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.ld_ring.calc_fcc_spacings"><code class="docutils literal notranslate"><span class="pre">calc_fcc_spacings()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.ld_ring.Model"><code class="docutils literal notranslate"><span class="pre">Model</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Model.nGrid"><code class="docutils literal notranslate"><span class="pre">Model.nGrid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Model.Index"><code class="docutils literal notranslate"><span class="pre">Model.Index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Model.Angles"><code class="docutils literal notranslate"><span class="pre">Model.Angles</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Model.basegrid"><code class="docutils literal notranslate"><span class="pre">Model.basegrid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Model.residual"><code class="docutils literal notranslate"><span class="pre">Model.residual()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.ld_ring.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Plugin.su"><code class="docutils literal notranslate"><span class="pre">Plugin.su</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Plugin.em"><code class="docutils literal notranslate"><span class="pre">Plugin.em</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Plugin.Fitting_model"><code class="docutils literal notranslate"><span class="pre">Plugin.Fitting_model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Plugin.fitting_params"><code class="docutils literal notranslate"><span class="pre">Plugin.fitting_params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Plugin.init_grid"><code class="docutils literal notranslate"><span class="pre">Plugin.init_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Plugin.calc"><code class="docutils literal notranslate"><span class="pre">Plugin.calc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.ld_ring.Plugin.find_near_maximum"><code class="docutils literal notranslate"><span class="pre">Plugin.find_near_maximum()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.lgbt">plugins.lgbt module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lgbt.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lgbt.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lgbt.Plugin.category"><code class="docutils literal notranslate"><span class="pre">Plugin.category</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lgbt.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lgbt.Plugin.params"><code class="docutils literal notranslate"><span class="pre">Plugin.params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lgbt.Plugin.calc"><code class="docutils literal notranslate"><span class="pre">Plugin.calc()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.lgbt_a">plugins.lgbt_a module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lgbt_a.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lgbt_a.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lgbt_a.Plugin.category"><code class="docutils literal notranslate"><span class="pre">Plugin.category</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lgbt_a.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lgbt_a.Plugin.calc"><code class="docutils literal notranslate"><span class="pre">Plugin.calc()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.lineprofile">plugins.lineprofile module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.lineprofile.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lineprofile.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lineprofile.Plugin.caption"><code class="docutils literal notranslate"><span class="pre">Plugin.caption</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lineprofile.Plugin.dockable"><code class="docutils literal notranslate"><span class="pre">Plugin.dockable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.lineprofile.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.pragma_corfft">plugins.pragma_corfft module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.su"><code class="docutils literal notranslate"><span class="pre">Plugin.su</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.lgbt"><code class="docutils literal notranslate"><span class="pre">Plugin.lgbt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.lccf"><code class="docutils literal notranslate"><span class="pre">Plugin.lccf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.ldc"><code class="docutils literal notranslate"><span class="pre">Plugin.ldc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.result_frame"><code class="docutils literal notranslate"><span class="pre">Plugin.result_frame</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.target_view"><code class="docutils literal notranslate"><span class="pre">Plugin.target_view</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.output_view"><code class="docutils literal notranslate"><span class="pre">Plugin.output_view</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.show_settings"><code class="docutils literal notranslate"><span class="pre">Plugin.show_settings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.evaluate"><code class="docutils literal notranslate"><span class="pre">Plugin.evaluate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.calc_mark"><code class="docutils literal notranslate"><span class="pre">Plugin.calc_mark()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.calc_fit"><code class="docutils literal notranslate"><span class="pre">Plugin.calc_fit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.calc_mag"><code class="docutils literal notranslate"><span class="pre">Plugin.calc_mag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.calc_ru"><code class="docutils literal notranslate"><span class="pre">Plugin.calc_ru()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.test_cor"><code class="docutils literal notranslate"><span class="pre">Plugin.test_cor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_corfft.Plugin.test_fft"><code class="docutils literal notranslate"><span class="pre">Plugin.test_fft()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.pragma_ctf">plugins.pragma_ctf module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.pragma_ctf.make_indices_matrix"><code class="docutils literal notranslate"><span class="pre">make_indices_matrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.pragma_ctf.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ctf.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ctf.Plugin.debug"><code class="docutils literal notranslate"><span class="pre">Plugin.debug</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ctf.Plugin.lctf"><code class="docutils literal notranslate"><span class="pre">Plugin.lctf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ctf.Plugin.su"><code class="docutils literal notranslate"><span class="pre">Plugin.su</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ctf.Plugin.em"><code class="docutils literal notranslate"><span class="pre">Plugin.em</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ctf.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ctf.Plugin.calc_sherzer"><code class="docutils literal notranslate"><span class="pre">Plugin.calc_sherzer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ctf.Plugin.calc_optvar"><code class="docutils literal notranslate"><span class="pre">Plugin.calc_optvar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ctf.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.pragma_grid">plugins.pragma_grid module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.pragma_grid.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_grid.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_grid.Plugin.category"><code class="docutils literal notranslate"><span class="pre">Plugin.category</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_grid.Plugin.caption"><code class="docutils literal notranslate"><span class="pre">Plugin.caption</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_grid.Plugin.lccf"><code class="docutils literal notranslate"><span class="pre">Plugin.lccf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_grid.Plugin.ld"><code class="docutils literal notranslate"><span class="pre">Plugin.ld</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_grid.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_grid.Plugin.show_setting"><code class="docutils literal notranslate"><span class="pre">Plugin.show_setting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_grid.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.pragma_ring">plugins.pragma_ring module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.pragma_ring.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ring.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ring.Plugin.category"><code class="docutils literal notranslate"><span class="pre">Plugin.category</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ring.Plugin.caption"><code class="docutils literal notranslate"><span class="pre">Plugin.caption</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ring.Plugin.lcrf"><code class="docutils literal notranslate"><span class="pre">Plugin.lcrf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ring.Plugin.ld"><code class="docutils literal notranslate"><span class="pre">Plugin.ld</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ring.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ring.Plugin.show_setting"><code class="docutils literal notranslate"><span class="pre">Plugin.show_setting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.pragma_ring.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.viewcam">plugins.viewcam module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.viewcam.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewcam.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewcam.Plugin.cameraman"><code class="docutils literal notranslate"><span class="pre">Plugin.cameraman</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewcam.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewcam.Plugin.Destroy"><code class="docutils literal notranslate"><span class="pre">Plugin.Destroy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewcam.Plugin.run"><code class="docutils literal notranslate"><span class="pre">Plugin.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewcam.Plugin.display"><code class="docutils literal notranslate"><span class="pre">Plugin.display()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.viewfft">plugins.viewfft module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.viewfft.fftresize"><code class="docutils literal notranslate"><span class="pre">fftresize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.viewfft.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewfft.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewfft.Plugin.caption"><code class="docutils literal notranslate"><span class="pre">Plugin.caption</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewfft.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewfft.Plugin.Destroy"><code class="docutils literal notranslate"><span class="pre">Plugin.Destroy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewfft.Plugin.newfft"><code class="docutils literal notranslate"><span class="pre">Plugin.newfft()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewfft.Plugin.newifft"><code class="docutils literal notranslate"><span class="pre">Plugin.newifft()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins.viewframe">plugins.viewframe module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckListCtrl"><code class="docutils literal notranslate"><span class="pre">CheckListCtrl</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList"><code class="docutils literal notranslate"><span class="pre">CheckList</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.selected_items"><code class="docutils literal notranslate"><span class="pre">CheckList.selected_items</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.checked_items"><code class="docutils literal notranslate"><span class="pre">CheckList.checked_items</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.focused_item"><code class="docutils literal notranslate"><span class="pre">CheckList.focused_item</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.all_items"><code class="docutils literal notranslate"><span class="pre">CheckList.all_items</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.Destroy"><code class="docutils literal notranslate"><span class="pre">CheckList.Destroy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.UpdateInfo"><code class="docutils literal notranslate"><span class="pre">CheckList.UpdateInfo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.OnMotion"><code class="docutils literal notranslate"><span class="pre">CheckList.OnMotion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.OnShowItems"><code class="docutils literal notranslate"><span class="pre">CheckList.OnShowItems()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.OnRemoveItems"><code class="docutils literal notranslate"><span class="pre">CheckList.OnRemoveItems()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.OnSortItems"><code class="docutils literal notranslate"><span class="pre">CheckList.OnSortItems()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.OnSelectAllItems"><code class="docutils literal notranslate"><span class="pre">CheckList.OnSelectAllItems()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.OnLoadItems"><code class="docutils literal notranslate"><span class="pre">CheckList.OnLoadItems()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.OnSaveItems"><code class="docutils literal notranslate"><span class="pre">CheckList.OnSaveItems()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.OnEditAnnotation"><code class="docutils literal notranslate"><span class="pre">CheckList.OnEditAnnotation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.on_frame_loaded"><code class="docutils literal notranslate"><span class="pre">CheckList.on_frame_loaded()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.on_frame_shown"><code class="docutils literal notranslate"><span class="pre">CheckList.on_frame_shown()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.on_frame_hidden"><code class="docutils literal notranslate"><span class="pre">CheckList.on_frame_hidden()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.CheckList.on_frames_removed"><code class="docutils literal notranslate"><span class="pre">CheckList.on_frames_removed()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#plugins.viewframe.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.Plugin.caption"><code class="docutils literal notranslate"><span class="pre">Plugin.caption</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.Plugin.dockable"><code class="docutils literal notranslate"><span class="pre">Plugin.dockable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.Plugin.all_pages"><code class="docutils literal notranslate"><span class="pre">Plugin.all_pages</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.Plugin.selected_buffers"><code class="docutils literal notranslate"><span class="pre">Plugin.selected_buffers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.Plugin.focused_buffer"><code class="docutils literal notranslate"><span class="pre">Plugin.focused_buffer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.Plugin.attach"><code class="docutils literal notranslate"><span class="pre">Plugin.attach()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html#plugins.viewframe.Plugin.detach"><code class="docutils literal notranslate"><span class="pre">Plugin.detach()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-plugins">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyJeol.html">pyJeol package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyJeol.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.legacy.html">pyJeol.legacy package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.legacy.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.legacy.html#module-pyJeol.legacy.info">pyJeol.legacy.info module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.legacy.html#module-pyJeol.legacy.jtypes">pyJeol.legacy.jtypes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.legacy.html#module-pyJeol.legacy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyJeol.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyJeol.html#module-pyJeol.detector">pyJeol.detector module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector"><code class="docutils literal notranslate"><span class="pre">Detector</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.PORT"><code class="docutils literal notranslate"><span class="pre">Detector.PORT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.HOST"><code class="docutils literal notranslate"><span class="pre">Detector.HOST</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.StartCache"><code class="docutils literal notranslate"><span class="pre">Detector.StartCache()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.StopCache"><code class="docutils literal notranslate"><span class="pre">Detector.StopCache()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.Cache"><code class="docutils literal notranslate"><span class="pre">Detector.Cache()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.LiveStart"><code class="docutils literal notranslate"><span class="pre">Detector.LiveStart()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.LiveStop"><code class="docutils literal notranslate"><span class="pre">Detector.LiveStop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.AutoFocus"><code class="docutils literal notranslate"><span class="pre">Detector.AutoFocus()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.AutoZ"><code class="docutils literal notranslate"><span class="pre">Detector.AutoZ()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.get_detectorsetting"><code class="docutils literal notranslate"><span class="pre">Detector.get_detectorsetting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.set_detectorsetting"><code class="docutils literal notranslate"><span class="pre">Detector.set_detectorsetting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.set_exposuretime_value"><code class="docutils literal notranslate"><span class="pre">Detector.set_exposuretime_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.set_gainindex"><code class="docutils literal notranslate"><span class="pre">Detector.set_gainindex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.set_offsetindex"><code class="docutils literal notranslate"><span class="pre">Detector.set_offsetindex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.detector.Detector.set_binningindex"><code class="docutils literal notranslate"><span class="pre">Detector.set_binningindex()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyJeol.html#module-pyJeol.pyJem2">pyJeol.pyJem2 module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.uhex"><code class="docutils literal notranslate"><span class="pre">uhex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.staticproperty"><code class="docutils literal notranslate"><span class="pre">staticproperty()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.static2property"><code class="docutils literal notranslate"><span class="pre">static2property()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM"><code class="docutils literal notranslate"><span class="pre">TEM</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.lsys"><code class="docutils literal notranslate"><span class="pre">TEM.lsys</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.dsys"><code class="docutils literal notranslate"><span class="pre">TEM.dsys</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.foci"><code class="docutils literal notranslate"><span class="pre">TEM.foci</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.GUNA1"><code class="docutils literal notranslate"><span class="pre">TEM.GUNA1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.GUNA2"><code class="docutils literal notranslate"><span class="pre">TEM.GUNA2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.SPOTA"><code class="docutils literal notranslate"><span class="pre">TEM.SPOTA</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.CLA1"><code class="docutils literal notranslate"><span class="pre">TEM.CLA1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.CLA2"><code class="docutils literal notranslate"><span class="pre">TEM.CLA2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.SHIFT"><code class="docutils literal notranslate"><span class="pre">TEM.SHIFT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.TILT"><code class="docutils literal notranslate"><span class="pre">TEM.TILT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.ANGLE"><code class="docutils literal notranslate"><span class="pre">TEM.ANGLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.CLS"><code class="docutils literal notranslate"><span class="pre">TEM.CLS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.OLS"><code class="docutils literal notranslate"><span class="pre">TEM.OLS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.ILS"><code class="docutils literal notranslate"><span class="pre">TEM.ILS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.IS1"><code class="docutils literal notranslate"><span class="pre">TEM.IS1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.IS2"><code class="docutils literal notranslate"><span class="pre">TEM.IS2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.PLA"><code class="docutils literal notranslate"><span class="pre">TEM.PLA</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.FLA1"><code class="docutils literal notranslate"><span class="pre">TEM.FLA1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.FLA2"><code class="docutils literal notranslate"><span class="pre">TEM.FLA2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.FLS1"><code class="docutils literal notranslate"><span class="pre">TEM.FLS1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.FLS2"><code class="docutils literal notranslate"><span class="pre">TEM.FLS2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.SCAN1"><code class="docutils literal notranslate"><span class="pre">TEM.SCAN1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.SCAN2"><code class="docutils literal notranslate"><span class="pre">TEM.SCAN2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.STEMIS"><code class="docutils literal notranslate"><span class="pre">TEM.STEMIS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.MagAdjust"><code class="docutils literal notranslate"><span class="pre">TEM.MagAdjust</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.Correction"><code class="docutils literal notranslate"><span class="pre">TEM.Correction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.Rotation"><code class="docutils literal notranslate"><span class="pre">TEM.Rotation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.Offset"><code class="docutils literal notranslate"><span class="pre">TEM.Offset</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.CL1"><code class="docutils literal notranslate"><span class="pre">TEM.CL1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.CL2"><code class="docutils literal notranslate"><span class="pre">TEM.CL2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.CL3"><code class="docutils literal notranslate"><span class="pre">TEM.CL3</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.CM"><code class="docutils literal notranslate"><span class="pre">TEM.CM</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.OLC"><code class="docutils literal notranslate"><span class="pre">TEM.OLC</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.OLF"><code class="docutils literal notranslate"><span class="pre">TEM.OLF</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.OM"><code class="docutils literal notranslate"><span class="pre">TEM.OM</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.IL1"><code class="docutils literal notranslate"><span class="pre">TEM.IL1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.IL2"><code class="docutils literal notranslate"><span class="pre">TEM.IL2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.IL3"><code class="docutils literal notranslate"><span class="pre">TEM.IL3</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.IL4"><code class="docutils literal notranslate"><span class="pre">TEM.IL4</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.PL1"><code class="docutils literal notranslate"><span class="pre">TEM.PL1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.PL2"><code class="docutils literal notranslate"><span class="pre">TEM.PL2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.PL3"><code class="docutils literal notranslate"><span class="pre">TEM.PL3</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.FLC"><code class="docutils literal notranslate"><span class="pre">TEM.FLC</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.FLF"><code class="docutils literal notranslate"><span class="pre">TEM.FLF</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.FLCOMP1"><code class="docutils literal notranslate"><span class="pre">TEM.FLCOMP1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.FLCOMP2"><code class="docutils literal notranslate"><span class="pre">TEM.FLCOMP2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.FL"><code class="docutils literal notranslate"><span class="pre">TEM.FL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.OL"><code class="docutils literal notranslate"><span class="pre">TEM.OL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.Brightness"><code class="docutils literal notranslate"><span class="pre">TEM.Brightness</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.DiffFocus"><code class="docutils literal notranslate"><span class="pre">TEM.DiffFocus</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.ObjFocus"><code class="docutils literal notranslate"><span class="pre">TEM.ObjFocus</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.ILFocus"><code class="docutils literal notranslate"><span class="pre">TEM.ILFocus</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.PLFocus"><code class="docutils literal notranslate"><span class="pre">TEM.PLFocus</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.TEM.FLFocus"><code class="docutils literal notranslate"><span class="pre">TEM.FLFocus</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Optics"><code class="docutils literal notranslate"><span class="pre">Optics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Optics.request"><code class="docutils literal notranslate"><span class="pre">Optics.request()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Optics.Name"><code class="docutils literal notranslate"><span class="pre">Optics.Name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Optics.Mode"><code class="docutils literal notranslate"><span class="pre">Optics.Mode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Optics.Selector"><code class="docutils literal notranslate"><span class="pre">Optics.Selector</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Optics.Range"><code class="docutils literal notranslate"><span class="pre">Optics.Range</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Illumination"><code class="docutils literal notranslate"><span class="pre">Illumination</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Illumination.MODES"><code class="docutils literal notranslate"><span class="pre">Illumination.MODES</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Illumination.Info"><code class="docutils literal notranslate"><span class="pre">Illumination.Info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Illumination.Spot"><code class="docutils literal notranslate"><span class="pre">Illumination.Spot</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Illumination.Alpha"><code class="docutils literal notranslate"><span class="pre">Illumination.Alpha</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Imaging"><code class="docutils literal notranslate"><span class="pre">Imaging</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Imaging.MODES"><code class="docutils literal notranslate"><span class="pre">Imaging.MODES</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Imaging.Info"><code class="docutils literal notranslate"><span class="pre">Imaging.Info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Imaging.Mag"><code class="docutils literal notranslate"><span class="pre">Imaging.Mag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Omega"><code class="docutils literal notranslate"><span class="pre">Omega</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Omega.MODES"><code class="docutils literal notranslate"><span class="pre">Omega.MODES</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Omega.Info"><code class="docutils literal notranslate"><span class="pre">Omega.Info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Omega.isEnabled"><code class="docutils literal notranslate"><span class="pre">Omega.isEnabled()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Omega.Dispersion"><code class="docutils literal notranslate"><span class="pre">Omega.Dispersion</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Device"><code class="docutils literal notranslate"><span class="pre">Device</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Device.request"><code class="docutils literal notranslate"><span class="pre">Device.request()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.EOsys"><code class="docutils literal notranslate"><span class="pre">EOsys</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.EOsys.Info"><code class="docutils literal notranslate"><span class="pre">EOsys.Info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.EOsys.V1"><code class="docutils literal notranslate"><span class="pre">EOsys.V1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.EOsys.LSCR"><code class="docutils literal notranslate"><span class="pre">EOsys.LSCR</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.EOsys.FSCR"><code class="docutils literal notranslate"><span class="pre">EOsys.FSCR</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.EOsys.Screen"><code class="docutils literal notranslate"><span class="pre">EOsys.Screen</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.HTsys"><code class="docutils literal notranslate"><span class="pre">HTsys</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.HTsys.Info"><code class="docutils literal notranslate"><span class="pre">HTsys.Info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.HTsys.ht_value"><code class="docutils literal notranslate"><span class="pre">HTsys.ht_value</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.HTsys.A1"><code class="docutils literal notranslate"><span class="pre">HTsys.A1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.HTsys.A2"><code class="docutils literal notranslate"><span class="pre">HTsys.A2</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.ApertureEx"><code class="docutils literal notranslate"><span class="pre">ApertureEx</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.ApertureEx.APERTURES"><code class="docutils literal notranslate"><span class="pre">ApertureEx.APERTURES</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.ApertureEx.Info"><code class="docutils literal notranslate"><span class="pre">ApertureEx.Info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.ApertureEx.stop"><code class="docutils literal notranslate"><span class="pre">ApertureEx.stop()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Stage"><code class="docutils literal notranslate"><span class="pre">Stage</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Stage.Info"><code class="docutils literal notranslate"><span class="pre">Stage.Info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Stage.X"><code class="docutils literal notranslate"><span class="pre">Stage.X</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Stage.Y"><code class="docutils literal notranslate"><span class="pre">Stage.Y</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Stage.Z"><code class="docutils literal notranslate"><span class="pre">Stage.Z</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Stage.TX"><code class="docutils literal notranslate"><span class="pre">Stage.TX</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Stage.TY"><code class="docutils literal notranslate"><span class="pre">Stage.TY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Stage.dX"><code class="docutils literal notranslate"><span class="pre">Stage.dX</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Stage.dY"><code class="docutils literal notranslate"><span class="pre">Stage.dY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Stage.dZ"><code class="docutils literal notranslate"><span class="pre">Stage.dZ</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Stage.dTX"><code class="docutils literal notranslate"><span class="pre">Stage.dTX</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Stage.dTY"><code class="docutils literal notranslate"><span class="pre">Stage.dTY</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Filter"><code class="docutils literal notranslate"><span class="pre">Filter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Filter.Info"><code class="docutils literal notranslate"><span class="pre">Filter.Info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Filter.slit_state"><code class="docutils literal notranslate"><span class="pre">Filter.slit_state</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Filter.slit_width"><code class="docutils literal notranslate"><span class="pre">Filter.slit_width</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Filter.energy_shift"><code class="docutils literal notranslate"><span class="pre">Filter.energy_shift</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Aperture"><code class="docutils literal notranslate"><span class="pre">Aperture</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Aperture.APERTURES"><code class="docutils literal notranslate"><span class="pre">Aperture.APERTURES</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Aperture.Info"><code class="docutils literal notranslate"><span class="pre">Aperture.Info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Aperture.stop"><code class="docutils literal notranslate"><span class="pre">Aperture.stop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Aperture.select_apt_name"><code class="docutils literal notranslate"><span class="pre">Aperture.select_apt_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Aperture.select"><code class="docutils literal notranslate"><span class="pre">Aperture.select()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Aperture.select_hole"><code class="docutils literal notranslate"><span class="pre">Aperture.select_hole()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Aperture.holes"><code class="docutils literal notranslate"><span class="pre">Aperture.holes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Aperture.pos"><code class="docutils literal notranslate"><span class="pre">Aperture.pos</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Aperture.sel"><code class="docutils literal notranslate"><span class="pre">Aperture.sel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.pyJem2.Aperture.dia"><code class="docutils literal notranslate"><span class="pre">Aperture.dia</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyJeol.html#module-pyJeol.temisc">pyJeol.temisc module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.Environ"><code class="docutils literal notranslate"><span class="pre">Environ</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.mrange"><code class="docutils literal notranslate"><span class="pre">mrange()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.HexadecimalMixin"><code class="docutils literal notranslate"><span class="pre">HexadecimalMixin</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.FLHex"><code class="docutils literal notranslate"><span class="pre">FLHex</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.FLHex.HI"><code class="docutils literal notranslate"><span class="pre">FLHex.HI</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.FLHex.LO"><code class="docutils literal notranslate"><span class="pre">FLHex.LO</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.FLHex.BITS"><code class="docutils literal notranslate"><span class="pre">FLHex.BITS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.FLHex.offset"><code class="docutils literal notranslate"><span class="pre">FLHex.offset</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.FLHex.maxval"><code class="docutils literal notranslate"><span class="pre">FLHex.maxval</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.OLHex"><code class="docutils literal notranslate"><span class="pre">OLHex</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.OLHex.HI"><code class="docutils literal notranslate"><span class="pre">OLHex.HI</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.OLHex.LO"><code class="docutils literal notranslate"><span class="pre">OLHex.LO</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.OLHex.BITS"><code class="docutils literal notranslate"><span class="pre">OLHex.BITS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.OLHex.offset"><code class="docutils literal notranslate"><span class="pre">OLHex.offset</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temisc.OLHex.maxval"><code class="docutils literal notranslate"><span class="pre">OLHex.maxval</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyJeol.html#module-pyJeol.temsys">pyJeol.temsys module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyHandler"><code class="docutils literal notranslate"><span class="pre">NotifyHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyHandler.thread"><code class="docutils literal notranslate"><span class="pre">NotifyHandler.thread</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyHandler.handler"><code class="docutils literal notranslate"><span class="pre">NotifyHandler.handler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyHandler.substr"><code class="docutils literal notranslate"><span class="pre">NotifyHandler.substr</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyHandler.modestr"><code class="docutils literal notranslate"><span class="pre">NotifyHandler.modestr</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyHandler.start"><code class="docutils literal notranslate"><span class="pre">NotifyHandler.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyHandler.stop"><code class="docutils literal notranslate"><span class="pre">NotifyHandler.stop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyHandler.update"><code class="docutils literal notranslate"><span class="pre">NotifyHandler.update()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyHandler.on_filter_fork"><code class="docutils literal notranslate"><span class="pre">NotifyHandler.on_filter_fork()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyHandler.on_htsub_fork"><code class="docutils literal notranslate"><span class="pre">NotifyHandler.on_htsub_fork()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyHandler.on_illumination_notify"><code class="docutils literal notranslate"><span class="pre">NotifyHandler.on_illumination_notify()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyHandler.on_imaging_notify"><code class="docutils literal notranslate"><span class="pre">NotifyHandler.on_imaging_notify()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyHandler.on_omega_notify"><code class="docutils literal notranslate"><span class="pre">NotifyHandler.on_omega_notify()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyLogger"><code class="docutils literal notranslate"><span class="pre">NotifyLogger</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyLogger.selected_items"><code class="docutils literal notranslate"><span class="pre">NotifyLogger.selected_items</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyLogger.blink"><code class="docutils literal notranslate"><span class="pre">NotifyLogger.blink()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyLogger.OnSortItems"><code class="docutils literal notranslate"><span class="pre">NotifyLogger.OnSortItems()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyLogger.OnMotion"><code class="docutils literal notranslate"><span class="pre">NotifyLogger.OnMotion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyLogger.copy"><code class="docutils literal notranslate"><span class="pre">NotifyLogger.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyLogger.delete"><code class="docutils literal notranslate"><span class="pre">NotifyLogger.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyLogger.delete_all"><code class="docutils literal notranslate"><span class="pre">NotifyLogger.delete_all()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyFront"><code class="docutils literal notranslate"><span class="pre">NotifyFront</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyJeol.html#pyJeol.temsys.NotifyFront.Destroy"><code class="docutils literal notranslate"><span class="pre">NotifyFront.Destroy()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyJeol.html#module-pyJeol">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="siteinit.html">siteinit module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="siteinit.html#siteinit.init_mainframe"><code class="docutils literal notranslate"><span class="pre">init_mainframe()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="startup.html">startup module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="startup.html#startup.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="startup.html#startup.Plugin.menukey"><code class="docutils literal notranslate"><span class="pre">Plugin.menukey</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="startup.html#startup.Plugin.category"><code class="docutils literal notranslate"><span class="pre">Plugin.category</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="startup.html#startup.Plugin.unloadable"><code class="docutils literal notranslate"><span class="pre">Plugin.unloadable</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="startup.html#startup.Plugin.em"><code class="docutils literal notranslate"><span class="pre">Plugin.em</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="startup.html#startup.Plugin.em_std"><code class="docutils literal notranslate"><span class="pre">Plugin.em_std</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="startup.html#startup.Plugin.Init"><code class="docutils literal notranslate"><span class="pre">Plugin.Init()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="startup.html#startup.Plugin.on_unit_notify"><code class="docutils literal notranslate"><span class="pre">Plugin.on_unit_notify()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="startup.html#startup.Plugin.set_htv"><code class="docutils literal notranslate"><span class="pre">Plugin.set_htv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="startup.html#startup.Plugin.set_unit"><code class="docutils literal notranslate"><span class="pre">Plugin.set_unit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="startup.html#startup.Plugin.set_cutoff"><code class="docutils literal notranslate"><span class="pre">Plugin.set_cutoff()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="startup.html#startup.Plugin.set_nbytes"><code class="docutils literal notranslate"><span class="pre">Plugin.set_nbytes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="startup.html#startup.Plugin.setup_all"><code class="docutils literal notranslate"><span class="pre">Plugin.setup_all()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wxpyJemacs.html">wxpyJemacs module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wxpyJemacs.html#wxpyJemacs.MainFrame"><code class="docutils literal notranslate"><span class="pre">MainFrame</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wxpyJemacs.html#wxpyJemacs.MainFrame.Name"><code class="docutils literal notranslate"><span class="pre">MainFrame.Name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wxpyJemacs.html#wxpyJemacs.MainFrame.About"><code class="docutils literal notranslate"><span class="pre">MainFrame.About()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wxpyJemacs.html#wxpyJemacs.MainFrame.Destroy"><code class="docutils literal notranslate"><span class="pre">MainFrame.Destroy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wxpyJemacs.html#wxpyJemacs.MainFrame.wildcards"><code class="docutils literal notranslate"><span class="pre">MainFrame.wildcards</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wxpyJemacs.html#wxpyJemacs.MainFrame.read_buffer"><code class="docutils literal notranslate"><span class="pre">MainFrame.read_buffer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wxpyJemacs.html#wxpyJemacs.MainFrame.write_buffer"><code class="docutils literal notranslate"><span class="pre">MainFrame.write_buffer()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="0_how-to-start.html">1. Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_how-to-use.html">2. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_image-processing.html">3. Image Analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="wxpyJemacs.html">wxpyJemacs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyJeol.html">pyJeol package</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/modules.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">gdk</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,188 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>startup module &#8212; wxpj  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script src="_static/jquery.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">startup module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-startup">
+<span id="startup-module"></span><h1>startup module<a class="headerlink" href="#module-startup" title="Permalink to this heading"></a></h1>
+<p>Startup utility.</p>
+<p>Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#37;&#52;&#48;jeol&#46;co&#46;jp">komoto<span>&#64;</span>jeol<span>&#46;</span>co<span>&#46;</span>jp</a>&gt;</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="startup.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">startup.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/startup.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#startup.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></p>
+<p>Plugins of startup settings.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="startup.Plugin.menukey">
+<span class="sig-name descname"><span class="pre">menukey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'File/Options/&amp;Startup'</span></em><a class="headerlink" href="#startup.Plugin.menukey" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="startup.Plugin.category">
+<span class="sig-name descname"><span class="pre">category</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Option'</span></em><a class="headerlink" href="#startup.Plugin.category" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="startup.Plugin.unloadable">
+<span class="sig-name descname"><span class="pre">unloadable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#startup.Plugin.unloadable" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="startup.Plugin.em">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">em</span></span><a class="headerlink" href="#startup.Plugin.em" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="startup.Plugin.em_std">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">em_std</span></span><a class="headerlink" href="#startup.Plugin.em_std" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="startup.Plugin.Init">
+<span class="sig-name descname"><span class="pre">Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/startup.html#Plugin.Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#startup.Plugin.Init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize me safely (to be overridden).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="startup.Plugin.on_unit_notify">
+<span class="sig-name descname"><span class="pre">on_unit_notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/startup.html#Plugin.on_unit_notify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#startup.Plugin.on_unit_notify" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="startup.Plugin.set_htv">
+<span class="sig-name descname"><span class="pre">set_htv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/startup.html#Plugin.set_htv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#startup.Plugin.set_htv" title="Permalink to this definition"></a></dt>
+<dd><p>Acceleration voltage [V].</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="startup.Plugin.set_unit">
+<span class="sig-name descname"><span class="pre">set_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/startup.html#Plugin.set_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#startup.Plugin.set_unit" title="Permalink to this definition"></a></dt>
+<dd><p>Set the localunit to the selected frame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="startup.Plugin.set_cutoff">
+<span class="sig-name descname"><span class="pre">set_cutoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/startup.html#Plugin.set_cutoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#startup.Plugin.set_cutoff" title="Permalink to this definition"></a></dt>
+<dd><p>Set cutoff score percentiles of a frame.
+Upper/lower limits given by the tolerances[%].
+Press [f5] to update_buffer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="startup.Plugin.set_nbytes">
+<span class="sig-name descname"><span class="pre">set_nbytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/startup.html#Plugin.set_nbytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#startup.Plugin.set_nbytes" title="Permalink to this definition"></a></dt>
+<dd><p>Set the max bytes for the image in a frame.
+Press [f5] to update_buffer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="startup.Plugin.setup_all">
+<span class="sig-name descname"><span class="pre">setup_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/startup.html#Plugin.setup_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#startup.Plugin.setup_all" title="Permalink to this definition"></a></dt>
+<dd><p>Set globalunit to all frames.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="0_how-to-start.html">1. Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_how-to-use.html">2. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_image-processing.html">3. Image Analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="wxpyJemacs.html">wxpyJemacs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyJeol.html">pyJeol package</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/startup.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">startup module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

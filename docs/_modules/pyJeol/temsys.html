@@ -1,0 +1,816 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyJeol.temsys &#8212; wxpj  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
+    
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">wxpj  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyJeol.temsys</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyJeol.temsys</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Plug manager</span>
+
+<span class="sd">Author: Kazuya O&#39;moto &lt;komoto@jeol.co.jp&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">import</span> <span class="nn">wx</span>
+<span class="kn">from</span> <span class="nn">wx.lib.mixins.listctrl</span> <span class="kn">import</span> <span class="n">ListCtrlAutoWidthMixin</span>
+<span class="kn">from</span> <span class="nn">mwx</span> <span class="kn">import</span> <span class="n">FSM</span><span class="p">,</span> <span class="n">Frame</span><span class="p">,</span> <span class="n">MiniFrame</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pyJem2</span> <span class="k">as</span> <span class="nn">pj</span>
+    <span class="kn">from</span> <span class="nn">legacy</span> <span class="kn">import</span> <span class="n">info</span> <span class="k">as</span> <span class="n">jinfo</span>
+    <span class="kn">from</span> <span class="nn">legacy</span> <span class="kn">import</span> <span class="n">cntf</span><span class="p">,</span> <span class="n">cmdl</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">pyJem2</span> <span class="k">as</span> <span class="n">pj</span>
+    <span class="kn">from</span> <span class="nn">.legacy</span> <span class="kn">import</span> <span class="n">info</span> <span class="k">as</span> <span class="n">jinfo</span>
+    <span class="kn">from</span> <span class="nn">.legacy</span> <span class="kn">import</span> <span class="n">cntf</span><span class="p">,</span> <span class="n">cmdl</span>
+
+
+<div class="viewcode-block" id="NotifyHandler"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler">[docs]</a><span class="k">class</span> <span class="nc">NotifyHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Notify handler</span>
+<span class="sd">    </span>
+<span class="sd">    This class has both notify and request stream.</span>
+<span class="sd">    To communicate with TEM, do the following steps:</span>
+<span class="sd">    </span>
+<span class="sd">        1. start() -&gt; open the streams and update the information</span>
+<span class="sd">        2. update() -&gt; update manually when config changed</span>
+<span class="sd">        3. bind/unbind transactions to the handler</span>
+<span class="sd">        4. stop() -&gt; close the streams</span>
+<span class="sd">    </span>
+<span class="sd">    Note:</span>
+<span class="sd">        To check whether the streams are open,</span>
+<span class="sd">        see cmdl.STREAM, cntf.STREAM, and self.thread.active</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">thread</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span><span class="p">)</span>   <span class="c1">#: Notify thread instance</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__handler</span><span class="p">)</span> <span class="c1">#: Notify command handler instance</span>
+    
+    <span class="n">substr</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span> <span class="c1"># 3-fields for mode:str</span>
+    <span class="n">modestr</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">substr</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    
+<div class="viewcode-block" id="NotifyHandler.start"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open notify/request command stream&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span><span class="o">.</span><span class="n">Start</span><span class="p">()</span> <span class="c1"># open the notify port</span>
+        <span class="k">if</span> <span class="n">cmdl</span><span class="o">.</span><span class="n">open</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="NotifyHandler.stop"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close notify/request command stream&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span><span class="o">.</span><span class="n">Stop</span><span class="p">()</span> <span class="c1"># close the notify port</span>
+        <span class="n">cmdl</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="NotifyHandler.update"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Request information from TEM server&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;illumination_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">illumination</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;imaging_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
+            
+            <span class="c1">## 最初の時点では OMEGA-TYPE 不明▲</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;omega_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">omega</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;filter_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">efilter</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- NotifyHandler failed to get filter info: </span><span class="si">{!r}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">lsys</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="c1">## self.tem.dsys.read()</span>
+            <span class="c1">## self.tem.foci.read()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;lens_notify&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;defl_notify&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">dsys</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;ht_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hts</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;eos_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eos</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;gonio_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gonio</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;beam_valve&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eos</span><span class="o">.</span><span class="n">_get_v1_state</span><span class="p">())</span>
+            <span class="c1">## self.handler(&quot;scr_info&quot;, self.eos._get_scr())</span>
+            <span class="c1">## self.handler(&quot;det_info&quot;, self.eos._get_det()) # ▼not supported</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;scr_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scr_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eos</span><span class="o">.</span><span class="n">_get_scr</span><span class="p">()))</span>
+            
+            <span class="c1">## 最初の時点では APT-EXTYPE 不明▲</span>
+            <span class="n">extype</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">pj</span><span class="o">.</span><span class="n">ApertureEx</span><span class="o">.</span><span class="n">_get_info</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">apts</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">ApertureEx</span> <span class="k">if</span> <span class="n">extype</span> <span class="k">else</span> <span class="n">pj</span><span class="o">.</span><span class="n">Aperture</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;apt_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">apts</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- NotifyHandler failed to get TEM info: </span><span class="si">{!r}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span> <span class="o">=</span> <span class="n">cntf</span><span class="o">.</span><span class="n">NotifyThread</span><span class="p">(</span><span class="n">log</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
+        
+        <span class="n">TEM</span> <span class="o">=</span> <span class="s1">&#39;TEM&#39;</span>
+        <span class="n">STEM</span> <span class="o">=</span> <span class="s1">&#39;ASID&#39;</span>
+        <span class="n">BUSY</span> <span class="o">=</span> <span class="s1">&#39;-busy&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__handler</span> <span class="o">=</span> <span class="n">FSM</span><span class="p">({</span>
+                <span class="kc">None</span> <span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;illumination_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_illumination_notify</span> <span class="p">],</span> <span class="c1"># called when illumination mode changed</span>
+                 <span class="s2">&quot;imaging_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_imaging_notify</span> <span class="p">],</span> <span class="c1"># called when imaging mode changed</span>
+                   <span class="s2">&quot;omega_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_omega_notify</span> <span class="p">],</span> <span class="c1"># called when omega mode changed</span>
+                     <span class="s2">&quot;eos_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span> <span class="c1"># called when mode changed</span>
+                      <span class="s2">&quot;ht_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span> <span class="c1"># called when HT changed (invalid for BK-TEMCENTER)▲</span>
+                   <span class="s2">&quot;htsub_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_htsub_fork</span> <span class="p">],</span>
+                  <span class="s2">&quot;htsub2_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span>
+                     <span class="s2">&quot;apt_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span> <span class="c1"># called when apertures are drived</span>
+                     <span class="s2">&quot;det_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span> <span class="c1"># called when detectors are drived</span>
+                     <span class="s2">&quot;scr_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span> <span class="c1"># called when screen are drived (invalid for BK-TEMCENTER)▲</span>
+                   <span class="s2">&quot;gonio_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span> <span class="c1"># called when gonio is drived</span>
+                  <span class="s2">&quot;filter_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span> <span class="c1"># called when filter is drived</span>
+                  <span class="s2">&quot;lens_notify&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">lsys</span><span class="p">(</span><span class="n">v</span><span class="p">),</span>
+                                          <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">foci</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="p">],</span> <span class="c1"># called when lense data changed</span>
+                  <span class="s2">&quot;defl_notify&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">dsys</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="p">],</span> <span class="c1"># called when deflector data changed</span>
+                  <span class="c1">#&quot;lfc_notify&quot; : [ None ], # called when Lens Free Control is used (obsolete)</span>
+                     <span class="s2">&quot;fl_focus&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span>
+                     <span class="s2">&quot;br_focus&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span>
+                     <span class="s2">&quot;auto_htv&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span>
+                     <span class="s2">&quot;auto_ems&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span>
+                   <span class="s2">&quot;beam_valve&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span>
+                <span class="p">},</span>
+                <span class="n">TEM</span> <span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;TEM begin&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">TEM</span> <span class="p">],</span>
+                      <span class="s2">&quot;TEM end&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">STEM</span> <span class="p">],</span>
+           <span class="s2">&quot;gonio_motion begin&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">TEM</span> <span class="p">],</span>
+             <span class="s2">&quot;gonio_motion end&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">TEM</span> <span class="p">],</span>
+                <span class="s2">&quot;degauss begin&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">TEM</span><span class="o">+</span><span class="n">BUSY</span> <span class="p">],</span>
+                 <span class="s2">&quot;aptsel begin&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">TEM</span><span class="o">+</span><span class="n">BUSY</span> <span class="p">],</span>
+                  <span class="s2">&quot;relax begin&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">TEM</span><span class="o">+</span><span class="n">BUSY</span> <span class="p">],</span>
+                <span class="p">},</span>
+                <span class="n">TEM</span><span class="o">+</span><span class="n">BUSY</span><span class="p">:</span> <span class="p">{</span>
+                  <span class="s2">&quot;degauss end&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">TEM</span> <span class="p">],</span>
+                   <span class="s2">&quot;aptsel end&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">TEM</span> <span class="p">],</span>
+                    <span class="s2">&quot;relax end&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">TEM</span> <span class="p">],</span>
+                <span class="p">},</span>
+                <span class="n">STEM</span> <span class="p">:</span> <span class="p">{</span>
+                   <span class="s2">&quot;ASID begin&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">STEM</span> <span class="p">],</span>
+                     <span class="s2">&quot;ASID end&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">TEM</span> <span class="p">],</span>
+           <span class="s2">&quot;gonio_motion begin&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">STEM</span> <span class="p">],</span>
+             <span class="s2">&quot;gonio_motion end&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">STEM</span> <span class="p">],</span>
+                <span class="s2">&quot;degauss begin&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">STEM</span><span class="o">+</span><span class="n">BUSY</span> <span class="p">],</span>
+                 <span class="s2">&quot;aptsel begin&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">STEM</span><span class="o">+</span><span class="n">BUSY</span> <span class="p">],</span>
+                  <span class="s2">&quot;relax begin&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">STEM</span><span class="o">+</span><span class="n">BUSY</span> <span class="p">],</span>
+                <span class="p">},</span>
+                <span class="n">STEM</span><span class="o">+</span><span class="n">BUSY</span><span class="p">:</span> <span class="p">{</span>
+                  <span class="s2">&quot;degauss end&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">STEM</span> <span class="p">],</span>
+                   <span class="s2">&quot;aptsel end&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">STEM</span> <span class="p">],</span>
+                    <span class="s2">&quot;relax end&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">STEM</span> <span class="p">],</span>
+                <span class="p">},</span>
+            <span class="p">},</span>
+            <span class="n">default</span> <span class="o">=</span> <span class="n">TEM</span>
+        <span class="p">)</span>
+        
+        <span class="c1">## pj で定義されている情報 (pmpj/Info) を参照する</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">illumination</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">Illumination</span><span class="p">()</span> <span class="c1"># -&gt; illumination_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imaging</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">Imaging</span><span class="p">()</span> <span class="c1"># -&gt; imaging_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">omega</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">Omega</span><span class="p">()</span> <span class="c1"># -&gt; omega_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tem</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">TEM</span><span class="p">()</span> <span class="c1"># -&gt; lsys:lens_notify, defl:defl_notify</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eos</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">EOsys</span><span class="p">()</span> <span class="c1"># -&gt; eos_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hts</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">HTsys</span><span class="p">()</span> <span class="c1"># -&gt; ht_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gonio</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">Stage</span><span class="p">()</span> <span class="c1"># -&gt; gonio_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">efilter</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">Filter</span><span class="p">()</span> <span class="c1"># -&gt; filter_info</span>
+        
+        <span class="c1">## Aperture system typeinfo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apts</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">ApertureEx</span>
+        
+        <span class="c1">## pj で定義されない情報はここで実体を定義する</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">htsub_info</span> <span class="o">=</span> <span class="n">jinfo</span><span class="o">.</span><span class="n">HTsub_info</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">htsub2_info</span> <span class="o">=</span> <span class="n">jinfo</span><span class="o">.</span><span class="n">HTsub2_info</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur_info</span> <span class="o">=</span> <span class="n">jinfo</span><span class="o">.</span><span class="n">Current_info</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scr_info</span> <span class="o">=</span> <span class="n">jinfo</span><span class="o">.</span><span class="n">Screen_info</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">det_info</span> <span class="o">=</span> <span class="n">jinfo</span><span class="o">.</span><span class="n">Detector_info</span><span class="p">()</span>
+        
+        <span class="n">_NC</span> <span class="o">=</span> <span class="n">cntf</span><span class="o">.</span><span class="n">NotifyCommand</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span><span class="o">.</span><span class="n">add_hooks</span><span class="p">(</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N600&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;ASID end&quot;</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;TEM end&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N601&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;TEM begin&quot;</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;ASID begin&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)),</span>
+            
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N105&quot;</span><span class="p">,</span> <span class="s2">&quot;!H10sHH10s&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;illumination_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">illumination</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="n">v</span><span class="p">))),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N101&quot;</span><span class="p">,</span> <span class="s2">&quot;!H10sHI10s10s&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;imaging_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="n">v</span><span class="p">))),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N102&quot;</span><span class="p">,</span> <span class="s2">&quot;!HH10sHI10s10s&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;omega_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">omega</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="n">v</span><span class="p">))),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N109&quot;</span><span class="p">,</span> <span class="s2">&quot;!16HIH&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;eos_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eos</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="n">v</span><span class="p">))),</span>
+            
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N128&quot;</span><span class="p">,</span> <span class="s2">&quot;!27H&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;lens_notify&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N132&quot;</span><span class="p">,</span> <span class="s2">&quot;!62H&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;defl_notify&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N121&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;br_focus&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N197&quot;</span><span class="p">,</span> <span class="s2">&quot;!5H&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;fl_focus&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)),</span>
+            <span class="c1">## _NC(&quot;N221&quot;, &quot;!26H&quot;, lambda v: self.handler(&quot;lfc_notify&quot;, v)), # ▲使用しない STEM:!24H, TEM:!26H で異なる</span>
+            
+            <span class="c1">## _NC(&quot;N290&quot;, &quot;!HH&quot;, self.on_mode_fork), # ▲to be deprecated</span>
+            
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N184&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;relax begin&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N185&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;relax end&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span>
+            
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N162&quot;</span><span class="p">,</span> <span class="s2">&quot;!2H2I2H2IH5dH&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_filter_fork</span><span class="p">),</span>
+            
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N140&quot;</span><span class="p">,</span> <span class="s2">&quot;!3H798s&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;apt_info&quot;</span><span class="p">,</span> <span class="n">pj</span><span class="o">.</span><span class="n">Aperture</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="n">v</span><span class="p">))),</span> <span class="c1"># extype=0</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N141&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>     <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;aptsel begin&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)),</span> <span class="c1"># extype=0</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N142&quot;</span><span class="p">,</span> <span class="s2">&quot;3H798s&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;aptsel end&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)),</span>   <span class="c1"># extype=0</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N153&quot;</span><span class="p">,</span> <span class="s2">&quot;!15H&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;apt_info&quot;</span><span class="p">,</span> <span class="n">pj</span><span class="o">.</span><span class="n">ApertureEx</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="n">v</span><span class="p">))),</span> <span class="c1"># extype=1</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N155&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;aptsel begin&quot;</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">else</span> <span class="s2">&quot;aptsel end&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)),</span> <span class="c1"># extype=1</span>
+            
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N532&quot;</span><span class="p">,</span> <span class="s2">&quot;!11H&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;gonio_motion &quot;</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;begin&quot;</span> <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span> <span class="k">else</span> <span class="s2">&quot;end&quot;</span><span class="p">),</span> <span class="n">v</span><span class="p">)),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N533&quot;</span><span class="p">,</span> <span class="s2">&quot;!7d&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;gonio_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gonio</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="n">v</span><span class="p">))),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N404&quot;</span><span class="p">,</span> <span class="s2">&quot;!2I&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;cur_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur_info</span><span class="p">(</span><span class="n">v</span><span class="p">))),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N401&quot;</span><span class="p">,</span> <span class="s2">&quot;!2H&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;scr_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scr_info</span><span class="p">(</span><span class="n">v</span><span class="p">))),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N627&quot;</span><span class="p">,</span> <span class="s2">&quot;!25H&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;det_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">det_info</span><span class="p">(</span><span class="n">v</span><span class="p">))),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;F900&quot;</span><span class="p">,</span> <span class="s2">&quot;!19hi5h&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;ht_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hts</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="n">v</span><span class="p">))),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;F901&quot;</span><span class="p">,</span> <span class="s2">&quot;!13h&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;htsub_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">htsub_info</span><span class="p">(</span><span class="n">v</span><span class="p">))),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N309&quot;</span><span class="p">,</span> <span class="s2">&quot;!i5h&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;htsub2_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">htsub2_info</span><span class="p">(</span><span class="n">v</span><span class="p">))),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N316&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;beam_valve&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N800&quot;</span><span class="p">,</span> <span class="s2">&quot;!i&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;auto_htv&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)),</span>
+            <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N817&quot;</span><span class="p">,</span> <span class="s2">&quot;!6H&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;auto_ems&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degauss_sw</span> <span class="o">=</span> <span class="mi">0</span>
+    
+<div class="viewcode-block" id="NotifyHandler.on_filter_fork"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_filter_fork">[docs]</a>    <span class="k">def</span> <span class="nf">on_filter_fork</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when filter is drived.&quot;&quot;&quot;</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">efilter</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;filter_info&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">degauss_sw</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">degauss_sw</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;degauss begin&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">degauss_sw</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">degauss_sw</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;degauss end&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span></div>
+    
+    <span class="c1">## def on_mode_fork(self, argv):</span>
+    <span class="c1">##     &quot;&quot;&quot;Called when optical mode is changing or changed.&quot;&quot;&quot;</span>
+    <span class="c1">##     id, status = argv</span>
+    <span class="c1">##     if status == 0:</span>
+    <span class="c1">##         self.handler(&quot;mode change&quot;, id)</span>
+    <span class="c1">##     else:</span>
+    <span class="c1">##         self.handler(&quot;mode changed&quot;, id)</span>
+    
+<div class="viewcode-block" id="NotifyHandler.on_htsub_fork"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_htsub_fork">[docs]</a>    <span class="k">def</span> <span class="nf">on_htsub_fork</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span> <span class="c1">#&lt;htsub_info&gt;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s1">&#39;ht_info&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hts</span><span class="o">.</span><span class="n">request</span><span class="p">())</span></div>
+    
+<div class="viewcode-block" id="NotifyHandler.on_illumination_notify"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_illumination_notify">[docs]</a>    <span class="k">def</span> <span class="nf">on_illumination_notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span> <span class="c1">#&lt;illumination_info&gt;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">substr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{mode_name}</span><span class="s2">[</span><span class="si">{spot}</span><span class="s2">-</span><span class="si">{alpha}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">info</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__parent</span><span class="o">.</span><span class="n">statusbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modestr</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="NotifyHandler.on_imaging_notify"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_imaging_notify">[docs]</a>    <span class="k">def</span> <span class="nf">on_imaging_notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span> <span class="c1">#&lt;imaging_info&gt;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">substr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{mode_name}</span><span class="s2">[</span><span class="si">{submodestr}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">info</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__parent</span><span class="o">.</span><span class="n">statusbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modestr</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="NotifyHandler.on_omega_notify"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_omega_notify">[docs]</a>    <span class="k">def</span> <span class="nf">on_omega_notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span> <span class="c1">#&lt;omega_info&gt;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">substr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{mode_name}</span><span class="s2">[</span><span class="si">{submodestr}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">info</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__parent</span><span class="o">.</span><span class="n">statusbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modestr</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="NotifyLogger"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger">[docs]</a><span class="k">class</span> <span class="nc">NotifyLogger</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ListCtrl</span><span class="p">,</span> <span class="n">ListCtrlAutoWidthMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Notify logger</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">selected_items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ItemCount</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">IsSelected</span><span class="p">(</span><span class="n">j</span><span class="p">)]</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">ListCtrl</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span>
+                             <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">LC_REPORT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">LC_HRULES</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ListCtrlAutoWidthMixin</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">alist</span> <span class="o">=</span> <span class="p">(</span> <span class="c1"># assoc list of column names</span>
+            <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="mi">48</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;n&quot;</span><span class="p">,</span>   <span class="mi">32</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;iid&quot;</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;pid&quot;</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="mi">400</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alist</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InsertColumn</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dir</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__items</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MOTION</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OnMotion</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_LIST_COL_CLICK</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OnSortItems</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">iid</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="o">=</span> <span class="n">args</span> <span class="c1"># write notified data to list</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">item</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">iid</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">data</span><span class="p">]</span> <span class="c1"># counter +1, replace the list</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="p">)</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">iid</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">data</span><span class="p">]</span> <span class="c1"># format; add counter(1), get rid of status</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InsertItem</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        
+        <span class="c1">## Note: This method is called in threaded NotifyThread.run.</span>
+        <span class="c1">##       A RuntimeError can occur while terminating the main thread.</span>
+        <span class="c1">## RuntimeError: wrapped C/C++ object of type NotifyLogger has been deleted</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SetItem</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blink</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="NotifyLogger.blink"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.blink">[docs]</a>    <span class="k">def</span> <span class="nf">blink</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetItemBackgroundColour</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">!=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Colour</span><span class="p">(</span><span class="s1">&#39;yellow&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SetItemBackgroundColour</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">reset_color</span><span class="p">():</span>
+                <span class="k">if</span> <span class="bp">self</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ItemCount</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">SetItemBackgroundColour</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">)</span>
+            <span class="n">wx</span><span class="o">.</span><span class="n">CallAfter</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">CallLater</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">reset_color</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="NotifyLogger.OnSortItems"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.OnSortItems">[docs]</a>    <span class="k">def</span> <span class="nf">OnSortItems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span> <span class="c1">#&lt;wx._controls.ListEvent&gt;</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">GetColumn</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dir</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__dir</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">SetItem</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
+    
+<div class="viewcode-block" id="NotifyLogger.OnMotion"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.OnMotion">[docs]</a>    <span class="k">def</span> <span class="nf">OnMotion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span> <span class="c1">#&lt;wx._core.MouseEvent&gt;</span>
+        <span class="n">j</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">HitTest</span><span class="p">(</span><span class="n">evt</span><span class="o">.</span><span class="n">GetPosition</span><span class="p">())</span>
+        <span class="n">tip</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="n">tip</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">bytes)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">NOTIFY_COMMANDS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+            <span class="n">tip</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ToolTip</span> <span class="o">=</span> <span class="n">tip</span>
+        <span class="n">evt</span><span class="o">.</span><span class="n">Skip</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="NotifyLogger.copy"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_items</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">TheClipboard</span><span class="o">.</span><span class="n">Open</span><span class="p">()</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">TheClipboard</span><span class="o">.</span><span class="n">SetData</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">TextDataObject</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">TheClipboard</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="NotifyLogger.delete"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_items</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">DeleteItem</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="p">[</span><span class="n">j</span><span class="p">]</span></div>
+    
+<div class="viewcode-block" id="NotifyLogger.delete_all"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.delete_all">[docs]</a>    <span class="k">def</span> <span class="nf">delete_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DeleteAllItems</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__items</span> <span class="o">=</span> <span class="p">[]</span></div></div>
+
+
+<div class="viewcode-block" id="NotifyFront"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyFront">[docs]</a><span class="k">class</span> <span class="nc">NotifyFront</span><span class="p">(</span><span class="n">MiniFrame</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="n">MiniFrame</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Notify&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span><span class="mi">320</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">DEFAULT_FRAME_STYLE</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">NotifyLogger</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notify</span> <span class="o">=</span> <span class="n">NotifyHandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="p">[</span><span class="s2">&quot;File&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;&amp;Run</span><span class="se">\t</span><span class="s2">Ctrl-r&quot;</span><span class="p">,</span> <span class="s2">&quot;Start Notify/Request&quot;</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ITEM_CHECK</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">start</span><span class="p">(),</span>
+                <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">Check</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">active</span><span class="p">)),</span>
+            
+            <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;&amp;End</span><span class="se">\t</span><span class="s2">Ctrl-e&quot;</span><span class="p">,</span> <span class="s2">&quot;Stop Notify/Request&quot;</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">stop</span><span class="p">()),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="p">[</span><span class="s2">&quot;Edit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;&amp;Copy items</span><span class="se">\t</span><span class="s2">Ctrl-c&quot;</span><span class="p">,</span> <span class="s2">&quot;Copy selected items&quot;</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">copy</span><span class="p">()),</span>
+                
+            <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="s2">&quot;&amp;Delete items</span><span class="se">\t</span><span class="s2">delete&quot;</span><span class="p">,</span> <span class="s2">&quot;Delete selected items&quot;</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">delete</span><span class="p">()),</span>
+            <span class="p">(),</span>
+            <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="s2">&quot;Delete &amp;all items&quot;</span><span class="p">,</span> <span class="s2">&quot;Delete all items&quot;</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">delete_all</span><span class="p">()),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="NotifyFront.Destroy"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyFront.Destroy">[docs]</a>    <span class="k">def</span> <span class="nf">Destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">wx</span><span class="o">.</span><span class="n">MiniFrame</span><span class="o">.</span><span class="n">Destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+
+
+<span class="n">NOTIFY_COMMANDS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;N010&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Notify種類 設定&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N050&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Power Supply(電源供給)状態変化通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N100&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;結像系情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N101&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;結像系情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N102&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;スペクトル情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N105&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;照射系情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N106&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;スポットサイズ通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N107&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;α情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N108&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Corrector Switch情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N109&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;EOS情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N110&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Wobbler情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N111&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Wobbler/偏向系情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N112&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;レンズWobblerスイッチ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N113&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;偏向系Wobblerスイッチ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N114&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;レンズWobbler条件情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N115&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;偏向系Wobbler条件情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N116&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Wobbler情報通知(I/O設定値)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N117&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Wobbler 振幅用係数変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N118&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;OUF用係数変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N119&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;OL Super Fine情報変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N120&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;レンズ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N121&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Brightness情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N122&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;OBJ Focus情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N123&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Diff Focus情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N124&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Brightness Zoom情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N125&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;FLC情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N126&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;OUF情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N127&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Defocus情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N128&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;レンズ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N129&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;OM2 Reverse情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N130&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;偏向系情報通知(TEM)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N131&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;偏向系情報通知(ASID)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N132&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;偏向系出力値情報 通知(TEM)(Ver2)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N133&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;偏向系出力値情報 通知(ASID)(Ver2)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N134&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;1300NEF用 偏向系出力値情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N135&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;CLA Super Fine情報変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N136&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;収差補正データ変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N137&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;FLC ON時ニ、OFF時ノレンズ出力値ヲ通知スルコマンド&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N138&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張タイプ型偏向系出力値情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N139&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張タイプ型偏向系A/D値情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N140&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;可動絞リ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N141&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;絞リ番号移動開始通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N142&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;絞リ番号移動停止通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N143&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張タイプ型絞リ穴位置保存座標値通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N144&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張タイプ型絞リ移動情報変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N145&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;絞リ位置検出異常通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N146&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;絞リ駆動系異常通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N147&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;絞リ駆動リミットオーバー通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N148&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Beam Stopper情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N149&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;絞リ排他制御ON/OFF状態変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N150&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;MDS情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N151&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ビームブランキング時間&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N152&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ハードウェアブランキング種類通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N153&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張タイプ型絞リ情報変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N154&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張タイプ型絞リバックラッシュ量変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N155&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張タイプ型絞リ駆動状態変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N156&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張タイプ型絞リDelay Time変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N157&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張タイプ型絞リ構成情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N158&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張タイプ型絞リ Fine/Coarse 位置 座標値通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N159&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張タイプ型Wobbler振幅用係数通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N160&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;オメガ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N161&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;残留磁場消去完了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N162&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;フィルター情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N163&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Energy Shift Object情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N164&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;X線ストッパー情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N165&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;スリットマウント Coarseスイッチ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N166&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;スリットマウント位置情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N167&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;1300NEF用FLバランスモード変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N168&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;12極補正コイル用残留磁場消去開始通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N169&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;12極補正コイル用残留磁場消去完了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N170&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ホロコーン情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N171&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;イメージシフト 3/4変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N172&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;GIF Function情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N173&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ホログラフィ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N174&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Image Shiftノブ ユーザデータ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N175&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;GIF Magリンク情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N176&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;偏向系ノ中点ヨリ大キイカ小サイカ範囲外情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N177&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;偏向系ノブ割付情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N178&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Alignmentスイッチ偏向系操作対象情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N179&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Image Shift Power Upコイル情報変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N180&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;レンズ緩和情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N181&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;レンズ緩和トータル時間情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N182&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;自動緩和レンズ種通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N183&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;手動緩和レンズ種通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N184&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;レンズ緩和開始通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N185&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;レンズ緩和終了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N186&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;LENS U* Link OFF可否状態変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N187&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;LENS U* Link情報変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N188&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;LENS U* Link ON可否状態変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N189&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Lens Relaxation制御方法通知(Notify)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N190&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;レンズA/D値情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N191&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;偏向系A/D値情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N192&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;レンズA/D値情報通知(OM2対応)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N193&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Bake Out開始通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N194&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Bake Out終了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N195&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;OLサーモ断線通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N196&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;PL Focus情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N197&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;FL Focus情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N198&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Bake Out残時間通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N199&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Cooling開始通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N200&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Cooling終了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N201&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;レンズ/偏向系 情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N202&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;アライメントデータSave完了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N203&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;偏向系A/D値情報 通知(Ver2)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N204&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;フィルタ用データSave完了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N205&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;偏向系AD値情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N206&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Bake Ready情報変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N207&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;アライメントデータ出力値情報ファイル作成完了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N210&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Aperture自動調整結果通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N211&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張タイプ型絞リ座標データSave完了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N212&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Apertureポテンショ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N213&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張タイプ型絞リ現在位置情報IO値通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N214&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張タイプ型絞リ警告情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N215&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ハードウェアブランキング振幅量変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N216&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ビームブランキング情報更新通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N217&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;MDSモード毎ノ光学系条件変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N218&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Slit水平位置情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N220&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;OBJ Focus情報通知(OM2対応)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N221&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;FLC情報通知(OM2対応)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N222&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;FLCバランス値通知コマンド&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N230&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;OL Compensation値変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N231&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;IOS動作情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N232&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;IOS機能 Ready/Not Ready情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N235&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;最大Dispersion通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N290&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;操作条件変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N300&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Vacuum情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N301&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;バルブ情報通知(F810型)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N302&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ペニングゲージ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N303&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ピラニーゲージ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N304&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;カメラ室リーク情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N305&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;試料ホルダ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N306&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ACD HEAT情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N307&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;SIP昼夜運転情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N308&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;HTモニタ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N309&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;HTサブシステム現在値情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N310&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;FILTER NG通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N311&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;バルブ制御空気圧 低下通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N312&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;バルブ制御空気圧 回復通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N313&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ACD HEAT開始通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N314&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ACD HEAT終了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N315&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;バルブ情報通知(F816型)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N316&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ビームバルブ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N317&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;EL Short状態通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N318&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ビームバルブOpen Ready状態通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N319&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ペニングゲージ情報 通知(Ver2)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N320&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ピラニ-ゲージ情報 通知(Ver2)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N321&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ヘリウムステージ用ペニングゲージモニタ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N322&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ヘリウムステージ用ピラニーゲージモニタ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N323&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ヘリウムステージ用温度情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N324&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;試料室側ACD HEAT情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N325&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Beam Detector値変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N326&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Gun SIPバルブ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N327&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;クリスタルイオンゲージ情報&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N328&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;試料室側ACD HEAT開始通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N329&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;試料室側ACD HEAT終了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N330&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Gunタイプ変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N331&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ターボポンプスイッチ書キ込ミ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N332&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ターボポンプスイッチモニタ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N333&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;スパッタイオンポンプスイッチモニタ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N334&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Sleep Mode情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N335&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;排気系デジタル調整値変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N336&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;リークテスト用排気系装置状態変化通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N337&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;リトラクタブルACD状態変化通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N338&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ACD HEAT Not Ready要因変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N340&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;制御処理ノ残存時間通知、及ビ処理終了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N341&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;HT新規追加制御情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N342&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;HT新規追加モニター値通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N343&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;PreHeat時間情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N344&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;PreHeat時間情報通知間隔情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N345&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;JEOLコレクター用SIAMデータ変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N350&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Filament 最大値変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N351&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Filament自動昇降圧情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N352&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Filament Alignment 変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N355&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;拡張型Filament Not Ready要因変化通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N356&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;サーキュレーションヒータ情報変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N358&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;コンディショニング短絡棒切リ換エ動作状態変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N359&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;コンディショニング短絡棒切リ換エ動作停止情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N360&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;HT制御情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N361&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;コンディショニング短絡棒警告システム連動状態変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N400&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Photo情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N401&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;スクリーン情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N402&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;露光モード変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N403&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Photo異常通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N404&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;照射電流密度通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N405&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;検出器情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N406&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;スクリーン角度ノI/O情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N410&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;撮影履歴情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N450&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;OBJ FOCUSステップ値 通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N500&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;HT通信Enable/Disable通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N501&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Gonio通信Enable/Disable通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N502&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Panel通信Enable/Disable通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N510&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;速度テーブル情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N511&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;試料位置再生開始通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N512&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;試料位置再生完了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N513&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;バックラッシュ補正テーブル通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N514&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;X/Y軸 入力信号 通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N515&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Gonioノ速度テーブル番号変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N516&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ホルダーユーセントリック値変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N517&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Stage Neutral開始通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N518&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;リニアアクチュエータ速度変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N520&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;サブシステムEMG解除通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N530&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Gonio緊急状態解除通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N531&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ゴニオ緊急情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N532&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ゴニオ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N533&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ゴニオ座標情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N534&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ゴニオ速度モード変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N535&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ピエゾ座標情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N539&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;トラックボール速度モード変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N540&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;6軸用 ゴニオ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N541&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;6軸用 ゴニオ座標情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N542&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;6軸用 速度モード変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N543&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;6軸用 ゴニオ緊急情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N550&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;最大加速電圧リミットEnable/Disable変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N551&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;HT Compensator変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N560&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ルームランプ状態通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N590&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;HTサブシステム情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N591&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ゴニオサブシステム情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N592&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;パネルサブシステム情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N600&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;観察モード移行開始通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N601&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;観察モード移行終了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N610&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;SAAF検出器駆動回転角度情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N611&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;SAAF検出器状態情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N619&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;観察モード、補助選択モード変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N620&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ASID EOS情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N621&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;走査条件情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N622&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;スキャンローテーション情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N623&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;検出器情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N624&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;スキャンスピード情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N625&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;イメージ選択通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N626&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ASIDモード時カメラ長情報 通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N627&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;検出器IN/OUT状態通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N628&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;イメージ変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N629&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;検出器コントラスト/ブライトネス情報 通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N630&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;イメージステータス通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N631&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;指定ワークシートステータス通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N632&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;BEI検出器ゲインCoarseデータ通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N633&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Selective Detect Angle Series(結像側カメラ長系列)番号情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N634&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;スキャンローテーション変更通知コマンド(0.1°刻ミ対応)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N635&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;交流磁場同期状態変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N636&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;SHIFT TILT INVERT情報変更&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N637&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;スキャンローテーションスイッチ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N638&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;検出器位置情報変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N639&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;スキャンローテーションモード毎ノ角度情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N640&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ACB実行開始通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N641&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ACB実行終了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N642&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ACBユーザデータ通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N643&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ACBメンテナンスデータ通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N645&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Scan Coil情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N650&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;STEMカスタムモードデータテーブルSave完了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N651&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;STEMカスタムモードデータテーブル変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N652&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;STEMカスタムモード文字列情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N653&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;STEMカスタムモード時ノSelective Detect Angle Series(結像側カメラ長系列)番号情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N654&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;STEMカスタムプローブノ走査倍率カードコピー完了通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N655&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ノイズキャンセラステータス変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N660&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;STEM用レンズデータ半固定値情報変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N661&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;TEM用レンズデータ半固定値情報変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N670&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ノブアサインSTEM用レンズ変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N671&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;ノブアサインTEM用レンズ変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N680&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;デスキャン走査条件情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N681&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;デスキャンローテーションスイッチ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N682&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;デスキャンローテーションオフセット変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N683&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;デスキャン_コイル情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N684&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;デスキャンスイッチ情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N685&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;デスキャン制御設定情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N686&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;偏向系_スキャン_固定モード通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N687&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;スキャンローテーション角度連動モード通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N800&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;HT変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N801&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Small LCD通信異常通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N810&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;A1変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N811&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;A2変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N812&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;バイアス変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N813&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Filament変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N814&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Ωフィルタ重畳電圧変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N815&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;自動エミッション制御Emission条件変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N816&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;自動エミッション制御A1昇降動作条件変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N817&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;自動エミッション制御動作状態変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N820&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;I/Oデータ複数通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N821&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;IMコイルAC励磁状態通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N890&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;AUTOスイッチ押下通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N891&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Functionキー押下通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N900&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;起動タスク情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N901&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;EM情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N902&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;装置状態変更通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N910&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;シャットダウン情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N920&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;Main System通信 Enable/Disable通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N930&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;自動試料交換装置Emergency情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N931&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;自動試料交換装置エラー通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N932&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;自動試料交換装置動作待チ原因通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N940&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;水冷系Warning情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N950&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;通過コマンド登録通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N951&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;コマンド停止設定通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N960&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;機能ノ有効/無効状態通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;F900&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;HT定期通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;F901&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;HT情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;F930&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;排気系情報通知&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;F973&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;試料ホルダータイプ通知&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cmdl</span><span class="o">.</span><span class="n">HOST</span> <span class="o">=</span> <span class="n">cntf</span><span class="o">.</span><span class="n">HOST</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
+    <span class="c1">## cmdl.OFFLINE = True</span>
+    
+    <span class="k">class</span> <span class="nc">TestFrame</span><span class="p">(</span><span class="n">Frame</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">TestFrame</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">nfront</span> <span class="o">=</span> <span class="n">NotifyFront</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfront</span><span class="o">.</span><span class="n">notify</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="mi">4</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="p">[</span><span class="s2">&quot;File&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;&amp;Notifyee</span><span class="se">\t</span><span class="s2">F11&quot;</span><span class="p">,</span> <span class="s2">&quot;Notify logger frame&quot;</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ITEM_CHECK</span><span class="p">,</span>
+                    <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfront</span><span class="o">.</span><span class="n">Show</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">()),</span>
+                    <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">Check</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nfront</span><span class="o">.</span><span class="n">IsShown</span><span class="p">())),</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        
+        <span class="k">def</span> <span class="nf">Destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nfront</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">Frame</span><span class="o">.</span><span class="n">Destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    
+    <span class="n">app</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">()</span>
+    <span class="n">frm</span> <span class="o">=</span> <span class="n">TestFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="c1">## frm = NotifyFront(None)</span>
+    <span class="n">frm</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../0_how-to-start.html">1. Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../1_how-to-use.html">2. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_image-processing.html">3. Image Analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../wxpyJemacs.html">wxpyJemacs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins.html">plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyJeol.html">pyJeol package</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">wxpj  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyJeol.temsys</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,146 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>plugins.pragma_grid &#8212; wxpj  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
+    
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">wxpj  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.pragma_grid</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for plugins.pragma_grid</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span> <span class="nn">wx</span>
+
+<span class="kn">from</span> <span class="nn">jgdk</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Button</span>
+
+
+<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../plugins.html#plugins.pragma_grid.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate distortion of Mag-Grid pattern.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">menukey</span> <span class="o">=</span> <span class="s2">&quot;Plugins/&amp;Pragma Tools/&quot;</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="s2">&quot;Pragma Tools&quot;</span>
+    <span class="n">caption</span> <span class="o">=</span> <span class="s2">&quot;Grid&quot;</span>
+    
+    <span class="n">lccf</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;lccf&#39;</span><span class="p">))</span>
+    <span class="n">ld</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;ld_grid&#39;</span><span class="p">))</span>
+    
+<div class="viewcode-block" id="Plugin.Init"><a class="viewcode-back" href="../../plugins.html#plugins.pragma_grid.Plugin.Init">[docs]</a>    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chkfit</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;fit&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chkfit</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="kc">True</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">chk</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;inv&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span>
+                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Run&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">chkfit</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">chk</span><span class="p">,</span>
+                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Setting&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_setting</span><span class="p">),</span>
+            <span class="p">),</span>
+            <span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Plugin.show_setting"><a class="viewcode-back" href="../../plugins.html#plugins.pragma_grid.Plugin.show_setting">[docs]</a>    <span class="k">def</span> <span class="nf">show_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show the settings.&quot;&quot;&quot;</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">force</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">IsShown</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">Show</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lccf</span><span class="o">.</span><span class="n">Show</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Plugin.run"><a class="viewcode-back" href="../../plugins.html#plugins.pragma_grid.Plugin.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run scripts.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lccf</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">otsu</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">chk</span><span class="o">.</span><span class="n">Value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chkfit</span><span class="o">.</span><span class="n">Value</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">Start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">run</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">show_setting</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../0_how-to-start.html">1. Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../1_how-to-use.html">2. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_image-processing.html">3. Image Analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../wxpyJemacs.html">wxpyJemacs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins.html">plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyJeol.html">pyJeol package</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">wxpj  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.pragma_grid</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

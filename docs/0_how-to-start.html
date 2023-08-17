@@ -1,0 +1,201 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>1. Getting started &#8212; wxpj  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script src="_static/jquery.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2. User Interface" href="1_how-to-use.html" />
+    <link rel="prev" title="Welcome to wxpyJemacs’s documentation!" href="index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="1_how-to-use.html" title="2. User Interface"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to wxpyJemacs’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>Getting started</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="getting-started">
+<h1><span class="section-number">1. </span>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this heading"></a></h1>
+<section id="prerequisites-and-installing">
+<h2><span class="section-number">1.1. </span>Prerequisites and Installing<a class="headerlink" href="#prerequisites-and-installing" title="Permalink to this heading"></a></h2>
+<p>For details, see <a class="reference external" href="https://github.com/komoto48g/wxpj#getting-started">wxpj/Getting Started</a></p>
+<p>To install PY310+ packages:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install -U pywin32 httplib2 mwxlib
+$ git clone https://github.com/komoto48g/wxpj.git
+</pre></div>
+</div>
+</section>
+<section id="first-startup">
+<h2><span class="section-number">1.2. </span>First startup<a class="headerlink" href="#first-startup" title="Permalink to this heading"></a></h2>
+<p>Here &lt;wxpj&gt; is the directory containing the main program.</p>
+<p>Launch the program:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python &lt;wxpj&gt;/wxpyJemacs.py
+</pre></div>
+</div>
+<p>To terminate the program, press [x] Button.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Save the session.</p>
+<p>When you close the program, a popup window will appear asking
+“Do you want to save session before closing program?”.</p>
+<p>Click [OK]. Then, the next time you start the program with the session file,
+you can start it in the same state as when it was last closed.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>What’s a session?</p>
+<p>Like a project file, it roughly saves plugins, parameters, windows layouts, buffers, etc.
+You can save the session at the exit or any time from the menu [File/Session/Save session].</p>
+<p>When you save the sesison, the setting are saved in the session file.
+The settings will be restored the next time you start the program with the session specified.</p>
+</div>
+</section>
+<section id="startup-process">
+<h2><span class="section-number">1.3. </span>Startup process<a class="headerlink" href="#startup-process" title="Permalink to this heading"></a></h2>
+<p>When you run the program, it will start with the following steps:</p>
+<ol class="arabic">
+<li><p>Load <a class="reference internal" href="siteinit.html#module-siteinit" title="siteinit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">siteinit</span></code></a>.</p>
+<p>First, it searches for the file in the current directory.
+If not found, use the one in the &lt;wxpj&gt; directory.</p>
+</li>
+<li><p>Load <a class="reference internal" href="startup.html#module-startup" title="startup"><code class="xref py py-mod docutils literal notranslate"><span class="pre">startup</span></code></a> plugin</p>
+<p>Edit the initial settings.
+Then, save the current session.</p>
+<figure class="align-default" id="startup">
+<img alt="_images/0-1a_startup.png" src="_images/0-1a_startup.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 1.1 </span><span class="caption-text">Show startup layer from the menu [File/Options/Startup].</span><a class="headerlink" href="#startup" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+</li>
+<li><p>Load the session.</p>
+<p>To restart the session, launch the program with -s switch.
+Then, the program will start in the same state as when the session was saved:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python &lt;wxpj&gt;/wxpyJemacs.py -s&lt;session file.jssn&gt;
+</pre></div>
+</div>
+<p>The extension should normally be “.jssn”.</p>
+</li>
+</ol>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites-and-installing">1.1. Prerequisites and Installing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#first-startup">1.2. First startup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#startup-process">1.3. Startup process</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="1_how-to-use.html">2. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_image-processing.html">3. Image Analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="wxpyJemacs.html">wxpyJemacs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyJeol.html">pyJeol package</a></li>
+</ul>
+
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">Welcome to wxpyJemacs’s documentation!</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="1_how-to-use.html"
+                          title="next chapter"><span class="section-number">2. </span>User Interface</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/0_how-to-start.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="1_how-to-use.html" title="2. User Interface"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to wxpyJemacs’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>Getting started</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>
