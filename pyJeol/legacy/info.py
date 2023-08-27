@@ -235,6 +235,7 @@ class Gonio_info(Infodict): #[N533] - [G921]
     """
     def __call__(self, argv):
         Infodict.__call__(self, argv)
+        return self
 
 
 class HT_info(Infodict): #[F900] - [F902]
