@@ -65,9 +65,7 @@ class Plugin(Layer):
         k, s, t = _valist(self.params)
         src = frame.buffer
         if k > 1:
-            ## CV2 normally accepts uint8/16 and float32/64.
-            if src.dtype in (np.uint32, np.int32): src = src.astype(np.float32)
-            if src.dtype in (np.uint64, np.int64): src = src.astype(np.float64)
+            src = edi.imcv(src)
             src = cv2.GaussianBlur(src, (k, k), s)
         buf = edi.imconv(src, self.hi.value, self.lo.value) # -> uint8
         self.output.load(buf, "*Gauss*", localunit=frame.unit)

@@ -100,6 +100,16 @@ class Plugin(Layer):
 ## Image conv/plot/view
 ## --------------------------------
 
+def imcv(src):
+    """Convert the image to a type that can be applied to the cv2 function.
+    Note:
+        CV2 normally accepts uint8/16 and float32/64.
+    """
+    if src.dtype in (np.uint32, np.int32): return src.astype(np.float32)
+    if src.dtype in (np.uint64, np.int64): return src.astype(np.float64)
+    return src
+
+
 def imtrunc(buf, hi=0, lo=0):
     """Truncate buffer hi/lo with given tolerance score [%].
     """

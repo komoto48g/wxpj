@@ -132,7 +132,7 @@ class Plugin(Layer):
                     ya = max(0, y-r)
                     buf = frame.buffer[ya:y+r+1, xa:x+r+1]
                     
-                    ## local maximum
+                    ## NG: local maximum that is found first in the region
                     ## dy, dx = np.unravel_index(buf.argmax(), buf.shape)
                     
                     ## local maximum :averaged (強度の偏りを考慮する)
