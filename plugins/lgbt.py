@@ -8,10 +8,6 @@ from jgdk import Layer, LParam
 import editor as edi
 
 
-def _valist(params):
-    return list(p.value for p in params)
-
-
 class Plugin(Layer):
     """Gaussian Blur and Threshold.
     """
@@ -42,7 +38,7 @@ class Plugin(Layer):
     
     params = property(lambda self: (self.ksize, self.sigma, self.thresh))
     
-    def calc(self, frame=None, otsu=None, invert=0):
+    def calc(self, frame=None, otsu=None, invert=False):
         """GaussianBlur and binarize using threshold.
         
         [S-Lbutton] Estimate the threshold using Otsu's algorithm.
@@ -58,16 +54,15 @@ class Plugin(Layer):
         """
         if not frame:
             frame = self.selected_view.frame
-        
         if otsu is None:
             otsu = wx.GetKeyState(wx.WXK_SHIFT)
         
-        k, s, t = _valist(self.params)
+        k, s, t = [p.value for p in self.params]
         src = frame.buffer
         if k > 1:
             src = edi.imcv(src)
             src = cv2.GaussianBlur(src, (k, k), s)
-        buf = edi.imconv(src, self.hi.value, self.lo.value) # -> uint8
+        buf = edi.imconv(src, lo=self.lo.value, hi=self.hi.value) # -> uint8
         self.output.load(buf, "*Gauss*", localunit=frame.unit)
         
         if 0 < otsu < 1:
