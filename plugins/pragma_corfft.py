@@ -233,7 +233,7 @@ class Plugin(Layer):
         dst, (l,t) = edi.match_pattern(src, temp)
         
         ## <float32> to <uint8>
-        dst = edi.imconv(dst, hi=0)
+        dst = edi.imconv(dst)
         return self.output.load(dst, COR_FRAME_NAME, localunit=frame.unit)
     
     def test_fft(self, frame, crossline=0):
@@ -290,7 +290,7 @@ class Plugin(Layer):
         
         ## 逆空間：論理スケール [ru/pixel] に変換する
         ## Don't cut hi/lo: 強度重心を正しくとるため，飽和させないこと
-        ## dst = edi.imconv(dst, hi=0, lo=0)
+        
         return self.output.load(dst, FFT_FRAME_NAME, localunit=1/w/frame.unit)
 
 

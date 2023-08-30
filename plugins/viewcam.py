@@ -90,7 +90,7 @@ class Plugin(Layer):
     
     def display(self, title, buf):
         ## 画像サイズの縮小
-        src = edi.imconv(buf, self.hi.value, self.lo.value)
+        src = edi.imconv(buf, lo=self.lo.value, hi=self.hi.value)
         h, w = src.shape
         H = self.size_param.value
         W = H * w // h
