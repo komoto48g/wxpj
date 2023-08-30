@@ -171,11 +171,8 @@ class Plugin(Layer):
             "Mag = {:,.0f} [{}]".format(M, method),
             "({:g} A/pix)".format(u/M * 1e7)
         ))
-        self.target_view.frame.update_attributes(
-            parameters = self.parameters[:-1], # except the last text
-            annotation = ', '.join(self.text.Value.splitlines())\
-                       + '; \n' + frame.annotation,
-        )
+        self.target_view.frame.annotation = (
+            ', '.join(self.text.Value.splitlines()) + '; \n' + frame.annotation)
     
     def calc_ru(self):
         """Estimate [u/pix] on specimen from two spots.
