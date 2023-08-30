@@ -216,10 +216,7 @@ class Plugin(Layer):
                   ":res {:g}".format(np.sqrt(np.average(res)) / frame.unit))
             self.calc()
             
-            frame.update_attributes(
-                results = self.parameters,
-                annotation = ', '.join(self.text.Value.splitlines()),
-            )
+            frame.annotation = ', '.join(self.text.Value.splitlines())
     
     def find_init_grid(self, x, y):
         """Find the initial grid position."""

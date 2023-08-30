@@ -85,6 +85,7 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     lo = int(max(lo, 0))
     hi = int(min(hi, w//2))
     
+    src = edi.imcv(src)
     dst = cv2.linearPolar(src, center, w, cv2.WARP_FILL_OUTLIERS)
     
     ## Mask X (radial) axis

@@ -26,7 +26,7 @@ def find_circles(src, rmin, rmax, tol=0.75):
     ## Detect enclosing circles
     circles = [cv2.minEnclosingCircle(v) for v in contours]
     
-    ## check: draw contours directly on image (img is src)
+    ## Draw contours directly on image (img is src)
     ## img = cv2.drawContours(src.copy(), contours, -1, 255, 1) # linetype=-1 => 塗りつぶし
     
     h, w = src.shape

@@ -21,7 +21,6 @@ if wx.VERSION < (4,1,0):
             wx.ListCtrl.__init__(self, *args, **kwargs)
             CheckListCtrlMixin.__init__(self)
             
-            self.ToolTip = ''
             self.IsItemChecked = self.IsChecked # for wx 4.1 compatibility
 
 else:
@@ -29,9 +28,6 @@ else:
         def __init__(self, *args, **kwargs):
             wx.ListCtrl.__init__(self, *args, **kwargs)
             
-            ## To avoid BUG wx 4.1.1
-            ## Note: With this fix, the default Tooltip will disappear.
-            self.ToolTip = ''
             self.EnableCheckBoxes()
 
 
@@ -71,6 +67,8 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         self.parent = parent
         self.Target = target
         
+        self.__dir = True
+        
         _alist = ( # assoc-list of column names
             ("id", 42),
             ("name", 160),
@@ -102,11 +100,6 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         })
         self.handler.clear(0)
         
-        self.__dir = True
-        self.ToolTip = ''
-        self.ToolTip.SetMaxWidth(1000)
-        
-        self.Bind(wx.EVT_MOTION, self.OnMotion)
         self.Bind(wx.EVT_LIST_COL_CLICK, self.OnSortItems)
         
         self.context = { # bound to the target
@@ -164,18 +157,6 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
             self.SetItem(j, k, v)
         if frame.pathname:
             self.CheckItem(j)
-    
-    def OnMotion(self, evt):
-        j, flag = self.HitTest(evt.Position)
-        tip = ''
-        if j >= 0:
-            attr = self.Target.all_frames[j].attributes
-            if attr:
-                tip = pformat(attr, width=80, depth=1) # compact=0:PY3
-            else:
-                tip = "No attributes"
-        self.ToolTip = tip
-        evt.Skip()
     
     def OnShowItems(self, evt):
         self.Target.select(self.focused_item)

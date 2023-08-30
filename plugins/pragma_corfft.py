@@ -3,7 +3,7 @@
 import wx
 import cv2
 import numpy as np
-from numpy import nan
+from numpy import nan, pi
 from numpy.fft import fft2,fftshift
 
 from jgdk import Layer, LParam, Button, TextCtrl, Choice
@@ -171,11 +171,8 @@ class Plugin(Layer):
             "Mag = {:,.0f} [{}]".format(M, method),
             "({:g} A/pix)".format(u/M * 1e7)
         ))
-        self.target_view.frame.update_attributes(
-            parameters = self.parameters[:-1], # except the last text
-            annotation = ', '.join(self.text.Value.splitlines())\
-                       + '; \n' + frame.annotation,
-        )
+        self.target_view.frame.annotation = (
+            ', '.join(self.text.Value.splitlines()) + '; \n' + frame.annotation)
     
     def calc_ru(self):
         """Estimate [u/pix] on specimen from two spots.
@@ -261,15 +258,18 @@ class Plugin(Layer):
             buf -= sum(buf) / h # バックグラウンド(ぽい)強度を引いてみる
             
             self.message("\b @remap")
-            buf = cv2.linearPolar(buf, (w/2, h/2), rmax, cv2.WARP_INVERSE_MAP)
+            ## buf = cv2.linearPolar(buf, (w/2, h/2), rmax, cv2.WARP_INVERSE_MAP)
+            ## Note:
+            ##     ↑逆変換を何度か呼び出すと変な結果になるバグ？あり
+            ##     ↓のコードに変更する
+            ## 逆変換
+            N = np.arange(-n, n, dtype=np.float32),
+            X, Y = np.meshgrid(N, N)
+            map_r = w/rmax * np.hypot(Y, X)
+            map_t = (pi + np.arctan2(Y, X)) * h/2 /pi
+            buf = cv2.remap(buf.astype(np.float32), map_r, map_t,
+                            cv2.INTER_CUBIC, cv2.WARP_FILL_OUTLIERS)
             
-            ## ## 逆変換
-            ## N = np.arange(-n, n, dtype=np.float32),
-            ## X, Y = np.meshgrid(N, N)
-            ## map_r = w/rmax * np.hypot(Y, X)
-            ## map_t = (pi + np.arctan2(Y, X)) * h/2 /pi
-            ## buf = cv2.remap(buf.astype(np.float32), map_r, map_t,
-            ##                 cv2.INTER_CUBIC, cv2.WARP_FILL_OUTLIERS)
             ## ## 確認
             ## self.output.load(buf, "*remap*", localunit=1/w)
             
