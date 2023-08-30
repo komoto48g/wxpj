@@ -42,26 +42,24 @@ class Plugin(Layer):
             row=2,
         )
         art = patches.Circle((0, 0), 0, color='r', lw=2, fill=0)
-        self.attach_artists(self.graph.axes, art)
+        self.attach_artists(self.graph.axes, art) # -> self.Arts
     
     def test_imconv(self):
         src = self.graph.buffer
-        hi, lo = self.parameters
-        self.output["*result of imconv*"] = imconv(src, hi, lo)
+        dst = imconv(src, lo=self.lo.value, hi=self.hi.value)
+        self.output["*result of imconv*"] = dst
     
     def test_imtrunc(self):
         src = self.graph.buffer
-        hi, lo = self.parameters
-        self.output["*result of imtrunc*"] = imtrunc(src, hi, lo)
+        dst = imtrunc(src, lo=self.lo.value, hi=self.hi.value)
+        self.output["*result of imtrunc*"] = dst
     
     def test_imcorr(self):
         src = self.graph.buffer
         self.output["*result of Corr*"] = Corr(src, src)
     
     def test_ellipse(self):
-        hi, lo = self.parameters
         frame = self.selected_view.frame
-        ## src = imconv(frame.buffer, hi, lo) # 256 に変換するときはカウント数に注意
         src = frame.buffer
         ellipses = find_ellipses(src, ksize=3)
         print(self.message("Found {} circles.".format(len(ellipses))))
@@ -74,14 +72,12 @@ class Plugin(Layer):
         print(self.message('\b')) # Show the last message.
     
     def draw_ellipse(self, el, src, frame):
-        art = self.Arts[0]
-        self.attach_artists(frame.axes, art)
-        
         (cx,cy), (ra,rb), angle = el
         R, n, s = calc_ellipse(src, el)
         p = R * n/s
         q = R * (1-n)/(1-s)
         if abs(p/q) > 1: # signal borderline
+            art = self.Arts[0]
             art.center = frame.xyfrompixel(cx, cy)
             art.height = rb * frame.unit
             art.width = ra * frame.unit
@@ -93,7 +89,7 @@ class Plugin(Layer):
                 "{:.1f} deg".format(angle),
             )))
         self.message("\b; BRIGHTNESS {:.2f}/{:.2f} (S/N {:.2f})".format(p, q, p/q))
-        self.selected_view.draw(art)
+        self.selected_view.draw()
 
 
 ## --------------------------------

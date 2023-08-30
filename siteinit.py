@@ -18,8 +18,9 @@ def init_mainframe(self):
     ## Film/CCD [mm/pix]
     ## 0.042 mm/pix - FLASH @JEM-3300
     ## 0.365 mm/pix - LSCR @JEM-Z300FSC
-    self.graph.unit = 0.042
-    self.output.unit = 0.042
+    u = 0.042
+    self.graph.unit = u
+    self.output.unit = u
     
     ## Local cutoff tolerance score percentiles.
     ## self.graph.score_percentile = 0.01
@@ -94,7 +95,7 @@ def init_mainframe(self):
     
     @self.handler.bind('frame_cached')
     def cache(frame):
-        frame.update_attributes(
+        frame.attributes.update(
             illumination = dict(self.notify.illumination.Info),
                  imaging = dict(self.notify.imaging.Info),
                    omega = dict(self.notify.omega.Info),

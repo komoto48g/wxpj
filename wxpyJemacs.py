@@ -73,6 +73,9 @@ class MainFrame(Frame):
         if os.path.exists(icon):
             self.SetIcon(wx.Icon(icon, wx.BITMAP_TYPE_ICO))
         
+        if home not in sys.path: # Add home (to import Frame)
+            sys.path.insert(0, home)
+        
         sys.path.insert(0, os.path.join(home, 'plugins'))
         sys.path.insert(0, '') # Add local . to import si:local first
         try:
@@ -148,7 +151,7 @@ if __name__ == "__main__":
     for k, v in opts:
         if k == "-s":
             if not v.endswith(".jssn"):
-                v += '.jssn'
+                v += ".jssn"
             session = v
         if k == "--pyjem":
             online = eval(v)
