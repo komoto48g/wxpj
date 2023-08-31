@@ -24,20 +24,19 @@ class Plugin(Layer):
     menukey = "Plugins/Functions/&Editor"
     
     def Init(self):
-        self.hi = LParam("hi", (0, 10, 0.005), 0.1)
-        self.lo = LParam("lo", (0, 10, 0.005), 0.0)
-        
-        self.layout((
-                self.hi,
-                self.lo,
-            ),
-            title="truncation", row=2, cw=0, lw=16, tw=40
+        self.cutoffs = (
+            LParam("lo", (0, 10, 0.005), 0.0),
+            LParam("hi", (0, 10, 0.005), 0.0),
+        )
+        self.layout(
+            self.cutoffs, title="truncation", # cutoff lo/hi
+            row=2, cw=0, lw=16, tw=40
         )
         self.layout((
-                Button(self, "imconv", lambda v: self.test_imconv()),
-                Button(self, "imtrunc", lambda v: self.test_imtrunc()),
-                Button(self, "imcorr", lambda v: self.test_imcorr()),
-                Button(self, "ellipse", lambda v: self.test_ellipse()),
+                Button(self, "imconv", self.test_imconv),
+                Button(self, "imtrunc", self.test_imtrunc),
+                Button(self, "imcorr", self.test_imcorr),
+                Button(self, "ellipse", self.test_ellipse),
             ),
             row=2,
         )
@@ -46,12 +45,12 @@ class Plugin(Layer):
     
     def test_imconv(self):
         src = self.graph.buffer
-        dst = imconv(src, lo=self.lo.value, hi=self.hi.value)
+        dst = imconv(src, *np.float32(self.cutoffs))
         self.output["*result of imconv*"] = dst
     
     def test_imtrunc(self):
         src = self.graph.buffer
-        dst = imtrunc(src, lo=self.lo.value, hi=self.hi.value)
+        dst = imtrunc(src, *np.float32(self.cutoffs))
         self.output["*result of imtrunc*"] = dst
     
     def test_imcorr(self):
@@ -106,10 +105,10 @@ def imcv(src):
     return src
 
 
-def imtrunc(buf, hi=0, lo=0):
-    """Truncate buffer hi/lo with given tolerance score [%].
+def imtrunc(buf, lo=0, hi=0):
+    """Truncate buffer with cutoff lo/hi [%].
     """
-    if hi > 0 or lo > 0:
+    if lo > 0 or hi > 0:
         a = np.percentile(buf, lo)
         b = np.percentile(buf, 100-hi)
         img = buf.copy()
@@ -119,12 +118,10 @@ def imtrunc(buf, hi=0, lo=0):
     return buf
 
 
-def imconv(buf, hi=0, lo=0):
-    """Convert buffer to dst<uint8>.
+def imconv(buf, lo=0, hi=0):
+    """Convert buffer to dst<uint8> with cutoff lo/hi [%].
     
     >>> dst = (src-a) * 255 / (b-a)
-    
-    hi/lo : cuts vlim with given tolerance score [%]
     """
     if buf.dtype == np.uint8:
         return buf
