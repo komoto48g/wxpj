@@ -23,7 +23,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-:memo: wxpj 0.46 `GOOD BYE PYJEM` becoms PyJEM-independent.
+:memo: wxpj 0.46 `GOOD BYE PYJEM` becomes PyJEM-independent.
 
 ***Don't use Anaconda because wxPython cannot be installed.***
 

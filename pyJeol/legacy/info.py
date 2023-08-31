@@ -201,12 +201,12 @@ class Filter_info(Infodict): #[N162] - [E630]
     status      : Device status {0:normal,1:on(deGauss)}
     slit_max    : Maximum slit width        [0.01eV] --> [eV]
     slit_step   : Minimum slit step value   [ 〃   ] --> [eV]
-    es_state    : Energy shfit off/on
-    es_value    : Energy shfit value            [eV]
-    es_max      : Energy shfit maximum value    [〃]
-    es_step     : Energy shfit min Step Value   [〃]
-    es_coef_tem : Energy shfit correction factor for TEM mode
-    es_coef_stem: Energy shfit correction factor for STEM mode
+    es_state    : Energy shift off/on
+    es_value    : Energy shift value            [eV]
+    es_max      : Energy shift maximum value    [〃]
+    es_step     : Energy shift min Step Value   [〃]
+    es_coef_tem : Energy shift correction factor for TEM mode
+    es_coef_stem: Energy shift correction factor for STEM mode
     illum_corr  : Illumination system correction off/on
     energy_shift: Energy sfhit value (None:off) +++ 付加情報 (コマンドには含まれない)
     """
@@ -256,8 +256,8 @@ class HT_info(Infodict): #[F900] - [F902]
     ht_state    : HT off/on
     ems_state   : Emission off/on
     ems_status  : Operating state of Emission {0:stable, 1:ascending, 2:descending}
-    es_state    : Energy shfit off/on
-    es_value    : Energy shfit current value [0.2eV] --> [eV]
+    es_state    : Energy shift off/on
+    es_value    : Energy shift current value [0.2eV] --> [eV]
     htsub_state : Setting of HT subsystem
     ht_value    : HT current value         [V]
     a1,a2       : A1/A2 target value       [10V] --> [V]
@@ -295,8 +295,8 @@ class HTsub_info(Infodict): #[F901] - ?
     ht_state    : HT off/on
     ems_state   : Emission off/on
     ems_status  : Operating state of Emission {0:stable, 1:ascending, 2:descending}
-    es_state    : Energy shfit off/on
-    es_value    : Energy shfit current value [0.2eV] --> [eV]
+    es_state    : Energy shift off/on
+    es_value    : Energy shift current value [0.2eV] --> [eV]
     htsub_state : Setting of HT subsystem
     """
     def __call__(self, argv):

@@ -182,7 +182,7 @@ class Plugin(Layer):
         return R1, R2
     
     def run(self, frame=None, skip=False):
-        """Caluculate ellipse parameters for fitting the plotted markers.
+        """Calculate ellipse parameters for fitting the plotted markers.
         
         [S-Lbutton] Skip estimation of the nearest maximum peak.
         
