@@ -1,6 +1,5 @@
 #! python3
 # -*- coding: utf-8 -*-
-from itertools import chain
 import wx
 import numpy as np
 from numpy import pi,exp,cos,sin
@@ -94,23 +93,22 @@ class Plugin(Layer):
     def Init(self):
         self.thread = Thread(self)
         
+        kwds = dict(handler=self.calc)
         x = 5e-3
         self.dist_params = (
-            LParam("D", (-x, x, x/1e5), 0.0, '{:.3G}'.format),
-            LParam("d", (-x, x, x/1e5), 0.0, '{:.3G}'.format),
+            LParam("D", (-x, x, x/1e5), 0.0, '{:.3g}'.format, **kwds),
+            LParam("d", (-x, x, x/1e5), 0.0, '{:.3g}'.format, **kwds),
         )
         self.ratio_params = (
-            LParam("γ", (0.5, 1.5, 0.001), 1.0),
-            LParam("φ", (-90, 90, 0.1), 0.0),
+            LParam("γ", (0.5, 1.5, 0.001), 1.0, **kwds),
+            LParam("φ", (-90, 90, 0.1), 0.0, **kwds),
         )
         self.grid_params = (
-            LParam("grid", (0, 5e4, 0.1), 1.0),
-            LParam("tilt", (-90, 90, 0.1), 0.0),
-            LParam("xc", (-200, 200, 0.1), 0.0),
-            LParam("yc", (-200, 200, 0.1), 0.0),
+            LParam("grid", (0, 5e4, 0.1), 1.0, **kwds),
+            LParam("tilt", (-90, 90, 0.1), 0.0, **kwds),
+            LParam("xc", (-200, 200, 0.1), 0.0, **kwds),
+            LParam("yc", (-200, 200, 0.1), 0.0, **kwds),
         )
-        for lp in chain(self.dist_params, self.ratio_params, self.grid_params):
-            lp.bind(lambda v: self.calc())
         
         self.btn = wx.Button(self, label="+Execute", size=(80,22))
         self.btn.Bind(wx.EVT_BUTTON, lambda v: self.thread.Start(self.run))
