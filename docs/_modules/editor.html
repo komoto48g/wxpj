@@ -2,19 +2,19 @@
 
 <!doctype html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>editor &#8212; wxpj  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=532c1bf3" />
     
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -64,50 +64,63 @@
 <span class="kn">from</span> <span class="nn">jgdk</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">LParam</span><span class="p">,</span> <span class="n">Button</span>
 
 
-<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../editor.html#editor.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin">
+<a class="viewcode-back" href="../editor.html#editor.Plugin">[docs]</a>
+<span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plugin as testsuite for editors functions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">menukey</span> <span class="o">=</span> <span class="s2">&quot;Plugins/Functions/&amp;Editor&quot;</span>
     
-<div class="viewcode-block" id="Plugin.Init"><a class="viewcode-back" href="../editor.html#editor.Plugin.Init">[docs]</a>    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hi</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;hi&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">),</span> <span class="mf">0.1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lo</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;lo&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">hi</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">lo</span><span class="p">,</span>
-            <span class="p">),</span>
-            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;truncation&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">tw</span><span class="o">=</span><span class="mi">40</span>
+<div class="viewcode-block" id="Plugin.Init">
+<a class="viewcode-back" href="../editor.html#editor.Plugin.Init">[docs]</a>
+    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cutoffs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;lo&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">),</span>
+            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;hi&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cutoffs</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;truncation&quot;</span><span class="p">,</span> <span class="c1"># cutoff lo/hi</span>
+            <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">tw</span><span class="o">=</span><span class="mi">40</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span>
-                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;imconv&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_imconv</span><span class="p">()),</span>
-                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;imtrunc&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_imtrunc</span><span class="p">()),</span>
-                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;imcorr&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_imcorr</span><span class="p">()),</span>
-                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;ellipse&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_ellipse</span><span class="p">()),</span>
+                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;imconv&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_imconv</span><span class="p">),</span>
+                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;imtrunc&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_imtrunc</span><span class="p">),</span>
+                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;imcorr&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_imcorr</span><span class="p">),</span>
+                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;ellipse&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_ellipse</span><span class="p">),</span>
             <span class="p">),</span>
             <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">art</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attach_artists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">art</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attach_artists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">art</span><span class="p">)</span> <span class="c1"># -&gt; self.Arts</span></div>
+
     
-<div class="viewcode-block" id="Plugin.test_imconv"><a class="viewcode-back" href="../editor.html#editor.Plugin.test_imconv">[docs]</a>    <span class="k">def</span> <span class="nf">test_imconv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.test_imconv">
+<a class="viewcode-back" href="../editor.html#editor.Plugin.test_imconv">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_imconv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">buffer</span>
-        <span class="n">hi</span><span class="p">,</span> <span class="n">lo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;*result of imconv*&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imconv</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">hi</span><span class="p">,</span> <span class="n">lo</span><span class="p">)</span></div>
+        <span class="n">dst</span> <span class="o">=</span> <span class="n">imconv</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoffs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;*result of imconv*&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dst</span></div>
+
     
-<div class="viewcode-block" id="Plugin.test_imtrunc"><a class="viewcode-back" href="../editor.html#editor.Plugin.test_imtrunc">[docs]</a>    <span class="k">def</span> <span class="nf">test_imtrunc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.test_imtrunc">
+<a class="viewcode-back" href="../editor.html#editor.Plugin.test_imtrunc">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_imtrunc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">buffer</span>
-        <span class="n">hi</span><span class="p">,</span> <span class="n">lo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;*result of imtrunc*&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imtrunc</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">hi</span><span class="p">,</span> <span class="n">lo</span><span class="p">)</span></div>
+        <span class="n">dst</span> <span class="o">=</span> <span class="n">imtrunc</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoffs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;*result of imtrunc*&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dst</span></div>
+
     
-<div class="viewcode-block" id="Plugin.test_imcorr"><a class="viewcode-back" href="../editor.html#editor.Plugin.test_imcorr">[docs]</a>    <span class="k">def</span> <span class="nf">test_imcorr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.test_imcorr">
+<a class="viewcode-back" href="../editor.html#editor.Plugin.test_imcorr">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_imcorr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">buffer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;*result of Corr*&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Corr</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">src</span><span class="p">)</span></div>
+
     
-<div class="viewcode-block" id="Plugin.test_ellipse"><a class="viewcode-back" href="../editor.html#editor.Plugin.test_ellipse">[docs]</a>    <span class="k">def</span> <span class="nf">test_ellipse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">hi</span><span class="p">,</span> <span class="n">lo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span>
+<div class="viewcode-block" id="Plugin.test_ellipse">
+<a class="viewcode-back" href="../editor.html#editor.Plugin.test_ellipse">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_ellipse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_view</span><span class="o">.</span><span class="n">frame</span>
-        <span class="c1">## src = imconv(frame.buffer, hi, lo) # 256 に変換するときはカウント数に注意</span>
         <span class="n">src</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">buffer</span>
         <span class="n">ellipses</span> <span class="o">=</span> <span class="n">find_ellipses</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">{}</span><span class="s2"> circles.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ellipses</span><span class="p">))))</span>
@@ -118,16 +131,17 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="p">))</span> <span class="c1"># Show the last message.</span></div>
+
     
-<div class="viewcode-block" id="Plugin.draw_ellipse"><a class="viewcode-back" href="../editor.html#editor.Plugin.draw_ellipse">[docs]</a>    <span class="k">def</span> <span class="nf">draw_ellipse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-        <span class="n">art</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Arts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attach_artists</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">art</span><span class="p">)</span>
-        
+<div class="viewcode-block" id="Plugin.draw_ellipse">
+<a class="viewcode-back" href="../editor.html#editor.Plugin.draw_ellipse">[docs]</a>
+    <span class="k">def</span> <span class="nf">draw_ellipse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="p">(</span><span class="n">cx</span><span class="p">,</span><span class="n">cy</span><span class="p">),</span> <span class="p">(</span><span class="n">ra</span><span class="p">,</span><span class="n">rb</span><span class="p">),</span> <span class="n">angle</span> <span class="o">=</span> <span class="n">el</span>
         <span class="n">R</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">calc_ellipse</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">el</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">n</span><span class="o">/</span><span class="n">s</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">n</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">s</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">p</span><span class="o">/</span><span class="n">q</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># signal borderline</span>
+            <span class="n">art</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Arts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">art</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">xyfrompixel</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">)</span>
             <span class="n">art</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">rb</span> <span class="o">*</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
             <span class="n">art</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">ra</span> <span class="o">*</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
@@ -139,17 +153,34 @@
                 <span class="s2">&quot;</span><span class="si">{:.1f}</span><span class="s2"> deg&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span>
             <span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">; BRIGHTNESS </span><span class="si">{:.2f}</span><span class="s2">/</span><span class="si">{:.2f}</span><span class="s2"> (S/N </span><span class="si">{:.2f}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">p</span><span class="o">/</span><span class="n">q</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selected_view</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">art</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_view</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div>
+</div>
+
 
 
 <span class="c1">## --------------------------------</span>
 <span class="c1">## Image conv/plot/view</span>
 <span class="c1">## --------------------------------</span>
 
-<div class="viewcode-block" id="imtrunc"><a class="viewcode-back" href="../editor.html#editor.imtrunc">[docs]</a><span class="k">def</span> <span class="nf">imtrunc</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">hi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lo</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Truncate buffer hi/lo with given tolerance score [%].</span>
+<div class="viewcode-block" id="imcv">
+<a class="viewcode-back" href="../editor.html#editor.imcv">[docs]</a>
+<span class="k">def</span> <span class="nf">imcv</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert the image to a type that can be applied to the cv2 function.</span>
+<span class="sd">    Note:</span>
+<span class="sd">        CV2 normally accepts uint8/16 and float32/64.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">hi</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">lo</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">src</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">):</span> <span class="k">return</span> <span class="n">src</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">src</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span> <span class="k">return</span> <span class="n">src</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">src</span></div>
+
+
+
+<div class="viewcode-block" id="imtrunc">
+<a class="viewcode-back" href="../editor.html#editor.imtrunc">[docs]</a>
+<span class="k">def</span> <span class="nf">imtrunc</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">lo</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hi</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Truncate buffer with cutoff lo/hi [%].</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">lo</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">hi</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">lo</span><span class="p">)</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">100</span><span class="o">-</span><span class="n">hi</span><span class="p">)</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">buf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -159,12 +190,13 @@
     <span class="k">return</span> <span class="n">buf</span></div>
 
 
-<div class="viewcode-block" id="imconv"><a class="viewcode-back" href="../editor.html#editor.imconv">[docs]</a><span class="k">def</span> <span class="nf">imconv</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">hi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lo</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert buffer to dst&lt;uint8&gt;.</span>
+
+<div class="viewcode-block" id="imconv">
+<a class="viewcode-back" href="../editor.html#editor.imconv">[docs]</a>
+<span class="k">def</span> <span class="nf">imconv</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">lo</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hi</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert buffer to dst&lt;uint8&gt; with cutoff lo/hi [%].</span>
 <span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; dst = (src-a) * 255 / (b-a)</span>
-<span class="sd">    </span>
-<span class="sd">    hi/lo : cuts vlim with given tolerance score [%]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">buf</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">buf</span>
@@ -188,38 +220,57 @@
     <span class="k">return</span> <span class="n">img</span></div>
 
 
-<div class="viewcode-block" id="imshow"><a class="viewcode-back" href="../editor.html#editor.imshow">[docs]</a><span class="k">def</span> <span class="nf">imshow</span><span class="p">(</span><span class="n">buf</span><span class="p">):</span>
+
+<div class="viewcode-block" id="imshow">
+<a class="viewcode-back" href="../editor.html#editor.imshow">[docs]</a>
+<span class="k">def</span> <span class="nf">imshow</span><span class="p">(</span><span class="n">buf</span><span class="p">):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">gray</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="plot"><a class="viewcode-back" href="../editor.html#editor.plot">[docs]</a><span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="plot">
+<a class="viewcode-back" href="../editor.html#editor.plot">[docs]</a>
+<span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="mplot"><a class="viewcode-back" href="../editor.html#editor.mplot">[docs]</a><span class="k">def</span> <span class="nf">mplot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="mplot">
+<a class="viewcode-back" href="../editor.html#editor.mplot">[docs]</a>
+<span class="k">def</span> <span class="nf">mplot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="splot"><a class="viewcode-back" href="../editor.html#editor.splot">[docs]</a><span class="k">def</span> <span class="nf">splot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="splot">
+<a class="viewcode-back" href="../editor.html#editor.splot">[docs]</a>
+<span class="k">def</span> <span class="nf">splot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
     <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">plot_wireframe</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="scatter"><a class="viewcode-back" href="../editor.html#editor.scatter">[docs]</a><span class="k">def</span> <span class="nf">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="scatter">
+<a class="viewcode-back" href="../editor.html#editor.scatter">[docs]</a>
+<span class="k">def</span> <span class="nf">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">art</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="clf"><a class="viewcode-back" href="../editor.html#editor.clf">[docs]</a><span class="k">def</span> <span class="nf">clf</span><span class="p">():</span>
+
+<div class="viewcode-block" id="clf">
+<a class="viewcode-back" href="../editor.html#editor.clf">[docs]</a>
+<span class="k">def</span> <span class="nf">clf</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;clear figure (and the stack of memory).&quot;&quot;&quot;</span>
     <span class="c1">## plt.close()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span></div>
+
 
 <span class="n">clear</span> <span class="o">=</span> <span class="n">clf</span>
 
@@ -227,11 +278,14 @@
 <span class="c1">## Image processing</span>
 <span class="c1">## --------------------------------</span>
 
-<div class="viewcode-block" id="rotate"><a class="viewcode-back" href="../editor.html#editor.rotate">[docs]</a><span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+<div class="viewcode-block" id="rotate">
+<a class="viewcode-back" href="../editor.html#editor.rotate">[docs]</a>
+<span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
     <span class="c1">## return ndi.rotate(src, angle)</span>
     <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getRotationMatrix2D</span><span class="p">((</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">angle</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">warpAffine</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span></div>
+
 
 <span class="c1">## def blur1d(src, lw=11, window=np.hanning):</span>
 <span class="c1">##     &quot;&quot;&quot;Smooth 1D array.</span>
@@ -252,20 +306,31 @@
 <span class="c1">##     return np.roll(f, -lw//2)</span>
 
 
-<div class="viewcode-block" id="gradx"><a class="viewcode-back" href="../editor.html#editor.gradx">[docs]</a><span class="k">def</span> <span class="nf">gradx</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="gradx">
+<a class="viewcode-back" href="../editor.html#editor.gradx">[docs]</a>
+<span class="k">def</span> <span class="nf">gradx</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gradients: diff by Sobel (１次微分).&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ksize</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="grady"><a class="viewcode-back" href="../editor.html#editor.grady">[docs]</a><span class="k">def</span> <span class="nf">grady</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+
+<div class="viewcode-block" id="grady">
+<a class="viewcode-back" href="../editor.html#editor.grady">[docs]</a>
+<span class="k">def</span> <span class="nf">grady</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gradients: diff by Sobel (１次微分).&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ksize</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="grad2"><a class="viewcode-back" href="../editor.html#editor.grad2">[docs]</a><span class="k">def</span> <span class="nf">grad2</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+
+<div class="viewcode-block" id="grad2">
+<a class="viewcode-back" href="../editor.html#editor.grad2">[docs]</a>
+<span class="k">def</span> <span class="nf">grad2</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gradients: diff by Laplacian (２次微分).&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Laplacian</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="n">ksize</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Corr"><a class="viewcode-back" href="../editor.html#editor.Corr">[docs]</a><span class="k">def</span> <span class="nf">Corr</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Corr">
+<a class="viewcode-back" href="../editor.html#editor.Corr">[docs]</a>
+<span class="k">def</span> <span class="nf">Corr</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Correlation product</span>
 <span class="sd">    using an fft-based array flipped convolution (i.e. correlation).</span>
 <span class="sd">    </span>
@@ -282,12 +347,15 @@
         <span class="k">return</span> <span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">,::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span></div>
 
 
+
 <span class="c1">## --------------------------------</span>
 <span class="c1">## Image analysis</span>
 <span class="c1">##   find peaks, figures, etc.</span>
 <span class="c1">## --------------------------------</span>
 
-<div class="viewcode-block" id="centroid"><a class="viewcode-back" href="../editor.html#editor.centroid">[docs]</a><span class="k">def</span> <span class="nf">centroid</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+<div class="viewcode-block" id="centroid">
+<a class="viewcode-back" href="../editor.html#editor.centroid">[docs]</a>
+<span class="k">def</span> <span class="nf">centroid</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;centroids (重心).</span>
 <span class="sd">    cf. ndi.measurements.center_of_mass</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -297,7 +365,10 @@
     <span class="k">return</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span></div>
 
 
-<div class="viewcode-block" id="find_ellipses"><a class="viewcode-back" href="../editor.html#editor.find_ellipses">[docs]</a><span class="k">def</span> <span class="nf">find_ellipses</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">frmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sortby</span><span class="o">=</span><span class="s1">&#39;size&#39;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="find_ellipses">
+<a class="viewcode-back" href="../editor.html#editor.find_ellipses">[docs]</a>
+<span class="k">def</span> <span class="nf">find_ellipses</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">frmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sortby</span><span class="o">=</span><span class="s1">&#39;size&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find the rotated rectangle in which the ellipse is inscribed.</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
@@ -339,7 +410,10 @@
     <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ls</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span> <span class="c1"># 位置で昇順ソート</span></div>
 
 
-<div class="viewcode-block" id="calc_ellipse"><a class="viewcode-back" href="../editor.html#editor.calc_ellipse">[docs]</a><span class="k">def</span> <span class="nf">calc_ellipse</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">ellipse</span><span class="p">):</span>
+
+<div class="viewcode-block" id="calc_ellipse">
+<a class="viewcode-back" href="../editor.html#editor.calc_ellipse">[docs]</a>
+<span class="k">def</span> <span class="nf">calc_ellipse</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">ellipse</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the count density.</span>
 <span class="sd">    </span>
 <span class="sd">    Returns:</span>
@@ -372,6 +446,7 @@
     <span class="k">return</span> <span class="n">R</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">s</span></div>
 
 
+
 <span class="c1">## def find_peaks(y):</span>
 <span class="c1">##     peaks, dic = signal.find_peaks(y,</span>
 <span class="c1">##             height = y.mean(),      # height of peaks</span>
@@ -387,7 +462,9 @@
 <span class="c1">##     return signal.find_peaks_cwt(y, widths)</span>
 
 
-<div class="viewcode-block" id="qrsp"><a class="viewcode-back" href="../editor.html#editor.qrsp">[docs]</a><span class="k">def</span> <span class="nf">qrsp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="qrsp">
+<a class="viewcode-back" href="../editor.html#editor.qrsp">[docs]</a>
+<span class="k">def</span> <span class="nf">qrsp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;x[3],y[3]: x,y 近接した３点から 2次式で極値の箇所を推定する．</span>
 <span class="sd">    </span>
 <span class="sd">    Returns:</span>
@@ -405,7 +482,10 @@
     <span class="k">return</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">a</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">x0</span><span class="o">&lt;</span><span class="n">dx</span><span class="o">&lt;</span><span class="n">x2</span><span class="p">,</span></div>
 
 
-<div class="viewcode-block" id="find_local_extremum"><a class="viewcode-back" href="../editor.html#editor.find_local_extremum">[docs]</a><span class="k">def</span> <span class="nf">find_local_extremum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="find_local_extremum">
+<a class="viewcode-back" href="../editor.html#editor.find_local_extremum">[docs]</a>
+<span class="k">def</span> <span class="nf">find_local_extremum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;2次式で極値の箇所を推定する．</span>
 <span class="sd">    Estimates the max/min peak pos y[x] and the value.</span>
 <span class="sd">    </span>
@@ -433,7 +513,10 @@
     <span class="k">return</span> <span class="n">xo</span><span class="p">,</span> <span class="n">yo</span><span class="p">,</span> <span class="n">convex</span><span class="p">,</span> <span class="n">valid</span></div>
 
 
-<div class="viewcode-block" id="find_local_extremum2d"><a class="viewcode-back" href="../editor.html#editor.find_local_extremum2d">[docs]</a><span class="k">def</span> <span class="nf">find_local_extremum2d</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="find_local_extremum2d">
+<a class="viewcode-back" href="../editor.html#editor.find_local_extremum2d">[docs]</a>
+<span class="k">def</span> <span class="nf">find_local_extremum2d</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;2次式で極値の箇所を推定する．</span>
 <span class="sd">    Estimates the max/min peak pos [x,y] and the value.</span>
 <span class="sd">    </span>
@@ -454,7 +537,10 @@
     <span class="k">return</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">src</span><span class="p">[</span><span class="n">ny</span><span class="p">,</span><span class="n">nx</span><span class="p">],</span> <span class="n">valid</span></div>
 
 
-<div class="viewcode-block" id="match_pattern"><a class="viewcode-back" href="../editor.html#editor.match_pattern">[docs]</a><span class="k">def</span> <span class="nf">match_pattern</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">TM_CCOEFF_NORMED</span><span class="p">):</span>
+
+<div class="viewcode-block" id="match_pattern">
+<a class="viewcode-back" href="../editor.html#editor.match_pattern">[docs]</a>
+<span class="k">def</span> <span class="nf">match_pattern</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">TM_CCOEFF_NORMED</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Match_pattern of src image to template image.</span>
 <span class="sd">    </span>
 <span class="sd">    The depth must be (CV_8U or CV_32F)</span>
@@ -473,7 +559,10 @@
     <span class="k">return</span> <span class="n">res</span><span class="p">,</span> <span class="n">maxLoc</span></div>
 
 
-<div class="viewcode-block" id="eval_shift"><a class="viewcode-back" href="../editor.html#editor.eval_shift">[docs]</a><span class="k">def</span> <span class="nf">eval_shift</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">src2</span><span class="p">,</span> <span class="n">div</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+
+<div class="viewcode-block" id="eval_shift">
+<a class="viewcode-back" href="../editor.html#editor.eval_shift">[docs]</a>
+<span class="k">def</span> <span class="nf">eval_shift</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">src2</span><span class="p">,</span> <span class="n">div</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
     <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">ht</span><span class="p">,</span> <span class="n">wt</span> <span class="o">=</span> <span class="n">h</span><span class="o">//</span><span class="n">div</span><span class="p">,</span> <span class="n">w</span><span class="o">//</span><span class="n">div</span>  <span class="c1"># template pattern in the src divided by div</span>
     <span class="n">xt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">w</span> <span class="o">-</span> <span class="n">wt</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>   <span class="c1"># template position lt = (xt, yt)</span>
@@ -485,6 +574,7 @@
     <span class="n">dx</span> <span class="o">=</span> <span class="n">l</span> <span class="o">-</span> <span class="n">wo</span><span class="o">//</span><span class="mi">2</span>
     <span class="n">dy</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">ho</span><span class="o">//</span><span class="mi">2</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">))</span></div>
+
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -564,8 +654,8 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
     </div>
   </body>
 </html>

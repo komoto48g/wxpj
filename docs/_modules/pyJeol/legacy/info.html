@@ -2,19 +2,19 @@
 
 <!doctype html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pyJeol.legacy.info &#8212; wxpj  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/bizstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bizstyle.css?v=532c1bf3" />
     
-    <script src="../../../_static/jquery.js"></script>
-    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -56,13 +56,18 @@
 <span class="kn">import</span> <span class="nn">struct</span>
 
 
-<div class="viewcode-block" id="getargs"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.getargs">[docs]</a><span class="k">def</span> <span class="nf">getargs</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="getargs">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.getargs">[docs]</a>
+<span class="k">def</span> <span class="nf">getargs</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">x</span></div>
 
 
-<div class="viewcode-block" id="Infodict"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Infodict">[docs]</a><span class="k">class</span> <span class="nc">Infodict</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Infodict">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Infodict">[docs]</a>
+<span class="k">class</span> <span class="nc">Infodict</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Mode info base class.</span>
 <span class="sd">    </span>
 <span class="sd">    Show how the inherited class builds keys from the docstring.</span>
@@ -91,7 +96,10 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
-<div class="viewcode-block" id="Illumination_info"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Illumination_info">[docs]</a><span class="k">class</span> <span class="nc">Illumination_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N105] - [E055]</span>
+
+<div class="viewcode-block" id="Illumination_info">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Illumination_info">[docs]</a>
+<span class="k">class</span> <span class="nc">Illumination_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N105] - [E055]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Illumination (CL) system</span>
 <span class="sd">    </span>
 <span class="sd">    mode        : illumination mode {0:TEM, 1:EDS, 2:NBD, 3:CBD}</span>
@@ -109,7 +117,10 @@
             <span class="k">return</span> <span class="bp">self</span></div>
 
 
-<div class="viewcode-block" id="Imaging_info"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Imaging_info">[docs]</a><span class="k">class</span> <span class="nc">Imaging_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N101] - [E015]</span>
+
+<div class="viewcode-block" id="Imaging_info">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Imaging_info">[docs]</a>
+<span class="k">class</span> <span class="nc">Imaging_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N101] - [E015]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Imaging (IL) system</span>
 <span class="sd">    </span>
 <span class="sd">    mode        : imaging mode {0:MAG1, 1:MAG2, 2:LOWMAG, 3:SAMAG, 4:DIFF}</span>
@@ -132,7 +143,10 @@
             <span class="k">return</span> <span class="bp">self</span></div>
 
 
-<div class="viewcode-block" id="Omega_info"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Omega_info">[docs]</a><span class="k">class</span> <span class="nc">Omega_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N102] - [E016]</span>
+
+<div class="viewcode-block" id="Omega_info">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Omega_info">[docs]</a>
+<span class="k">class</span> <span class="nc">Omega_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N102] - [E016]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Projection (Omega, PL) system</span>
 <span class="sd">    </span>
 <span class="sd">    mode        : spectrum mode off/on {0:Imaging, 1:Spectrum}</span>
@@ -166,7 +180,10 @@
             <span class="k">return</span> <span class="bp">self</span></div>
 
 
-<div class="viewcode-block" id="Eos_info"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Eos_info">[docs]</a><span class="k">class</span> <span class="nc">Eos_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N109] - [E090]</span>
+
+<div class="viewcode-block" id="Eos_info">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Eos_info">[docs]</a>
+<span class="k">class</span> <span class="nc">Eos_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N109] - [E090]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;EO system</span>
 <span class="sd">    </span>
 <span class="sd">    dark        : dark level {0:bright, 1:dark}</span>
@@ -192,7 +209,10 @@
         <span class="n">Infodict</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Aperture_info"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Aperture_info">[docs]</a><span class="k">class</span> <span class="nc">Aperture_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N140] - [E405]</span>
+
+<div class="viewcode-block" id="Aperture_info">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Aperture_info">[docs]</a>
+<span class="k">class</span> <span class="nc">Aperture_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N140] - [E405]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Aperture system extype=0</span>
 <span class="sd">    </span>
 <span class="sd">    speed       : {0:fine, 1:coarse}</span>
@@ -219,7 +239,10 @@
             <span class="k">return</span> <span class="bp">self</span></div>
 
 
-<div class="viewcode-block" id="ApertureEx_info"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.ApertureEx_info">[docs]</a><span class="k">class</span> <span class="nc">ApertureEx_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N153] - [E423]</span>
+
+<div class="viewcode-block" id="ApertureEx_info">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.ApertureEx_info">[docs]</a>
+<span class="k">class</span> <span class="nc">ApertureEx_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N153] - [E423]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Aperture system extype=1 (1601 or later)</span>
 <span class="sd">    </span>
 <span class="sd">    csid        : currently selected aperture id (0--11): CLA,CLA2,OLA,HCA,SAA,ENTA,HXA,BFA,...</span>
@@ -237,7 +260,10 @@
             <span class="k">return</span> <span class="bp">self</span></div>
 
 
-<div class="viewcode-block" id="Filter_info"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Filter_info">[docs]</a><span class="k">class</span> <span class="nc">Filter_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N162] - [E630]</span>
+
+<div class="viewcode-block" id="Filter_info">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Filter_info">[docs]</a>
+<span class="k">class</span> <span class="nc">Filter_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N162] - [E630]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Energy Filter system</span>
 <span class="sd">    </span>
 <span class="sd">    spectrum_mode: off/on</span>
@@ -248,12 +274,12 @@
 <span class="sd">    status      : Device status {0:normal,1:on(deGauss)}</span>
 <span class="sd">    slit_max    : Maximum slit width        [0.01eV] --&gt; [eV]</span>
 <span class="sd">    slit_step   : Minimum slit step value   [ 〃   ] --&gt; [eV]</span>
-<span class="sd">    es_state    : Energy shfit off/on</span>
-<span class="sd">    es_value    : Energy shfit value            [eV]</span>
-<span class="sd">    es_max      : Energy shfit maximum value    [〃]</span>
-<span class="sd">    es_step     : Energy shfit min Step Value   [〃]</span>
-<span class="sd">    es_coef_tem : Energy shfit correction factor for TEM mode</span>
-<span class="sd">    es_coef_stem: Energy shfit correction factor for STEM mode</span>
+<span class="sd">    es_state    : Energy shift off/on</span>
+<span class="sd">    es_value    : Energy shift value            [eV]</span>
+<span class="sd">    es_max      : Energy shift maximum value    [〃]</span>
+<span class="sd">    es_step     : Energy shift min Step Value   [〃]</span>
+<span class="sd">    es_coef_tem : Energy shift correction factor for TEM mode</span>
+<span class="sd">    es_coef_stem: Energy shift correction factor for STEM mode</span>
 <span class="sd">    illum_corr  : Illumination system correction off/on</span>
 <span class="sd">    energy_shift: Energy sfhit value (None:off) +++ 付加情報 (コマンドには含まれない)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -272,7 +298,10 @@
             <span class="k">return</span> <span class="bp">self</span></div>
 
 
-<div class="viewcode-block" id="Gonio_info"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Gonio_info">[docs]</a><span class="k">class</span> <span class="nc">Gonio_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N533] - [G921]</span>
+
+<div class="viewcode-block" id="Gonio_info">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Gonio_info">[docs]</a>
+<span class="k">class</span> <span class="nc">Gonio_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N533] - [G921]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gonio ゴニオ座標情報</span>
 <span class="sd">    </span>
 <span class="sd">    X,Y,Z       : motor position [nm]</span>
@@ -281,10 +310,14 @@
 <span class="sd">    Y_piezo     : piezo Y </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
-        <span class="n">Infodict</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">)</span></div>
+        <span class="n">Infodict</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
 
 
-<div class="viewcode-block" id="HT_info"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.HT_info">[docs]</a><span class="k">class</span> <span class="nc">HT_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[F900] - [F902]</span>
+
+<div class="viewcode-block" id="HT_info">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.HT_info">[docs]</a>
+<span class="k">class</span> <span class="nc">HT_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[F900] - [F902]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;HT 高圧モード／電子銃／アノード情報</span>
 <span class="sd">    </span>
 <span class="sd">    Dark        : Dark current value       [0.1uA] --&gt; [uA]</span>
@@ -302,8 +335,8 @@
 <span class="sd">    ht_state    : HT off/on</span>
 <span class="sd">    ems_state   : Emission off/on</span>
 <span class="sd">    ems_status  : Operating state of Emission {0:stable, 1:ascending, 2:descending}</span>
-<span class="sd">    es_state    : Energy shfit off/on</span>
-<span class="sd">    es_value    : Energy shfit current value [0.2eV] --&gt; [eV]</span>
+<span class="sd">    es_state    : Energy shift off/on</span>
+<span class="sd">    es_value    : Energy shift current value [0.2eV] --&gt; [eV]</span>
 <span class="sd">    htsub_state : Setting of HT subsystem</span>
 <span class="sd">    ht_value    : HT current value         [V]</span>
 <span class="sd">    a1,a2       : A1/A2 target value       [10V] --&gt; [V]</span>
@@ -328,7 +361,10 @@
             <span class="k">return</span> <span class="bp">self</span></div>
 
 
-<div class="viewcode-block" id="HTsub_info"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.HTsub_info">[docs]</a><span class="k">class</span> <span class="nc">HTsub_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[F901] - ?</span>
+
+<div class="viewcode-block" id="HTsub_info">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.HTsub_info">[docs]</a>
+<span class="k">class</span> <span class="nc">HTsub_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[F901] - ?</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;HT 高圧モード／エミッション情報</span>
 <span class="sd">    </span>
 <span class="sd">    htsub_status: Operating status of HT subsystem</span>
@@ -341,8 +377,8 @@
 <span class="sd">    ht_state    : HT off/on</span>
 <span class="sd">    ems_state   : Emission off/on</span>
 <span class="sd">    ems_status  : Operating state of Emission {0:stable, 1:ascending, 2:descending}</span>
-<span class="sd">    es_state    : Energy shfit off/on</span>
-<span class="sd">    es_value    : Energy shfit current value [0.2eV] --&gt; [eV]</span>
+<span class="sd">    es_state    : Energy shift off/on</span>
+<span class="sd">    es_value    : Energy shift current value [0.2eV] --&gt; [eV]</span>
 <span class="sd">    htsub_state : Setting of HT subsystem</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
@@ -353,7 +389,10 @@
             <span class="k">return</span> <span class="bp">self</span></div>
 
 
-<div class="viewcode-block" id="HTsub2_info"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.HTsub2_info">[docs]</a><span class="k">class</span> <span class="nc">HTsub2_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N309] - ?</span>
+
+<div class="viewcode-block" id="HTsub2_info">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.HTsub2_info">[docs]</a>
+<span class="k">class</span> <span class="nc">HTsub2_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N309] - ?</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;HT 高圧モード／エミッション情報</span>
 <span class="sd">    </span>
 <span class="sd">    ht_value    : HT current value         [V]</span>
@@ -373,7 +412,10 @@
             <span class="k">return</span> <span class="bp">self</span></div>
 
 
-<div class="viewcode-block" id="Current_info"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Current_info">[docs]</a><span class="k">class</span> <span class="nc">Current_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N404] - ?</span>
+
+<div class="viewcode-block" id="Current_info">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Current_info">[docs]</a>
+<span class="k">class</span> <span class="nc">Current_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N404] - ?</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Current density 照射電流密度</span>
 <span class="sd">    </span>
 <span class="sd">    value   : Current density    [0.01pA/cm2]</span>
@@ -381,7 +423,10 @@
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="Screen_info"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Screen_info">[docs]</a><span class="k">class</span> <span class="nc">Screen_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N401] - [C320,C321][C325] ! WHITE-TEMCENTER only</span>
+
+<div class="viewcode-block" id="Screen_info">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Screen_info">[docs]</a>
+<span class="k">class</span> <span class="nc">Screen_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N401] - [C320,C321][C325] ! WHITE-TEMCENTER only</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Screen status スクリーン情報</span>
 <span class="sd">    </span>
 <span class="sd">    pose    : {0:0+, 1:7+, 2:90+} degs</span>
@@ -389,12 +434,16 @@
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="Detector_info"><a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Detector_info">[docs]</a><span class="k">class</span> <span class="nc">Detector_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N627] - [D170][D171]</span>
+
+<div class="viewcode-block" id="Detector_info">
+<a class="viewcode-back" href="../../../pyJeol.legacy.html#pyJeol.legacy.info.Detector_info">[docs]</a>
+<span class="k">class</span> <span class="nc">Detector_info</span><span class="p">(</span><span class="n">Infodict</span><span class="p">):</span> <span class="c1">#[N627] - [D170][D171]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Detector status (!25H)</span>
 <span class="sd">    N, SEI, EDS, BIPRISM, UDFI, TVCAM_U, SSCAM_U, FARADAY, BS, HRD : (10)</span>
 <span class="sd">    DFI_U, FI_U, CR_F, SCR_L, DFI_B, BFI_B, SSCAM_B, TVCAM_B, EELS : (9)</span>
 <span class="sd">    TVCAM_GIF, SSCAM_GIF, BEI_TOPO, BEI_COMPO, SEI_TOPO, SEI_COMPO : (6) BEI/SEI</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
+
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -460,8 +509,8 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
     </div>
   </body>
 </html>

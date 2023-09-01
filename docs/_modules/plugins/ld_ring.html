@@ -2,19 +2,19 @@
 
 <!doctype html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>plugins.ld_ring &#8212; wxpj  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
     
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -46,7 +46,6 @@
   <h1>Source code for plugins.ld_ring</h1><div class="highlight"><pre>
 <span></span><span class="ch">#! python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
 <span class="kn">import</span> <span class="nn">wx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span><span class="n">exp</span><span class="p">,</span><span class="n">cos</span><span class="p">,</span><span class="n">sin</span>
@@ -59,17 +58,25 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="calc_dist"><a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.calc_dist">[docs]</a><span class="k">def</span> <span class="nf">calc_dist</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+<div class="viewcode-block" id="calc_dist">
+<a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.calc_dist">[docs]</a>
+<span class="k">def</span> <span class="nf">calc_dist</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">complex</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span> <span class="o">*</span> <span class="n">u</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">u</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="calc_aspect"><a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.calc_aspect">[docs]</a><span class="k">def</span> <span class="nf">calc_aspect</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+
+<div class="viewcode-block" id="calc_aspect">
+<a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.calc_aspect">[docs]</a>
+<span class="k">def</span> <span class="nf">calc_aspect</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
     <span class="n">t</span> <span class="o">*=</span> <span class="n">pi</span><span class="o">/</span><span class="mi">180</span>
     <span class="c1">## return ((1+r) * u + (1-r) * np.conj(u) * exp(2j*t)) / 2</span>
     <span class="k">return</span> <span class="n">u</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span><span class="o">*</span><span class="n">t</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="calc_fcc_spacings"><a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.calc_fcc_spacings">[docs]</a><span class="k">def</span> <span class="nf">calc_fcc_spacings</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+
+<div class="viewcode-block" id="calc_fcc_spacings">
+<a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.calc_fcc_spacings">[docs]</a>
+<span class="k">def</span> <span class="nf">calc_fcc_spacings</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calc reciprocal lattice distance (lattice &lt; N).</span>
 <span class="sd">    a: lattice constant for FCC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -81,7 +88,10 @@
     <span class="k">return</span> <span class="n">lr</span></div>
 
 
-<div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Model">[docs]</a><span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Model">
+<a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Model">[docs]</a>
+<span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;FCC 多結晶リングパターンモデル</span>
 <span class="sd">    </span>
 <span class="sd">    Angles  : scattering angles [rad] (n=0 included)</span>
@@ -100,7 +110,9 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">parent</span>
     
-<div class="viewcode-block" id="Model.basegrid"><a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Model.basegrid">[docs]</a>    <span class="k">def</span> <span class="nf">basegrid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<div class="viewcode-block" id="Model.basegrid">
+<a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Model.basegrid">[docs]</a>
+    <span class="k">def</span> <span class="nf">basegrid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;描画範囲の基準グリッド (複素数配列の組) を返す．</span>
 <span class="sd">        円の描画リストは n=0 を含む必要はないので [1:] を返す．</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -108,8 +120,11 @@
         <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span> <span class="o">*</span> <span class="n">pi</span>
         <span class="n">p</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="o">+</span> <span class="n">cam</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span><span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Angles</span><span class="p">]</span></div>
+
     
-<div class="viewcode-block" id="Model.residual"><a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Model.residual">[docs]</a>    <span class="k">def</span> <span class="nf">residual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitting_params</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="Model.residual">
+<a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Model.residual">[docs]</a>
+    <span class="k">def</span> <span class="nf">residual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitting_params</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;最小自乗法の剰余函数</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cam</span><span class="p">,</span> <span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">fitting_params</span>
@@ -132,10 +147,14 @@
         <span class="n">res</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">xc</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">yc</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">rc</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">&quot;</span><span class="o">*</span><span class="mi">72</span> <span class="o">+</span> <span class="s2">&quot;point(</span><span class="si">{}</span><span class="s2">): residual </span><span class="si">{:g}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="nb">sum</span><span class="p">(</span><span class="n">res</span><span class="p">)),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">res</span></div></div>
+        <span class="k">return</span> <span class="n">res</span></div>
+</div>
 
 
-<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Plugin">
+<a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Plugin">[docs]</a>
+<span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Distortion fitting of ring.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">menukey</span> <span class="o">=</span> <span class="s2">&quot;Plugins/&amp;Measure Tools/&quot;</span>
@@ -148,25 +167,26 @@
     <span class="n">fitting_params</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
         <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_params</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio_params</span><span class="p">)</span>
     
-<div class="viewcode-block" id="Plugin.Init"><a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Plugin.Init">[docs]</a>    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.Init">
+<a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Plugin.Init">[docs]</a>
+    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         
+        <span class="n">kwds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="mf">5e-3</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dist_params</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">/</span><span class="mf">1e5</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{:.3G}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">),</span>
-            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">/</span><span class="mf">1e5</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{:.3G}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">),</span>
+            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">/</span><span class="mf">1e5</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{:.3g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">),</span>
+            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">/</span><span class="mf">1e5</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{:.3g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ratio_params</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;γ&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;φ&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">),</span>
+            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;γ&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">),</span>
+            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;φ&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">grid_params</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;cam&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">5e4</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="mf">100.0</span><span class="p">),</span>
-            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;xc&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">),</span>
-            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;yc&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">),</span>
+            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;cam&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">5e4</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="mf">100.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">),</span>
+            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;xc&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">),</span>
+            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;yc&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">),</span>
         <span class="p">)</span>
-        <span class="k">for</span> <span class="n">lp</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dist_params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio_params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_params</span><span class="p">):</span>
-            <span class="n">lp</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="p">())</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">btn</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;+Execute&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span><span class="mi">22</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">Start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">))</span>
@@ -184,13 +204,19 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Fitting_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">init_grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">axes</span><span class="p">)</span></div>
+
     
-<div class="viewcode-block" id="Plugin.init_grid"><a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Plugin.init_grid">[docs]</a>    <span class="k">def</span> <span class="nf">init_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.init_grid">
+<a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Plugin.init_grid">[docs]</a>
+    <span class="k">def</span> <span class="nf">init_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
         <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">basegrid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid_params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Arts</span> <span class="o">=</span> <span class="p">[</span><span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="p">[],</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">]</span>\
                   <span class="o">+</span> <span class="p">[</span><span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="p">[],</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span>  <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">]</span></div>
+
     
-<div class="viewcode-block" id="Plugin.calc"><a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Plugin.calc">[docs]</a>    <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.calc">
+<a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Plugin.calc">[docs]</a>
+    <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate aspect ratio.</span>
 <span class="sd">        </span>
 <span class="sd">        アスペクト比： R1=Y/X, R2=Y2/X2 を計算する．</span>
@@ -226,9 +252,12 @@
             <span class="c1">## &quot;Total(R50) = {:.2%}&quot;.format(d + (r-1)*2),</span>
         <span class="p">)))</span>
         <span class="k">return</span> <span class="n">R1</span><span class="p">,</span> <span class="n">R2</span></div>
+
     
-<div class="viewcode-block" id="Plugin.run"><a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Plugin.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Caluculate ellipse parameters for fitting the plotted markers.</span>
+<div class="viewcode-block" id="Plugin.run">
+<a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Plugin.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate ellipse parameters for fitting the plotted markers.</span>
 <span class="sd">        </span>
 <span class="sd">        [S-Lbutton] Skip estimation of the nearest maximum peak.</span>
 <span class="sd">        </span>
@@ -274,12 +303,12 @@
                   <span class="s2">&quot;:res </span><span class="si">{:g}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">res</span><span class="p">))</span> <span class="o">/</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="p">()</span>
             
-            <span class="n">frame</span><span class="o">.</span><span class="n">update_attributes</span><span class="p">(</span>
-                <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span>
-                <span class="n">annotation</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()),</span>
-            <span class="p">)</span></div>
+            <span class="n">frame</span><span class="o">.</span><span class="n">annotation</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span></div>
+
     
-<div class="viewcode-block" id="Plugin.find_near_maximum"><a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Plugin.find_near_maximum">[docs]</a>    <span class="k">def</span> <span class="nf">find_near_maximum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">times</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.find_near_maximum">
+<a class="viewcode-back" href="../../plugins.html#plugins.ld_ring.Plugin.find_near_maximum">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_near_maximum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">times</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the nearest maximum peak position</span>
 <span class="sd">        in the specified region and number of loops.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -294,7 +323,9 @@
                     <span class="n">ly</span><span class="p">,</span> <span class="n">lx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span> <span class="n">buf</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
                     <span class="n">pp</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="o">+</span><span class="n">lx</span><span class="o">-</span><span class="n">n</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="n">ly</span><span class="o">-</span><span class="n">n</span><span class="p">))</span>
             <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pp</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-        <span class="k">return</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span></div></div>
+        <span class="k">return</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span></div>
+</div>
+
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -354,8 +385,8 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
     </div>
   </body>
 </html>

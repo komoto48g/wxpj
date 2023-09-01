@@ -2,19 +2,19 @@
 
 <!doctype html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>wxpyJemacs &#8212; wxpj  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=532c1bf3" />
     
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -76,12 +76,16 @@
 <span class="kn">import</span> <span class="nn">pyDM3reader</span> <span class="k">as</span> <span class="nn">DM3lib</span>
 
 
-<div class="viewcode-block" id="MainFrame"><a class="viewcode-back" href="../wxpyJemacs.html#wxpyJemacs.MainFrame">[docs]</a><span class="k">class</span> <span class="nc">MainFrame</span><span class="p">(</span><span class="n">Frame</span><span class="p">):</span>
+<div class="viewcode-block" id="MainFrame">
+<a class="viewcode-back" href="../wxpyJemacs.html#wxpyJemacs.MainFrame">[docs]</a>
+<span class="k">class</span> <span class="nc">MainFrame</span><span class="p">(</span><span class="n">Frame</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Frontend of Graph and Plug manager.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">Name</span> <span class="o">=</span> <span class="s2">&quot;pyJemacs&quot;</span>
     
-<div class="viewcode-block" id="MainFrame.About"><a class="viewcode-back" href="../wxpyJemacs.html#wxpyJemacs.MainFrame.About">[docs]</a>    <span class="k">def</span> <span class="nf">About</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MainFrame.About">
+<a class="viewcode-back" href="../wxpyJemacs.html#wxpyJemacs.MainFrame.About">[docs]</a>
+    <span class="k">def</span> <span class="nf">About</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">info</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">adv</span><span class="o">.</span><span class="n">AboutDialogInfo</span><span class="p">()</span>
         <span class="n">info</span><span class="o">.</span><span class="n">Name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Name</span>
         <span class="n">info</span><span class="o">.</span><span class="n">Version</span> <span class="o">=</span> <span class="n">__version__</span>
@@ -93,6 +97,7 @@
         <span class="n">info</span><span class="o">.</span><span class="n">Artists</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">info</span><span class="o">.</span><span class="n">SetWebSite</span><span class="p">(</span><span class="s2">&quot;https://github.com/komoto48g&quot;</span><span class="p">)</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">adv</span><span class="o">.</span><span class="n">AboutBox</span><span class="p">(</span><span class="n">info</span><span class="p">)</span></div>
+
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">Frame</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -100,6 +105,8 @@
         <span class="c1">## Notify process</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nfront</span> <span class="o">=</span> <span class="n">NotifyFront</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notify</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfront</span><span class="o">.</span><span class="n">notify</span>
+        
+        <span class="n">wx</span><span class="o">.</span><span class="n">CallAfter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="p">[</span><span class="s2">&quot;File&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
             <span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ID_NETWORK</span><span class="p">,</span> <span class="s2">&quot;&amp;Notify&quot;</span><span class="p">,</span> <span class="s2">&quot;Notify logger&quot;</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ITEM_CHECK</span><span class="p">,</span>
@@ -119,6 +126,9 @@
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">icon</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">SetIcon</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Icon</span><span class="p">(</span><span class="n">icon</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">BITMAP_TYPE_ICO</span><span class="p">))</span>
         
+        <span class="k">if</span> <span class="n">home</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span> <span class="c1"># Add home (to import Frame)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">home</span><span class="p">)</span>
+        
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home</span><span class="p">,</span> <span class="s1">&#39;plugins&#39;</span><span class="p">))</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="c1"># Add local . to import si:local first</span>
         <span class="k">try</span><span class="p">:</span>
@@ -129,9 +139,12 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Executing </span><span class="si">{</span><span class="n">si</span><span class="o">.</span><span class="vm">__file__</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">si</span><span class="o">.</span><span class="n">init_mainframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
     
-<div class="viewcode-block" id="MainFrame.Destroy"><a class="viewcode-back" href="../wxpyJemacs.html#wxpyJemacs.MainFrame.Destroy">[docs]</a>    <span class="k">def</span> <span class="nf">Destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MainFrame.Destroy">
+<a class="viewcode-back" href="../wxpyJemacs.html#wxpyJemacs.MainFrame.Destroy">[docs]</a>
+    <span class="k">def</span> <span class="nf">Destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nfront</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">Frame</span><span class="o">.</span><span class="n">Destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
     
     <span class="c1">## --------------------------------</span>
     <span class="c1">## read/write buffers</span>
@@ -145,7 +158,9 @@
                <span class="s2">&quot;All files (*.*)|*.*&quot;</span><span class="p">,</span>
     <span class="p">]</span>
     
-<div class="viewcode-block" id="MainFrame.read_buffer"><a class="viewcode-back" href="../wxpyJemacs.html#wxpyJemacs.MainFrame.read_buffer">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="MainFrame.read_buffer">
+<a class="viewcode-back" href="../wxpyJemacs.html#wxpyJemacs.MainFrame.read_buffer">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read_buffer</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read a buffer from path file (override) +.dm3 extension.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -174,8 +189,11 @@
                 <span class="k">return</span> <span class="n">buf</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="n">info</span><span class="p">}</span>
         
         <span class="k">return</span> <span class="n">Frame</span><span class="o">.</span><span class="n">read_buffer</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+
     
-<div class="viewcode-block" id="MainFrame.write_buffer"><a class="viewcode-back" href="../wxpyJemacs.html#wxpyJemacs.MainFrame.write_buffer">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="MainFrame.write_buffer">
+<a class="viewcode-back" href="../wxpyJemacs.html#wxpyJemacs.MainFrame.write_buffer">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">write_buffer</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">buf</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write a buffer to path file (override) +.dm3 extension.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -183,7 +201,9 @@
         <span class="k">if</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;.dm3&#39;</span><span class="p">,</span> <span class="s1">&#39;.dm4&#39;</span><span class="p">,</span> <span class="s1">&#39;.img&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
                 <span class="s2">&quot;Saving as </span><span class="si">{}</span><span class="s2"> type is not supported&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">Frame</span><span class="o">.</span><span class="n">write_buffer</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">Frame</span><span class="o">.</span><span class="n">write_buffer</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span></div>
+</div>
+
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -194,7 +214,7 @@
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;-s&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.jssn&quot;</span><span class="p">):</span>
-                <span class="n">v</span> <span class="o">+=</span> <span class="s1">&#39;.jssn&#39;</span>
+                <span class="n">v</span> <span class="o">+=</span> <span class="s2">&quot;.jssn&quot;</span>
             <span class="n">session</span> <span class="o">=</span> <span class="n">v</span>
         <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;--pyjem&quot;</span><span class="p">:</span>
             <span class="n">online</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
@@ -282,8 +302,8 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
     </div>
   </body>
 </html>

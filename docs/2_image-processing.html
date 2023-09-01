@@ -2,20 +2,20 @@
 
 <!doctype html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>3. Image Analysis &#8212; wxpj  documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css?v=532c1bf3" />
     
-    <script src="_static/jquery.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -52,11 +52,11 @@
           <div class="body" role="main">
             
   <section id="image-analysis">
-<h1><span class="section-number">3. </span>Image Analysis<a class="headerlink" href="#image-analysis" title="Permalink to this heading"></a></h1>
+<h1><span class="section-number">3. </span>Image Analysis<a class="headerlink" href="#image-analysis" title="Link to this heading"></a></h1>
 <section id="pitch">
-<h2><span class="section-number">3.1. </span>Pitch<a class="headerlink" href="#pitch" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">3.1. </span>Pitch<a class="headerlink" href="#pitch" title="Link to this heading"></a></h2>
 <section id="visualization-and-validation">
-<h3><span class="section-number">3.1.1. </span>Visualization and Validation<a class="headerlink" href="#visualization-and-validation" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">3.1.1. </span>Visualization and Validation<a class="headerlink" href="#visualization-and-validation" title="Link to this heading"></a></h3>
 <p>If you input an image into the software (black box), it will output numerical values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Q<span class="colon">:</span></dt>
@@ -81,7 +81,7 @@ It is important to visually check the results.</p>
 </section>
 </section>
 <section id="roundness-of-diff-patterns">
-<h2><span class="section-number">3.2. </span>Roundness of DIFF patterns<a class="headerlink" href="#roundness-of-diff-patterns" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">3.2. </span>Roundness of DIFF patterns<a class="headerlink" href="#roundness-of-diff-patterns" title="Link to this heading"></a></h2>
 <ol class="arabic">
 <li><p>Load <a class="reference internal" href="plugins.html#module-plugins.pragma_ring" title="plugins.pragma_ring"><code class="xref py py-mod docutils literal notranslate"><span class="pre">plugins.pragma_ring</span></code></a>.
 The plugin is displaed in [Pragma Tools/Ring] panel.</p>
@@ -102,7 +102,7 @@ Then, the following steps are performed:</p>
 <ol class="arabic simple">
 <li><p>Search center position and fit the model parameters.</p></li>
 <li><p>Find peaks in radial distribution and plot some markers on the ring pattern.</p></li>
-<li><p>Caluculate ellipse parameters for fitting the plotted markers.</p></li>
+<li><p>Calculate ellipse parameters for fitting the plotted markers.</p></li>
 </ol>
 <p>If succeeded, the roundness values will be displayed in [ld_ring] panel.</p>
 <figure class="align-default" id="pragma-ring">
@@ -139,7 +139,7 @@ To remove a marker, select it and press [delete].</p>
 </div>
 </section>
 <section id="distortion-of-mag-images">
-<h2><span class="section-number">3.3. </span>Distortion of MAG images<a class="headerlink" href="#distortion-of-mag-images" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">3.3. </span>Distortion of MAG images<a class="headerlink" href="#distortion-of-mag-images" title="Link to this heading"></a></h2>
 <ol class="arabic">
 <li><p>Load <a class="reference internal" href="plugins.html#module-plugins.pragma_grid" title="plugins.pragma_grid"><code class="xref py py-mod docutils literal notranslate"><span class="pre">plugins.pragma_grid</span></code></a>.
 The plugin is displaed in [Pragma Tools/Grid] panel.</p></li>
@@ -153,7 +153,7 @@ The plugin is displaed in [Pragma Tools/Grid] panel.</p></li>
 Then, the following steps are performed:</p>
 <ol class="arabic simple">
 <li><p>Find circles and plot some markers on the center positions.</p></li>
-<li><p>Caluculate grid parameters for fitting the plotted markers.</p></li>
+<li><p>Calculate grid parameters for fitting the plotted markers.</p></li>
 </ol>
 <p>If succeeded, the roundness values will be displayed in [ld_grid] panel.</p>
 <figure class="align-default" id="pragma-grid">
@@ -164,7 +164,7 @@ Then, the following steps are performed:</p>
 <video controls src="./_static/2-2_pragma_grid_clip.mp4" width=800>
 </video></section>
 <section id="appendix">
-<h2><span class="section-number">3.4. </span>Appendix<a class="headerlink" href="#appendix" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">3.4. </span>Appendix<a class="headerlink" href="#appendix" title="Link to this heading"></a></h2>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>The annotation is displayed in the infobar (bottom side of the image).</p>
@@ -172,7 +172,7 @@ Then, the following steps are performed:</p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>You can also use the bufer list view [C-b] to see the annotations.</p>
+<p>You can also use the buffer list view [C-b] to see the annotations.</p>
 <figure class="align-default">
 <img alt="_images/2-a_buffer-listview.png" src="_images/2-a_buffer-listview.png" />
 </figure>
@@ -261,8 +261,8 @@ Then, the following steps are performed:</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
     </div>
   </body>
 </html>
