@@ -16,8 +16,6 @@ def init_mainframe(self):
     np.set_printoptions(linewidth=256)
     
     ## Film/CCD [mm/pix]
-    ## 0.042 mm/pix - FLASH @JEM-3300
-    ## 0.365 mm/pix - LSCR @JEM-Z300FSC
     u = 0.042
     self.graph.unit = u
     self.output.unit = u
@@ -64,8 +62,8 @@ def init_mainframe(self):
     self.load_plug(viewframe)
     self.load_plug(viewfft)
     
-    from pyJeol import legacy
-    legacy.cmdl.TIMEOUT = 1
+    ## from pyJeol import legacy
+    ## legacy.cmdl.TIMEOUT = 1
     ## legacy.set_host('localhost', offline=0)
     
     ## --------------------------------
@@ -101,6 +99,8 @@ def init_mainframe(self):
                   filter = dict(self.notify.efilter.Info),
                  modestr = self.notify.modestr, # joined substr
         )
-        frame.name = "{acq_datetime:%Y_%m%d_%H%M%S}-{mode},"\
-                     "slit={filter[slit_width]}eV,bin{binning}-{exposure:g}s".format(
-                     mode=self.notify.modestr, **frame.attributes)
+        frame.name = ("{acq_datetime:%Y_%m%d_%H%M%S}-{modestr} "
+                      "slit={filter[slit_width]}eV " # slit or None [eV]
+                      "bin{binning}-{exposure:g}s"
+                      .format(
+                        **frame.attributes)).replace('None', '-')
