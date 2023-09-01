@@ -19,9 +19,6 @@ class Plugin(Layer):
         self.sigma = LParam("sigma", (0,100,1), 0)
         self.thresh = LParam("thresh", (0,255,1), 128)
         
-        self.hi = LParam("hi", (0, 1, 0.005), 0)
-        self.lo = LParam("lo", (0, 1, 0.005), 0)
-        
         btn = wx.Button(self, label="+Bin", size=(40,22))
         btn.Bind(wx.EVT_BUTTON, lambda v: self.calc())
         btn.SetToolTip(self.calc.__doc__.strip())
@@ -29,10 +26,6 @@ class Plugin(Layer):
         self.layout(
             self.params, title="blur-threshold",
             type='vspin', cw=0, lw=40, tw=40
-        )
-        self.layout(
-            (self.hi, self.lo), title="cutoff [%]",
-            type='vspin', cw=-1, lw=16, tw=44
         )
         self.layout((btn,))
     
@@ -62,7 +55,7 @@ class Plugin(Layer):
         if k > 1:
             src = edi.imcv(src)
             src = cv2.GaussianBlur(src, (k, k), s)
-        buf = edi.imconv(src, lo=self.lo.value, hi=self.hi.value) # -> uint8
+        buf = edi.imconv(src) # -> uint8
         self.output.load(buf, "*Gauss*", localunit=frame.unit)
         
         if 0 < otsu < 1:
