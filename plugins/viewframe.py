@@ -200,7 +200,8 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
     def OnSaveItems(self, evt):
         frames = self.Target.all_frames
         selected_frames = [frames[j] for j in self.selected_items]
-        self.parent.parent.export_index(frames=selected_frames)
+        if selected_frames:
+            self.parent.parent.export_index(frames=selected_frames)
     
     def OnEditAnnotation(self, evt):
         frames = self.Target.all_frames
