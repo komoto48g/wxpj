@@ -9,8 +9,8 @@ import wx
 from wx import aui
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
-from jgdk import Layer, Icon, Icon2, Clipboard
 from mwx.framework import CtrlInterface, Menu
+from jgdk import Layer, Icon, Icon2, Clipboard
 
 
 if wx.VERSION < (4,1,0):
@@ -101,6 +101,7 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         self.handler.clear(0)
         
         self.Bind(wx.EVT_LIST_COL_CLICK, self.OnSortItems)
+        self.Bind(wx.EVT_LIST_ITEM_FOCUSED, self.OnItemFocused)
         
         self.context = { # bound to the target
             None: {
@@ -201,7 +202,10 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         frames = self.Target.all_frames
         selected_frames = [frames[j] for j in self.selected_items]
         if selected_frames:
+            self.parent.message("Exporting {} frames.".format(len(selected_frames)))
             self.parent.parent.export_index(frames=selected_frames)
+        else:
+            self.parent.message("No frame selected.")
     
     def OnEditAnnotation(self, evt):
         frames = self.Target.all_frames
@@ -211,6 +215,13 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
                     'Enter an annotation', frame.annotation) as dlg:
                 if dlg.ShowModal() == wx.ID_OK:
                     frame.annotation = dlg.Value
+    
+    def OnItemFocused(self, evt):
+        frames = self.Target.all_frames
+        if frames:
+            frame = frames[evt.Index]
+            self.parent.message(frame.pathname)
+        evt.Skip()
     
     ## --------------------------------
     ## Actions of frame-handler
