@@ -540,5 +540,3 @@ if __name__ == "__main__":
     g = Stage()
     fl = Filter()
     ht = HTsys()
-    
-    import mwx; mwx.deb()

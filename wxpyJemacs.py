@@ -24,7 +24,6 @@ import wx
 import wx.adv
 import numpy as np
 
-import mwx
 from jgdk import Frame
 from pyJeol.temsys import NotifyFront
 import pyDM3reader as DM3lib
