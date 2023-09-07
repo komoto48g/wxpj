@@ -101,7 +101,7 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         self.handler.clear(0)
         
         self.Bind(wx.EVT_LIST_COL_CLICK, self.OnSortItems)
-        self.Bind(wx.EVT_LIST_ITEM_FOCUSED, self.OnItemFocused)
+        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
         
         self.context = { # bound to the target
             None: {
@@ -216,11 +216,10 @@ class CheckList(CheckListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
                 if dlg.ShowModal() == wx.ID_OK:
                     frame.annotation = dlg.Value
     
-    def OnItemFocused(self, evt):
+    def OnItemSelected(self, evt):
         frames = self.Target.all_frames
-        if frames:
-            frame = frames[evt.Index]
-            self.parent.message(frame.pathname)
+        frame = frames[evt.Index]
+        self.parent.message(frame.pathname)
         evt.Skip()
     
     ## --------------------------------
