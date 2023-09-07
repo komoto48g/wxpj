@@ -9,7 +9,7 @@ import wx
 from wx import aui
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
-from mwx.framework import CtrlInterface, Menu
+from mwx.framework import CtrlInterface, Menu, StatusBar
 from jgdk import Layer, Icon, Icon2, Clipboard
 
 
@@ -263,14 +263,25 @@ class Plugin(Layer):
     def all_pages(self):
         return [self.nb.GetPage(i) for i in range(self.nb.PageCount)]
     
+    @property
+    def message(self):
+        return self.statusline
+    
     def Init(self):
         self.nb = aui.AuiNotebook(self, size=(400,150),
             style = (aui.AUI_NB_DEFAULT_STYLE|aui.AUI_NB_RIGHT)
                   &~(aui.AUI_NB_CLOSE_ON_ACTIVE_TAB|aui.AUI_NB_MIDDLE_CLICK_CLOSE)
         )
-        self.layout((self.nb,), expand=2, border=0)
         self.attach(self.graph, "graph")
         self.attach(self.output, "output")
+        
+        self.statusline = StatusBar(self)
+        self.layout((
+                self.nb,
+                (self.statusline, 0, wx.EXPAND),
+            ),
+            expand=2, border=0, vspacing=0,
+        )
         
         def on_focus_set(v):
             self.parent.select_view(self.nb.CurrentPage.Target)
