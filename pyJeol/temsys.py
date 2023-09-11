@@ -10,11 +10,11 @@ from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from mwx import FSM, Frame, MiniFrame
 try:
     import pyJem2 as pj
-    from legacy import info as jinfo
+    from legacy import info as jInfo
     from legacy import cntf, cmdl
 except ImportError:
     from . import pyJem2 as pj
-    from .legacy import info as jinfo
+    from .legacy import info as jInfo
     from .legacy import cntf, cmdl
 
 
@@ -150,7 +150,7 @@ class NotifyHandler(object):
             default = TEM
         )
         
-        ## pj で定義されている情報 (pmpj/Info) を参照する
+        ## pj で定義されている情報 (Info) を参照する
         
         self.illumination = pj.Illumination() # -> illumination_info
         self.imaging = pj.Imaging() # -> imaging_info
@@ -166,11 +166,11 @@ class NotifyHandler(object):
         
         ## pj で定義されない情報はここで実体を定義する
         
-        self.htsub_info = jinfo.HTsub_info()
-        self.htsub2_info = jinfo.HTsub2_info()
-        self.cur_info = jinfo.Current_info()
-        self.scr_info = jinfo.Screen_info()
-        self.det_info = jinfo.Detector_info()
+        self.htsub_info = jInfo.HTsub_info()
+        self.htsub2_info = jInfo.HTsub2_info()
+        self.cur_info = jInfo.Current_info()
+        self.scr_info = jInfo.Screen_info()
+        self.det_info = jInfo.Detector_info()
         
         _NC = cntf.NotifyCommand
         
@@ -689,7 +689,7 @@ if __name__ == "__main__":
     
     class TestFrame(Frame):
         def __init__(self, *args, **kwargs):
-            super(TestFrame, self).__init__(*args, **kwargs)
+            Frame.__init__(self, *args, **kwargs)
             
             self.nfront = NotifyFront(self)
             self.notify = self.nfront.notify
