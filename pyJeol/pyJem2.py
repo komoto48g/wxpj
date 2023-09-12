@@ -39,10 +39,10 @@ def uhex(v, vmax=0xffff):
 
 def staticproperty(name):
     def fget(self):
-        TEM.foci.read()
-        return TEM.foci[name].value
+        TEM.fsys.read()
+        return TEM.fsys[name].value
     def fset(self, v):
-        TEM.foci.Write(name, uhex(v))
+        TEM.fsys.Write(name, uhex(v))
     return property(fget, fset)
 
 def static2property(xname, yname):
@@ -76,7 +76,7 @@ class TEM(object):
     To avoid overhead, once the value of a coil is accessed,
     the value can be retrieved from the system class.
     
-    [foci/lsys/dsys]
+    [fsys/lsys/dsys]
     通常 system によって 0.5s 以内に通知が行われます．
     読み出し速度が重要でないい場合は，これらのオブジェクトを参照してください．
     
@@ -92,7 +92,9 @@ class TEM(object):
     
     lsys = LensSystem()  # Lens Free Control System
     dsys = DeflSystem()  # Deflector system
-    foci = FocusSystem() # Focus system
+    fsys = FocusSystem() # Focus system
+    
+    foci = fsys  #: for backward compatibility
     
     def __getitem__(self, name):
         return getattr(self, name)
@@ -148,27 +150,27 @@ class TEM(object):
     
     @property
     def FL(self):
-        TEM.foci.read()
-        return FLHex(TEM.foci['FLC'].value,
-                     TEM.foci['FLF'].value).value
+        TEM.fsys.read()
+        return FLHex(TEM.fsys['FLC'].value,
+                     TEM.fsys['FLF'].value).value
     
     @FL.setter
     def FL(self, v):
         u = FLHex(0, uhex(v, FLHex.maxval))
-        TEM.foci.Write('FLC', u.coarse)
-        TEM.foci.Write('FLF', u.fine)
+        TEM.fsys.Write('FLC', u.coarse)
+        TEM.fsys.Write('FLF', u.fine)
     
     @property
     def OL(self):
-        TEM.foci.read()
-        return OLHex(TEM.foci['OLC'].value,
-                     TEM.foci['OLF'].value).value
+        TEM.fsys.read()
+        return OLHex(TEM.fsys['OLC'].value,
+                     TEM.fsys['OLF'].value).value
     
     @OL.setter
     def OL(self, v):
         u = OLHex(0, uhex(v, OLHex.maxval))
-        TEM.foci.Write('OLC', u.coarse)
-        TEM.foci.Write('OLF', u.fine)
+        TEM.fsys.Write('OLC', u.coarse)
+        TEM.fsys.Write('OLF', u.fine)
     
     Brightness = CL3
     DiffFocus = IL1

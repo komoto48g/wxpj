@@ -64,9 +64,7 @@ class NotifyHandler(object):
         
         try:
             self.tem.lsys.read()
-            ## self.tem.dsys.read()
-            ## self.tem.foci.read()
-            self.handler("lens_notify", self.tem.foci.read())
+            self.handler("lens_notify", self.tem.fsys.read())
             self.handler("defl_notify", self.tem.dsys.read())
             
             self.handler("ht_info", self.hts.request())
@@ -109,7 +107,7 @@ class NotifyHandler(object):
                    "gonio_info" : [ None ], # called when gonio is drived
                   "filter_info" : [ None ], # called when filter is drived
                   "lens_notify" : [ None, lambda v: self.tem.lsys(v),
-                                          lambda v: self.tem.foci(v) ], # called when lense data changed
+                                          lambda v: self.tem.fsys(v) ], # called when lense data changed
                   "defl_notify" : [ None, lambda v: self.tem.dsys(v) ], # called when deflector data changed
                   #"lfc_notify" : [ None ], # called when Lens Free Control is used (obsolete)
                      "fl_focus" : [ None ],

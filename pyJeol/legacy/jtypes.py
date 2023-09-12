@@ -113,6 +113,7 @@ class LensSystem(Systembase):
         self["FLF"].range = (0, 0xfff)
         self["FLCOMP1"].range = (0, 0xfff)
         self["FLCOMP2"].range = (0, 0xfff)
+        
         for lp in self.Lenses:
             lp.bind(self.write)
             lp.bind(self.setflag, target='check')
