@@ -2,19 +2,19 @@
 
 <!doctype html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pyJeol.pyJem2 &#8212; wxpj  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
     
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -78,20 +78,28 @@
 <span class="c1">## MAJOR_MODE = &#39;TEM&#39;, &#39;STEM&#39;</span>
 <span class="c1">## USER_MODE  = &#39;MAINT&#39;, &#39;USER&#39;, &#39;STDBASE&#39;</span>
 
-<div class="viewcode-block" id="uhex"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.uhex">[docs]</a><span class="k">def</span> <span class="nf">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mh">0xffff</span><span class="p">):</span>
+<div class="viewcode-block" id="uhex">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.uhex">[docs]</a>
+<span class="k">def</span> <span class="nf">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mh">0xffff</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="mi">0</span>
     <span class="k">elif</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">vmax</span><span class="p">:</span> <span class="k">return</span> <span class="n">vmax</span>
     <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="staticproperty"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.staticproperty">[docs]</a><span class="k">def</span> <span class="nf">staticproperty</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+
+<div class="viewcode-block" id="staticproperty">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.staticproperty">[docs]</a>
+<span class="k">def</span> <span class="nf">staticproperty</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">fget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
     <span class="k">def</span> <span class="nf">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="static2property"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.static2property">[docs]</a><span class="k">def</span> <span class="nf">static2property</span><span class="p">(</span><span class="n">xname</span><span class="p">,</span> <span class="n">yname</span><span class="p">):</span>
+
+<div class="viewcode-block" id="static2property">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.static2property">[docs]</a>
+<span class="k">def</span> <span class="nf">static2property</span><span class="p">(</span><span class="n">xname</span><span class="p">,</span> <span class="n">yname</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">fget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">TEM</span><span class="o">.</span><span class="n">dsys</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">TEM</span><span class="o">.</span><span class="n">dsys</span><span class="p">[</span><span class="n">xname</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
@@ -102,7 +110,10 @@
     <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="TEM"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.TEM">[docs]</a><span class="k">class</span> <span class="nc">TEM</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TEM">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.TEM">[docs]</a>
+<span class="k">class</span> <span class="nc">TEM</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;TEM Lens/Defl system</span>
 <span class="sd">    </span>
 <span class="sd">    通常は，このクラスを基底クラスとしてプロパティを継承／使用するが，</span>
@@ -122,7 +133,7 @@
 <span class="sd">    To avoid overhead, once the value of a coil is accessed,</span>
 <span class="sd">    the value can be retrieved from the system class.</span>
 <span class="sd">    </span>
-<span class="sd">    [foci/lsys/dsys]</span>
+<span class="sd">    [fsys/lsys/dsys]</span>
 <span class="sd">    通常 system によって 0.5s 以内に通知が行われます．</span>
 <span class="sd">    読み出し速度が重要でないい場合は，これらのオブジェクトを参照してください．</span>
 <span class="sd">    </span>
@@ -138,7 +149,9 @@
     
     <span class="n">lsys</span> <span class="o">=</span> <span class="n">LensSystem</span><span class="p">()</span>  <span class="c1"># Lens Free Control System</span>
     <span class="n">dsys</span> <span class="o">=</span> <span class="n">DeflSystem</span><span class="p">()</span>  <span class="c1"># Deflector system</span>
-    <span class="n">foci</span> <span class="o">=</span> <span class="n">FocusSystem</span><span class="p">()</span> <span class="c1"># Focus system</span>
+    <span class="n">fsys</span> <span class="o">=</span> <span class="n">FocusSystem</span><span class="p">()</span> <span class="c1"># Focus system</span>
+    
+    <span class="n">foci</span> <span class="o">=</span> <span class="n">fsys</span> <span class="c1">#: for backward compatibility</span>
     
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
@@ -194,27 +207,27 @@
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">FL</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">FLHex</span><span class="p">(</span><span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="p">[</span><span class="s1">&#39;FLC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                     <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="p">[</span><span class="s1">&#39;FLF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">FLHex</span><span class="p">(</span><span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="p">[</span><span class="s1">&#39;FLC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                     <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="p">[</span><span class="s1">&#39;FLF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
     
     <span class="nd">@FL</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">FL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">FLHex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">FLHex</span><span class="o">.</span><span class="n">maxval</span><span class="p">))</span>
-        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;FLC&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">coarse</span><span class="p">)</span>
-        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;FLF&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">fine</span><span class="p">)</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;FLC&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">coarse</span><span class="p">)</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;FLF&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">fine</span><span class="p">)</span>
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">OL</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">OLHex</span><span class="p">(</span><span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="p">[</span><span class="s1">&#39;OLC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                     <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="p">[</span><span class="s1">&#39;OLF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">OLHex</span><span class="p">(</span><span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="p">[</span><span class="s1">&#39;OLC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                     <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="p">[</span><span class="s1">&#39;OLF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
     
     <span class="nd">@OL</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">OL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">OLHex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">OLHex</span><span class="o">.</span><span class="n">maxval</span><span class="p">))</span>
-        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;OLC&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">coarse</span><span class="p">)</span>
-        <span class="n">TEM</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;OLF&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">fine</span><span class="p">)</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;OLC&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">coarse</span><span class="p">)</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;OLF&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">fine</span><span class="p">)</span>
     
     <span class="n">Brightness</span> <span class="o">=</span> <span class="n">CL3</span>
     <span class="n">DiffFocus</span> <span class="o">=</span> <span class="n">IL1</span>
@@ -224,7 +237,10 @@
     <span class="n">FLFocus</span> <span class="o">=</span> <span class="n">FL</span></div>
 
 
-<div class="viewcode-block" id="Optics"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Optics">[docs]</a><span class="k">class</span> <span class="nc">Optics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Optics">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Optics">[docs]</a>
+<span class="k">class</span> <span class="nc">Optics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Optics mode base(mixin) class</span>
 <span class="sd">    </span>
 <span class="sd">    The inherited class must have MODES and Info which is to be notified.</span>
@@ -232,10 +248,13 @@
 <span class="sd">    The Mode.setter can only function if the class has a request command _set_mode.</span>
 <span class="sd">    The Selector.setter can only function if the class has a request command _set_index.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Optics.request"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Optics.request">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Optics.request">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Optics.request">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_info</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">i</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">key</span> <span class="k">else</span> <span class="n">i</span></div>
+
     
     <span class="c1">## @classmethod</span>
     <span class="c1">## def refer(self, key=None):</span>
@@ -285,7 +304,10 @@
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MODES</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="n">j</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="Illumination"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Illumination">[docs]</a><span class="k">class</span> <span class="nc">Illumination</span><span class="p">(</span><span class="n">Optics</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Illumination">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Illumination">[docs]</a>
+<span class="k">class</span> <span class="nc">Illumination</span><span class="p">(</span><span class="n">Optics</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Illumination system</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MODES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span> <span class="c1"># number of (spot, alpha)</span>
@@ -322,7 +344,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_alpha</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="Imaging"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Imaging">[docs]</a><span class="k">class</span> <span class="nc">Imaging</span><span class="p">(</span><span class="n">Optics</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Imaging">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Imaging">[docs]</a>
+<span class="k">class</span> <span class="nc">Imaging</span><span class="p">(</span><span class="n">Optics</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Imaging system</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MODES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span>
@@ -354,7 +379,10 @@
                 <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Mag index is out of range: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="Omega"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Omega">[docs]</a><span class="k">class</span> <span class="nc">Omega</span><span class="p">(</span><span class="n">Optics</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Omega">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Omega">[docs]</a>
+<span class="k">class</span> <span class="nc">Omega</span><span class="p">(</span><span class="n">Optics</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Omega/Projection system</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MODES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span>
@@ -368,9 +396,12 @@
     <span class="n">_set_mode</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E620&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!2H2I2H2IH5dH&quot;</span><span class="p">)</span>
     <span class="n">_set_index</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E614&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">)</span>
     
-<div class="viewcode-block" id="Omega.isEnabled"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Omega.isEnabled">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Omega.isEnabled">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Omega.isEnabled">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">isEnabled</span><span class="p">():</span>
         <span class="k">return</span> <span class="s1">&#39;Spectrum&#39;</span> <span class="ow">in</span> <span class="n">Omega</span><span class="o">.</span><span class="n">MODES</span></div>
+
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">Dispersion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -387,17 +418,24 @@
                 <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Dispersion index is out of range: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
 
 
+
 <span class="c1">## --------------------------------</span>
 <span class="c1">## PMPJ GLOBAL INSTRUMENTAL CLASSE </span>
 <span class="c1">## --------------------------------</span>
 
-<div class="viewcode-block" id="Device"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Device">[docs]</a><span class="k">class</span> <span class="nc">Device</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Device">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Device">[docs]</a>
+<span class="k">class</span> <span class="nc">Device</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Device base class mixin</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Device.request"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Device.request">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Device.request">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Device.request">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_info</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">i</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">key</span> <span class="k">else</span> <span class="n">i</span></div></div>
+        <span class="k">return</span> <span class="n">i</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">key</span> <span class="k">else</span> <span class="n">i</span></div>
+</div>
+
     
     <span class="c1">## @classmethod</span>
     <span class="c1">## def refer(self, key=None):</span>
@@ -405,7 +443,9 @@
     <span class="c1">##     return i[key] if key else i</span>
 
 
-<div class="viewcode-block" id="EOsys"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.EOsys">[docs]</a><span class="k">class</span> <span class="nc">EOsys</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<div class="viewcode-block" id="EOsys">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.EOsys">[docs]</a>
+<span class="k">class</span> <span class="nc">EOsys</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;EM device system</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Eos_info</span><span class="p">()</span>
@@ -457,7 +497,10 @@
         <span class="n">EOsys</span><span class="o">.</span><span class="n">_set_lscr</span><span class="p">(</span><span class="mi">0</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="mi">2</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="HTsys"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.HTsys">[docs]</a><span class="k">class</span> <span class="nc">HTsys</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HTsys">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.HTsys">[docs]</a>
+<span class="k">class</span> <span class="nc">HTsys</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;HT system</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">HT_info</span><span class="p">()</span>
@@ -487,7 +530,10 @@
         <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">HTsys</span><span class="o">.</span><span class="n">_set_a2</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)))</span></div>
 
 
-<div class="viewcode-block" id="Aperture"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture">[docs]</a><span class="k">class</span> <span class="nc">Aperture</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Aperture">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture">[docs]</a>
+<span class="k">class</span> <span class="nc">Aperture</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Aperture system: Normal type (extype=0)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">APERTURES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span>
@@ -509,15 +555,21 @@
     <span class="n">_get_pos</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E407&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!2H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span>
     <span class="n">_set_pos</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E402&quot;</span><span class="p">,</span> <span class="s2">&quot;!2H&quot;</span><span class="p">,</span> <span class="s2">&quot;!2H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span>
     
-<div class="viewcode-block" id="Aperture.stop"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture.stop">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Aperture.stop">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture.stop">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">stop</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">2</span><span class="p">):</span>
             <span class="n">ioset</span><span class="p">(</span><span class="mh">0xffff01c4</span> <span class="o">+</span> <span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">ioset</span><span class="p">(</span><span class="mh">0xffff01c4</span> <span class="o">+</span> <span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
     
-<div class="viewcode-block" id="Aperture.select_apt_name"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture.select_apt_name">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Aperture.select_apt_name">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture.select_apt_name">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">select_apt_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_apt</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">APERTURES</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
+
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">APERTURES</span><span class="p">:</span>
@@ -525,12 +577,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Id</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">APERTURES</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     
-<div class="viewcode-block" id="Aperture.select"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Aperture.select">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture.select">[docs]</a>
+    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_select_apt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Id</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span></div>
+
     
-<div class="viewcode-block" id="Aperture.select_hole"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture.select_hole">[docs]</a>    <span class="k">def</span> <span class="nf">select_hole</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<div class="viewcode-block" id="Aperture.select_hole">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture.select_hole">[docs]</a>
+    <span class="k">def</span> <span class="nf">select_hole</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_apt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Id</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_sel</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
+
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">holes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -578,7 +636,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">select_hole</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="ApertureEx"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.ApertureEx">[docs]</a><span class="k">class</span> <span class="nc">ApertureEx</span><span class="p">(</span><span class="n">Aperture</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ApertureEx">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.ApertureEx">[docs]</a>
+<span class="k">class</span> <span class="nc">ApertureEx</span><span class="p">(</span><span class="n">Aperture</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Aperture system: Extended type (extype=1)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">APERTURES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span>
@@ -597,14 +658,20 @@
     <span class="n">_select_apt</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E421&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span>
     <span class="c1">## _select_hole2 = Command(&quot;E422&quot;, &quot;!2H&quot;, &quot;!2H&quot;, device=&#39;APT&#39;) # x ▼not supported</span>
     
-<div class="viewcode-block" id="ApertureEx.stop"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.ApertureEx.stop">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ApertureEx.stop">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.ApertureEx.stop">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">stop</span><span class="p">():</span>
         <span class="c1">## 拡張絞りタイプ</span>
         <span class="n">ioset</span><span class="p">(</span><span class="mh">0xffff084e</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># x</span>
-        <span class="n">ioset</span><span class="p">(</span><span class="mh">0xffff085e</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># y</span></div></div>
+        <span class="n">ioset</span><span class="p">(</span><span class="mh">0xffff085e</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># y</span></div>
+</div>
 
 
-<div class="viewcode-block" id="Stage"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Stage">[docs]</a><span class="k">class</span> <span class="nc">Stage</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Stage">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Stage">[docs]</a>
+<span class="k">class</span> <span class="nc">Stage</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Stage (Gonio) system</span>
 <span class="sd">    </span>
 <span class="sd">    X,Y,Z unit [um] and TX,TY [deg]</span>
@@ -669,7 +736,10 @@
         <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">Stage</span><span class="o">.</span><span class="n">_set_ytilt_rel</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)))</span></div>
 
 
-<div class="viewcode-block" id="Filter"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Filter">[docs]</a><span class="k">class</span> <span class="nc">Filter</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Filter">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Filter">[docs]</a>
+<span class="k">class</span> <span class="nc">Filter</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter system</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Filter_info</span><span class="p">()</span>
@@ -711,6 +781,7 @@
             <span class="n">Filter</span><span class="o">.</span><span class="n">_set_es</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># energy shift off</span></div>
 
 
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="c1">## cmdl.HOST = cntf.HOST = &#39;172.17.41.201&#39;</span>
     <span class="c1">## cmdl.HOST = cntf.HOST = &#39;localhost&#39;</span>
@@ -733,8 +804,6 @@
     <span class="n">g</span> <span class="o">=</span> <span class="n">Stage</span><span class="p">()</span>
     <span class="n">fl</span> <span class="o">=</span> <span class="n">Filter</span><span class="p">()</span>
     <span class="n">ht</span> <span class="o">=</span> <span class="n">HTsys</span><span class="p">()</span>
-    
-    <span class="kn">import</span> <span class="nn">mwx</span><span class="p">;</span> <span class="n">mwx</span><span class="o">.</span><span class="n">deb</span><span class="p">()</span>
 </pre></div>
 
             <div class="clearer"></div>
@@ -786,8 +855,8 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
     </div>
   </body>
 </html>

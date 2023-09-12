@@ -1664,6 +1664,11 @@ Set False (0) to use the specified threshold value.</p></li>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="plugins.viewframe.CheckList.OnItemSelected">
+<span class="sig-name descname"><span class="pre">OnItemSelected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.OnItemSelected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.OnItemSelected" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="plugins.viewframe.CheckList.on_frame_loaded">
 <span class="sig-name descname"><span class="pre">on_frame_loaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plugins/viewframe.html#CheckList.on_frame_loaded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.viewframe.CheckList.on_frame_loaded" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -1711,14 +1716,20 @@ Set False (0) to use the specified threshold value.</p></li>
 <dd></dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="plugins.viewframe.Plugin.selected_buffers">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selected_buffers</span></span><a class="headerlink" href="#plugins.viewframe.Plugin.selected_buffers" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="plugins.viewframe.Plugin.focused_buffer">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">focused_buffer</span></span><a class="headerlink" href="#plugins.viewframe.Plugin.focused_buffer" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="plugins.viewframe.Plugin.message">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">message</span></span><a class="headerlink" href="#plugins.viewframe.Plugin.message" title="Link to this definition"></a></dt>
+<dd><p>Prints the values to a stream, or to sys.stdout by default.</p>
+<dl class="simple">
+<dt>sep</dt><dd><p>string inserted between values, default a space.</p>
+</dd>
+<dt>end</dt><dd><p>string appended after the last value, default a newline.</p>
+</dd>
+<dt>file</dt><dd><p>a file-like object (stream); defaults to the current sys.stdout.</p>
+</dd>
+<dt>flush</dt><dd><p>whether to forcibly flush the stream.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plugins.viewframe.Plugin.Init">
