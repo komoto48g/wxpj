@@ -6,7 +6,7 @@ import numpy as np
 from numpy import nan, pi
 from numpy.fft import fft2,fftshift
 
-from jgdk import Layer, LParam, Button, TextCtrl, Choice
+from jgdk import Layer, LParam, Button, Choice
 import editor as edi
 
 
@@ -46,7 +46,7 @@ class Plugin(Layer):
         self.grid.Selection = 0
         
         self.text = wx.TextCtrl(self, size=(140,40),
-                             style=wx.TE_READONLY|wx.TE_MULTILINE)
+                                style=wx.TE_READONLY|wx.TE_MULTILINE)
         self.layout((
                 Button(self, "1. Eval", self.evaluate, icon='help', size=(72,-1)),
                 self.choice,
