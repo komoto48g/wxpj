@@ -13,6 +13,13 @@ def init_mainframe(self):
     
     np.set_printoptions(linewidth=256)
     
+    paths = [
+        r"C:\usr\home\workspace\tem13\wxpj-data",
+    ]
+    for f in paths:
+        if f not in sys.path:
+            sys.path.append(f)
+    
     ## Film/CCD [mm/pix]
     u = 0.042
     self.graph.unit = u
