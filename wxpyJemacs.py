@@ -109,8 +109,9 @@ class MainFrame(Frame):
         """
         if path[-4:] in ('.dm3', '.dm4'):
             dmf = DM3lib.DM3(path)
-            ## return dmf.image # PIL Image file
-            return dmf.imagedata, {'header': dmf.info}
+            buf = dmf.imagedata # cf. dmf.image <PIL Image file>
+            info = dmf.info
+            return buf, {'header': info}
         
         if path[-4:] == '.img':
             with open(path, 'rb') as i:
@@ -129,7 +130,7 @@ class MainFrame(Frame):
                     raise Exception("unexpected data type {!r}".format(type))
                 buf = np.frombuffer(i.read(), dtype)
                 buf.resize(h, w)
-                return buf, {'header': info}
+            return buf, {'header': info}
         
         return Frame.read_buffer(path)
     

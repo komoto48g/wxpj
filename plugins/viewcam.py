@@ -126,7 +126,7 @@ class Plugin(Layer):
 if __name__ == "__main__":
     import JeolCamera
     from jgdk import Frame
-    
+
     app = wx.App()
     frm = Frame(None)
     frm.load_plug(__file__, show=1)
