@@ -16,6 +16,7 @@ from matplotlib import patches
 from matplotlib import cm
 
 from jgdk import Layer, LParam, Button
+from wxpyJemacs import Frame
 
 
 class Plugin(Layer):
@@ -34,7 +35,6 @@ class Plugin(Layer):
         )
         self.layout((
                 Button(self, "imconv", self.test_imconv),
-                Button(self, "imtrunc", self.test_imtrunc),
                 Button(self, "imcorr", self.test_imcorr),
                 Button(self, "ellipse", self.test_ellipse),
             ),
@@ -95,6 +95,17 @@ class Plugin(Layer):
 ## Image conv/plot/view
 ## --------------------------------
 
+def read_buffer(path):
+    buf, info = Frame.read_buffer(path)
+    if not isinstance(buf, np.ndarray):
+        buf = np.array(buf)
+    return buf, info
+
+
+def write_buffer(path, buf):
+    return Frame.write_buffer(path, buf)
+
+
 def imcv(src):
     """Convert the image to a type that can be applied to the cv2 function.
     Note:
@@ -106,20 +117,26 @@ def imcv(src):
 
 
 def imtrunc(buf, lo=0, hi=0):
-    """Truncate buffer with cutoff lo/hi [%].
-    """
-    if lo > 0 or hi > 0:
-        a = np.percentile(buf, lo)
-        b = np.percentile(buf, 100-hi)
-        img = buf.copy()
-        img[buf < a] = a
-        img[buf > b] = b
-        return img
-    return buf
+    """Truncate buffer with cutoff (lo, hi) %."""
+    a = np.percentile(buf, lo)
+    b = np.percentile(buf, 100-hi)
+    img = buf.copy()
+    img[buf < a] = a
+    img[buf > b] = b
+    return img
+
+
+def imcrop(buf, ratio, center):
+    """Crop buffer area with the specified ratio."""
+    h, w = buf.shape
+    a = int(w * ratio / 2)
+    b = int(h * ratio / 2)
+    x, y = center or (w//2, h//2)
+    return buf[y-b:y+b, x-a:x+a]
 
 
 def imconv(buf, lo=0, hi=0):
-    """Convert buffer to dst<uint8> with cutoff lo/hi [%].
+    """Convert buffer to dst<uint8> with cutoff (lo, hi) %.
     
     >>> dst = (src-a) * 255 / (b-a)
     """
