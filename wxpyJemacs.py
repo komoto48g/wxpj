@@ -25,6 +25,7 @@ import wx.adv
 import numpy as np
 
 from jgdk import Frame
+
 from pyJeol.temsys import NotifyFront
 import pyDM3reader as DM3lib
 
@@ -69,16 +70,19 @@ class MainFrame(Frame):
         self.menubar.reset()
         
         home = os.path.dirname(__file__)
-        
-        icon = os.path.join(home, "Jun.ico")
-        if os.path.exists(icon):
+        try:
+            icon = os.path.join(home, "Jun.ico")
             self.SetIcon(wx.Icon(icon, wx.BITMAP_TYPE_ICO))
+        except Exception:
+            pass
         
-        if home not in sys.path: # Add home (to import Frame)
-            sys.path.insert(0, home)
-        
-        sys.path.insert(0, os.path.join(home, 'plugins'))
-        sys.path.insert(0, '') # Add local . to import si:local first
+        paths = [
+            home,   # Add ~/ to import si:home
+            '',     # Add ./ to import si:local first
+        ]
+        for f in paths:
+            if f not in sys.path:
+                sys.path.insert(0, f)
         try:
             si = __import__('siteinit')
         except ImportError:
@@ -142,6 +146,7 @@ class MainFrame(Frame):
         if ext in ('.dm3', '.dm4', '.img'):
             raise NotImplementedError(
                 "Saving as {} type is not supported".format(ext))
+        
         return Frame.write_buffer(path, buf)
 
 
