@@ -170,7 +170,6 @@ class Plugin(Layer):
         ## R = 50
         ## d = abs(complex(*self.dist_params)) * (R ** 2)
         
-        ## Outputs the fitting parameters in the text control.
         self.text.SetValue("\n".join((
             "Y/X = {:.3f}".format(R1),
             "Y2/X2 = {:.3f}".format(R2),
