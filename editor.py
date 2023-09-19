@@ -16,7 +16,7 @@ from matplotlib import patches
 from matplotlib import cm
 
 from jgdk import Layer, LParam, Button
-from wxpyJemacs import Frame
+from wxpyJemacs import MainFrame as Frame
 
 
 class Plugin(Layer):
@@ -67,7 +67,7 @@ class Plugin(Layer):
             el = ellipses[0]
             self.draw_ellipse(el, src, frame)
         else:
-            self.Draw(None)
+            self.Draw()
         print(self.message('\b')) # Show the last message.
     
     def draw_ellipse(self, el, src, frame):
@@ -380,8 +380,8 @@ def qrsp(x, y):
 
 
 def find_local_extremum(x, y, max=True):
-    """2次式で極値の箇所を推定する．
-    Estimates the max/min peak pos y[x] and the value.
+    """Estimates the max/min peak pos y[x] and the value.
+    2次式で極値の箇所を推定する．
     
     x は昇順ソートされていること．少なくとも３点なくてはならない
     推定位置が範囲内になければ，範囲内の極値点と判定結果を返す
@@ -408,8 +408,8 @@ def find_local_extremum(x, y, max=True):
 
 
 def find_local_extremum2d(src, max=True):
-    """2次式で極値の箇所を推定する．
-    Estimates the max/min peak pos [x,y] and the value.
+    """Estimate the max/min peak pos [x,y] and the value.
+    2次式で極値の箇所を推定する．
     
     推定位置が範囲内にあるとは限らない．
     max:凹，min:凸，および，鞍点の場合は None を返す
@@ -448,6 +448,8 @@ def match_pattern(src, temp, method=cv2.TM_CCOEFF_NORMED):
 
 
 def eval_shift(src, src2, div=4):
+    """Evaluate image shfit src --> src2 in pix.
+    """
     h, w = src.shape
     ht, wt = h//div, w//div  # template pattern in the src divided by div
     xt = int((w - wt) / 2)   # template position lt = (xt, yt)
