@@ -11,7 +11,7 @@ from jgdk import Layer, LParam
 import editor as edi
 
 from lcrf import Model
-from viewfft import fftresize
+from viewfft import fftcrop
 
 
 def logpolar(src, r0, r1, center=None):
@@ -181,7 +181,7 @@ class Plugin(Layer):
     
     @property
     def selected_roi(self):
-        return fftresize(self.selected_frame.roi, maxsize=2048)
+        return fftcrop(self.selected_frame.roi, maxsize=2048)
     
     def calc_ring(self, show=True):
         """Calc log-polar of ring pattern.

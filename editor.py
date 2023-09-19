@@ -126,8 +126,9 @@ def imtrunc(buf, lo=0, hi=0):
     return img
 
 
-def imcrop(buf, ratio, center):
-    """Crop buffer area with the specified ratio."""
+def imcrop(buf, ratio, center=None):
+    """Crop buffer area with the specified ratio.
+    """
     h, w = buf.shape
     a = int(w * ratio / 2)
     b = int(h * ratio / 2)
@@ -197,6 +198,7 @@ def clf():
 
 clear = clf
 
+
 ## --------------------------------
 ## Image processing
 ## --------------------------------
@@ -239,6 +241,19 @@ def grad2(src, ksize=5):
     return cv2.Laplacian(src, cv2.CV_32F, ksize=ksize)
 
 
+## --------------------------------
+## Image FFT misc.
+## --------------------------------
+
+def fftcrop(src, maxsize=2048):
+    """Resize src image to 2**N squared ROI."""
+    h, w = src.shape
+    m = min(h, w, maxsize)
+    n = pow(2, int(np.log2(m))-1) # binary digits
+    i, j = h//2, w//2
+    return src[i-n:i+n, j-n:j+n]
+
+
 def Corr(src, tmp):
     """Correlation product
     using an fft-based array flipped convolution (i.e. correlation).
@@ -258,7 +273,7 @@ def Corr(src, tmp):
 
 ## --------------------------------
 ## Image analysis
-##   find peaks, figures, etc.
+##   find peaks, ellipses, etc.
 ## --------------------------------
 
 def centroid(src):
