@@ -451,15 +451,16 @@ def eval_shift(src, src2, div=4):
     """Evaluate image shfit src --> src2 in pix.
     """
     h, w = src.shape
+    yo, xo = h//2, w//2
     ht, wt = h//div, w//div  # template pattern in the src divided by div
-    xt = int((w - wt) / 2)   # template position lt = (xt, yt)
-    yt = int((h - ht) / 2)   # 
+    xt = xo - wt//2
+    yt = yo - ht//2
     temp = src[yt:yt+ht, xt:xt+wt]
     
-    dst, (l,t) = match_pattern(src2, temp)
+    dst, (x, y) = match_pattern(src2, temp)
     ho, wo = dst.shape
-    dx = l - wo//2
-    dy = t - ho//2
+    dx = x - wo//2
+    dy = y - ho//2
     return np.array((dx, dy))
 
 
