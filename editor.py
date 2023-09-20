@@ -126,16 +126,6 @@ def imtrunc(buf, lo=0, hi=0):
     return img
 
 
-def imcrop(buf, ratio, center=None):
-    """Crop buffer area with the specified ratio.
-    """
-    h, w = buf.shape
-    a = int(w * ratio / 2)
-    b = int(h * ratio / 2)
-    x, y = center or (w//2, h//2)
-    return buf[y-b:y+b, x-a:x+a]
-
-
 def imconv(buf, lo=0, hi=0):
     """Convert buffer to dst<uint8> with cutoff (lo, hi) %.
     
