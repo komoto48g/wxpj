@@ -209,6 +209,7 @@ def rotate(src, angle):
     M = cv2.getRotationMatrix2D((w/2, h/2), angle, scale=1)
     return cv2.warpAffine(src, M, (w, h))
 
+
 ## def blur1d(src, lw=11, window=np.hanning):
 ##     """Smooth 1D array.
 ##     window function: hanning, hamming, bartlett, blackman, or, None
@@ -245,16 +246,16 @@ def grad2(src, ksize=5):
 ## Image FFT misc.
 ## --------------------------------
 
-def fftcrop(src, maxsize=2048):
+def fftcrop(src, maxsize=2048, center=None):
     """Resize src image to 2**N squared ROI."""
     h, w = src.shape
     m = min(h, w, maxsize)
     n = pow(2, int(np.log2(m))-1) # binary digits
-    i, j = h//2, w//2
-    return src[i-n:i+n, j-n:j+n]
+    x, y = center or (w//2, h//2)
+    return src[y-n:y+n, x-n:x+n]
 
 
-def Corr(src, tmp):
+def Corr(src, tmp, mode='same'):
     """Correlation product
     using an fft-based array flipped convolution (i.e. correlation).
     
@@ -263,12 +264,12 @@ def Corr(src, tmp):
     src = src.astype(np.float32) - src.mean()
     tmp = tmp.astype(np.float32) - tmp.mean()
     if src.ndim == 1:
-        return signal.fftconvolve(src, tmp[::-1], mode='same')
+        return signal.fftconvolve(src, tmp[::-1], mode)
     else:
         ## *not-FFT-based* is too slow
         ## return signal.convolve2d(src, tmp[::-1,::-1], mode='same')
         ## return signal.correlate2d(src, tmp, mode='same', boundary='fill')
-        return signal.fftconvolve(src, tmp[::-1,::-1], mode='same')
+        return signal.fftconvolve(src, tmp[::-1,::-1], mode)
 
 
 ## --------------------------------
