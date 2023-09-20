@@ -223,14 +223,14 @@ class Plugin(Layer):
         src = frame.buffer
         h, w = src.shape
         
-        d = h//8            # 特徴点を選んで ROI をとりたいところだが，
+        n = h//8            # 特徴点を選んで ROI をとりたいところだが，
         i, j = h//2, w//2   # ld_cgrid を使うので，画像の中心であることが必須．
-        temp = src[i-d:i+d, j-d:j+d] # とりあえずの真ん中らへんをテキトーに ROI る
+        temp = src[i-n:i+n, j-n:j+n]
         
         self.message("processing pattern matching...")
         src = edi.imconv(src)
         temp = edi.imconv(temp)
-        dst, (l,t) = edi.match_pattern(src, temp)
+        dst, (x, y) = edi.match_pattern(src, temp)
         
         ## <float32> to <uint8>
         dst = edi.imconv(dst)
@@ -240,7 +240,7 @@ class Plugin(Layer):
         src = frame.roi
         h, w = src.shape
         
-        n = pow(2, int(np.log2(min(h, w)))-1) # resize to 2**N squared ROI (N=2n)
+        n = pow(2, int(np.log2(min(h, w)))-1) # resize to 2n = 2**N squared ROI
         i, j = h//2, w//2
         src = src[i-n:i+n,j-n:j+n]
         

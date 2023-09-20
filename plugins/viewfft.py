@@ -11,16 +11,7 @@ from numpy.fft import fft2,ifft2,fftshift,ifftshift
 ## import cv2
 
 from jgdk import Layer, Param
-
-
-def fftresize(src, maxsize=None):
-    """Resize src image to 2**n squared ROI."""
-    h, w = src.shape
-    if not maxsize:
-        maxsize = w
-    n = pow(2, int(np.log2(min(h, w, maxsize))) - 1)
-    i, j = h//2, w//2
-    return src[i-n:i+n,j-n:j+n]
+from editor import fftcrop
 
 
 class Plugin(Layer):
@@ -56,7 +47,7 @@ class Plugin(Layer):
         frame = self.graph.frame
         if frame:
             self.message("FFT execution...")
-            src = fftresize(frame.roi)
+            src = fftcrop(frame.roi)
             h, w = src.shape
             
             dst = fftshift(fft2(src))

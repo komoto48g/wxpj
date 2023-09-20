@@ -126,15 +126,6 @@ def imtrunc(buf, lo=0, hi=0):
     return img
 
 
-def imcrop(buf, ratio, center):
-    """Crop buffer area with the specified ratio."""
-    h, w = buf.shape
-    a = int(w * ratio / 2)
-    b = int(h * ratio / 2)
-    x, y = center or (w//2, h//2)
-    return buf[y-b:y+b, x-a:x+a]
-
-
 def imconv(buf, lo=0, hi=0):
     """Convert buffer to dst<uint8> with cutoff (lo, hi) %.
     
@@ -197,6 +188,7 @@ def clf():
 
 clear = clf
 
+
 ## --------------------------------
 ## Image processing
 ## --------------------------------
@@ -206,6 +198,7 @@ def rotate(src, angle):
     h, w = src.shape
     M = cv2.getRotationMatrix2D((w/2, h/2), angle, scale=1)
     return cv2.warpAffine(src, M, (w, h))
+
 
 ## def blur1d(src, lw=11, window=np.hanning):
 ##     """Smooth 1D array.
@@ -239,7 +232,20 @@ def grad2(src, ksize=5):
     return cv2.Laplacian(src, cv2.CV_32F, ksize=ksize)
 
 
-def Corr(src, tmp):
+## --------------------------------
+## Image FFT misc.
+## --------------------------------
+
+def fftcrop(src, maxsize=2048, center=None):
+    """Resize src image to 2**N squared ROI."""
+    h, w = src.shape
+    m = min(h, w, maxsize)
+    n = pow(2, int(np.log2(m))-1) # binary digits
+    x, y = center or (w//2, h//2)
+    return src[y-n:y+n, x-n:x+n]
+
+
+def Corr(src, tmp, mode='same'):
     """Correlation product
     using an fft-based array flipped convolution (i.e. correlation).
     
@@ -248,17 +254,17 @@ def Corr(src, tmp):
     src = src.astype(np.float32) - src.mean()
     tmp = tmp.astype(np.float32) - tmp.mean()
     if src.ndim == 1:
-        return signal.fftconvolve(src, tmp[::-1], mode='same')
+        return signal.fftconvolve(src, tmp[::-1], mode)
     else:
         ## *not-FFT-based* is too slow
         ## return signal.convolve2d(src, tmp[::-1,::-1], mode='same')
         ## return signal.correlate2d(src, tmp, mode='same', boundary='fill')
-        return signal.fftconvolve(src, tmp[::-1,::-1], mode='same')
+        return signal.fftconvolve(src, tmp[::-1,::-1], mode)
 
 
 ## --------------------------------
 ## Image analysis
-##   find peaks, figures, etc.
+##   find peaks, ellipses, etc.
 ## --------------------------------
 
 def centroid(src):
@@ -393,8 +399,9 @@ def find_local_extremum(x, y, max=True):
     N = len(x)
     if N < 3:
         raise ValueError("find_local_extremum: data length must be more than 2")
-    n = np.argmax(y) if max else np.argmin(y) # 最大か最小のどちらかを求める
-    j = 1 if n==0 else N-2 if n==N-1 else n # 端であれば一つ内側にずらしておく
+    
+    n = np.argmax(y) if max else np.argmin(y)   # 最大か最小のどちらかを求める
+    j = 1 if n==0 else N-2 if n==N-1 else n     # 端であれば内側にずらしておく
     dx, dy, convex, ok = qrsp(x[j-1:j+2], y[j-1:j+2]) # ３点評価
     
     valid = ok and (max and convex) or (not max and not convex)
@@ -414,17 +421,19 @@ def find_local_extremum2d(src, max=True):
     推定位置が範囲内にあるとは限らない．
     max:凹，min:凸，および，鞍点の場合は None を返す
     """
-    Ny, Nx = src.shape
-    n = src.argmax() if max else src.argmin()
-    ny, nx = np.unravel_index(n, src.shape)
-    jx = 1 if nx==0 else Nx-2 if nx==Nx-1 else nx
-    jy = 1 if ny==0 else Ny-2 if ny==Ny-1 else ny
-    dx, dzx, cx, ok_x = qrsp([-1,0,1], src[jy, jx-1:jx+2])
-    dy, dzy, cy, ok_y = qrsp([-1,0,1], src[jy-1:jy+2, jx])
+    h, w = src.shape
+    n = src.argmax() if max else src.argmin()   # 最大か最小のどちらかを求める
+    ny, nx = np.unravel_index(n, src.shape)     # 極大値 or 極小値の位置 (x,y)
+    
+    j = 1 if nx==0 else w-2 if nx==w-1 else nx  # 端であれば内側にずらしておく
+    i = 1 if ny==0 else h-2 if ny==h-1 else ny  # 〃
+    
+    dx, dzx, cx, ok_x = qrsp([-1,0,1], src[i, j-1:j+2])
+    dy, dzy, cy, ok_y = qrsp([-1,0,1], src[i-1:i+2, j])
     
     valid = ok_x and ok_y and (max and cx and cy) or not (max or cx or cy)
     if valid:
-        return jx+dx, jy+dy, src[jy,jx]+dzx+dzy, valid
+        return j+dx, i+dy, src[i,j]+dzx+dzy, valid
     return nx, ny, src[ny,nx], valid
 
 
@@ -451,8 +460,8 @@ def eval_shift(src, src2, div=4):
     """Evaluate image shfit src --> src2 in pix.
     """
     h, w = src.shape
-    yo, xo = h//2, w//2
-    ht, wt = h//div, w//div  # template pattern in the src divided by div
+    xo, yo = w//2, h//2
+    wt, ht = w//div, h//div  # template pattern in the src divided by div
     xt = xo - wt//2
     yt = yo - ht//2
     temp = src[yt:yt+ht, xt:xt+wt]
