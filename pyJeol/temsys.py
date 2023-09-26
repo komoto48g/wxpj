@@ -240,15 +240,15 @@ class NotifyHandler(object):
     
     def on_illumination_notify(self, info): #<illumination_info>
         self.substr[0] = "{mode_name}[{spot}-{alpha}]".format(**info)
-        self.__parent.statusbar(self.modestr)
+        self.__parent.message(self.modestr)
     
     def on_imaging_notify(self, info): #<imaging_info>
         self.substr[1] = "{mode_name}[{submodestr}]".format(**info)
-        self.__parent.statusbar(self.modestr)
+        self.__parent.message(self.modestr)
     
     def on_omega_notify(self, info): #<omega_info>
         self.substr[2] = "{mode_name}[{submodestr}]".format(**info).replace('/','_')
-        self.__parent.statusbar(self.modestr)
+        self.__parent.message(self.modestr)
 
 
 class NotifyLogger(wx.ListCtrl, ListCtrlAutoWidthMixin):
@@ -374,7 +374,7 @@ class NotifyFront(MiniFrame):
                 lambda v: self.logger.delete_all()),
         )
         self.menubar.reset()
-        self.statusbar.Show()
+        self.StatusBar.Show()
     
     def Destroy(self):
         self.notify.stop()
