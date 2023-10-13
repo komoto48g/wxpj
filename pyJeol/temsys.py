@@ -320,14 +320,14 @@ class NotifyLogger(wx.ListCtrl, ListCtrlAutoWidthMixin):
     
     def OnMotion(self, evt): #<wx._core.MouseEvent>
         j, flag = self.HitTest(evt.GetPosition())
-        tip = ''
+        text = ''
         if j >= 0:
             item = self.__items[j]
             name = item[0]
             length = len(item[-1].split())
-            tip = "{}:{} ({}bytes)".format(name, NOTIFY_COMMANDS.get(name) or '?', length)
-            tip += '\n' + item[-1]
-        self.ToolTip = tip
+            text = "{}:{} ({}bytes)".format(name, NOTIFY_COMMANDS.get(name) or '?', length)
+            text += '\n' + item[-1]
+        self.ToolTip = text
         evt.Skip()
     
     def copy(self):
