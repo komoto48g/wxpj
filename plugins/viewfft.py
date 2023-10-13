@@ -11,7 +11,7 @@ from numpy.fft import fft2,ifft2,fftshift,ifftshift
 ## import cv2
 
 from jgdk import Layer, Param
-from editor import fftcrop
+import editor as edi
 
 
 class Plugin(Layer):
@@ -47,7 +47,7 @@ class Plugin(Layer):
         frame = self.graph.frame
         if frame:
             self.message("FFT execution...")
-            src = fftcrop(frame.roi)
+            src = edi.fftcrop(frame.roi)
             h, w = src.shape
             
             dst = fftshift(fft2(src))

@@ -43,6 +43,7 @@ def init_mainframe(self):
     ## global reference to output buffer
     import editor as edi
     edi.out = self.output
+    self.edi = edi
     
     self.ed = self.require('editor')
     self.su = self.require('startup')
