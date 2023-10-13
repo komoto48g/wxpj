@@ -29,10 +29,10 @@ class Plugin(Layer):
         self.pchk = wx.CheckBox(self, label="logical unit")
         self.pchk.Value = True
         
-        self.pix = Param("mask", (2,4,8,16,32,64))
+        self.ftor = Param("mask", (2,4,8,16,32,64)) # masking area factor of 1/2
         
         self.layout((self.pchk,), title="normal FFT")
-        self.layout((self.pix,), title="inverse FFT", type=None, style='chkbox', tw=32)
+        self.layout((self.ftor,), title="inverse FFT", style='chkbox', tw=32)
         
         self.parent.define_key('C-f', self.newfft)
         self.parent.define_key('C-S-f', self.newifft)
@@ -67,12 +67,13 @@ class Plugin(Layer):
             self.message("iFFT execution...")
             src = frame.roi
             h, w = src.shape
-            if self.pix.check:
+            
+            if self.ftor.check:
                 y, x = np.ogrid[-h/2:h/2, -w/2:w/2]
-                mask = np.hypot(y,x) > w/self.pix.value
-                frame.roi[mask] = 0
-                frame.update_buffer()
-                frame.parent.draw()
+                mask = np.hypot(y,x) > w / self.ftor.value
+                src = src.copy() # apply mask to the copy
+                src[mask] = 0
+            
             dst = ifft2(ifftshift(src))
             
             self.message("\b Loading image...")
