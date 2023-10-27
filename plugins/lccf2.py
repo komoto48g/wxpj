@@ -7,7 +7,7 @@ from numpy import pi,cos,sin
 from matplotlib import patches
 
 from jgdk import Layer, LParam
-## import editor as edi
+import editor as edi
 
 
 def find_ellipses(src, rmin, rmax, tol=0.75):
@@ -122,17 +122,18 @@ class Plugin(Layer):
                     art.angle = 90-angle
                     self.attach_artists(frame.axes, art)
                     
-                    ## 検出した楕円の中心を記録する
-                    ## xy.append(art.center)
+                    ## 検出した楕円の中心をそのまま記録する (強度の偏りが出る)
+                    ## x, y = art.center
+                    ## xy.append((x[0], y[0]))
                     
-                    ## Show max radius enclosing the area (cf. cv2.minEnclosingCircle)
+                    ## max radius enclosing the area (cf. cv2.minEnclosingCircle)
                     r = int(max(ra, rb) / 2)
                     x, y = int(cx), int(cy)
                     xa = max(0, x-r)
                     ya = max(0, y-r)
                     buf = frame.buffer[ya:y+r+1, xa:x+r+1]
                     
-                    ## NG: local maximum that is found first in the region
+                    ## ▲偏りが出るので NG: local maximum that is found first in the region.
                     ## dy, dx = np.unravel_index(buf.argmax(), buf.shape)
                     
                     ## local maximum :averaged (強度の偏りを考慮する)
@@ -145,13 +146,13 @@ class Plugin(Layer):
                     
                     x, y = frame.xyfrompixel(xa+dx, ya+dy)
                     xy.append((x[0], y[0]))
-                    
+            
             frame.markers = np.array(xy).T # scatter markers if any xy
 
 
 def mask_ellipse(ra, rb, angle):
     r = int(max(ra, rb) /2) # max radius enclosing the area cf. cv2.minEnclosingCircle
-    y, x = np.ogrid[-r:r, -r:r]
+    y, x = np.ogrid[-r:r+1, -r:r+1]
     yo, xo = 0, 0
     t = angle * pi/180
     xx = (x-xo) * cos(t) + (y-yo)*sin(t)
