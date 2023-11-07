@@ -13,7 +13,7 @@ from pyJeol.temisc import Environ
 class Plugin(Layer):
     """Plugins of startup settings.
     """
-    menukey = "File/Options/&Startup"
+    menukey = "File/Options/&Startup\tAlt-s"
     category = "Option"
     unloadable = False
     
@@ -21,7 +21,7 @@ class Plugin(Layer):
     em_std = property(lambda self: self.__em_std)
     
     def Init(self):
-        self.accv_param = Param("Acc.Voltage", (100e3, 200e3, 300e3), 300e3,
+        self.accv_param = Param("Acc.Voltage", (10e3, 100e3, 200e3, 300e3), 300e3,
                 handler=self.set_htv)
         
         ## self.accv_param.reset() # -> call set_htv
