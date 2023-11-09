@@ -5,6 +5,7 @@ import numpy as np
 from numpy import pi
 from scipy import optimize
 from scipy import signal
+from matplotlib import pyplot as plt
 from matplotlib import patches
 
 from jgdk import Layer, LParam
@@ -122,7 +123,9 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     
     fitting_curve = Model(xx, yy)
     
-    ## edi.plot(xx, yy, '+', X, fitting_curve(X))
+    ## plt.plot(xx, yy, '+', X, fitting_curve(X))
+    ## plt.grid(True)
+    ## plt.show()
     
     a = fitting_curve.params[0] = 0 # (平均を基準とする) 全体のオフセット量
     b = fitting_curve.params[1]
@@ -237,9 +240,11 @@ class Plugin(Layer):
         rdist, peaks = find_radial_peaks(rdist)
         
         if self.chkplt.Value: # this should be called for MainThread
-            edi.clf()
-            edi.plot(rdist)
-            edi.plot(peaks, rdist[peaks], 'o')
+            plt.clf()
+            plt.plot(rdist)
+            plt.plot(peaks, rdist[peaks], 'o')
+            plt.grid(True)
+            plt.show()
         print("peaks =", peaks)
         
         ## 強度の高いところにおおざっぱ (oz) にマーカーを打つ (100/3 程度)

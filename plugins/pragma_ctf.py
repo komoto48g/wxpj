@@ -4,9 +4,9 @@ import numpy as np
 from numpy import pi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 from scipy import optimize
+from matplotlib import pyplot as plt
 
 from jgdk import Layer, LParam, Button
-import editor as edi
 
 
 def _make_indices(i, j, N):
@@ -65,7 +65,7 @@ class Plugin(Layer):
             self.cmax,
             None,
             Button(self, "CTF", self.run, icon='->'),
-            Button(self, "clf", edi.clear, icon='-'),
+            Button(self, "clf", plt.clf, icon='-'),
             ),
             row=2,
             type='vspin', style='button', cw=-1, lw=32, tw=50,
@@ -165,14 +165,16 @@ class Plugin(Layer):
         a, b = result[0]
         
         if show:
-            edi.plot(self.lctf.axis**2, self.lctf.data, '--', lw=0.5) # original
-            edi.plot(self.lctf.newaxis, self.lctf.newdata, '-') # interpolated
-            edi.plot(*self.lctf.lpoints, 'o') # filtered peaks
+            plt.plot(self.lctf.axis**2, self.lctf.data, '--', lw=0.5) # original
+            plt.plot(self.lctf.newaxis, self.lctf.newdata, '-') # interpolated
+            plt.plot(*self.lctf.lpoints, 'o') # filtered peaks
             
             ## x = np.linspace(0, 0.1, 1000)
             x = np.arange(0, xx[n-1] * 2, 1e-4)
-            edi.plot(x, a*x**2 + b*x, '-')
-            edi.plot(xx[:n], yy[:n], 'o')
+            plt.plot(x, a*x**2 + b*x, '-')
+            plt.plot(xx[:n], yy[:n], 'o')
+            plt.grid(True)
+            plt.show()
         
         ## --------------------------------
         ## Evaluation of optical consts

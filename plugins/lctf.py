@@ -4,6 +4,7 @@ import numpy as np
 from numpy import pi
 from numpy.fft import fft,ifft,fft2,ifft2,fftshift,fftfreq
 from scipy import signal
+from matplotlib import pyplot as plt
 from matplotlib import patches
 
 from jgdk import Layer, LParam
@@ -84,7 +85,9 @@ def find_ring_center(src, lo, hi, N=256, tol=0.01):
     
     fitting_curve = Model(xx, yy)
     
-    ## edi.plot(xx, yy, '+', X, fitting_curve(X))
+    ## plt.plot(xx, yy, '+', X, fitting_curve(X))
+    ## plt.grid(True)
+    ## plt.show()
     
     fitting_curve.params[0] = 0 # (平均を基準とする) 全体のオフセット量
     fitting_curve.params[1] = 0
@@ -229,7 +232,9 @@ class Plugin(Layer):
         orgdata = np.interp(newaxis, self.axis**2, self.data)
         newdata = smooth1d(orgdata, tol)
         if show:
-            edi.plot(newaxis, newdata, '--', lw=1) # original smoothing data
+            plt.plot(newaxis, newdata, '--', lw=1) # original smoothing data
+            plt.grid(True)
+            plt.show()
         
         newdata, maxima, minima = find_radial_peaks(newdata, tol)
         
@@ -272,13 +277,14 @@ class Plugin(Layer):
         
         print("+ {} low peaks found".format(lp.shape[1]))
         if show:
-            edi.plot(self.axis**2, self.data, '--', lw=0.5) # raw data
-            ## edi.plot(newaxis, orgdata, '--', lw=1) # original data
-            edi.plot(newaxis, newdata, '-', lw=1) # interpolated
-            edi.plot(lx, ly, 'v') # low peaks
-            edi.plot(hx, hy, '^') # high peaks
-            edi.plot(*self.lpoints, 'o')    # filtered peaks
-            
+            plt.plot(self.axis**2, self.data, '--', lw=0.5) # raw data
+            ## plt.plot(newaxis, orgdata, '--', lw=1) # original data
+            plt.plot(newaxis, newdata, '-', lw=1) # interpolated
+            plt.plot(lx, ly, 'v') # low peaks
+            plt.plot(hx, hy, '^') # high peaks
+            plt.plot(*self.lpoints, 'o')    # filtered peaks
+            plt.grid(True)
+            plt.show()
         if 0:
             try:
                 u = self.output.frame.unit

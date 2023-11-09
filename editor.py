@@ -152,6 +152,10 @@ def imconv(buf, lo=0, hi=0):
     return img
 
 
+## --------------------------------
+## maplotlib (in-shell use only)
+## --------------------------------
+
 def imshow(buf):
     plt.clf()
     plt.imshow(buf, cmap=cm.gray)
