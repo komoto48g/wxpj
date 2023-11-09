@@ -1,5 +1,4 @@
 #! python3
-# -*- coding: utf-8 -*-
 """PyJEM facade of the 'はじめてのぱいじえむ'
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
@@ -143,8 +142,8 @@ class TEM(object):
     PL1 = staticproperty('GetPL1')
     PL2 = staticproperty('GetPL2')
     PL3 = staticproperty('GetPL3')
-    FLC = staticproperty('GetFLc', 'SetFLc') #! 12bit max
-    FLF = staticproperty('GetFLf', 'SetFLf') #! 12bit max
+    FLC = staticproperty('GetFLc', 'SetFLc') # 12bit max
+    FLF = staticproperty('GetFLf', 'SetFLf') # 12bit max
     FLCOMP1 = staticproperty('GetFLcomp1')
     FLCOMP2 = staticproperty('GetFLcomp2')
     

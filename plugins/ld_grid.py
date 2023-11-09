@@ -1,5 +1,4 @@
 #! python3
-# -*- coding: utf-8 -*-
 import wx
 import numpy as np
 from numpy import pi,exp,cos,sin

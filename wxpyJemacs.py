@@ -1,5 +1,4 @@
 #! python3
-# -*- coding: utf-8 -*-
 """The frontend of Graph and Plug manager.
 
 Development phase::

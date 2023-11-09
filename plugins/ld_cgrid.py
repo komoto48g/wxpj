@@ -1,5 +1,4 @@
 #! python3
-# -*- coding: utf-8 -*-
 from itertools import chain
 import numpy as np
 from numpy import pi,exp

@@ -1,5 +1,4 @@
 #! python3
-# -*- coding: utf-8 -*-
 """Startup utility.
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>

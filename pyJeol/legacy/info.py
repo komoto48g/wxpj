@@ -1,5 +1,4 @@
 #! python3
-# -*- coding: utf-8 -*-
 """tem13 information class
 Class for notify optics state and hardware status
 

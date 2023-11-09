@@ -1,5 +1,4 @@
 #! python3
-# -*- coding: utf-8 -*-
 import wx
 import cv2
 import numpy as np

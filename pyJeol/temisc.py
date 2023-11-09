@@ -1,5 +1,4 @@
 #! python3
-# -*- coding: utf-8 -*-
 """Editor's collection of TEM miscellaneous functions
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>

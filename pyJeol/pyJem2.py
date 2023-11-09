@@ -1,5 +1,4 @@
 #! python3
-# -*- coding: utf-8 -*-
 """PyJEM facade of the Poor man's PyJEM
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>

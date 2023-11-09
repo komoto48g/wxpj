@@ -1,5 +1,4 @@
 #! python3
-# -*- coding: utf-8 -*-
 from itertools import chain
 
 import ld_ring as base
