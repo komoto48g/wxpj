@@ -175,6 +175,8 @@ class Plugin(Layer):
             title="FFT Cond.",
             type='vspin', style='button', cw=-1, lw=28, tw=50,
         )
+        self.axis = None
+        self.data = None
     
     @property
     def selected_frame(self):
@@ -205,9 +207,6 @@ class Plugin(Layer):
         self.axis = r0 / w * np.exp(np.arange(w) / m) # [R0:R1] <= [0:1/2]
         self.data = self.fitting_curve.mod1d(dst)
         
-        if 0:
-            self.output.load(buf, "*fft of {}*".format(frame.name),
-                             localunit=1/w/frame.unit)
         if show:
             self.message("\b Loading log-polar image...")
             dst = self.fitting_curve.mod2d(dst)
@@ -222,6 +221,10 @@ class Plugin(Layer):
     def calc_peak(self, show=True):
         """Calc min/max peak detection.
         """
+        if self.data is None:
+            self.message("- no data.")
+            return
+        
         N = self.data.size
         R0 = self.rmin.value
         R1 = self.rmax.value
@@ -282,25 +285,31 @@ class Plugin(Layer):
             plt.plot(newaxis, newdata, '-', lw=1) # interpolated
             plt.plot(lx, ly, 'v') # low peaks
             plt.plot(hx, hy, '^') # high peaks
-            plt.plot(*self.lpoints, 'o')    # filtered peaks
+            ## plt.plot(*self.lpoints, 'o') # filtered peaks
+            plt.xlabel("Alpha^2")
             plt.grid(True)
             plt.show()
+        
+        ## for debug
         if 0:
-            try:
-                u = self.output.frame.unit
-                eps = np.abs(self.stig)
-                ang = np.angle(self.stig) * 180/pi
-                
-                ## 不特定多数の円を描画する (最大 N まで)
-                del self.Arts
-                for x in self.lpoints[0,:10]:
-                    r = N * np.sqrt(x)
-                    art = patches.Circle((0, 0), 0, color='r',
-                                         ls='--', lw=0.5, fill=0, alpha=0.5)
-                    art.width = 2 * r * (1 + eps) * u
-                    art.height = 2 * r * (1 - eps) * u
-                    art.angle = ang / 2
-                    self.attach_artists(self.output.axes, art)
-                self.output.draw()
-            except Exception:
-                self.message("- no data.")
+            frame = self.selected_frame
+            src = self.selected_roi
+            h, w = src.shape
+            buf = fftshift(fft2(src))
+            self.output.load(buf, "*fft of {}*".format(frame.name),
+                             localunit=1/w/frame.unit)
+            u = self.output.frame.unit
+            eps = np.abs(self.stig)
+            ang = np.angle(self.stig) * 180/pi
+            
+            ## 不特定多数の円を描画する (最大 N まで)
+            del self.Arts
+            for x in self.lpoints[0,:10]:
+                r = N * np.sqrt(x)
+                art = patches.Circle((0, 0), 0, color='r',
+                                     ls='--', lw=0.5, fill=0, alpha=0.5)
+                art.width = 2 * r * (1 + eps) * u
+                art.height = 2 * r * (1 - eps) * u
+                art.angle = ang / 2
+                self.attach_artists(self.output.axes, art)
+            self.output.draw()
