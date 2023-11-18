@@ -4,7 +4,6 @@ Class for notify optics state and hardware status
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
-from collections import OrderedDict
 import struct
 
 
@@ -14,7 +13,7 @@ def getargs(x):
     return x
 
 
-class Infodict(OrderedDict):
+class Infodict(dict):
     """Mode info base class.
     
     Show how the inherited class builds keys from the docstring.
@@ -33,7 +32,7 @@ class Infodict(OrderedDict):
             if ln:
                 keys += [w.strip() for w in ln.split(',')] # suppose comma-seperated words
         keys = [k for k in keys if k]
-        OrderedDict.__init__(self, zip(keys, [None] * len(keys)))
+        self.update(dict.fromkeys(keys))
     
     def __call__(self, argv, decode=True):
         if argv:
