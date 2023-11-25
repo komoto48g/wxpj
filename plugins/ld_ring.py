@@ -201,7 +201,7 @@ class Plugin(Layer):
         ## re-init (erase) grid bound to the frame
         self.init_grid(frame.axes)
         
-        with self.thread:
+        with self.thread.entry():
             ## 近傍にあるピーク位置をぼかして検出する
             if not skip:
                 nx, ny = frame.xytopixel(x, y)

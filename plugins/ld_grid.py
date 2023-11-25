@@ -191,7 +191,7 @@ class Plugin(Layer):
         ## re-init (erase) grid bound to the frame
         self.init_grid(frame.axes)
         
-        with self.thread:
+        with self.thread.entry():
             ## 初期グリッドパラメータの見積もり
             if not skip:
                 print("estimating initial grid paramtres... order(0)")
