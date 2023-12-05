@@ -223,7 +223,7 @@ class Plugin(Layer):
         try:
             if self.camera is None:
                 self.connect()
-            return self.camera.cache()
+            return self.camera.cache().copy()
         except Exception as e:
             print(self.message("- Failed to acquire image: {!r}".format(e)))
     
