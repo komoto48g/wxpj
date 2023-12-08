@@ -109,8 +109,8 @@ class Plugin(Layer):
         Select evaluation method:
         
         - :FFT evaluates using FFT method. Use when grid is small
-        - :FFT+ in addition to FFT method, corss-cut the center (十文字きりちょんぱ)
-        - :Cor evaluates using Cor (pattern matching) method. Use when grid is large
+        - :FFT+ in addition to FFT method, cross-cut the center (十文字きりちょんぱ)
+        - :Cor evaluates using COR (pattern matching). Use when grid is large
         """
         if not frame:
             frame = self.graph.frame
@@ -207,17 +207,6 @@ class Plugin(Layer):
     ## test/eval functions
     ## --------------------------------
     
-    ## def test_corr(self, frame):
-    ##     src = frame.buffer
-    ##     h, w = src.shape
-    ##     
-    ##     self.message("processing corr...")
-    ##     buf = edi.Corr(src, src) # リソースめっちゃ食われる
-    ##     tmp = cv2.GaussianBlur(src, (111,111), 0)
-    ##     bkg = edi.Corr(tmp, tmp)
-    ##     dst = edi.imconv(buf - bkg)
-    ##     return frame.parent.load(dst, COR_FRAME_NAME, pos=0, localunit=frame.unit)
-    
     def test_cor(self, frame):
         src = frame.buffer
         h, w = src.shape
@@ -227,12 +216,12 @@ class Plugin(Layer):
         temp = src[i-n:i+n, j-n:j+n]
         
         self.message("processing pattern matching...")
-        src = edi.imconv(src)
-        temp = edi.imconv(temp)
         dst, (x, y) = edi.match_pattern(src, temp)
         
-        ## <float32> to <uint8>
-        dst = edi.imconv(dst)
+        ## self.message("processing corr...")
+        ## dst = edi.Corr(src, temp)
+        ## y, x = np.unravel_index(dst.argmax(), dst.shape)
+        
         return self.output.load(dst, COR_FRAME_NAME, localunit=frame.unit)
     
     def test_fft(self, frame, crossline=0):
