@@ -376,8 +376,10 @@ class NotifyFront(MiniFrame):
         self.StatusBar.Show()
     
     def Destroy(self):
-        self.notify.stop()
-        return wx.MiniFrame.Destroy(self)
+        try:
+            self.notify.stop()
+        finally:
+            return wx.MiniFrame.Destroy(self)
 
 
 NOTIFY_COMMANDS = {

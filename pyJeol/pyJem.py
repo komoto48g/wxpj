@@ -9,7 +9,6 @@ Wx Import Warning:
     Do *NOT* import PyJEM after the wx.App mainloop started,
     or else you can never expect it works correctly.
 """
-from collections import OrderedDict
 import sys
 import numpy as np
 from numpy import inf
@@ -231,7 +230,7 @@ class Optics(object):
 class Illumination(Optics):
     """Illumination system
     """
-    MODES = OrderedDict(( # number of (spot, alpha)
+    MODES = dict(( # number of (spot, alpha)
         ('TEM',     (8,8)),
         ('Koehler', (8,2)),
     ))
@@ -266,7 +265,7 @@ class Illumination(Optics):
 class Imaging(Optics):
     """Imaging system
     """
-    MODES = OrderedDict((
+    MODES = dict((
         ('MAG',    mrange(1000, 1.2e6)),
         ('MAG2',   mrange(1000, 1.2e6)),
         ('LOWMAG', mrange(  50,  50e3)),
@@ -297,7 +296,7 @@ class Imaging(Optics):
 class Omega(Optics):
     """Omega/Projection system
     """
-    MODES = OrderedDict((
+    MODES = dict((
         ('Imaging', (0,)),
         ('Spectrum', mrange(100, 250)), # um/eV
     ))
@@ -361,7 +360,7 @@ class HTsys(object):
 class Aperture(object):
     """Aperture system: Normal type (extype=0)
     """
-    APERTURES = OrderedDict((
+    APERTURES = dict((
         ('NULL', ( inf,  40,  30, 20, 10)), # CLA2 for extype=1
         ( 'CLA', ( inf, 150, 100, 50, 20)),
         ( 'OLA', ( inf,  60,  40, 30,  5)),
@@ -432,7 +431,7 @@ class Aperture(object):
 class ApertureEx(Aperture):
     """Aperture system: Extended type (extype=1)
     """
-    APERTURES = OrderedDict((
+    APERTURES = dict((
         ( 'CLA', ( inf, 150, 100, 50, 20)),
         ('CLA2', ( inf,  40,  30, 20, 10)),
         ( 'OLA', ( inf,  60,  40, 30,  5)),

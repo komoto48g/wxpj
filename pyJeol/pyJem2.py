@@ -3,7 +3,6 @@
 
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
-from collections import OrderedDict
 import time
 import numpy as np
 from numpy import inf
@@ -243,7 +242,7 @@ class Optics(object):
 class Illumination(Optics):
     """Illumination system
     """
-    MODES = OrderedDict(( # number of (spot, alpha)
+    MODES = dict(( # number of (spot, alpha)
         ('TEM',     (8, 8)),
         ('Koehler', (8, 2)),
     ))
@@ -280,7 +279,7 @@ class Illumination(Optics):
 class Imaging(Optics):
     """Imaging system
     """
-    MODES = OrderedDict((
+    MODES = dict((
         ('MAG',    mrange(1000, 1.2e6)),
         ('MAG2',   mrange(1000, 1.2e6)),
         ('LOWMAG', mrange(  50,  50e3)),
@@ -312,7 +311,7 @@ class Imaging(Optics):
 class Omega(Optics):
     """Omega/Projection system
     """
-    MODES = OrderedDict((
+    MODES = dict((
         ('Imaging', (0,)),
         ('Spectrum', mrange(100, 250)), # um/eV
     ))
@@ -445,7 +444,7 @@ class HTsys(Device):
 class Aperture(Device):
     """Aperture system: Normal type (extype=0)
     """
-    APERTURES = OrderedDict((
+    APERTURES = dict((
         ('NULL', ( inf, 150, 100, 50, 20)),
         ( 'CLA', ( inf, 150, 100, 50, 20)),
         ( 'OLA', ( inf,  60,  40, 30,  5)),
@@ -536,7 +535,7 @@ class Aperture(Device):
 class ApertureEx(Aperture):
     """Aperture system: Extended type (extype=1)
     """
-    APERTURES = OrderedDict((
+    APERTURES = dict((
         ( 'CLA', ( inf, 150, 100, 50, 20)),
         ('CLA2', ( inf,  40,  30, 20, 10)),
         ( 'OLA', ( inf,  60,  40, 30,  5)),

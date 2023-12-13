@@ -4,16 +4,13 @@
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from mwx.controls import LParam
-try:
-    from . import _cmdl as cmdl
-except ImportError:
-    from .core import c4mdl as cmdl
+from . import _cmdl as cmdl
 
 Command = cmdl.Command
 
 
 class LensParam(LParam):
-    """Base class of lens/defl linear param
+    """Base class of lens/defl linear param.
     
     name        : specified in *TAGS*
     flag        : WR flag (=check) in recv/send signal
@@ -38,7 +35,7 @@ def iter_pair(ls, n=2):
 
 
 class Systembase(object):
-    """Base class of Lens/Deflector system
+    """Base class of Lens/Deflector system.
     """
     def __call__(self, argv):
         for lp,v in zip(self.Lenses, argv):
@@ -66,7 +63,7 @@ class Systembase(object):
 
 
 class LensSystem(Systembase):
-    """Lens (Free Control) System
+    """Lens (Free Control) System.
     """
     TAGS = (
              'CL1', #  0 : CL1                
@@ -154,7 +151,8 @@ class LensSystem(Systembase):
 
 
 class FocusSystem(LensSystem):
-    """Lens (Focus :variable) System
+    """Lens (Focus :variable) System.
+    
     [Brightness,OBJ,DIFF,IL,PL,FL] に割り当てられたレンズのみ変更可能
     """
     ldget = Command("E261", None, "!27H", doc="レンズ情報取得")
@@ -186,7 +184,7 @@ class FocusSystem(LensSystem):
 
 
 class DeflSystem(Systembase):
-    """Deflector (Maint/User) System
+    """Deflector (Maint/User) System.
     """
     TAGS = (
           'GUNA1X',       'GUNA1Y', #  0 : GunA1 X             1 : GunA1 Y            
