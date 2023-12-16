@@ -254,7 +254,9 @@ class Illumination(Optics):
     _set_alpha = Command("E052", "!H", "!H")
     
     def _set_index(self, v):
-        self.Spot, self.Alpha = v
+        ## self.Spot, self.Alpha = v
+        self._set_spot(int(v[0]))
+        self._set_alpha(int(v[1]))
     
     @property
     def Spot(self):
@@ -262,7 +264,12 @@ class Illumination(Optics):
     
     @Spot.setter
     def Spot(self, v):
-        if 0 <= v != self.Spot:
+        index = self.Spot # -> request
+        if v < 0:
+            j = self.Info['mode']
+            lm = list(self.MODES.values())[j]
+            v %= lm[0]
+        if v != value:
             self._set_spot(int(v))
     
     @property
@@ -271,7 +278,12 @@ class Illumination(Optics):
     
     @Alpha.setter
     def Alpha(self, v):
-        if 0 <= v != self.Alpha:
+        index = self.Alpha # -> request
+        if v < 0:
+            j = self.Info['mode']
+            lm = list(self.MODES.values())[j]
+            v %= lm[1]
+        if v != index:
             self._set_alpha(int(v))
 
 
@@ -299,7 +311,8 @@ class Imaging(Optics):
     @Mag.setter
     def Mag(self, v):
         if v != self.Mag:
-            lm = self.Range
+            j = self.Info['mode']
+            lm = list(self.MODES.values())[j]
             k = np.searchsorted(lm, v)
             if k < len(lm):
                 self._set_index(int(k))
@@ -332,7 +345,8 @@ class Omega(Optics):
     @Dispersion.setter
     def Dispersion(self, v):
         if v != self.Dispersion:
-            lm = self.Range
+            j = self.Info['mode']
+            lm = list(self.MODES.values())[j]
             k = np.searchsorted(lm, v)
             if k < len(lm):
                 self._set_index(int(k))
