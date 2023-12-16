@@ -460,7 +460,7 @@ def match_pattern(src, temp, method=cv2.TM_CCOEFF_NORMED):
 
 
 def eval_shift(src, src2, div=4):
-    """Evaluate image shfit src --> src2 in pix.
+    """Evaluate image shift src --> src2 in pix.
     """
     h, w = src.shape
     xo, yo = w//2, h//2

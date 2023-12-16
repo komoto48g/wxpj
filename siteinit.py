@@ -12,10 +12,9 @@ def init_mainframe(self):
     
     np.set_printoptions(linewidth=256)
     
-    paths = [
-        r"C:\usr\home\workspace\tem13\wxpj-data",
-    ]
-    for f in paths:
+    for f in [
+            r"C:\usr\home\workspace\tem13\wxpj-data",
+            ]:
         if f not in sys.path:
             sys.path.append(f)
     
@@ -98,8 +97,8 @@ def init_mainframe(self):
                  imaging = dict(self.notify.imaging.Info),
                    omega = dict(self.notify.omega.Info),
                      eos = dict(self.notify.eos.Info),
-                      ht = dict(self.notify.hts.Info),
-                     apt = dict(self.notify.apts.Info),
+                     hts = dict(self.notify.hts.Info),
+                    apts = dict(self.notify.apts.Info),
                    gonio = dict(self.notify.gonio.Info),
                   filter = dict(self.notify.efilter.Info),
                  modestr = self.notify.modestr, # joined substr

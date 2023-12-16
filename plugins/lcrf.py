@@ -229,7 +229,7 @@ class Plugin(Layer):
             c = _c
         self.fitting_curve = fitting_curve
         
-        frame.selector = frame.xyfrompixel(_c) # set seletor to the center
+        frame.selector = frame.xyfrompixel(_c) # set selector to the center
         
         self.output.load(buf, "*lin-polar*", localunit=1)
         
