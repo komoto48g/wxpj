@@ -187,6 +187,10 @@ class Optics(object):
     The Selector.setter can only function if the class has a request command _set_index.
     """
     @classmethod
+    def init(self, alist):
+        self.MODES = dict(alist)
+    
+    @classmethod
     def request(self, key=None):
         info = self.Info(self._get_info())
         return info[key] if key else info
@@ -458,6 +462,10 @@ class Aperture(Device):
         for x in range(0,8,2):
             ioset(0xffff01c4 + x, 1)
             ioset(0xffff01c4 + x, 0)
+    
+    @classmethod
+    def init(self, alist):
+        self.APERTURES.update(alist) # ID が関係するので上書きではなく更新
     
     @classmethod
     def select_apt_name(self, name):
