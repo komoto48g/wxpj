@@ -188,13 +188,8 @@ class Optics(object):
     """
     @classmethod
     def request(self, key=None):
-        i = self.Info(self._get_info())
-        return i[key] if key else i
-    
-    ## @classmethod
-    ## def refer(self, key=None):
-    ##     i = self.Info
-    ##     return i[key] if key else i
+        info = self.Info(self._get_info())
+        return info[key] if key else info
     
     @property
     def Name(self):
@@ -221,7 +216,7 @@ class Optics(object):
     
     @property
     def Selector(self):
-        """submode-specifc index e.g., spot/alpha, mag, cam, and disp"""
+        """submode-specifc index e.g., (spot, alpha), mag, cam, and disp"""
         return self.request('index')
     
     @Selector.setter
@@ -244,7 +239,7 @@ class Illumination(Optics):
     """
     MODES = dict(( # number of (spot, alpha)
         ('TEM',     (8, 8)),
-        ('Koehler', (8, 2)),
+        ('Koehler', (8, 8)),
     ))
     
     Info = info.Illumination_info()
@@ -350,13 +345,8 @@ class Device(object):
     """
     @classmethod
     def request(self, key=None):
-        i = self.Info(self._get_info())
-        return i[key] if key else i
-    
-    ## @classmethod
-    ## def refer(self, key=None):
-    ##     i = self.Info
-    ##     return i[key] if key else i
+        info = self.Info(self._get_info())
+        return info[key] if key else info
 
 
 class EOsys(Device):

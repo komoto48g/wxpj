@@ -231,8 +231,8 @@ class Illumination(Optics):
     """Illumination system
     """
     MODES = dict(( # number of (spot, alpha)
-        ('TEM',     (8,8)),
-        ('Koehler', (8,2)),
+        ('TEM',     (8, 8)),
+        ('Koehler', (8, 8)),
     ))
     _get_mode = EOS.GetProbeMode   # --> [0,'TEM']
     _set_mode = EOS.SelectProbMode # --> オフライン版でこれをやると▲(ﾟДﾟ)
@@ -259,7 +259,7 @@ class Illumination(Optics):
     @Alpha.setter
     def Alpha(self, v):
         if 0 <= v != self.Alpha:
-            self.set_alpha(int(v))
+            EOS.SetAlphaSelector(int(v))
 
 
 class Imaging(Optics):
