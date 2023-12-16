@@ -18,7 +18,7 @@ except ImportError:
 
 
 class NotifyHandler(object):
-    """Notify handler
+    """Notify handler.
     
     This class has both notify and request stream.
     To communicate with TEM, do the following steps:
@@ -39,18 +39,18 @@ class NotifyHandler(object):
     modestr = property(lambda self: ' '.join(self.substr).strip())
     
     def start(self):
-        """Open notify/request command stream"""
+        """Open notify/request command stream."""
         self.__thread.Start() # open the notify port
         if cmdl.open():
             self.update()
     
     def stop(self):
-        """Close notify/request command stream"""
+        """Close notify/request command stream."""
         self.__thread.Stop() # close the notify port
         cmdl.close()
     
     def update(self):
-        """Request information from TEM server"""
+        """Request information from TEM server."""
         try:
             self.handler("illumination_info", self.illumination.request())
             self.handler("imaging_info", self.imaging.request())
@@ -251,7 +251,7 @@ class NotifyHandler(object):
 
 
 class NotifyLogger(wx.ListCtrl, ListCtrlAutoWidthMixin):
-    """Notify logger
+    """Notify logger.
     """
     @property
     def selected_items(self):
@@ -346,7 +346,8 @@ class NotifyLogger(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
 
 class NotifyFront(MiniFrame):
-    
+    """Notify front-end.
+    """
     def __init__(self, parent):
         MiniFrame.__init__(self, parent,
             title="Notify", size=(640,320), style=wx.DEFAULT_FRAME_STYLE)

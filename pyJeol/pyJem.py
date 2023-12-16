@@ -86,7 +86,7 @@ def static2property(_get, _set):
 
 
 class TEM(object):
-    """TEM Lens/Defl system
+    """TEM Lens/Defl system.
     
     通常は，このクラスを基底クラスとしてプロパティを継承／使用するが，
     self に依存しないので静的プロパティ (static property) としてアクセス可．
@@ -177,7 +177,7 @@ class TEM(object):
 
 
 class Optics(object):
-    """Optics mode base(mixin) class
+    """Optics mode base(mixin) class.
     
     The inherited class must have MODES.
     The Mode can only function if the class has commands _set_mode and _get_mode.
@@ -185,14 +185,14 @@ class Optics(object):
     """
     @property
     def Name(self):
-        """mode-specific name"""
+        """Mode-specific name."""
         j = self.Mode
         if j is not None:
             return list(self.MODES)[j]
     
     @property
     def Mode(self):
-        """mode-specific index"""
+        """Mode-specific index."""
         ret = self._get_mode()
         if isinstance(ret, (list, tuple)):
             return ret[0]
@@ -211,7 +211,7 @@ class Optics(object):
     
     @property
     def Selector(self):
-        """submode-specifc index e.g., spot/alpha, mag, cam, and disp"""
+        """Submode-specifc index e.g., spot/alpha, mag, cam, and disp."""
         return self._get_index()
     
     @Selector.setter
@@ -223,12 +223,12 @@ class Optics(object):
     
     @property
     def Range(self):
-        """mode-specific range"""
+        """Mode-specific range."""
         return list(self.MODES.values())[self.Mode]
 
 
 class Illumination(Optics):
-    """Illumination system
+    """Illumination system.
     """
     MODES = dict(( # number of (spot, alpha)
         ('TEM',     (8, 8)),
@@ -263,7 +263,7 @@ class Illumination(Optics):
 
 
 class Imaging(Optics):
-    """Imaging system
+    """Imaging system.
     """
     MODES = dict((
         ('MAG',    mrange(1000, 1.2e6)),
@@ -294,7 +294,7 @@ class Imaging(Optics):
 
 
 class Omega(Optics):
-    """Omega/Projection system
+    """Omega/Projection system.
     """
     MODES = dict((
         ('Imaging', (0,)),
@@ -330,7 +330,7 @@ class Omega(Optics):
 ## --------------------------------
 
 class EOsys(object):
-    """EO device system
+    """EM device system.
     """
     get_v1_ready = FEG.GetV1Ready
     get_v1_state = FEG.GetBeamValve
@@ -350,7 +350,7 @@ class EOsys(object):
 
 
 class HTsys(object):
-    """HT system
+    """HT system.
     """
     ht_value = property(
         lambda self: HT.GetHtValue(),
@@ -358,7 +358,7 @@ class HTsys(object):
 
 
 class Aperture(object):
-    """Aperture system: Normal type (extype=0)
+    """Aperture system: Normal type (extype=0).
     """
     APERTURES = dict((
         ('NULL', ( inf,  40,  30, 20, 10)), # CLA2 for extype=1
@@ -399,7 +399,7 @@ class Aperture(object):
     
     @property
     def pos(self):
-        """selected hole position [2:int]"""
+        """selected hole position [2:int]."""
         if self.select():
             return np.array(self.get_pos())
     
@@ -410,7 +410,7 @@ class Aperture(object):
     
     @property
     def sel(self):
-        """selected hole number index"""
+        """Selected hole number index."""
         return self.get_sel(self.Id)
     
     @sel.setter
@@ -419,7 +419,7 @@ class Aperture(object):
     
     @property
     def dia(self):
-        """selected hole diameter value"""
+        """Selected hole diameter value."""
         if self.sel is not None:
             return self.holes[self.sel]
     
@@ -429,7 +429,7 @@ class Aperture(object):
 
 
 class ApertureEx(Aperture):
-    """Aperture system: Extended type (extype=1)
+    """Aperture system: Extended type (extype=1).
     """
     APERTURES = dict((
         ( 'CLA', ( inf, 150, 100, 50, 20)),
@@ -449,9 +449,9 @@ class ApertureEx(Aperture):
 
 
 class Stage(object):
-    """Stage (Gonio) system
+    """Stage (Gonio) system.
     
-    X,Y,Z unit [um] and TX,TY [deg]
+    X,Y,Z unit [um] and TX,TY [deg].
     """
     X = property(
         lambda self: STAGE.GetPos()[0] / 1e3,
@@ -495,7 +495,7 @@ class Stage(object):
 
 
 class Filter(object):
-    """Filter system
+    """Energy filter system.
     """
     @property
     def slit_state(self):

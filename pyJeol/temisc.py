@@ -27,7 +27,7 @@ P_e_2m_sqrt = 2.965472e+5   # sqrt(e/2m) [m/s]
 
 
 class Environ(object):
-    """ Electro-optik environment base class
+    """Electro-optik environment base class.
     """
     def __init__(self, v):
         self.acc_v = v
@@ -100,7 +100,7 @@ class HexadecimalMixin(object):
 
 
 class FLHex(HexadecimalMixin):
-    """FL hex 19bit/12bit
+    """FL hex 19bit/12bit.
     
     HI: ■□□□■□□□■□□□                FFF<<7 = 524,160
     LO:               ■□□□■□□□■□□□  FFF    =   4,095
@@ -120,7 +120,7 @@ class FLHex(HexadecimalMixin):
 
 
 class OLHex(HexadecimalMixin):
-    """OL hex 21bit/16bit
+    """OL hex 21bit/16bit.
     
     HI: ■□□□■□□□■□□□■□□□            FFFF<<5 = 2,097,120
     LO:           ■□□□■□□□■□□□■□□□  FFFF    =    65,535
