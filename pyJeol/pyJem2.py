@@ -55,7 +55,7 @@ def static2property(xname, yname):
 
 
 class TEM(object):
-    """TEM Lens/Defl system
+    """TEM Lens/Defl system.
     
     通常は，このクラスを基底クラスとしてプロパティを継承／使用するが，
     self に依存しないので静的プロパティ (static property) としてアクセス可．
@@ -179,7 +179,7 @@ class TEM(object):
 
 
 class Optics(object):
-    """Optics mode base(mixin) class
+    """Optics mode base(mixin) class.
     
     The inherited class must have MODES and Info which is to be notified.
     The request command complementary to the notify must be defined as _get_info.
@@ -187,25 +187,24 @@ class Optics(object):
     The Selector.setter can only function if the class has a request command _set_index.
     """
     @classmethod
-    def request(self, key=None):
-        i = self.Info(self._get_info())
-        return i[key] if key else i
+    def init(self, alist):
+        self.MODES = dict(alist)
     
-    ## @classmethod
-    ## def refer(self, key=None):
-    ##     i = self.Info
-    ##     return i[key] if key else i
+    @classmethod
+    def request(self, key=None):
+        info = self.Info(self._get_info())
+        return info[key] if key else info
     
     @property
     def Name(self):
-        """mode-specific name"""
+        """Mode-specific name."""
         j = self.Mode
         if j is not None:
             return list(self.MODES)[j]
     
     @property
     def Mode(self):
-        """mode-specific index"""
+        """Mode-specific index."""
         return self.request('mode')
     
     @Mode.setter
@@ -221,7 +220,7 @@ class Optics(object):
     
     @property
     def Selector(self):
-        """submode-specifc index e.g., spot/alpha, mag, cam, and disp"""
+        """Submode-specifc index e.g., (spot, alpha), mag, cam, and disp."""
         return self.request('index')
     
     @Selector.setter
@@ -233,18 +232,18 @@ class Optics(object):
     
     @property
     def Range(self):
-        """mode-specific range"""
+        """Mode-specific range."""
         j = self.Mode
         if j is not None:
             return list(self.MODES.values())[j]
 
 
 class Illumination(Optics):
-    """Illumination system
+    """Illumination system.
     """
     MODES = dict(( # number of (spot, alpha)
         ('TEM',     (8, 8)),
-        ('Koehler', (8, 2)),
+        ('Koehler', (8, 8)),
     ))
     
     Info = info.Illumination_info()
@@ -255,7 +254,9 @@ class Illumination(Optics):
     _set_alpha = Command("E052", "!H", "!H")
     
     def _set_index(self, v):
-        self.Spot, self.Alpha = v
+        ## self.Spot, self.Alpha = v
+        self._set_spot(int(v[0]))
+        self._set_alpha(int(v[1]))
     
     @property
     def Spot(self):
@@ -263,7 +264,12 @@ class Illumination(Optics):
     
     @Spot.setter
     def Spot(self, v):
-        if 0 <= v != self.Spot:
+        index = self.Spot # -> request
+        if v < 0:
+            j = self.Info['mode']
+            lm = list(self.MODES.values())[j]
+            v %= lm[0]
+        if v != index:
             self._set_spot(int(v))
     
     @property
@@ -272,12 +278,17 @@ class Illumination(Optics):
     
     @Alpha.setter
     def Alpha(self, v):
-        if 0 <= v != self.Alpha:
+        index = self.Alpha # -> request
+        if v < 0:
+            j = self.Info['mode']
+            lm = list(self.MODES.values())[j]
+            v %= lm[1]
+        if v != index:
             self._set_alpha(int(v))
 
 
 class Imaging(Optics):
-    """Imaging system
+    """Imaging system.
     """
     MODES = dict((
         ('MAG',    mrange(1000, 1.2e6)),
@@ -300,7 +311,8 @@ class Imaging(Optics):
     @Mag.setter
     def Mag(self, v):
         if v != self.Mag:
-            lm = self.Range
+            j = self.Info['mode']
+            lm = list(self.MODES.values())[j]
             k = np.searchsorted(lm, v)
             if k < len(lm):
                 self._set_index(int(k))
@@ -309,7 +321,7 @@ class Imaging(Optics):
 
 
 class Omega(Optics):
-    """Omega/Projection system
+    """Omega/Projection system.
     """
     MODES = dict((
         ('Imaging', (0,)),
@@ -333,7 +345,8 @@ class Omega(Optics):
     @Dispersion.setter
     def Dispersion(self, v):
         if v != self.Dispersion:
-            lm = self.Range
+            j = self.Info['mode']
+            lm = list(self.MODES.values())[j]
             k = np.searchsorted(lm, v)
             if k < len(lm):
                 self._set_index(int(k))
@@ -346,21 +359,16 @@ class Omega(Optics):
 ## --------------------------------
 
 class Device(object):
-    """Device base class mixin
+    """Device base class mixin.
     """
     @classmethod
     def request(self, key=None):
-        i = self.Info(self._get_info())
-        return i[key] if key else i
-    
-    ## @classmethod
-    ## def refer(self, key=None):
-    ##     i = self.Info
-    ##     return i[key] if key else i
+        info = self.Info(self._get_info())
+        return info[key] if key else info
 
 
 class EOsys(Device):
-    """EM device system
+    """EM device system.
     """
     Info = info.Eos_info()
     
@@ -412,7 +420,7 @@ class EOsys(Device):
 
 
 class HTsys(Device):
-    """HT system
+    """HT system.
     """
     Info = info.HT_info()
     
@@ -442,7 +450,7 @@ class HTsys(Device):
 
 
 class Aperture(Device):
-    """Aperture system: Normal type (extype=0)
+    """Aperture system: Normal type (extype=0).
     """
     APERTURES = dict((
         ('NULL', ( inf, 150, 100, 50, 20)),
@@ -470,6 +478,10 @@ class Aperture(Device):
             ioset(0xffff01c4 + x, 0)
     
     @classmethod
+    def init(self, alist):
+        self.APERTURES.update(alist) # ID が関係するので上書きではなく更新
+    
+    @classmethod
     def select_apt_name(self, name):
         return self._select_apt(list(self.APERTURES).index(name))
     
@@ -492,7 +504,7 @@ class Aperture(Device):
     
     @property
     def pos(self):
-        """selected hole position [2:int]"""
+        """Selected hole position [2:int]."""
         if self.select():
             return np.array(self._get_pos())
     
@@ -514,7 +526,7 @@ class Aperture(Device):
     
     @property
     def sel(self):
-        """selected hole number index"""
+        """Selected hole number index."""
         return self.request(self.name)
     
     @sel.setter
@@ -523,7 +535,7 @@ class Aperture(Device):
     
     @property
     def dia(self):
-        """selected hole diameter value"""
+        """Selected hole diameter value."""
         if self.sel is not None:
             return self.holes[self.sel]
     
@@ -533,7 +545,7 @@ class Aperture(Device):
 
 
 class ApertureEx(Aperture):
-    """Aperture system: Extended type (extype=1)
+    """Aperture system: Extended type (extype=1).
     """
     APERTURES = dict((
         ( 'CLA', ( inf, 150, 100, 50, 20)),
@@ -559,9 +571,9 @@ class ApertureEx(Aperture):
 
 
 class Stage(Device):
-    """Stage (Gonio) system
+    """Stage (Gonio) system.
     
-    X,Y,Z unit [um] and TX,TY [deg]
+    X,Y,Z unit [um] and TX,TY [deg].
     """
     Info = info.Gonio_info()
     
@@ -624,7 +636,7 @@ class Stage(Device):
 
 
 class Filter(Device):
-    """Filter system
+    """Energy filter system.
     """
     Info = info.Filter_info()
     

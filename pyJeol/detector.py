@@ -12,7 +12,7 @@ HEADER = {"connection" : "close"}
 
 
 class Detector:
-    """Detecgtor controller
+    """Detector controller.
     
     Args:
         name : detector name

@@ -43,7 +43,7 @@ class Infodict(dict):
 
 
 class Illumination_info(Infodict): #[N105] - [E055]
-    """Illumination (CL) system
+    """Illumination (CL) system.
     
     mode        : illumination mode {0:TEM, 1:EDS, 2:NBD, 3:CBD}
     mode_name   : illumination name
@@ -61,7 +61,7 @@ class Illumination_info(Infodict): #[N105] - [E055]
 
 
 class Imaging_info(Infodict): #[N101] - [E015]
-    """Imaging (IL) system
+    """Imaging (IL) system.
     
     mode        : imaging mode {0:MAG1, 1:MAG2, 2:LOWMAG, 3:SAMAG, 4:DIFF}
     mode_name   : imaging name ditto
@@ -84,7 +84,7 @@ class Imaging_info(Infodict): #[N101] - [E015]
 
 
 class Omega_info(Infodict): #[N102] - [E016]
-    """Projection (Omega, PL) system
+    """Projection (Omega, PL) system.
     
     mode        : spectrum mode off/on {0:Imaging, 1:Spectrum}
     mmode       : imaging mode {0:MAG1, 1:MAG2, 2:LOWMAG, 3:SAMAG, 4:DIFF}
@@ -118,7 +118,7 @@ class Omega_info(Infodict): #[N102] - [E016]
 
 
 class Eos_info(Infodict): #[N109] - [E090]
-    """EO system
+    """EO system.
     
     dark        : dark level {0:bright, 1:dark}
     dark_index  : dark level number
@@ -144,7 +144,7 @@ class Eos_info(Infodict): #[N109] - [E090]
 
 
 class Aperture_info(Infodict): #[N140] - [E405]
-    """Aperture system extype=0
+    """Aperture system extype=0.
     
     speed       : {0:fine, 1:coarse}
     csid        : currently selected aperture id (0--6): None,CLA,OLA,HCA,SAA,ENTA,HXA
@@ -171,7 +171,7 @@ class Aperture_info(Infodict): #[N140] - [E405]
 
 
 class ApertureEx_info(Infodict): #[N153] - [E423]
-    """Aperture system extype=1 (1601 or later)
+    """Aperture system extype=1 (1601 or later).
     
     csid        : currently selected aperture id (0--11): CLA,CLA2,OLA,HCA,SAA,ENTA,HXA,BFA,...
     speed       : {0:fine, 1:coarse}
@@ -189,7 +189,7 @@ class ApertureEx_info(Infodict): #[N153] - [E423]
 
 
 class Filter_info(Infodict): #[N162] - [E630]
-    """Energy Filter system
+    """Energy filter system.
     
     spectrum_mode: off/on
     slit_state  : Slit state {0:out, 1:in}
@@ -224,7 +224,7 @@ class Filter_info(Infodict): #[N162] - [E630]
 
 
 class Gonio_info(Infodict): #[N533] - [G921]
-    """Gonio ゴニオ座標情報
+    """Gonio system (ゴニオ座標情報).
     
     X,Y,Z       : motor position [nm]
     TX,TY       : Tilt X [deg] and Tilt Y [deg] (or rotatoin angles)
@@ -237,7 +237,7 @@ class Gonio_info(Infodict): #[N533] - [G921]
 
 
 class HT_info(Infodict): #[F900] - [F902]
-    """HT 高圧モード／電子銃／アノード情報
+    """HT system (高圧モード／電子銃／アノード情報).
     
     Dark        : Dark current value       [0.1uA] --> [uA]
     Emission    : Emission current value   [0.1uA] --> [uA]
@@ -281,7 +281,7 @@ class HT_info(Infodict): #[F900] - [F902]
 
 
 class HTsub_info(Infodict): #[F901] - ?
-    """HT 高圧モード／エミッション情報
+    """HT subsystem (高圧モード／エミッション情報).
     
     htsub_status: Operating status of HT subsystem
     condbar_status: Operating status of conditioning shortbar {0:ope, (1,2):med, 3:cond}
@@ -306,7 +306,7 @@ class HTsub_info(Infodict): #[F901] - ?
 
 
 class HTsub2_info(Infodict): #[N309] - ?
-    """HT 高圧モード／エミッション情報
+    """HT subsystem (高圧モード／エミッション情報).
     
     ht_value    : HT current value         [V]
     a1,a2       : A1/A2 target value       [10V] --> [V]
@@ -326,7 +326,7 @@ class HTsub2_info(Infodict): #[N309] - ?
 
 
 class Current_info(Infodict): #[N404] - ?
-    """Current density 照射電流密度
+    """Current density (照射電流密度).
     
     value   : Current density    [0.01pA/cm2]
     exp     : Auto exposure time [0.1sec]
@@ -334,7 +334,7 @@ class Current_info(Infodict): #[N404] - ?
 
 
 class Screen_info(Infodict): #[N401] - [C320,C321][C325] ! WHITE-TEMCENTER only
-    """Screen status スクリーン情報
+    """Screen status (スクリーン情報).
     
     pose    : {0:0+, 1:7+, 2:90+} degs
     state   : out/in
@@ -342,7 +342,8 @@ class Screen_info(Infodict): #[N401] - [C320,C321][C325] ! WHITE-TEMCENTER only
 
 
 class Detector_info(Infodict): #[N627] - [D170][D171]
-    """Detector status (!25H)
+    """Detector status.
+    
     N, SEI, EDS, BIPRISM, UDFI, TVCAM_U, SSCAM_U, FARADAY, BS, HRD : (10)
     DFI_U, FI_U, CR_F, SCR_L, DFI_B, BFI_B, SSCAM_B, TVCAM_B, EELS : (9)
     TVCAM_GIF, SSCAM_GIF, BEI_TOPO, BEI_COMPO, SEI_TOPO, SEI_COMPO : (6) BEI/SEI
