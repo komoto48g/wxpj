@@ -4,15 +4,8 @@
 Version: None
 Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
-## try:
-##     from . import _cmdl as cmdl
-##     from . import _cntf as cntf
-## except ImportError:
-##     from .src import c4mdl as cmdl
-##     from .src import c4ntf as cntf
 from . import _cmdl as cmdl
 from . import _cntf as cntf
-from . import info
 from .jtypes import LensParam # as Lens
 from .jtypes import LensSystem, DeflSystem, FocusSystem
 

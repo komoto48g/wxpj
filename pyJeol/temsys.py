@@ -6,15 +6,14 @@ Author: Kazuya O'moto <komoto@jeol.co.jp>
 from itertools import chain
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
+
 from mwx import FSM, Frame, MiniFrame
 try:
     import pyJem2 as pj
-    from legacy import info as jInfo
-    from legacy import cntf, cmdl
+    from legacy import jinfo, cmdl, cntf
 except ImportError:
     from . import pyJem2 as pj
-    from .legacy import info as jInfo
-    from .legacy import cntf, cmdl
+    from .legacy import jinfo, cmdl, cntf
 
 
 class NotifyHandler(object):
@@ -163,11 +162,11 @@ class NotifyHandler(object):
         
         ## pj で定義されない情報はここで実体を定義する
         
-        self.htsub_info = jInfo.HTsub_info()
-        self.htsub2_info = jInfo.HTsub2_info()
-        self.cur_info = jInfo.Current_info()
-        self.scr_info = jInfo.Screen_info()
-        self.det_info = jInfo.Detector_info()
+        self.htsub_info = jinfo.HTsub_info()
+        self.htsub2_info = jinfo.HTsub2_info()
+        self.cur_info = jinfo.Current_info()
+        self.scr_info = jinfo.Screen_info()
+        self.det_info = jinfo.Detector_info()
         
         _NC = cntf.NotifyCommand
         
