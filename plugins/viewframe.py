@@ -45,6 +45,8 @@ class CheckList(wx.ListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
         ListCtrlAutoWidthMixin.__init__(self)
         CtrlInterface.__init__(self)
         
+        self.EnableCheckBoxes()
+        
         self.parent = parent
         self.Target = target
         
