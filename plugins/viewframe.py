@@ -181,7 +181,7 @@ class CheckList(wx.ListCtrl, ListCtrlAutoWidthMixin, CtrlInterface):
             self.Select(j)
     
     def OnLoadItems(self, evt):
-        self.parent.parent.import_index(target=self.Target)
+        self.parent.parent.import_index(view=self.Target)
     
     def OnSaveItems(self, evt):
         frames = self.Target.all_frames
