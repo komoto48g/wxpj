@@ -306,11 +306,12 @@ def find_ellipses(src, frmin=None, frmax=None, ksize=1, sortby='size'):
         src = cv2.GaussianBlur(src, (ksize, ksize), 0)
     
     t, buf = cv2.threshold(src, 0, 255, cv2.THRESH_OTSU)
+    argv = cv2.findContours(buf, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     try:
-        ## opencv <= 3.4.5
-        c, contours, hierarchy = cv2.findContours(buf, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours, hierarchy = argv
     except ValueError:
-        contours, hierarchy = cv2.findContours(buf, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        ## opencv <= 3.4.5
+        _c, contours, hierarchy = argv
     
     ## There should be at least 5 points to fit the ellipse
     ellipses = [cv2.fitEllipse(v) for v in contours if len(v) > 4]
