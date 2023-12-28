@@ -1,93 +1,14 @@
 #! python3
 """Editor's collection of wxpj.
-
-Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
-import cv2
 import numpy as np
 from numpy import pi,cos,sin
 from scipy import signal
 ## from numpy.fft import fft,ifft,fftfreq
 ## from numpy.fft import fft2,ifft2,fftshift
-## from mpl_toolkits.mplot3d import axes3d
+import cv2
 from matplotlib import pyplot as plt
-from matplotlib import patches
 from matplotlib import cm
-
-from jgdk import Layer, LParam, Button
-from wxpyJemacs import MainFrame as Frame
-
-
-class Plugin(Layer):
-    """Plugin as testsuite for editors functions.
-    """
-    menukey = "Plugins/Functions/&Editor"
-    
-    def Init(self):
-        self.cutoffs = (
-            LParam("lo", (0, 10, 0.005), 0.0),
-            LParam("hi", (0, 10, 0.005), 0.0),
-        )
-        self.layout(
-            self.cutoffs, title="truncation", # cutoff lo/hi
-            row=2, cw=0, lw=16, tw=40
-        )
-        self.layout((
-                Button(self, "imconv", self.test_imconv),
-                Button(self, "imcorr", self.test_imcorr),
-                Button(self, "ellipse", self.test_ellipse),
-            ),
-            row=2,
-        )
-        art = patches.Circle((0, 0), 0, color='r', lw=2, fill=0)
-        self.attach_artists(self.graph.axes, art) # -> self.Arts
-    
-    def test_imconv(self):
-        src = self.graph.buffer
-        dst = imconv(src, *np.float32(self.cutoffs))
-        self.output["*result of imconv*"] = dst
-    
-    def test_imtrunc(self):
-        src = self.graph.buffer
-        dst = imtrunc(src, *np.float32(self.cutoffs))
-        self.output["*result of imtrunc*"] = dst
-    
-    def test_imcorr(self):
-        src = self.graph.buffer
-        self.output["*result of Corr*"] = Corr(src, src)
-    
-    def test_ellipse(self):
-        frame = self.selected_view.frame
-        src = frame.buffer
-        ellipses = find_ellipses(src, ksize=3)
-        print(self.message("Found {} circles.".format(len(ellipses))))
-        if ellipses:
-            ## Draw the first ellipse if detected.
-            el = ellipses[0]
-            self.draw_ellipse(el, src, frame)
-        else:
-            self.Draw()
-        print(self.message('\b')) # Show the last message.
-    
-    def draw_ellipse(self, el, src, frame):
-        (cx,cy), (ra,rb), angle = el
-        R, n, s = calc_ellipse(src, el)
-        p = R * n/s
-        q = R * (1-n)/(1-s)
-        if abs(p/q) > 1: # signal borderline
-            art = self.Arts[0]
-            art.center = frame.xyfrompixel(cx, cy)
-            art.height = rb * frame.unit
-            art.width = ra * frame.unit
-            art.angle = -angle
-            art.set_visible(1)
-            self.message(' '.join((
-                "c=({:.1f}, {:.1f})".format(cx, cy),
-                "r=({:.1f}, {:.1f})".format(ra, rb),
-                "{:.1f} deg".format(angle),
-            )))
-        self.message("\b; BRIGHTNESS {:.2f}/{:.2f} (S/N {:.2f})".format(p, q, p/q))
-        self.selected_view.draw()
 
 
 ## --------------------------------
@@ -95,6 +16,8 @@ class Plugin(Layer):
 ## --------------------------------
 
 def read_buffer(path):
+    from wxpyJemacs import MainFrame as Frame
+
     buf, info = Frame.read_buffer(path)
     if not isinstance(buf, np.ndarray):
         buf = np.array(buf)
@@ -102,6 +25,8 @@ def read_buffer(path):
 
 
 def write_buffer(path, buf):
+    from wxpyJemacs import MainFrame as Frame
+
     return Frame.write_buffer(path, buf)
 
 
@@ -236,7 +161,7 @@ def grad2(src, ksize=5):
 
 
 ## --------------------------------
-## Image FFT misc.
+## Image analysis using FFT / misc.
 ## --------------------------------
 
 def fftcrop(src, maxsize=2048, center=None):
@@ -265,9 +190,45 @@ def Corr(src, tmp, mode='same'):
         return signal.fftconvolve(src, tmp[::-1,::-1], mode)
 
 
+def match_pattern(src, temp, method=cv2.TM_CCOEFF_NORMED):
+    """Match_pattern of src image to template image.
+    
+    The depth must be (CV_8U or CV_32F)
+    
+    The comparison method is one of the following:
+        'TM_CCOEFF', 'TM_CCOEFF_NORMED',
+        'TM_CCORR',  'TM_CCORR_NORMED',
+        'TM_SQDIFF', 'TM_SQDIFF_NORMED',
+    """
+    src = imconv(src)
+    temp = imconv(temp)
+    res = cv2.matchTemplate(src, temp, method)
+    minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(res)
+    if method in (cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED):
+        return res, minLoc
+    return res, maxLoc
+
+
+def eval_shift(src, src2, div=4):
+    """Evaluate image shift src --> src2 in pix.
+    """
+    h, w = src.shape
+    xo, yo = w//2, h//2
+    wt, ht = w//div, h//div  # template pattern in the src divided by div
+    xt = xo - wt//2
+    yt = yo - ht//2
+    temp = src[yt:yt+ht, xt:xt+wt]
+    
+    dst, (x, y) = match_pattern(src2, temp)
+    ho, wo = dst.shape
+    dx = x - wo//2
+    dy = y - ho//2
+    return np.array((dx, dy))
+
+
 ## --------------------------------
 ## Image analysis
-##   find peaks, ellipses, etc.
+## Detect ellipses, peaks, etc.
 ## --------------------------------
 
 def centroid(src):
@@ -356,21 +317,6 @@ def calc_ellipse(src, ellipse):
     return R, n, s
 
 
-## def find_peaks(y):
-##     peaks, dic = signal.find_peaks(y,
-##             height = y.mean(),      # height of peaks
-##           distance = None,          # minimal horizontal distance
-##          threshold = None,          # threshold of peaks (the vertical distance to its neighbouring)
-##         prominence = 0.05,          # prominence of peaks
-##              width = y.size/1000,   # width of peaks
-##     )
-##     return peaks
-
-## def find_peaks(y):
-##     widths = np.array([2.0])
-##     return signal.find_peaks_cwt(y, widths)
-
-
 def qrsp(x, y):
     """x[3],y[3]: x,y 近接した３点から 2次式で極値の箇所を推定する．
     
@@ -439,67 +385,3 @@ def find_local_extremum2d(src, max=True):
     if valid:
         return j+dx, i+dy, src[i,j]+dzx+dzy, valid
     return nx, ny, src[ny,nx], valid
-
-
-def match_pattern(src, temp, method=cv2.TM_CCOEFF_NORMED):
-    """Match_pattern of src image to template image.
-    
-    The depth must be (CV_8U or CV_32F)
-    
-    The comparison method is one of the following:
-        'TM_CCOEFF', 'TM_CCOEFF_NORMED',
-        'TM_CCORR',  'TM_CCORR_NORMED',
-        'TM_SQDIFF', 'TM_SQDIFF_NORMED',
-    """
-    src = imconv(src)
-    temp = imconv(temp)
-    res = cv2.matchTemplate(src, temp, method)
-    minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(res)
-    if method in (cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED):
-        return res, minLoc
-    return res, maxLoc
-
-
-def eval_shift(src, src2, div=4):
-    """Evaluate image shift src --> src2 in pix.
-    """
-    h, w = src.shape
-    xo, yo = w//2, h//2
-    wt, ht = w//div, h//div  # template pattern in the src divided by div
-    xt = xo - wt//2
-    yt = yo - ht//2
-    temp = src[yt:yt+ht, xt:xt+wt]
-    
-    dst, (x, y) = match_pattern(src2, temp)
-    ho, wo = dst.shape
-    dx = x - wo//2
-    dy = y - ho//2
-    return np.array((dx, dy))
-
-
-if __name__ == "__main__":
-    z = np.array([
-        [2.0, 2.0, 2.0],
-        [2.0, 2.1, 2.0],
-        [2.0, 2.0, 2.0],
-    ])
-    print(find_local_extremum2d(z, True))
-    print(find_local_extremum2d(z, False))
-    print()
-    
-    ## fig = plt.figure()
-    ## ax = fig.add_subplot(111, projection='3d')
-    ## x, y = np.mgrid[-1:1:3j,-1:1:3j]
-    ## ax.plot_wireframe(x, y, z)
-    ## plt.show()
-    
-    x = np.array([-1, 0, 1])
-    y = np.array([0.2, 0.4, 0.5])
-    
-    print("qrsp(x,y) =", qrsp(x,y))
-    print("find_local_extremum(x,y) =", find_local_extremum(x,y))
-    
-    a,b,c = np.polyfit(x, y, 2)
-    p = np.poly1d((a,b,c))
-    xx = np.linspace(2*x[0],2*x[-1],100)
-    plot(xx, p(xx), x, y)

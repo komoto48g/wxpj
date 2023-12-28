@@ -1,7 +1,5 @@
 #! python3
 """Startup utility.
-
-Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 import numpy as np
 

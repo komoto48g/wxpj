@@ -37,13 +37,10 @@ def init_mainframe(self):
     ## --------------------------------
     ## Plugins
     ## --------------------------------
-    
-    ## global reference to output buffer
     import editor as edi
-    edi.out = self.output
     self.edi = edi
+    edi.out = self.output # for debug output
     
-    self.ed = self.require('editor')
     self.su = self.require('startup')
     self.si = sys.modules.get(__name__)
     
