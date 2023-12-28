@@ -213,7 +213,7 @@ class Plugin(Layer):
         src = frame.buffer
         h, w = src.shape
         if shift and frame.selector.size > 0:
-            nx, ny = frame.xytopixel(frame.selector)
+            nx, ny = frame.xytopixel(*frame.selector)
             c = int(nx[0]), int(ny[0])
         else:
             c = (w//2, h//2)
@@ -229,7 +229,7 @@ class Plugin(Layer):
             c = _c
         self.fitting_curve = fitting_curve
         
-        frame.selector = frame.xyfrompixel(_c) # set selector to the center
+        frame.selector = c = frame.xyfrompixel(*_c) # set selector to the center
         
         self.output.load(buf, "*lin-polar*", localunit=1)
         
@@ -252,7 +252,7 @@ class Plugin(Layer):
         a = np.linspace(0, 1, 100) * 2*pi
         nr = peaks[j] + fitting_curve(a)
         r = nr * frame.unit
-        c = frame.selector
+        
         X = c[0] + r * np.cos(a)
         Y = c[1] + r * np.sin(a)
         
@@ -274,12 +274,15 @@ class Plugin(Layer):
         """Set threshold ratio of [min:max] radii that gives a peak search range.
         Default is [0.1:1.0] to the image height.
         """
-        if not self.target_view:
+        view = self.target_view
+        if not view or not view.frame:
             return
-        frame = self.target_view.frame
+        frame = view.frame
         h, w = frame.buffer.shape
-        c1, c2 = self.Arts[:2]
-        ## c1.center = c2.center = c
-        c1.radius = h/2 * self.rmin.value * frame.unit
-        c2.radius = h/2 * self.rmax.value * frame.unit
-        self.Draw()
+        try:
+            c1, c2 = self.Arts[:2]
+            c1.radius = h/2 * self.rmin.value * frame.unit
+            c2.radius = h/2 * self.rmax.value * frame.unit
+            self.Draw()
+        except ValueError:
+            pass

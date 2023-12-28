@@ -144,7 +144,7 @@ class Plugin(Layer):
                     ## dx, dy = edi.centroid(buf)
                     
                     x, y = frame.xyfrompixel(xa+dx, ya+dy)
-                    xy.append((x[0], y[0]))
+                    xy.append((x, y))
             
             frame.markers = np.array(xy).T # scatter markers if any xy
 

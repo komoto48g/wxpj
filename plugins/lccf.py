@@ -104,7 +104,6 @@ class Plugin(Layer):
             xy = []
             for (cx, cy), r in circles:
                 x, y = frame.xyfrompixel(cx, cy)
-                x, y = x[0], y[0]
                 xy.append((x, y))
                 
                 ## 不特定多数の円を描画する
