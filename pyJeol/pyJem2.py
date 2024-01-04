@@ -30,18 +30,23 @@ ioset = Command("X901", "!IH", None, doc="Set I/O data")
 ## MAJOR_MODE = 'TEM', 'STEM'
 ## USER_MODE  = 'MAINT', 'USER', 'STDBASE'
 
-def uhex(v, vmax=0xffff):
-    if v < 0: return 0
-    elif v > vmax: return vmax
-    else: return int(v)
+def _uhex(v, vmax=0xffff):
+    if v < 0:
+        return 0
+    elif v > vmax:
+        return vmax
+    else:
+        return int(v)
+
 
 def staticproperty(name):
     def fget(self):
         TEM.fsys.read()
         return TEM.fsys[name].value
     def fset(self, v):
-        TEM.fsys.Write(name, uhex(v))
+        TEM.fsys.Write(name, _uhex(v))
     return property(fget, fset)
+
 
 def static2property(xname, yname):
     def fget(self):
@@ -49,8 +54,8 @@ def static2property(xname, yname):
         return np.array((TEM.dsys[xname].value,
                          TEM.dsys[yname].value))
     def fset(self, v):
-        TEM.dsys.Write(xname, uhex(v[0]))
-        TEM.dsys.Write(yname, uhex(v[1]))
+        TEM.dsys.Write(xname, _uhex(v[0]))
+        TEM.dsys.Write(yname, _uhex(v[1]))
     return property(fget, fset)
 
 
@@ -154,7 +159,7 @@ class TEM(object):
     
     @FL.setter
     def FL(self, v):
-        u = FLHex(0, uhex(v, FLHex.maxval))
+        u = FLHex(0, _uhex(v, FLHex.maxval))
         TEM.fsys.Write('FLC', u.coarse)
         TEM.fsys.Write('FLF', u.fine)
     
@@ -166,7 +171,7 @@ class TEM(object):
     
     @OL.setter
     def OL(self, v):
-        u = OLHex(0, uhex(v, OLHex.maxval))
+        u = OLHex(0, _uhex(v, OLHex.maxval))
         TEM.fsys.Write('OLC', u.coarse)
         TEM.fsys.Write('OLF', u.fine)
     
@@ -360,6 +365,8 @@ class Omega(Optics):
 
 class Device(object):
     """Device base class mixin.
+    
+    The request command complementary to the notify must be defined as _get_info.
     """
     @classmethod
     def request(self, key=None):
@@ -453,13 +460,13 @@ class Aperture(Device):
     """Aperture system: Normal type (extype=0).
     """
     APERTURES = dict((
-        ('NULL', ( inf, 150, 100, 50, 20)),
-        ( 'CLA', ( inf, 150, 100, 50, 20)),
-        ( 'OLA', ( inf,  60,  40, 30,  5)),
-        ( 'HCA', ( inf, 120,  60, 20,  5)),
-        ( 'SAA', ( inf, 100,  50, 20, 10)),
-        ('ENTA', ( inf, 120,  60, 40, 20)),
-        ( 'HXA', ( inf, 200,   0,  0,  0)),
+        ('NULL', (inf, 150, 100, 50, 20)),
+        ('CLA',  (inf, 150, 100, 50, 20)),
+        ('OLA',  (inf,  60,  40, 30,  5)),
+        ('HCA',  (inf, 120,  60, 20,  5)),
+        ('SAA',  (inf, 100,  50, 20, 10)),
+        ('ENTA', (inf, 120,  60, 40, 20)),
+        ('HXA',  (inf, 200,   0,  0,  0)),
     ))
     
     Info = jinfo.Aperture_info()
@@ -548,13 +555,13 @@ class ApertureEx(Aperture):
     """Aperture system: Extended type (extype=1).
     """
     APERTURES = dict((
-        ( 'CLA', ( inf, 150, 100, 50, 20)),
-        ('CLA2', ( inf,  40,  30, 20, 10)),
-        ( 'OLA', ( inf,  60,  40, 30,  5)),
-        ( 'HCA', ( inf, 120,  60, 20,  5)),
-        ( 'SAA', ( inf, 100,  50, 20, 10)),
-        ('ENTA', ( inf, 120,  60, 40, 20)),
-        ( 'HXA', ( inf, 200,   0,  0,  0)),
+        ('CLA',  (inf, 150, 100, 50, 20)),
+        ('CLA2', (inf,  40,  30, 20, 10)),
+        ('OLA',  (inf,  60,  40, 30,  5)),
+        ('HCA',  (inf, 120,  60, 20,  5)),
+        ('SAA',  (inf, 100,  50, 20, 10)),
+        ('ENTA', (inf, 120,  60, 40, 20)),
+        ('HXA',  (inf, 200,   0,  0,  0)),
     ))
     
     Info = jinfo.ApertureEx_info()
@@ -573,7 +580,7 @@ class ApertureEx(Aperture):
 class Stage(Device):
     """Stage (Gonio) system.
     
-    X,Y,Z unit [um] and TX,TY [deg].
+    X, Y, Z [um] and TX, TY [deg].
     """
     Info = jinfo.Gonio_info()
     
