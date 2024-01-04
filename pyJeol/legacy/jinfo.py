@@ -46,10 +46,10 @@ class Illumination_info(Infodict): #[N105] - [E055]
     """Illumination (CL) system.
     
     mode        : illumination mode {0:TEM, 1:EDS, 2:NBD, 3:CBD}
-    mode_name   : illumination name
+    mode_name   : illumination mode name (ditto)
     alpha       : alpha index
     spot        : spot index
-    probe       : [um]
+    probe_str   : probe string
     index       : illumination index +++ 付加情報 (コマンドには含まれない)
     """
     def __call__(self, argv):
@@ -64,11 +64,11 @@ class Imaging_info(Infodict): #[N101] - [E015]
     """Imaging (IL) system.
     
     mode        : imaging mode {0:MAG1, 1:MAG2, 2:LOWMAG, 3:SAMAG, 4:DIFF}
-    mode_name   : imaging name ditto
+    mode_name   : imaging mode name (ditto)
     index       : mag/cam index
     value       : mag/cam value
-    submodestr  : mag/cam submode string
-    unit        : mag/cam unit string [x][cm]
+    submode_str : mag/cam submode string
+    unit_str    : mag/cam unit string [x][cm]
     """
     def __call__(self, argv):
         Infodict.__call__(self, argv)
@@ -77,8 +77,8 @@ class Imaging_info(Infodict): #[N101] - [E015]
             if self['mode_name'] == 'MAG1':
                 self['mode_name'] = 'MAG'
             
-            self['submodestr'] = self['submodestr'].replace('X','x')
-            self['unit'] = self['unit'].lower()
+            self['submode_str'] = self['submode_str'].replace('X','x')
+            self['unit_str'] = self['unit_str'].lower()
         finally:
             return self
 
@@ -88,11 +88,11 @@ class Omega_info(Infodict): #[N102] - [E016]
     
     mode        : spectrum mode off/on {0:Imaging, 1:Spectrum}
     mmode       : imaging mode {0:MAG1, 1:MAG2, 2:LOWMAG, 3:SAMAG, 4:DIFF}
-    mmode_name  : imaging name ditto
+    mmode_name  : imaging mode name (ditto)
     index       : dispersion index ▲BUG: 1181 では論理番号 1 or 2 から始まる
     value       : dispersion value
-    submodestr  : dispersion submode string
-    unit        : dispersion unit string [um/eV]
+    submode_str : dispersion submode string
+    unit_str    : dispersion unit string [um/eV]
     mode_name   : spectrum mode +++ 付加情報 (コマンドには含まれない)
     """
     def __call__(self, argv):
@@ -100,15 +100,15 @@ class Omega_info(Infodict): #[N102] - [E016]
         try:
             if self['mode'] == 0:
                 self.update(
-                    submodestr = 'x',
+                    submode_str = 'x',
                     mode_name = 'Imaging',
-                    unit = 'x',
+                    unit_str = 'x',
                 )
             else:
                 self.update(
-                    submodestr = '{}um/eV'.format(self['value']),
+                    submode_str = '{}um/eV'.format(self['value']),
                     mode_name = 'Spectrum',
-                    unit = 'um/eV',
+                    unit_str = 'um/eV',
                 )
             self['mmode_name'] = self['mmode_name'].upper() # LowMAG 対応
             if self['mmode_name'] == 'MAG1':

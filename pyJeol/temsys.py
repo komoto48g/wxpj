@@ -241,11 +241,11 @@ class NotifyHandler(object):
         self.__parent.message(self.modestr)
     
     def on_imaging_notify(self, info): #<imaging_info>
-        self.substr[1] = "{mode_name}[{submodestr}]".format(**info)
+        self.substr[1] = "{mode_name}[{submode_str}]".format(**info)
         self.__parent.message(self.modestr)
     
     def on_omega_notify(self, info): #<omega_info>
-        self.substr[2] = "{mode_name}[{submodestr}]".format(**info).replace('/','_')
+        self.substr[2] = "{mode_name}[{submode_str}]".format(**info).replace('/','_')
         self.__parent.message(self.modestr)
 
 
