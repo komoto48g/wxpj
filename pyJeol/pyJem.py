@@ -188,12 +188,18 @@ class Optics(object):
     The Mode can only function if the class has commands _set_mode and _get_mode.
     The Selector can only function if the class has commands _set_index and _get_index.
     """
+    def _get_mode_name(self, j):
+        if j is not None:
+            return list(self.MODES)[j]
+    
+    def _get_mode_range(self, j):
+        if j is not None:
+            return list(self.MODES.values())[j]
+    
     @property
     def Name(self):
         """Mode-specific name."""
-        j = self.Mode
-        if j is not None:
-            return list(self.MODES)[j]
+        return self._get_mode_name(self.Mode)
     
     @property
     def Mode(self):
@@ -207,12 +213,11 @@ class Optics(object):
     def Mode(self, v):
         if isinstance(v, str):
             v = list(self.MODES).index(v)
-        j = int(v)
-        if 0 <= j < len(self.MODES):
-            if j != self.Mode:
-                self._set_mode(j)
+        if 0 <= v < len(self.MODES):
+            if v != self.Mode:
+                self._set_mode(int(v))
         else:
-            raise IndexError("Mode index out of range")
+            raise IndexError("Mode index is out of range: {}".format(v))
     
     @property
     def Selector(self):
@@ -229,7 +234,7 @@ class Optics(object):
     @property
     def Range(self):
         """Mode-specific range."""
-        return list(self.MODES.values())[self.Mode]
+        return self._get_mode_range(self.Mode)
 
 
 class Illumination(Optics):

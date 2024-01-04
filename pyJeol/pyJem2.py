@@ -200,12 +200,18 @@ class Optics(object):
         info = self.Info(self._get_info())
         return info[key] if key else info
     
+    def _get_mode_name(self, j):
+        if j is not None:
+            return list(self.MODES)[j]
+    
+    def _get_mode_range(self, j):
+        if j is not None:
+            return list(self.MODES.values())[j]
+    
     @property
     def Name(self):
         """Mode-specific name."""
-        j = self.Mode
-        if j is not None:
-            return list(self.MODES)[j]
+        return self._get_mode_name(self.Mode)
     
     @property
     def Mode(self):
@@ -216,12 +222,11 @@ class Optics(object):
     def Mode(self, v):
         if isinstance(v, str):
             v = list(self.MODES).index(v)
-        j = int(v)
-        if 0 <= j < len(self.MODES):
-            if j != self.Mode:
-                self._set_mode(j)
+        if 0 <= v < len(self.MODES):
+            if v != self.Mode:
+                self._set_mode(int(v))
         else:
-            raise IndexError("Mode index out of range")
+            raise IndexError("Mode index is out of range: {}".format(v))
     
     @property
     def Selector(self):
@@ -238,9 +243,7 @@ class Optics(object):
     @property
     def Range(self):
         """Mode-specific range."""
-        j = self.Mode
-        if j is not None:
-            return list(self.MODES.values())[j]
+        return self._get_mode_range(self.Mode)
 
 
 class Illumination(Optics):
@@ -271,9 +274,8 @@ class Illumination(Optics):
     def Spot(self, v):
         index = self.Spot # -> request
         if v < 0:
-            j = self.Info['mode']
-            lm = list(self.MODES.values())[j]
-            v %= lm[0]
+            rng = self._get_mode_range(self.Info['mode'])
+            v %= rng[0]
         if v != index:
             self._set_spot(int(v))
     
@@ -285,9 +287,8 @@ class Illumination(Optics):
     def Alpha(self, v):
         index = self.Alpha # -> request
         if v < 0:
-            j = self.Info['mode']
-            lm = list(self.MODES.values())[j]
-            v %= lm[1]
+            rng = self._get_mode_range(self.Info['mode'])
+            v %= rng[1]
         if v != index:
             self._set_alpha(int(v))
 
@@ -316,10 +317,9 @@ class Imaging(Optics):
     @Mag.setter
     def Mag(self, v):
         if v != self.Mag:
-            j = self.Info['mode']
-            lm = list(self.MODES.values())[j]
-            k = np.searchsorted(lm, v)
-            if k < len(lm):
+            rng = self._get_mode_range(self.Info['mode'])
+            k = np.searchsorted(rng, v)
+            if k < len(rng):
                 self._set_index(int(k))
             else:
                 raise IndexError("Mag index is out of range: {}".format(v))
@@ -350,10 +350,9 @@ class Omega(Optics):
     @Dispersion.setter
     def Dispersion(self, v):
         if v != self.Dispersion:
-            j = self.Info['mode']
-            lm = list(self.MODES.values())[j]
-            k = np.searchsorted(lm, v)
-            if k < len(lm):
+            rng = self._get_mode_range(self.Info['mode'])
+            k = np.searchsorted(rng, v)
+            if k < len(rng):
                 self._set_index(int(k))
             else:
                 raise IndexError("Dispersion index is out of range: {}".format(v))
