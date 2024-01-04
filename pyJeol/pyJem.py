@@ -61,10 +61,14 @@ else:
 ## MAJOR_MODE = 'TEM', 'STEM'
 ## USER_MODE  = 'MAINT', 'USER', 'STDBASE'
 
-def uhex(v, vmax=0xffff):
-    if v < 0: return 0
-    elif v > vmax: return vmax
-    else: return int(v) # needs cast to int (! PyJEM.TEM3 cannot eat np.int)
+def _uhex(v, vmax=0xffff):
+    if v < 0:
+        return 0
+    elif v > vmax:
+        return vmax
+    else:
+        return int(v) # needs cast to int (! PyJEM.TEM3 cannot eat np.int)
+
 
 def staticproperty(_get, _set=None):
     def fget(self):
@@ -72,8 +76,9 @@ def staticproperty(_get, _set=None):
         return f()
     def fset(self, v):
         f = getattr(LENS, _set)
-        return f(uhex(v))
+        return f(_uhex(v))
     return property(fget, fset if _set else None)
+
 
 def static2property(_get, _set):
     def fget(self):
@@ -81,7 +86,7 @@ def static2property(_get, _set):
         return np.array(f())
     def fset(self, v):
         f = getattr(DEFL, _set)
-        return f(uhex(v[0]), uhex(v[1]))
+        return f(_uhex(v[0]), _uhex(v[1]))
     return property(fget, fset)
 
 
@@ -153,7 +158,7 @@ class TEM(object):
     
     @FL.setter
     def FL(self, v):
-        u = FLHex(0, uhex(v, FLHex.maxval))
+        u = FLHex(0, _uhex(v, FLHex.maxval))
         LENS.SetFLc(u.coarse)
         LENS.SetFLf(u.fine)
     
@@ -164,7 +169,7 @@ class TEM(object):
     
     @OL.setter
     def OL(self, v):
-        u = OLHex(0, uhex(v, OLHex.maxval))
+        u = OLHex(0, _uhex(v, OLHex.maxval))
         LENS.SetOLc(u.coarse)
         LENS.SetOLf(u.fine)
     
@@ -183,12 +188,18 @@ class Optics(object):
     The Mode can only function if the class has commands _set_mode and _get_mode.
     The Selector can only function if the class has commands _set_index and _get_index.
     """
+    def _get_mode_name(self, j):
+        if j is not None:
+            return list(self.MODES)[j]
+    
+    def _get_mode_range(self, j):
+        if j is not None:
+            return list(self.MODES.values())[j]
+    
     @property
     def Name(self):
         """Mode-specific name."""
-        j = self.Mode
-        if j is not None:
-            return list(self.MODES)[j]
+        return self._get_mode_name(self.Mode)
     
     @property
     def Mode(self):
@@ -202,16 +213,15 @@ class Optics(object):
     def Mode(self, v):
         if isinstance(v, str):
             v = list(self.MODES).index(v)
-        j = int(v)
-        if 0 <= j < len(self.MODES):
-            if j != self.Mode:
-                self._set_mode(j)
+        if 0 <= v < len(self.MODES):
+            if v != self.Mode:
+                self._set_mode(int(v))
         else:
-            raise IndexError("Mode index out of range")
+            raise IndexError("Mode index is out of range: {}".format(v))
     
     @property
     def Selector(self):
-        """Submode-specifc index e.g., spot/alpha, mag, cam, and disp."""
+        """Submode-specifc index e.g., (spot, alpha), mag, cam, and disp."""
         return self._get_index()
     
     @Selector.setter
@@ -224,7 +234,7 @@ class Optics(object):
     @property
     def Range(self):
         """Mode-specific range."""
-        return list(self.MODES.values())[self.Mode]
+        return self._get_mode_range(self.Mode)
 
 
 class Illumination(Optics):
@@ -361,13 +371,13 @@ class Aperture(object):
     """Aperture system: Normal type (extype=0).
     """
     APERTURES = dict((
-        ('NULL', ( inf,  40,  30, 20, 10)), # CLA2 for extype=1
-        ( 'CLA', ( inf, 150, 100, 50, 20)),
-        ( 'OLA', ( inf,  60,  40, 30,  5)),
-        ( 'HCA', ( inf, 120,  60, 20,  5)),
-        ( 'SAA', ( inf, 100,  50, 20, 10)),
-        ('ENTA', ( inf, 120,  60, 40, 20)),
-        ( 'EDS', ( inf, 200,   0,  0,  0)),
+        ('NULL', (inf,  40,  30, 20, 10)), # CLA2 for extype=1
+        ('CLA',  (inf, 150, 100, 50, 20)),
+        ('OLA',  (inf,  60,  40, 30,  5)),
+        ('HCA',  (inf, 120,  60, 20,  5)),
+        ('SAA',  (inf, 100,  50, 20, 10)),
+        ('ENTA', (inf, 120,  60, 40, 20)),
+        ('EDS',  (inf, 200,   0,  0,  0)),
     ))
     select_apt = APT.SelectKind # extype=0
     get_pos = APT.GetPosition
@@ -432,13 +442,13 @@ class ApertureEx(Aperture):
     """Aperture system: Extended type (extype=1).
     """
     APERTURES = dict((
-        ( 'CLA', ( inf, 150, 100, 50, 20)),
-        ('CLA2', ( inf,  40,  30, 20, 10)),
-        ( 'OLA', ( inf,  60,  40, 30,  5)),
-        ( 'HCA', ( inf, 120,  60, 20,  5)),
-        ( 'SAA', ( inf, 100,  50, 20, 10)),
-        ('ENTA', ( inf, 120,  60, 40, 20)),
-        ( 'HXA', ( inf, 200,   0,  0,  0)),
+        ('CLA',  (inf, 150, 100, 50, 20)),
+        ('CLA2', (inf,  40,  30, 20, 10)),
+        ('OLA',  (inf,  60,  40, 30,  5)),
+        ('HCA',  (inf, 120,  60, 20,  5)),
+        ('SAA',  (inf, 100,  50, 20, 10)),
+        ('ENTA', (inf, 120,  60, 40, 20)),
+        ('HXA',  (inf, 200,   0,  0,  0)),
     ))
     ## Offline 版には Exp 系のコマンドがない▲
     if not Offline:
@@ -451,7 +461,7 @@ class ApertureEx(Aperture):
 class Stage(object):
     """Stage (Gonio) system.
     
-    X,Y,Z unit [um] and TX,TY [deg].
+    X, Y, Z [um] and TX, TY [deg].
     """
     X = property(
         lambda self: STAGE.GetPos()[0] / 1e3,
