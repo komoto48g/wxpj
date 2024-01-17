@@ -1,7 +1,5 @@
 #! python3
-"""PyJEM facade of the 'はじめてのぱいじえむ'
-
-Author: Kazuya O'moto <komoto@jeol.co.jp>
+"""PyJEM - 'はじめてのぱいじえむ'
 
 Wx Import Warning:
     Please ``import PyJEM`` *before* the wx.App is created and enters mainloop.

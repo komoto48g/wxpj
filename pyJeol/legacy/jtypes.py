@@ -1,7 +1,5 @@
 #! python3
 """Jeol Lens/Deflector system types
-
-Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from mwx.controls import LParam
 from . import _cmdl as cmdl

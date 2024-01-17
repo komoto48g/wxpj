@@ -1,7 +1,5 @@
 #! python3
-"""Property list of buffers
-
-Author: Kazuya O'moto <komoto@jeol.co.jp>
+"""Property list of buffers.
 """
 from pprint import pformat
 import wx

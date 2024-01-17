@@ -1,8 +1,5 @@
 #! python3
 """Jeol package for legacy TEM
-
-Version: None
-Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from . import _cmdl as cmdl
 from . import _cntf as cntf

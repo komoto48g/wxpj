@@ -1,8 +1,7 @@
 #! python3
-"""tem13 information class
-Class for notify optics state and hardware status
+"""Legacy TEM13 information class
 
-Author: Kazuya O'moto <komoto@jeol.co.jp>
+Class for notify optics state and hardware status
 """
 import struct
 

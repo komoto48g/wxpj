@@ -1,8 +1,5 @@
 #! python3
 """Jeol Camera module.
-
-Author: Kazuya O'moto <komoto@jeol.co.jp>
-Contributions by Hiroyuki Satoh/JEOL/JP
 """
 from datetime import datetime
 import time

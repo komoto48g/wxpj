@@ -1,8 +1,5 @@
 #! python3
 """Jeol detector module
-
-Author: Kazuya O'moto <komoto@jeol.co.jp>
-Contributions by Hiroyuki Satoh @JEOL.JP
 """
 import json
 import httplib2

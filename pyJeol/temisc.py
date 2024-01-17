@@ -1,8 +1,5 @@
 #! python3
 """Editor's collection of TEM miscellaneous functions
-
-Author: Kazuya O'moto <komoto@jeol.co.jp>
-see also: scipy.constants
 """
 import numpy as np
 from numpy import pi,sqrt

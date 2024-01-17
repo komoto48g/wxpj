@@ -1,7 +1,5 @@
 #! python3
-"""PyJEM facade of the Poor man's PyJEM
-
-Author: Kazuya O'moto <komoto@jeol.co.jp>
+"""Poor man's PyJEM
 """
 import time
 import numpy as np

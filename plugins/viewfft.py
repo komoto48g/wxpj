@@ -1,7 +1,5 @@
 #! python3
 """View of FFT/iFFT.
-
-Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 import wx
 import numpy as np

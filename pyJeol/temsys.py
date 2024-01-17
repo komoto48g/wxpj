@@ -1,7 +1,5 @@
 #! python3
 """Plug manager
-
-Author: Kazuya O'moto <komoto@jeol.co.jp>
 """
 from itertools import chain
 import wx
