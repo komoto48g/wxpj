@@ -91,11 +91,9 @@ class TEM(object):
     _set_pl_focus = Command("E162", "!h", None) # PL Focus
     _set_fl_focus = Command("E165", "!h", None) # FL Focus
     
-    lsys = LensSystem()  # Lens Free Control System
+    lsys = LensSystem()  # Lens (free-control) system
     dsys = DeflSystem()  # Deflector system
     fsys = FocusSystem() # Focus system
-    
-    foci = fsys  #: for backward compatibility
     
     def __getitem__(self, name):
         return getattr(self, name)
@@ -270,7 +268,7 @@ class Illumination(Optics):
     
     @Spot.setter
     def Spot(self, v):
-        index = self.Spot # -> request
+        index = self.Spot # => request
         if v < 0:
             rng = self._get_mode_range(self.Info['mode'])
             v %= rng[0]
@@ -283,7 +281,7 @@ class Illumination(Optics):
     
     @Alpha.setter
     def Alpha(self, v):
-        index = self.Alpha # -> request
+        index = self.Alpha # => request
         if v < 0:
             rng = self._get_mode_range(self.Info['mode'])
             v %= rng[1]
@@ -314,7 +312,7 @@ class Imaging(Optics):
     
     @Mag.setter
     def Mag(self, v):
-        if v != self.Mag:
+        if v != self.Mag: # => request
             rng = self._get_mode_range(self.Info['mode'])
             k = np.searchsorted(rng, v)
             if k < len(rng):
@@ -347,7 +345,7 @@ class Omega(Optics):
     
     @Dispersion.setter
     def Dispersion(self, v):
-        if v != self.Dispersion:
+        if v != self.Dispersion: # => request
             rng = self._get_mode_range(self.Info['mode'])
             k = np.searchsorted(rng, v)
             if k < len(rng):
