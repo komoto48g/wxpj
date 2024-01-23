@@ -23,9 +23,6 @@ class LensParam(LParam):
     @flag.setter
     def flag(self, v):
         self.check = (1 if v else 0)
-    
-    def __init__(self, name, value=None):
-        LParam.__init__(self, name, (0,0xffff,1), value, fmt=hex)
 
 
 def iter_pair(ls, n=2):
@@ -36,7 +33,7 @@ class Systembase(object):
     """Base class of Lens/Deflector system.
     """
     def __call__(self, argv):
-        for lp,v in zip(self.Lenses, argv):
+        for lp, v in zip(self.Lenses, argv):
             lp.value = v # change offset
         return self
     
@@ -101,16 +98,13 @@ class LensSystem(Systembase):
     flc2set = Command("E263", "!49H", "!49H", doc="FLCデータ設定")
     
     def __init__(self):
-        self.__Lenses = [LensParam(name) for name in self.TAGS[0:24]]
-        
+        self.__Lenses = [LensParam(name, (0, 0xffff), fmt=hex,
+                                   handler=self.write,
+                                   updater=self.setflag) for name in self.TAGS[:24]]
         self["FLC"].range = (0, 0xfff)
         self["FLF"].range = (0, 0xfff)
         self["FLCOMP1"].range = (0, 0xfff)
         self["FLCOMP2"].range = (0, 0xfff)
-        
-        for lp in self.Lenses:
-            lp.bind(self.write)
-            lp.bind(self.setflag, target='check')
     
     def read(self, stdbase=False):
         data = self.flc2get() # --> get (49 = 24*2+1) record
@@ -119,7 +113,7 @@ class LensSystem(Systembase):
         
         flags = data[0:48:2]  # 0--46
         values = data[1:48:2] # 1--47
-        for lp,f,v in zip(self.Lenses, flags, values):
+        for lp, v, f in zip(self.Lenses, values, flags):
             if stdbase:
                 lp.std_value = v
             lp.value = v
@@ -162,7 +156,7 @@ class FocusSystem(LensSystem):
         if not data:
             raise IOError("Failed to read online data {}".format(type(self)))
         
-        for lp,v in zip(self, data):
+        for lp, v in zip(self, data):
             if stdbase:
                 lp.std_value = v
             lp.value = v
@@ -225,18 +219,15 @@ class DeflSystem(Systembase):
     _algn1set = Command("E321", "!HH", "!H", doc="偏向系データ個別設定")
     
     def __init__(self):
-        self.__Lenses = [LensParam(name) for name in self.TAGS[:62]]
-        
-        for lp in self.Lenses:
-            ## lp.std_value = 0x8000
-            lp.bind(self.write)
+        self.__Lenses = [LensParam(name, (0, 0xffff), fmt=hex,
+                                   handler=self.write) for name in self.TAGS[:62]]
     
     def read(self, stdbase=False):
         data = self.algn2get() # --> get (62) deflectors record
         if not data:
             raise IOError("Failed to read online data {}".format(type(self)))
         
-        for lp,v in zip(self.Lenses, data):
+        for lp, v in zip(self.Lenses, data):
             if stdbase:
                 lp.std_value = v
             lp.value = v
