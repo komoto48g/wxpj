@@ -8,27 +8,12 @@ Command = cmdl.Command
 
 
 class LensParam(LParam):
-    """Base class of lens/defl linear param.
-    
-    name        : specified in *TAGS*
-    flag        : WR flag (=check) in recv/send signal
-    std_value   : standard (fixed) value (default None)
-    value       : total value := std_value + offset
-    offset      : offset from std/v
+    """Lens/Deflector coil hex param.
     """
-    @property
-    def flag(self):
-        return self.check
-    
-    @flag.setter
-    def flag(self, v):
-        self.check = (1 if v else 0)
-    
-    def __init__(self, name, value=None):
-        LParam.__init__(self, name, (0,0xffff,1), value, fmt=hex)
+    flag = LParam.check
 
 
-def iter_pair(ls, n=2):
+def _iter_pair(ls, n=2):
     return (ls[i:i+n] for i in range(0,len(ls),n))
 
 
@@ -36,7 +21,7 @@ class Systembase(object):
     """Base class of Lens/Deflector system.
     """
     def __call__(self, argv):
-        for lp,v in zip(self.Lenses, argv):
+        for lp, v in zip(self.Lenses, argv):
             lp.value = v # change offset
         return self
     
@@ -56,8 +41,8 @@ class Systembase(object):
         return len(self.Lenses)
     
     def __str__(self):
-        f = "{0.name:12s} {0.value:04X}({0.offset:+5X}) [{0.flag}]".format
-        return '\n'.join("{}\t{}".format(f(x),f(y)) for x,y in iter_pair(self.Lenses))
+        f = "{0.name:12s} {0.value:04X}({0.offset:+5X}) [{0.flag:d}]".format
+        return '\n'.join("{}\t{}".format(f(x), f(y)) for x, y in _iter_pair(self.Lenses))
 
 
 class LensSystem(Systembase):
@@ -101,16 +86,13 @@ class LensSystem(Systembase):
     flc2set = Command("E263", "!49H", "!49H", doc="FLCデータ設定")
     
     def __init__(self):
-        self.__Lenses = [LensParam(name) for name in self.TAGS[0:24]]
-        
+        self.__Lenses = [LensParam(name, (0, 0xffff), fmt=hex,
+                                   handler=self.write,
+                                   updater=self.setflag) for name in self.TAGS[:24]]
         self["FLC"].range = (0, 0xfff)
         self["FLF"].range = (0, 0xfff)
         self["FLCOMP1"].range = (0, 0xfff)
         self["FLCOMP2"].range = (0, 0xfff)
-        
-        for lp in self.Lenses:
-            lp.bind(self.write)
-            lp.bind(self.setflag, target='check')
     
     def read(self, stdbase=False):
         data = self.flc2get() # --> get (49 = 24*2+1) record
@@ -119,7 +101,7 @@ class LensSystem(Systembase):
         
         flags = data[0:48:2]  # 0--46
         values = data[1:48:2] # 1--47
-        for lp,f,v in zip(self.Lenses, flags, values):
+        for lp, v, f in zip(self.Lenses, values, flags):
             if stdbase:
                 lp.std_value = v
             lp.value = v
@@ -137,9 +119,8 @@ class LensSystem(Systembase):
         elif lens.flag:
             self.Write(lens.name, lens.value)
     
-    @staticmethod
-    def Write(name, v):
-        return LensSystem.flc1set(LensSystem.TAGS.index(name), int(v))
+    def Write(self, name, value):
+        self.flc1set(self.TAGS.index(name), int(value))
     
     def setflag(self, lens):
         if lens.flag:
@@ -162,7 +143,7 @@ class FocusSystem(LensSystem):
         if not data:
             raise IOError("Failed to read online data {}".format(type(self)))
         
-        for lp,v in zip(self, data):
+        for lp, v in zip(self, data):
             if stdbase:
                 lp.std_value = v
             lp.value = v
@@ -176,9 +157,8 @@ class FocusSystem(LensSystem):
         elif lens.flag:
             self.Write(lens.name, lens.value)
     
-    @staticmethod
-    def Write(name, v):
-        return FocusSystem.ldset(LensSystem.TAGS.index(name), int(v))
+    def Write(self, name, value):
+        self.ldset(self.TAGS.index(name), int(value))
 
 
 class DeflSystem(Systembase):
@@ -208,7 +188,7 @@ class DeflSystem(Systembase):
            'FLS1X',        'FLS1Y', # 40 : FL Stig1 X         41 : FL Stig1 Y         
            'FLS2X',        'FLS2Y', # 42 : FL Stig2 X         43 : FL Stig2 Y         
     'Preserved_4X', 'Preserved_4Y', # 44 : 分光系データ予備1  45 : 分光系データ予備2  
-    'Preserved_5X', 'Preserved_5Y', # 46 : 分光系データ予備3  47 : 分光系データ予備4
+    'Preserved_5X', 'Preserved_5Y', # 46 : 分光系データ予備3  47 : 分光系データ予備4  
                                     # 
               'U*',          'U*' , # 48 : Def U* 補正        49 : Def U* 補正        
         'CLA_Comp',     'CLA_Comp', # 50 : CLA Comp           51 : CLA Comp           
@@ -225,18 +205,15 @@ class DeflSystem(Systembase):
     _algn1set = Command("E321", "!HH", "!H", doc="偏向系データ個別設定")
     
     def __init__(self):
-        self.__Lenses = [LensParam(name) for name in self.TAGS[:62]]
-        
-        for lp in self.Lenses:
-            ## lp.std_value = 0x8000
-            lp.bind(self.write)
+        self.__Lenses = [LensParam(name, (0, 0xffff), fmt=hex,
+                                   handler=self.write) for name in self.TAGS[:62]]
     
     def read(self, stdbase=False):
         data = self.algn2get() # --> get (62) deflectors record
         if not data:
             raise IOError("Failed to read online data {}".format(type(self)))
         
-        for lp,v in zip(self.Lenses, data):
+        for lp, v in zip(self.Lenses, data):
             if stdbase:
                 lp.std_value = v
             lp.value = v
@@ -245,7 +222,7 @@ class DeflSystem(Systembase):
     def write(self, lens=None):
         if lens is None:
             data = [0] * 72 # <-- set (72 = 24*3) deflectors record
-            flags = [x.flag or y.flag for x,y in iter_pair(self.Lenses)]
+            flags = [x.flag or y.flag for x, y in _iter_pair(self.Lenses)]
             values = [x.value for x in self.Lenses]
             data[0::3] = flags[0:24]
             data[1::3] = values[0:48:2]
@@ -254,15 +231,7 @@ class DeflSystem(Systembase):
         elif lens.flag:
             self.Write(lens.name, lens.value)
     
-    @staticmethod
-    def Write(name, v):
-        ## 変数順が異なる algn2set と共通 Id が使用できるように定義したラップ関数
-        ## map = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,20,21,-1,-1,-1,-1,
-        ##       24,25,26,27,16,17,18,19,22,23,-1,-1,-1,-1,32,33,34,35,28,29,30,31,
-        ##       -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,44,45,62,63,64,65,
-        ##       66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,
-        ##       88,89,90,91,92,93,)
-        ## return DeflSystem._algn1set(map[name], int(v))
+    def Write(self, name, value):
         Tags = (
              'GUNA1X',       'GUNA1Y',
              'GUNA2X',       'GUNA2Y',
@@ -312,4 +281,4 @@ class DeflSystem(Systembase):
               'OMA1X',        'OMA1Y',
               'OMA2X',        'OMA2Y',
         )
-        return DeflSystem._algn1set(Tags.index(name), int(v))
+        self._algn1set(Tags.index(name), int(value))
