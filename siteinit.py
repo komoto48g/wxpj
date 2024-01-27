@@ -19,7 +19,9 @@ def init_mainframe(self):
             sys.path.append(f)
     
     ## Film/CCD [mm/pix]
-    u = 0.042
+    ## 0.042 mm/pix - FLASH @JEM-3300
+    ## 0.365 mm/pix - LSCR @JEM-Z300FSC/CiCLE
+    u = 0.365
     self.graph.unit = u
     self.output.unit = u
     
@@ -63,10 +65,6 @@ def init_mainframe(self):
     self.load_plug(viewframe)
     self.load_plug(viewfft)
     
-    ## from pyJeol import legacy
-    ## legacy.cmdl.TIMEOUT = 1
-    ## legacy.set_host('localhost', offline=0)
-    
     ## --------------------------------
     ## Global keymap of the main Frame 
     ## --------------------------------
@@ -101,7 +99,13 @@ def init_mainframe(self):
                  modestr = self.notify.modestr, # joined substr
         )
         frame.name = ("{acq_datetime:%Y_%m%d_%H%M%S}-{modestr} "
+                      ## "CLA={apts[CLA]} "
+                      "TX={gonio[TX]:.1f}deg "
                       "slit={filter[slit_width]}eV " # slit or None [eV]
                       "bin{binning}-{exposure:g}s"
                       .format(
                         **frame.attributes)).replace('None', '-')
+
+    @self.graph.handler.bind('region_drawn')
+    def roi_average(frame):
+        self.message("\b; avr={:g}".format(np.average(frame.roi)))
