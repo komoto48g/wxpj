@@ -49,12 +49,10 @@ Create a workspace or venv to install.
     git clone https://github.com/komoto48g/wxpj.git
     ```
 
-
 #### Note (for internal use only)
 
 社内からインストールする場合プロキシが見つからない為に失敗するかもしれません．
 その場合はまず次の設定を行ってください
-
 
     set HTTPS_PROXY=http://i-net.jeol.co.jp:80
     set HTTP_PROXY=http://i-net.jeol.co.jp:80
@@ -62,10 +60,6 @@ Create a workspace or venv to install.
 
 ### Updating
 
-To update packages, follow the steps above again.
-<!--
-Remove the wxpj directory before updating. Otherwise the latest wxpj will not be cloned.
--->
 To update wxpj:
 
     $ cd wxpj

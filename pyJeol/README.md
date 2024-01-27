@@ -4,25 +4,17 @@ Facade of pyJem 'はじめてのぱいじえむ'
 
 Simplified interface to all pyJem-related functionality.
 
+:memo:
+pyJem モジュールは wxpj 0.46 `GOOD BYE PYJEM` 以降メンテナンスされません．
+pyJem2 モジュール を使用してください．
+
 
 ## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
-- Python 3.8
-
-
-### Installing
-
-Just copy into your project directory.
-
 
 ### How to use
 
 ```py
->>> from pyJeol import pyJem as pj
+>>> from pyJeol import pyJem2 as pmpj
 ```
 
 
