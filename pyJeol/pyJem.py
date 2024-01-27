@@ -186,6 +186,10 @@ class Optics(object):
     The Mode can only function if the class has commands _set_mode and _get_mode.
     The Selector can only function if the class has commands _set_index and _get_index.
     """
+    @classmethod
+    def init(self, alist):
+        self.MODES = dict(alist)
+    
     def _get_mode_name(self, j):
         if j is not None:
             return list(self.MODES)[j]
@@ -385,6 +389,10 @@ class Aperture(object):
     get_id = APT.GetKind
     
     @classmethod
+    def init(self, alist):
+        self.APERTURES.update(alist) # ID が関係するので上書きではなく更新
+    
+    @classmethod
     def select_apt_name(self, name):
         return self.select_apt(list(self.APERTURES).index(name))
     
@@ -407,7 +415,7 @@ class Aperture(object):
     
     @property
     def pos(self):
-        """selected hole position [2:int]."""
+        """Selected hole position [2:int]."""
         if self.select():
             return np.array(self.get_pos())
     

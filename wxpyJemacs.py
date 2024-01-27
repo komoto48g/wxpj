@@ -151,34 +151,13 @@ class MainFrame(Frame):
 
 if __name__ == "__main__":
     session = None
-    online = None
-    opts, args = getopt.gnu_getopt(sys.argv[1:], "s:", ["pyjem="])
-    ## opts, args = getopt.gnu_getopt(sys.argv[1:], "s:")
+    opts, args = getopt.gnu_getopt(sys.argv[1:], "s:")
     for k, v in opts:
         if k == "-s":
             if not v.endswith(".jssn"):
                 v += ".jssn"
             session = v
-        if k == "--pyjem":
-            online = eval(v)
-
-    ## Please import TEM3 before the wx.App, or else you never do it hereafter.
-    ## switch --pyjem: 0(=offline), 1(=online), 2(=online+TEM3)
-    if online is not None:
-        try:
-            if online > 1:
-                print("Loading PyJEM.TEM3 module...")
-                from PyJEM import TEM3
-            elif online:
-                print("Loading PyJEM...")
-                import PyJEM
-            else:
-                print("Loading PyJEM.offline...")
-                import PyJEM.offline
-        except ImportError as e:
-            print(e)
-            ## print("  PyJEM is supported under Python 3.8... sorry")
-
+    
     app = wx.App()
     frm = MainFrame(None)
     if session:
