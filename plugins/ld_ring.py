@@ -242,11 +242,3 @@ class Plugin(Layer):
                     pp.append((x+lx-n, y+ly-n))
             nx, ny = np.array(pp).T
         return nx, ny
-
-
-if __name__ == "__main__":
-    la = calc_fcc_spacings(4.08e-10)
-    print("la =", la)
-    
-    model = Model(None)
-    print(*enumerate(model.Angles), sep='\n')

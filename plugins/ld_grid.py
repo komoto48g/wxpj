@@ -234,8 +234,3 @@ class Plugin(Layer):
         t = np.arctan(ly[k]/lx[k]) * 180/pi
         for lp, v in zip(self.grid_params, (g, t, x[0], y[0])):
             lp.value = v
-
-
-if __name__ == "__main__":
-    model = Model(None)
-    print(*enumerate(model.basegrid((100, 0, 0, 0))), sep='\n')

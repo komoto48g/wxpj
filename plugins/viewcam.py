@@ -120,15 +120,3 @@ class Plugin(Layer):
                 cv2.ellipse(dst, cc, rc, angle, 0, 360, (192,192,0), 2) # cyan:"#00c0c0"
         
         cv2.imshow(title, dst)
-
-
-if __name__ == "__main__":
-    import JeolCamera
-    from jgdk import Frame
-
-    app = wx.App()
-    frm = Frame(None)
-    frm.load_plug(__file__, show=1)
-    frm.load_plug(JeolCamera, show=0)
-    frm.Show()
-    app.MainLoop()

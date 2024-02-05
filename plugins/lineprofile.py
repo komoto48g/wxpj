@@ -25,16 +25,3 @@ class Plugin(Layer):
         @self.handler.bind('page_closed')
         def deactivate(*v):
             self.plot.detach(*self.parent.graphic_windows)
-
-
-if __name__ == "__main__":
-    import glob
-    import wx
-    from jgdk import Frame
-
-    app = wx.App()
-    frm = Frame(None)
-    frm.load_plug(__file__, show=1)
-    frm.load_frame(glob.glob(r"C:/usr/home/workspace/images/*.bmp"))
-    frm.Show()
-    app.MainLoop()

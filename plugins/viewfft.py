@@ -77,15 +77,3 @@ class Plugin(Layer):
             self.graph.load(dst.real, "*ifft of {}*".format(frame.name),
                                       localunit=1/w/frame.unit)
             self.message("\b done")
-
-
-if __name__ == "__main__":
-    import glob
-    from jgdk import Frame
-
-    app = wx.App()
-    frm = Frame(None)
-    frm.load_plug(__file__, show=1, dock=4)
-    frm.load_frame(glob.glob(r"C:/usr/home/workspace/images/*.bmp"))
-    frm.Show()
-    app.MainLoop()

@@ -280,15 +280,3 @@ class Plugin(Layer):
         ## Don't cut hi/lo: 強度重心を正しくとるため，飽和させないこと
         
         return self.output.load(dst, FFT_FRAME_NAME, localunit=1/w/frame.unit)
-
-
-if __name__ == "__main__":
-    import glob
-    from jgdk import Frame
-
-    app = wx.App()
-    frm = Frame(None)
-    frm.load_plug(__file__, show=1, dock=4)
-    frm.load_frame(glob.glob(r"C:/usr/home/workspace/images/*.bmp"))
-    frm.Show()
-    app.MainLoop()

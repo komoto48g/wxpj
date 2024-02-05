@@ -213,15 +213,3 @@ class Plugin(Layer):
         self.lctf.calc_ring(show=0)
         self.lctf.calc_peak(show=0)
         self.calc_optvar(show=1)
-
-
-if __name__ == "__main__":
-    import glob
-    from jgdk import Frame
-
-    app = wx.App()
-    frm = Frame(None)
-    frm.load_plug(__file__, show=1)
-    frm.load_frame(glob.glob(r"C:/usr/home/workspace/images/*.bmp"))
-    frm.Show()
-    app.MainLoop()
