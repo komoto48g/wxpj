@@ -7,10 +7,6 @@ from scipy import optimize
 from jgdk import Layer, Thread, LParam
 
 
-def _valist(params):
-    return list(p.value for p in params)
-
-
 def calc_dist(u, D, d):
     return complex(D, d) * u * u * np.conj(u)
 
@@ -56,7 +52,7 @@ class Model(object):
         """描画範囲の基準グリッド (複素数配列の組) を返す．
         円の描画リストは n=0 を含む必要はないので [1:] を返す．
         """
-        cam, xc, yc = _valist(params)
+        cam, xc, yc = params
         t = np.linspace(0, 1, 101) * pi
         p = complex(xc, yc)
         return [p + cam * a * exp(2j*t) for a in self.Angles]
@@ -137,7 +133,8 @@ class Plugin(Layer):
         self.init_grid(self.graph.axes)
     
     def init_grid(self, axes):
-        grid = self.model.basegrid(self.grid_params)
+        params = np.float32(self.grid_params)
+        grid = self.model.basegrid(params)
         self.Arts = [axes.plot([], [], 'k--', lw=0.5, alpha=0.75)[0] for z in grid]\
                   + [axes.plot([], [], 'r-',  lw=0.5, alpha=0.75)[0] for z in grid]
     
@@ -147,14 +144,14 @@ class Plugin(Layer):
         アスペクト比： R1=Y/X, R2=Y2/X2 を計算する．
         アスペクト比ずれ＋３次歪率を考慮したグリッドデータに変換して描画する．
         """
-        r, t = _valist(self.ratio_params)
-        D, d = _valist(self.dist_params)
+        params = np.float32(self.grid_params)
+        r, t = np.float32(self.ratio_params)
+        D, d = np.float32(self.dist_params)
         
-        grid0 = list(self.model.basegrid(self.grid_params))
+        grid0 = list(self.model.basegrid(params))
         grid1 = list(calc_aspect(z,r,t) + calc_dist(z,D,d) for z in grid0)
-        grids = grid0 + grid1 # リスト和
         
-        for art,z in zip(self.Arts, grids): # グリッドの設定
+        for art, z in zip(self.Arts, grid0 + grid1): # (リスト和) グリッドの設定
             art.set_data(z.real, z.imag)
             art.set_clip_on(False)
         
@@ -212,13 +209,14 @@ class Plugin(Layer):
             self.model.Index = self.order.value - 1
             
             result = optimize.leastsq(self.model.residual,
-                _valist(self.fitting_params), args=(x,y), ftol=1e-6)
+                                np.float32(self.fitting_params),
+                                args=(x,y), ftol=1e-6)
             
             for lp, v in zip(self.fitting_params, result[0]):
                 lp.value = v
             
             ## Check the final result.
-            res = self.model.residual(_valist(self.fitting_params), x, y)
+            res = self.model.residual(np.float32(self.fitting_params), x, y)
             
             print("... refined with order({})".format(6),
                   ":res {:g}".format(np.sqrt(np.average(res)) / frame.unit))

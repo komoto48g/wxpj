@@ -7,10 +7,6 @@ from scipy import optimize
 from jgdk import Layer, Thread, LParam
 
 
-def _valist(params):
-    return list(p.value for p in params)
-
-
 def calc_dist(u, D, d):
     return complex(D, d) * u * u * np.conj(u)
 
@@ -36,7 +32,7 @@ class Model(object):
     def basegrid(self, params):
         """描画範囲の基準グリッド (複素数配列の組)
         """
-        grid, tilt, xc, yc = _valist(params)
+        grid, tilt, xc, yc = params
         u = grid * exp(1j * tilt * pi/180)
         N = self.nGrid
         ## メッシュ数と分割数は同数である必要はないが，ここでは同数
@@ -127,7 +123,8 @@ class Plugin(Layer):
         self.init_grid(self.graph.axes)
     
     def init_grid(self, axes):
-        grid = self.model.basegrid(self.grid_params)
+        params = np.float32(self.grid_params)
+        grid = self.model.basegrid(params)
         self.Arts = [axes.plot([], [], 'k--', lw=0.5, alpha=0.75)[0] for z in grid]\
                   + [axes.plot([], [], 'r-',  lw=0.5, alpha=0.75)[0] for z in grid]
     
@@ -137,14 +134,14 @@ class Plugin(Layer):
         アスペクト比： R1=Y/X, R2=Y2/X2 を計算する．
         アスペクト比ずれ＋３次歪率を考慮したグリッドデータに変換して描画する．
         """
-        r, t = _valist(self.ratio_params)
-        D, d = _valist(self.dist_params)
+        params = np.float32(self.grid_params)
+        r, t = np.float32(self.ratio_params)
+        D, d = np.float32(self.dist_params)
         
-        grid0 = list(self.model.basegrid(self.grid_params))
+        grid0 = list(self.model.basegrid(params))
         grid1 = list(calc_aspect(z,r,t) + calc_dist(z,D,d) for z in grid0)
-        grids = grid0 + grid1 # リスト和
         
-        for art,z in zip(self.Arts, grids): # グリッドの設定
+        for art, z in zip(self.Arts, grid0 + grid1): # (リスト和) グリッドの設定
             art.set_data(z.real, z.imag)
             art.set_clip_on(False)
         
@@ -201,13 +198,14 @@ class Plugin(Layer):
             order = self.order.value
             if order > 0:
                 result = optimize.leastsq(self.model.residual,
-                    _valist(self.fitting_params), args=(x,y), ftol=10**-order)
+                                    np.float32(self.fitting_params),
+                                    args=(x,y), ftol=10**-order)
                 
                 for lp, v in zip(self.fitting_params, result[0]):
                     lp.value = v
             
             ## check the final result
-            res = self.model.residual(_valist(self.fitting_params), x, y)
+            res = self.model.residual(np.float32(self.fitting_params), x, y)
             
             print("... refined with order({})".format(order),
                   ":res {:g}".format(np.sqrt(np.average(res)) / frame.unit))
@@ -229,7 +227,7 @@ class Plugin(Layer):
             ly.append(y[j] - y[i])
             
         ## k = ld.index(np.median(ld))
-        k = ld.index(np.percentile(ld, 50, interpolation='nearest'))
+        k = ld.index(np.percentile(ld, 50, method='nearest'))
         g = ld[k]
         t = np.arctan(ly[k]/lx[k]) * 180/pi
         for lp, v in zip(self.grid_params, (g, t, x[0], y[0])):

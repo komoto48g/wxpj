@@ -10,7 +10,7 @@ class Model(base.Model):
     def basegrid(self, params):
         """描画範囲の基準グリッド (複素数配列の組)
         """
-        grid, tilt, xc, yc = np.float32(params)
+        grid, tilt, xc, yc = params
         u = grid * exp(1j * tilt * pi/180)
         N = self.nGrid
         lu = u * N * np.linspace(-0.5, 0.5, N+1) # 1/(N)grid
