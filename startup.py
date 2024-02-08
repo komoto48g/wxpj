@@ -52,16 +52,13 @@ class Plugin(Layer):
                "frame_selected" : [ None, self.on_unit_notify ],
             },
         }
-        
-        @self.handler.bind('page_shown')
-        def activate(*v):
-            for win in self.parent.graphic_windows:
-                win.handler.append(self.context)
-        
-        @self.handler.bind('page_closed')
-        def deactivate(*v):
-            for win in self.parent.graphic_windows:
-                win.handler.remove(self.context)
+        for win in self.parent.graphic_windows:
+            win.handler.append(self.context)
+    
+    def Destroy(self):
+        for win in self.parent.graphic_windows:
+            win.handler.remove(self.context)
+        return Layer.Destroy(self)
     
     def on_unit_notify(self, frame):
         if frame:
