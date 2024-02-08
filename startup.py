@@ -24,28 +24,26 @@ class Plugin(Layer):
         ## self.accv_param.reset() # -> call set_htv
         self.set_htv(self.accv_param)
         
-        self.unit_param = LParam("unit/pix", (0,1,1e-4), self.graph.unit,
-                updater=self.set_unit)
+        self.gu_param = LParam("global unit/pix", (0,1,1e-4),
+                                updater=self.set_unit)
+        
+        self.lu_param = LParam("local unit/pix", (0,1,1e-4),
+                                updater=self.set_unit)
         
         self.cuts_param = LParam("cutoff [%]", (0,1,1e-2), Graph.score_percentile,
-                handler=self.set_cutoff)
+                                handler=self.set_cutoff)
         
         self.threshold_param = LParam("image [Mb]", (1,24,1), Graph.nbytes_threshold/1e6,
-                handler=self.set_nbytes)
+                                handler=self.set_nbytes)
         
         self.layout((
                 self.accv_param,
-                self.unit_param,
+                self.gu_param,
+                self.lu_param,
                 self.cuts_param,
                 self.threshold_param,
             ),
-            type='vspin', style='button', cw=-1, lw=66, tw=60,
-        )
-        self.layout((
-            Button(self, "Apply ALL",
-                   self.setup_all, icon=Icon('v')),
-            ),
-            row=2,
+            type='vspin', style='button', cw=-1, lw=80, tw=60,
         )
         self.context = {
             None : {
@@ -67,8 +65,8 @@ class Plugin(Layer):
     
     def on_unit_notify(self, frame):
         if frame:
-            self.unit_param.value = frame.unit
-            self.unit_param.std_value = frame.parent.unit
+            self.gu_param.value = frame.parent.unit
+            self.lu_param.value = frame.localunit
     
     def set_htv(self, p):
         """Acceleration voltage [V]."""
@@ -76,14 +74,13 @@ class Plugin(Layer):
         self.__em_std = Environ(p.std_value)
     
     def set_unit(self, p):
-        """Set the localunit to the selected frame."""
-        view = self.selected_view
-        if view.frame:
-            u = p.value
-            if view.unit == u:
-                view.frame.unit = None  # del localunit
-            elif view.frame.unit != u:
-                view.frame.unit = u     # set localunit
+        """Set global/local unit to the selected frame."""
+        if p is self.gu_param:
+            self.selected_view.unit = p.value
+        else:
+            frame = self.selected_view.frame
+            if frame:
+                frame.unit = p.value
     
     def set_cutoff(self, p):
         """Set cutoff score percentiles of a frame.
@@ -97,9 +94,3 @@ class Plugin(Layer):
         Press [f5] to update_buffer.
         """
         Graph.nbytes_threshold = self.threshold_param.value * 1e6
-    
-    def setup_all(self):
-        """Set globalunit to all frames."""
-        u = self.unit_param.value
-        view = self.selected_view
-        view.unit = self.unit_param.std_value = u
