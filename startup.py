@@ -52,6 +52,12 @@ class Plugin(Layer):
             win.handler.remove(self.context)
         return Layer.Destroy(self)
     
+    def load_session(self, session):
+        self.accv_param.value = session['accv']
+    
+    def save_session(self, session):
+        session['accv'] = self.accv_param.value
+    
     def on_unit_notify(self, frame):
         if frame:
             self.gu_param.value = frame.parent.unit
