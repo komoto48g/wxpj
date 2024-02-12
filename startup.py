@@ -30,18 +30,10 @@ class Plugin(Layer):
         self.lu_param = LParam("local unit/pix", (0,1,1e-4),
                                 updater=self.set_unit)
         
-        self.cuts_param = LParam("cutoff [%]", (0,1,1e-2), Graph.score_percentile,
-                                handler=self.set_cutoff)
-        
-        self.threshold_param = LParam("image [Mb]", (1,24,1), Graph.nbytes_threshold/1e6,
-                                handler=self.set_nbytes)
-        
         self.layout((
                 self.accv_param,
                 self.gu_param,
                 self.lu_param,
-                self.cuts_param,
-                self.threshold_param,
             ),
             type='vspin', style='button', cw=-1, lw=80, tw=60,
         )
@@ -78,16 +70,3 @@ class Plugin(Layer):
             frame = self.selected_view.frame
             if frame:
                 frame.unit = p.value
-    
-    def set_cutoff(self, p):
-        """Set cutoff score percentiles of a frame.
-        Upper/lower limits given by the tolerances[%].
-        Press [f5] to update_buffer.
-        """
-        Graph.score_percentile = self.cuts_param.value
-    
-    def set_nbytes(self, p):
-        """Set the max bytes for the image in a frame.
-        Press [f5] to update_buffer.
-        """
-        Graph.nbytes_threshold = self.threshold_param.value * 1e6
