@@ -2,6 +2,7 @@
 """siteinit file
 """
 import sys
+import os
 import numpy as np
 
 
@@ -15,6 +16,7 @@ def init_mainframe(self):
     for f in [
             r"C:\usr\home\workspace\tem13\wxpj-data",
             ]:
+        f = os.path.normpath(f)
         if f not in sys.path:
             sys.path.append(f)
     

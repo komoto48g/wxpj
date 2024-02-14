@@ -16,6 +16,7 @@ This program is under MIT license
 see https://opensource.org/licenses/MIT
 """
 import getopt
+import glob
 import sys
 import os
 import re
@@ -23,10 +24,21 @@ import wx
 import wx.adv
 import numpy as np
 
-from jgdk import Frame
+from mwx.framework import Menu, StatusBar # noqa
+from mwx.controls import Param, LParam, Knob, Icon, Icon2, Clipboard # noqa
+from mwx.controls import Button, ToggleButton, TextCtrl, Choice, Gauge, Indicator # noqa
+from mwx.graphman import Frame, Layer, Thread, Graph # noqa
 
-from pyJeol.temsys import NotifyFront
-import pyDM3reader as DM3lib
+HOME = os.path.dirname(__file__)
+eggs = r"nest/*-py{}.{}.egg".format(*sys.version_info)
+
+for f in [
+        *glob.glob(os.path.join(HOME, eggs)), # from eggs import 3rd-packages
+        ## os.path.join(HOME, r"../gdk-packages"), # for debugging 3rd-packages
+        ]:
+    f = os.path.normpath(f)
+    if f not in sys.path:
+        sys.path.insert(0, f)
 
 
 class MainFrame(Frame):
@@ -51,6 +63,8 @@ class MainFrame(Frame):
         Frame.__init__(self, *args, **kwargs)
         
         ## Notify process
+        from pyJeol.temsys import NotifyFront
+        
         self.nfront = NotifyFront(self)
         self.notify = self.nfront.notify
         
@@ -68,15 +82,10 @@ class MainFrame(Frame):
         ]
         self.menubar.reset()
         
-        home = os.path.dirname(__file__)
-        try:
-            icon = os.path.join(home, "Jun.ico")
-            self.SetIcon(wx.Icon(icon, wx.BITMAP_TYPE_ICO))
-        except Exception:
-            pass
+        self.SetIcon(wx.Icon(os.path.join(HOME, "Jun.ico"), wx.BITMAP_TYPE_ICO))
         
         paths = [
-            home,   # Add ~/ to import si:home
+            HOME,   # Add ~/ to import si:home
             '',     # Add ./ to import si:local first
         ]
         for f in paths:
@@ -111,6 +120,8 @@ class MainFrame(Frame):
         """Read a buffer from path file (override) +.dm3 extension.
         """
         if path[-4:] in ('.dm3', '.dm4'):
+            import pyDM3reader as DM3lib
+            
             dmf = DM3lib.DM3(path)
             buf = dmf.imagedata # cf. dmf.image <PIL Image file>
             info = dmf.info
