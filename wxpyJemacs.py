@@ -32,13 +32,16 @@ from mwx.graphman import Frame, Layer, Thread, Graph # noqa
 HOME = os.path.dirname(__file__)
 eggs = r"nest/*-py{}.{}.egg".format(*sys.version_info)
 
-for f in [
-        *glob.glob(os.path.join(HOME, eggs)), # from eggs import 3rd-packages
-        ## os.path.join(HOME, r"../gdk-packages"), # for debugging 3rd-packages
-        ]:
-    f = os.path.normpath(f)
-    if f not in sys.path:
-        sys.path.insert(0, f)
+def add_path(*paths):
+    for f in paths:
+        f = os.path.normpath(f)
+        if f not in sys.path:
+            sys.path.insert(0, f)
+
+add_path(
+    *glob.glob(os.path.join(HOME, eggs)), # from eggs import 3rd-packages
+    ## os.path.join(HOME, r"../gdk-packages"), # for debugging 3rd-packages
+)
 
 
 class MainFrame(Frame):
@@ -84,13 +87,10 @@ class MainFrame(Frame):
         
         self.SetIcon(wx.Icon(os.path.join(HOME, "Jun.ico"), wx.BITMAP_TYPE_ICO))
         
-        paths = [
+        add_path(
             HOME,   # Add ~/ to import si:home
             '',     # Add ./ to import si:local first
-        ]
-        for f in paths:
-            if f not in sys.path:
-                sys.path.insert(0, f)
+        )
         try:
             si = __import__('siteinit')
         except ImportError:
