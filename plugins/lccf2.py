@@ -47,7 +47,7 @@ def find_ellipses(src, rmin, rmax, tol=0.75):
 
 
 class Plugin(Layer):
-    """Cetner of Circles (Ellipses) finder ver.2
+    """Cetner of Ellipses finder.
     """
     menukey = "Plugins/&Basic Tools/"
     category = "Basic Tools"

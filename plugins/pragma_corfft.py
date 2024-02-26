@@ -14,7 +14,7 @@ COR_FRAME_NAME = "*result of cor*"
 
 
 class Plugin(Layer):
-    """Plugin for magcal.
+    """Pragma suite for distortion analysis using COR/FFT methods.
     """
     menukey = "Plugins/&Pragma Tools/"
     
