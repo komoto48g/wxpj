@@ -62,11 +62,6 @@ def init_mainframe(self):
     self.load_plug(ld_cgrid)
     self.load_plug(ld_cring)
     
-    from plugins import lineprofile, viewframe, viewfft
-    self.load_plug(lineprofile)
-    self.load_plug(viewframe)
-    self.load_plug(viewfft)
-    
     ## --------------------------------
     ## Global keymap of the main Frame 
     ## --------------------------------
