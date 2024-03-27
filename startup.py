@@ -1,9 +1,7 @@
 #! python3
 """Startup utility.
 """
-import numpy as np
-
-from jgdk import Layer, Graph, Param, LParam, Button, Icon
+from jgdk import Layer, Param, LParam
 from pyJeol.temisc import Environ
 
 
