@@ -8,7 +8,7 @@ Development phase::
     Phase 3. Analysis center phoenix (2020--2021).
     Phase 4. Automation center phoenix (2022--2023).
 """
-__version__ = "0.52"
+__version__ = "0.54"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 __license__ = """\
@@ -98,6 +98,31 @@ class MainFrame(Frame):
         else:
             print(f"Executing {si.__file__!r}")
             si.init_mainframe(self)
+        
+        ## import editor as edi
+        ## self.edi = edi
+        ## self.edi.out = self.output # for debug output stream
+        
+        self.su = self.require('startup')
+        
+        from plugins import lgbt, lcrf, lccf, lccf2
+        self.load_plug(lgbt)
+        self.load_plug(lcrf)
+        self.load_plug(lccf)
+        self.load_plug(lccf2)
+        
+        from plugins import ld_grid, ld_ring
+        self.load_plug(ld_grid)
+        self.load_plug(ld_ring)
+        
+        from plugins import ld_cgrid, ld_cring
+        self.load_plug(ld_cgrid)
+        self.load_plug(ld_cring)
+        
+        from mwx.py import frame_listview, line_profile, fft_view
+        self.load_plug(frame_listview)
+        self.load_plug(line_profile)
+        self.load_plug(fft_view)
     
     def Destroy(self):
         self.nfront.Destroy()

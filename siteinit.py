@@ -39,30 +39,6 @@ def init_mainframe(self):
     self.histogram.modeline.Show()
     
     ## --------------------------------
-    ## Plugins
-    ## --------------------------------
-    import editor as edi
-    self.edi = edi
-    edi.out = self.output # for debug output
-    
-    self.su = self.require('startup')
-    self.si = sys.modules.get(__name__)
-    
-    from plugins import lgbt, lcrf, lccf, lccf2
-    self.load_plug(lgbt)
-    self.load_plug(lcrf)
-    self.load_plug(lccf)
-    self.load_plug(lccf2)
-    
-    from plugins import ld_grid, ld_ring
-    self.load_plug(ld_grid)
-    self.load_plug(ld_ring)
-    
-    from plugins import ld_cgrid, ld_cring
-    self.load_plug(ld_cgrid)
-    self.load_plug(ld_cring)
-    
-    ## --------------------------------
     ## Global keymap of the main Frame 
     ## --------------------------------
     
