@@ -77,7 +77,6 @@ class MainFrame(Frame):
         ]
         self.menubar["Plugins"] += [ # insert menus for extension, option, etc.
             ("Extensions", []),
-            ("Functions", []),
             (),
         ]
         self.menubar.reset()
@@ -102,6 +101,11 @@ class MainFrame(Frame):
         
         self.su = self.require('startup')
         
+        from mwx.plugins import frame_listview, line_profile, fft_view
+        self.load_plug(frame_listview)
+        self.load_plug(line_profile)
+        self.load_plug(fft_view)
+        
         from plugins import lgbt, lcrf, lccf, lccf2
         self.load_plug(lgbt)
         self.load_plug(lcrf)
@@ -115,11 +119,6 @@ class MainFrame(Frame):
         from plugins import ld_cgrid, ld_cring
         self.load_plug(ld_cgrid)
         self.load_plug(ld_cring)
-        
-        from mwx.py import frame_listview, line_profile, fft_view
-        self.load_plug(frame_listview)
-        self.load_plug(line_profile)
-        self.load_plug(fft_view)
     
     def Destroy(self):
         self.nfront.Destroy()
