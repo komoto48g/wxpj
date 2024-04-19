@@ -227,8 +227,7 @@ def eval_shift(src, src2, div=4):
 
 
 ## --------------------------------
-## Image analysis
-## Detect ellipses, peaks, etc.
+## Image analysis; Detect ellipses
 ## --------------------------------
 
 def centroid(src):
@@ -317,11 +316,17 @@ def calc_ellipse(src, ellipse):
     return R, n, s
 
 
-def qrsp(x, y):
+## --------------------------------
+## Image analysis; Detect peaks
+## --------------------------------
+
+def _qrsp(x, y):
     """x[3],y[3]: x,y 近接した３点から 2次式で極値の箇所を推定する．
     
     Returns:
-        中央位置 x[1] からの差分値 (dx,dy)
+        dx, dy : 中央位置 (x[1], y[1]) からの差分値
+        convex : 極値が凸：極大であるかどうか a<0 ?
+        inside : 極値が範囲内に存在するか ?
     """
     x0 = x[0]-x[1]
     x2 = x[2]-x[1]
@@ -352,7 +357,7 @@ def find_local_extremum(x, y, max=True):
     
     n = np.argmax(y) if max else np.argmin(y)   # 最大か最小のどちらかを求める
     j = 1 if n==0 else N-2 if n==N-1 else n     # 端であれば内側にずらしておく
-    dx, dy, convex, ok = qrsp(x[j-1:j+2], y[j-1:j+2]) # ３点評価
+    dx, dy, convex, ok = _qrsp(x[j-1:j+2], y[j-1:j+2]) # ３点評価
     
     valid = ok and (max and convex) or (not max and not convex)
     if valid:
@@ -378,8 +383,8 @@ def find_local_extremum2d(src, max=True):
     j = 1 if nx==0 else w-2 if nx==w-1 else nx  # 端であれば内側にずらしておく
     i = 1 if ny==0 else h-2 if ny==h-1 else ny  # 〃
     
-    dx, dzx, cx, ok_x = qrsp([-1,0,1], src[i, j-1:j+2])
-    dy, dzy, cy, ok_y = qrsp([-1,0,1], src[i-1:i+2, j])
+    dx, dzx, cx, ok_x = _qrsp([-1,0,1], src[i, j-1:j+2])
+    dy, dzy, cy, ok_y = _qrsp([-1,0,1], src[i-1:i+2, j])
     
     valid = ok_x and ok_y and (max and cx and cy) or not (max or cx or cy)
     if valid:
