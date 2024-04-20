@@ -210,20 +210,34 @@ def match_pattern(src, temp, method=cv2.TM_CCOEFF_NORMED):
 
 
 def eval_shift(src, src2, div=4):
-    """Evaluate image shift src --> src2 in pix.
-    """
-    h, w = src.shape
-    xo, yo = w//2, h//2
-    wt, ht = w//div, h//div  # template pattern in the src divided by div
+    """Evaluate shift src --> src2 [pix] using cv2.matchTemplate."""
+    return np.array(eval_match_shift(src2, src, div)) # for backward compatibility
+
+
+def eval_match_shift(src, tmp, d=4):
+    """Evaluate shift of src from tmp [pix] using cv2.matchTemplate."""
+    h, w = tmp.shape
+    xo, yo = w//2, h//2  # center position
+    wt, ht = w//d, h//d  # template pattern (tmp divided by d)
     xt = xo - wt//2
     yt = yo - ht//2
-    temp = src[yt:yt+ht, xt:xt+wt]
-    
-    dst, (x, y) = match_pattern(src2, temp)
-    ho, wo = dst.shape
-    dx = x - wo//2
-    dy = y - ho//2
-    return np.array((dx, dy))
+    dst, (x, y) = match_pattern(src, tmp[yt:yt+ht, xt:xt+wt])
+    h, w = dst.shape
+    dx = x - w//2
+    dy = y - h//2
+    return dx, dy
+
+
+def eval_corr_shift(src, tmp):
+    """Evaluate shift between src and tmp (template) using Corr."""
+    src = fftcrop(src)
+    tmp = fftcrop(tmp)
+    dst = Corr(src, tmp)
+    y, x = np.unravel_index(dst.argmax(), dst.shape)
+    h, w = dst.shape
+    dx = x - w//2
+    dy = y - h//2
+    return dx, dy
 
 
 ## --------------------------------
