@@ -2,7 +2,7 @@
 """Startup utility.
 """
 from jgdk import Layer, Param, LParam
-from pyJeol.temisc import Environ
+from pyJeol import Environ
 
 
 class Plugin(Layer):

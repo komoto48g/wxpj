@@ -5,15 +5,10 @@ from itertools import chain
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
-from mwx import FSM, Frame, MiniFrame
-try:
-    import teminfo
-    import pyJem2 as pj
-    from legacy import cmdl, cntf
-except ImportError:
-    from . import teminfo
-    from . import pyJem2 as pj
-    from .legacy import cmdl, cntf
+from mwx import FSM, MiniFrame
+from . import teminfo
+from . import pyJem2 as pj
+from .legacy import cmdl, cntf
 
 
 class NotifyHandler(object):
@@ -680,34 +675,3 @@ NOTIFY_COMMANDS = {
     "F930" : u"排気系情報通知",
     "F973" : u"試料ホルダータイプ通知",
 }
-
-
-if __name__ == "__main__":
-    cmdl.HOST = cntf.HOST = "localhost"
-    ## cmdl.OFFLINE = True
-    
-    class TestFrame(Frame):
-        def __init__(self, *args, **kwargs):
-            Frame.__init__(self, *args, **kwargs)
-            
-            self.nfront = NotifyFront(self)
-            self.notify = self.nfront.notify
-            self.notify.start()
-            self.notify.handler.debug = 4
-            
-            self.menubar["File"][-4:-4] += (
-                (1, "&Notifyee\tF11", "Notify logger frame", wx.ITEM_CHECK,
-                    lambda v: self.nfront.Show(v.IsChecked()),
-                    lambda v: v.Check(self.nfront.IsShown())),
-            )
-            self.menubar.reset()
-        
-        def Destroy(self):
-            self.nfront.Destroy()
-            return Frame.Destroy(self)
-    
-    app = wx.App()
-    frm = TestFrame(None)
-    ## frm = NotifyFront(None)
-    frm.Show()
-    app.MainLoop()
