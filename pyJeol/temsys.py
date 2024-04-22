@@ -7,11 +7,13 @@ from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 from mwx import FSM, Frame, MiniFrame
 try:
+    import teminfo
     import pyJem2 as pj
-    from legacy import jinfo, cmdl, cntf
+    from legacy import cmdl, cntf
 except ImportError:
+    from . import teminfo
     from . import pyJem2 as pj
-    from .legacy import jinfo, cmdl, cntf
+    from .legacy import cmdl, cntf
 
 
 class NotifyHandler(object):
@@ -160,11 +162,11 @@ class NotifyHandler(object):
         
         ## pj で定義されない情報はここで実体を定義する
         
-        self.htsub_info = jinfo.HTsub_info()
-        self.htsub2_info = jinfo.HTsub2_info()
-        self.cur_info = jinfo.Current_info()
-        self.scr_info = jinfo.Screen_info()
-        self.det_info = jinfo.Detector_info()
+        self.htsub_info = teminfo.HTsub_info()
+        self.htsub2_info = teminfo.HTsub2_info()
+        self.cur_info = teminfo.Current_info()
+        self.scr_info = teminfo.Screen_info()
+        self.det_info = teminfo.Detector_info()
         
         _NC = cntf.NotifyCommand
         

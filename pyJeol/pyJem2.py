@@ -5,14 +5,16 @@ import time
 import numpy as np
 from numpy import inf
 try:
+    import teminfo
     from temisc import mrange
     from temisc import FLHex, OLHex
-    from legacy import jinfo, cmdl, cntf
+    from legacy import cmdl, cntf
     from legacy import LensSystem, DeflSystem, FocusSystem
 except ImportError:
+    from . import teminfo
     from .temisc import mrange
     from .temisc import FLHex, OLHex
-    from .legacy import jinfo, cmdl, cntf
+    from .legacy import cmdl, cntf
     from .legacy import LensSystem, DeflSystem, FocusSystem
 
 Command = cmdl.Command
@@ -250,7 +252,7 @@ class Illumination(Optics):
         ('Koehler', (8, 8)),
     ))
     
-    Info = jinfo.Illumination_info()
+    Info = teminfo.Illumination_info()
     
     _get_info = Command("E055", None, "!H10sHH10s")
     _set_mode = Command("E050", "!H", "!H")
@@ -300,7 +302,7 @@ class Imaging(Optics):
         ('DIFF',   mrange( 300,  5000)),
     ))
     
-    Info = jinfo.Imaging_info()
+    Info = teminfo.Imaging_info()
     
     _get_info = Command("E015", None, "!H10sHI10s10s")
     _set_mode = Command("E010", "!H", "!H")
@@ -329,7 +331,7 @@ class Omega(Optics):
         ('Spectrum', mrange(100, 250)), # um/eV
     ))
     
-    Info = jinfo.Omega_info()
+    Info = teminfo.Omega_info()
     
     _get_info = Command("E016", None, "!HH10sHI10s10s")
     _set_mode = Command("E620", "!H", "!2H2I2H2IH5dH")
@@ -372,7 +374,7 @@ class Device(object):
 class EOsys(Device):
     """EM device system.
     """
-    Info = jinfo.Eos_info()
+    Info = teminfo.Eos_info()
     
     _get_info = Command("E090", None, "!16HIH")
     
@@ -424,7 +426,7 @@ class EOsys(Device):
 class HTsys(Device):
     """HT system.
     """
-    Info = jinfo.HT_info()
+    Info = teminfo.HT_info()
     
     _get_info = Command("F902", None, "!19hi5h", device='HT')
     _set_htv = Command("F502", "!I", None, device='HT', cmdtype='ACK') # [0:130000:10V]
@@ -464,7 +466,7 @@ class Aperture(Device):
         ('HXA',  (inf, 200,   0,  0,  0)),
     ))
     
-    Info = jinfo.Aperture_info()
+    Info = teminfo.Aperture_info()
     
     _get_info = Command("E405", None ,"!3H798s", device='APT') # extype=0
     _select_apt = Command("E400", "!H", "!H", device='APT')
@@ -559,7 +561,7 @@ class ApertureEx(Aperture):
         ('HXA',  (inf, 200,   0,  0,  0)),
     ))
     
-    Info = jinfo.ApertureEx_info()
+    Info = teminfo.ApertureEx_info()
     
     _get_info = Command("E423", None, "!15H", device='APT') # extype=1
     _select_apt = Command("E421", "!H", "!H", device='APT')
@@ -577,7 +579,7 @@ class Stage(Device):
     
     X, Y, Z [um] and TX, TY [deg].
     """
-    Info = jinfo.Gonio_info()
+    Info = teminfo.Gonio_info()
     
     _get_info = Command("G921", None, "!7d", device='GONIO')
     _get_status = Command("G920", None ,"!11H", device='GONIO') # (X,Y,Z,TX,TY,M/P,X+,Y+,Z+,TX+,TY+)
@@ -640,7 +642,7 @@ class Stage(Device):
 class Filter(Device):
     """Energy filter system.
     """
-    Info = jinfo.Filter_info()
+    Info = teminfo.Filter_info()
     
     _get_info = Command("E630", None, "!2H2I2H2IH5dH")
     _set_slit = Command("E621", "!H", "!2H2I2H2IH5dH")
