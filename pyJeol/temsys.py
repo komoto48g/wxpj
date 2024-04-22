@@ -1,7 +1,6 @@
 #! python3
 """Plug manager
 """
-from itertools import chain
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
@@ -35,7 +34,7 @@ class NotifyHandler(object):
     def start(self):
         """Open notify/request command stream."""
         self.__thread.Start() # open the notify port
-        if cmdl.open():
+        if cmdl.open():       # open the request port
             self.update()
     
     def stop(self):
@@ -48,15 +47,21 @@ class NotifyHandler(object):
         try:
             self.handler("illumination_info", self.illumination.request())
             self.handler("imaging_info", self.imaging.request())
-            
-            ## 最初の時点では OMEGA-TYPE 不明▲
-            self.handler("omega_info", self.omega.request())
-            self.handler("filter_info", self.efilter.request())
         except IOError as e:
-            print("- NotifyHandler failed to get filter info: {!r}.".format(e))
+            print("- Failed to get TEM/Optics info: {!r}.".format(e))
         
         try:
-            self.tem.lsys.read()
+            ## 最初の時点では OMEGA-TYPE 不明▲
+            omega_type = bool(pj.Omega._get_info()) # -> beep
+            if omega_type:
+                self.handler("omega_info", self.omega.request())
+                self.handler("efilter_info", self.efilter.request())
+        except IOError as e:
+            print("- Failed to get TEM/Filter info: {!r}.".format(e))
+        
+        try:
+            self.tem.lsys.read() # -> beep
+            
             self.handler("lens_notify", self.tem.fsys.read())
             self.handler("defl_notify", self.tem.dsys.read())
             
@@ -65,17 +70,19 @@ class NotifyHandler(object):
             self.handler("gonio_info", self.gonio.request())
             
             self.handler("beam_valve", self.eos._get_v1_state())
-            ## self.handler("scr_info", self.eos._get_scr())
-            ## self.handler("det_info", self.eos._get_det()) # ▼not supported
             
             self.handler("scr_info", self.scr_info(self.eos._get_scr()))
-            
+            ## self.handler("det_info", self.det_info(self.eos._get_det())) # ▼not supported
+        except IOError as e:
+            print("- Failed to get TEM/Device info: {!r}.".format(e))
+        
+        try:
             ## 最初の時点では APT-EXTYPE 不明▲
             extype = bool(pj.ApertureEx._get_info())
             self.apts = pj.ApertureEx if extype else pj.Aperture
             self.handler("apt_info", self.apts.request())
         except IOError as e:
-            print("- NotifyHandler failed to get TEM info: {!r}.".format(e))
+            print("- Failed to get TEM/APT info: {!r}.".format(e))
     
     def __init__(self, parent, logger):
         self.__parent = parent
@@ -98,7 +105,7 @@ class NotifyHandler(object):
                      "det_info" : [ None ], # called when detectors are drived
                      "scr_info" : [ None ], # called when screen are drived (invalid for BK-TEMCENTER)▲
                    "gonio_info" : [ None ], # called when gonio is drived
-                  "filter_info" : [ None ], # called when filter is drived
+                 "efilter_info" : [ None ], # called when energy filter is drived
                   "lens_notify" : [ None, lambda v: self.tem.lsys(v),
                                           lambda v: self.tem.fsys(v) ], # called when lense data changed
                   "defl_notify" : [ None, lambda v: self.tem.dsys(v) ], # called when deflector data changed
@@ -150,7 +157,7 @@ class NotifyHandler(object):
         self.eos = pj.EOsys() # -> eos_info
         self.hts = pj.HTsys() # -> ht_info
         self.gonio = pj.Stage() # -> gonio_info
-        self.efilter = pj.Filter() # -> filter_info
+        self.efilter = pj.Filter() # -> efilter_info
         
         ## Aperture system typeinfo
         self.apts = pj.ApertureEx
@@ -210,7 +217,7 @@ class NotifyHandler(object):
     def on_filter_fork(self, argv):
         """Called when filter is drived."""
         info = self.efilter.Info(argv)
-        self.handler("filter_info", info)
+        self.handler("efilter_info", info)
         
         if info["status"]:
             if not self.degauss_sw:
