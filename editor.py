@@ -3,9 +3,6 @@
 """
 import numpy as np
 from numpy import pi,cos,sin
-from scipy import signal
-## from numpy.fft import fft,ifft,fftfreq
-## from numpy.fft import fft2,ifft2,fftshift
 import cv2
 from matplotlib import pyplot as plt
 from matplotlib import cm
@@ -128,25 +125,6 @@ def rotate(src, angle):
     return cv2.warpAffine(src, M, (w, h))
 
 
-## def blur1d(src, lw=11, window=np.hanning):
-##     """Smooth 1D array.
-##     window function: hanning, hamming, bartlett, blackman, or, None
-##     """
-##     w = np.ones(lw,'d') if not window else window(lw)
-##     return np.convolve(w/w.sum(), src, mode='same')
-## 
-## def gaussian_blur1d(src, lw=11, p=1, sigma=4):
-##     """Smooth 1D array with Gaussian window (cf. cv2.GaussianBlur).
-##     lw : length of window
-##      p : shape; p = 1 is identical to Normal gaussian,
-##                 p = 1/2 the same as Laplace distribution.
-##     """
-##     window = signal.general_gaussian(lw, p, sig=sigma)
-##     f = signal.fftconvolve(window, src)
-##     f = (np.average(src) / np.average(f)) * f
-##     return np.roll(f, -lw//2)
-
-
 def gradx(src, ksize=5):
     """Gradients: diff by Sobel (１次微分)."""
     return cv2.Sobel(src, cv2.CV_32F, 1, 0, ksize)
@@ -179,6 +157,8 @@ def Corr(src, tmp, mode='same'):
     
     cf. cv2.phaseCorrelate: translational shifts between two images
     """
+    from scipy import signal
+
     src = src.astype(np.float32) - src.mean()
     tmp = tmp.astype(np.float32) - tmp.mean()
     if src.ndim == 1:
