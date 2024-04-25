@@ -72,5 +72,4 @@ def init_mainframe(self):
                       "TX={gonio[TX]:.1f}deg "
                       "slit={filter[slit_width]}eV " # slit or None [eV]
                       "bin{binning}-{exposure:g}s"
-                      .format(
-                        **frame.attributes)).replace('None', '-')
+                      .format(**frame.attributes)).replace('None', '-').strip()
