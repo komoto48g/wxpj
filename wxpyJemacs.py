@@ -8,7 +8,7 @@ Development phase::
     Phase 3. Analysis center phoenix (2020--2021).
     Phase 4. Automation center phoenix (2022--2023).
 """
-__version__ = "0.55rc"
+__version__ = "0.55"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 __license__ = """\
@@ -95,8 +95,8 @@ class MainFrame(Frame):
             print(f"Executing {si.__file__!r}")
             si.init_mainframe(self)
         
-        import editor as edi
-        self.edi = edi
+        import editor
+        self.edi = editor
         
         self.su = self.require('startup')
         

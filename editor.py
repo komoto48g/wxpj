@@ -195,7 +195,7 @@ def eval_shift(src, src2, div=4):
 
 
 def eval_match_shift(src, tmp, d=4):
-    """Evaluate shift of src from tmp [pix] using cv2.matchTemplate."""
+    """Evaluate shift [pix] of src from tmp (template) using cv2.matchTemplate."""
     h, w = tmp.shape
     xo, yo = w//2, h//2  # center position
     wt, ht = w//d, h//d  # template pattern (tmp divided by d)
@@ -208,12 +208,15 @@ def eval_match_shift(src, tmp, d=4):
     return dx, dy
 
 
-def eval_corr_shift(src, tmp):
-    """Evaluate shift between src and tmp (template) using Corr."""
+def eval_corr_shift(src, tmp, subpix=True):
+    """Evaluate shift [pix] of src from tmp (template) using Corr."""
     src = fftcrop(src)
     tmp = fftcrop(tmp)
     dst = Corr(src, tmp)
-    y, x = np.unravel_index(dst.argmax(), dst.shape)
+    if subpix:
+        x, y, z, _ok = find_local_extremum2d(dst)
+    else:
+        y, x = np.unravel_index(dst.argmax(), dst.shape)
     h, w = dst.shape
     dx = x - w//2
     dy = y - h//2
