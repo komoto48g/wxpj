@@ -28,9 +28,6 @@ class NotifyHandler(object):
     thread = property(lambda self: self.__thread)   #: Notify thread instance
     handler = property(lambda self: self.__handler) #: Notify command handler instance
     
-    substr = [''] * 3 # 3-fields for mode:str
-    modestr = property(lambda self: ' '.join(self.substr).strip())
-    
     def start(self):
         """Open notify/request command stream."""
         self.__thread.Start() # open the notify port
@@ -213,6 +210,7 @@ class NotifyHandler(object):
             _NC("N817", "!6H", lambda v: self.handler("auto_ems", v)),
         )
         self.degauss_sw = 0
+        self._substr = [''] * 3 # 3-fields for mode:str
     
     def on_filter_fork(self, argv):
         """Called when filter is drived."""
@@ -238,16 +236,20 @@ class NotifyHandler(object):
     def on_htsub_fork(self, info): #<htsub_info>
         self.handler('ht_info', self.hts.request())
     
+    @property
+    def modestr(self):
+        return ' '.join(self._substr).strip()
+    
     def on_illumination_notify(self, info): #<illumination_info>
-        self.substr[0] = "{mode_name}[{spot}-{alpha}]".format(**info)
+        self._substr[0] = "{mode_name}[{spot},{alpha}]".format(**info)
         self.__parent.message(self.modestr)
     
     def on_imaging_notify(self, info): #<imaging_info>
-        self.substr[1] = "{mode_name}[{submode_str}]".format(**info)
+        self._substr[1] = "{mode_name}[{submode_str}]".format(**info)
         self.__parent.message(self.modestr)
     
     def on_omega_notify(self, info): #<omega_info>
-        self.substr[2] = "{mode_name}[{submode_str}]".format(**info).replace('/','_')
+        self._substr[2] = "{mode_name}[{submode_str}]".format(**info).replace('/','_')
         self.__parent.message(self.modestr)
 
 
