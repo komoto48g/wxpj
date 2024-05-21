@@ -22,7 +22,7 @@ class Plugin(Layer):
         ## self.accv_param.reset() # -> call set_htv
         self.set_htv(self.accv_param)
         
-        self.gu_param = LParam("global unit/pix", (0,1,1e-4),
+        self.gu_param = LParam("global unit/pix", (0,1,1e-4), self.graph.unit,
                                 updater=self.set_unit)
         
         self.lu_param = LParam("local unit/pix", (0,1,1e-4),
@@ -52,9 +52,12 @@ class Plugin(Layer):
     
     def load_session(self, session):
         self.accv_param.value = session['accv']
+        self.gu_param.value = session['unit']
+        self.graph.unit = session['unit']
     
     def save_session(self, session):
         session['accv'] = self.accv_param.value
+        session['unit'] = self.gu_param.value
     
     def on_unit_notify(self, frame):
         if frame:
