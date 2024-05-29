@@ -8,7 +8,7 @@ Development phase::
     Phase 3. Analysis center phoenix (2020--2021).
     Phase 4. Automation center phoenix (2022--2023).
 """
-__version__ = "0.55"
+__version__ = "0.56"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 __license__ = """\
@@ -29,13 +29,13 @@ from mwx.graphman import Frame
 HOME = os.path.dirname(__file__)
 eggs = r"nest/*-py{}.{}.egg".format(*sys.version_info)
 
-def add_path(*paths):
+def add_paths(*paths):
     for f in paths:
         f = os.path.normpath(f)
         if f not in sys.path:
             sys.path.insert(0, f)
 
-add_path(
+add_paths(
     *glob.glob(os.path.join(HOME, eggs)), # from eggs import 3rd-packages
     ## os.path.join(HOME, r"../gdk-packages"), # for debugging 3rd-packages
 )
@@ -83,7 +83,7 @@ class MainFrame(Frame):
         
         self.SetIcon(wx.Icon(os.path.join(HOME, "Jun.ico"), wx.BITMAP_TYPE_ICO))
         
-        add_path(
+        add_paths(
             HOME,   # Add ~/ to import si:home
             '',     # Add ./ to import si:local first
         )
