@@ -50,7 +50,7 @@ class Plugin(Layer):
                 Button(self, "1. Eval", self.evaluate, icon='help', size=(72,-1)),
                 self.choice,
                 
-                Button(self, "2. Mark", self.calc_mark, icon='help', size=(72,-1)),
+                Button(self, "2. Mark", self.calmark, icon='help', size=(72,-1)),
                 self.score,
                 
                 Button(self, "3. Run", self.run, icon='help', size=(72,-1)),
@@ -86,22 +86,13 @@ class Plugin(Layer):
     ## Before calculating Mags, check unit length [mm/pixel]
     
     def show_settings(self):
-        """Show settings to check.
-        
-        - lccf radii [rmin:rmax] for marking spots
-        - unit length [mm/pixel] for calculating mags
-        """
         self.su.Show()
         self.lccf.Show()
     
     def run(self):
         """Run the fitting procedure."""
-        try:
-            busy = wx.BusyCursor()
-            self.ldc.reset_params()
-            self.ldc.thread.Start(self.calc_fit)
-        finally:
-            del busy
+        self.ldc.reset_params()
+        self.ldc.thread.Start(self.calc_fit)
     
     def evaluate(self, frame=None):
         """Evaluation using the selected method.
@@ -121,10 +112,10 @@ class Plugin(Layer):
         else:
             self.test_cor(frame)
     
-    def calc_mark(self):
-        """Set parameter of socre at percentile.
+    def calmark(self):
+        """Feature detection.
         
-        Ratio [%] to maximum count for extracting spots.
+        Set parameter: Ratio [%] of upper counts to extract spots.
         """
         frame = self.result_frame
         if not frame:
