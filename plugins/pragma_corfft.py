@@ -1,9 +1,7 @@
 #! python3
 import wx
-import cv2
 import numpy as np
-from numpy import nan, pi
-from numpy.fft import fft2,fftshift
+from numpy import nan
 
 from jgdk import Layer, LParam, Button, Choice
 import editor as edi
@@ -206,10 +204,10 @@ class Plugin(Layer):
         i, j = h//2, w//2   # ld_cgrid を使うので，画像の中心であることが必須．
         temp = src[i-n:i+n, j-n:j+n]
         
-        self.message("processing pattern matching...")
+        self.message("Processing pattern matching...")
         dst, (x, y) = edi.match_pattern(src, temp)
         
-        ## self.message("processing corr...")
+        ## self.message("Processing corr...")
         ## dst = edi.Corr(src, temp)
         ## y, x = np.unravel_index(dst.argmax(), dst.shape)
         
@@ -223,36 +221,8 @@ class Plugin(Layer):
         i, j = h//2, w//2
         src = src[i-n:i+n,j-n:j+n]
         
-        self.message("processing fft... @log")
-        src = fftshift(fft2(src))
-        
-        buf = np.log(1 + abs(src)) # log intensity
-        h, w = buf.shape           # shape:(2n,2n)
-        
-        ## background subst.
-        if 1:
-            self.message("\b @subst")
-            rmax = n * 0.75
-            buf = cv2.linearPolar(buf, (w/2, h/2), rmax, cv2.WARP_FILL_OUTLIERS)
-            buf -= sum(buf) / h # バックグラウンド(ぽい)強度を引いてみる
-            
-            self.message("\b @remap")
-            ## buf = cv2.linearPolar(buf, (w/2, h/2), rmax, cv2.WARP_INVERSE_MAP)
-            ## Note:
-            ##     ↑逆変換を何度か呼び出すと変な結果になるバグ？あり
-            ##     ↓のコードに変更する
-            ## 逆変換
-            N = np.arange(-n, n, dtype=np.float32),
-            X, Y = np.meshgrid(N, N)
-            map_r = w/rmax * np.hypot(Y, X)
-            map_t = (pi + np.arctan2(Y, X)) * h/2 /pi
-            buf = cv2.remap(buf.astype(np.float32), map_r, map_t,
-                            cv2.INTER_CUBIC, cv2.WARP_FILL_OUTLIERS)
-            
-            ## ## 確認
-            ## self.output.load(buf, "*remap*", localunit=1/w)
-            
-        dst = np.exp(buf) - 1 # log --> exp で戻す
+        self.message("Processing enhanced FFT...")
+        dst = edi.enhanced_fft(src, 0.75)
         
         ## 十紋形切ちょんぱマスク (option)
         d = max(int(n * 0.002), 2)
@@ -270,4 +240,4 @@ class Plugin(Layer):
         ## 逆空間：論理スケール [ru/pixel] に変換する
         ## Don't cut hi/lo: 強度重心を正しくとるため，飽和させないこと
         
-        return self.output.load(dst, FFT_FRAME_NAME, localunit=1/w/frame.unit)
+        return self.output.load(dst, FFT_FRAME_NAME, localunit=1/2/n/frame.unit)
