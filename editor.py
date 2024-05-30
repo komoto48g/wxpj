@@ -3,6 +3,7 @@
 """
 import numpy as np
 from numpy import pi,cos,sin
+from numpy.fft import fft2, fftshift
 import cv2
 from matplotlib import pyplot as plt
 from matplotlib import cm
@@ -141,6 +142,35 @@ def grad2(src, ksize=5):
 ## --------------------------------
 ## Image analysis using FFT / misc.
 ## --------------------------------
+
+def enhanced_fft(src, ratio=1):
+    """FFT intensity image with pseudo background subtraction using cv2.linearPolar.
+    
+    Args:
+        ratio: ratio of the polar-transform radius to n,
+               where the src shape is (2n, 2n).
+    """
+    src = fftshift(fft2(src))   # fft2
+    buf = np.log(1 + abs(src))  # log intensity
+    h, w = buf.shape            # shape: (2n, 2n)
+    n = h//2
+    rmax = n * ratio
+    buf = cv2.linearPolar(buf, (w/2, h/2), rmax, cv2.WARP_FILL_OUTLIERS)
+    buf -= sum(buf) / h # バックグラウンド(ぽい)強度を引いてみる
+    
+    buf = cv2.linearPolar(buf, (w/2, h/2), rmax, cv2.WARP_INVERSE_MAP)
+    ## Note:
+    ##     ↓逆変換を何度か呼び出すと変な結果になるバグ？▲θ=±πの部分が回復しない
+    ## N = np.arange(-n, n, dtype=np.float32),
+    ## X, Y = np.meshgrid(N, N)
+    ## map_r = w/rmax * np.hypot(Y, X)
+    ## map_t = (pi + np.arctan2(Y, X)) * h/2 /pi
+    ## buf = cv2.remap(buf.astype(np.float32), map_r, map_t,
+    ##                 cv2.INTER_CUBIC, cv2.WARP_FILL_OUTLIERS)
+    
+    dst = np.exp(buf) - 1 # log --> exp で戻す
+    return dst
+
 
 def fftcrop(src, maxsize=2048, center=None):
     """Crop src image in 2**N square ROI centered at (x, y)."""
