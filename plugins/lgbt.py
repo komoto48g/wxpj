@@ -30,7 +30,7 @@ class Plugin(Layer):
     
     params = property(lambda self: (self.ksize, self.sigma, self.thresh))
     
-    def calc(self, frame=None, otsu=None, invert=False):
+    def calc(self, frame=None, otsu=None):
         """GaussianBlur and binarize using threshold.
         
         [S-Lbutton] Estimate the threshold using Otsu's algorithm.
@@ -39,7 +39,6 @@ class Plugin(Layer):
             otsu    : float number (0 < r < 1) indicating threshold percentile
                       Set True (1) to use Otsu's algorithm.
                       Set False (0) to use the specified threshold value.
-            invert  : Invert dst image (for dark-field image or DFI).
         
         Returns:
             blurred and binarized dst image <uint8>
@@ -63,7 +62,5 @@ class Plugin(Layer):
         else:
             t, dst = cv2.threshold(buf, t, 255, cv2.THRESH_OTSU if otsu else cv2.THRESH_BINARY)
         self.thresh.value = t
-        if invert:
-            dst = 255 - dst
         self.output.load(dst, "*threshold*", localunit=frame.unit)
         return dst
