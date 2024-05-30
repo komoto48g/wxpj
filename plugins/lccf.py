@@ -71,7 +71,7 @@ class Plugin(Layer):
     
     maxcount = 256 # 選択する点の数を制限する
     
-    def run(self, frame=None, otsu=None, invert=0):
+    def run(self, frame=None, otsu=None):
         """Set markers at the center of circles.
         
         [S-Lbutton] Estimate the threshold using Otsu's algorithm.
@@ -81,7 +81,6 @@ class Plugin(Layer):
                       If not specified, the last selected frame is given.
             otsu    : Use Otsu's algorithm.
                       True is given if the shift key is being pressed.
-            invert  : Invert image contrast (for DFI).
         """
         if not frame:
             frame = self.selected_view.frame
@@ -90,7 +89,7 @@ class Plugin(Layer):
         if otsu is None:
             otsu = wx.GetKeyState(wx.WXK_SHIFT)
         
-        src = self.lgbt.calc(frame, otsu, invert) # image <uint8>
+        src = self.lgbt.calc(frame, otsu) # image <uint8>
         
         circles = find_circles(src, self.rmin.value, self.rmax.value)
         self.message("found {} circles".format(len(circles)))

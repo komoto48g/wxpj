@@ -11,33 +11,37 @@ class Plugin(Layer):
     category = "Pragma Tools"
     caption = "Grid"
     
+    lgbt = property(lambda self: self.parent.require('lgbt'))
     lccf = property(lambda self: self.parent.require('lccf'))
     ld = property(lambda self: self.parent.require('ld_grid'))
     
     def Init(self):
-        self.chkfit = wx.CheckBox(self, label="fit")
-        self.chkfit.Value = True
-        
-        self.chk = wx.CheckBox(self, label="inv")
-        
         self.layout((
-                Button(self, "Run", self.run),
-                self.chkfit,
-                self.chk,
+                Button(self, "1. Mark", self.calmark, icon='help', size=(72,-1)),
+                self.lccf.rmin,
+                
+                Button(self, "2. Run", self.run, icon='help', size=(72,-1)),
                 Button(self, "Setting", self.show_setting),
             ),
-            row=3,
+            title="Evaluate grid pattern", row=2,
+            type='vspin', cw=-1, lw=0, tw=44,
         )
+        self.lgbt.ksize.value = 5 # default blur window size
     
     def show_setting(self, force=0):
         """Show the settings."""
-        b = force or not self.ld.IsShown()
-        self.ld.Show(b)
-        self.lccf.Show(1)
+        self.lccf.Show()
     
     def run(self):
-        """Run scripts."""
-        self.lccf.run(otsu=True, invert=self.chk.Value)
-        if self.chkfit.Value:
-            self.ld.thread.Start(self.ld.run)
-            self.show_setting(1)
+        """Run the fitting procedure."""
+        frame = self.graph.frame
+        self.ld.thread.Start(self.ld.run, frame)
+        self.ld.Show()
+    
+    def calmark(self, frame=None):
+        """Feature detection.
+        
+        Set parameter: Minimum radius [pix] of circles to be detected.
+        """
+        frame = self.graph.frame
+        self.lccf.run(frame, otsu=True)
