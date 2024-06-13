@@ -16,11 +16,11 @@ def find_circles(src, rmin, rmax, tol=0.75):
     """
     ## Finds contours in binary image
     ## ▲ src は上書きされるので後で使うときは注意する
+    argv = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     try:
-        ## opencv <= 3.4.5
-        c, contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours, hierarchy = argv
     except ValueError:
-        contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        _c, contours, hierarchy = argv # opencv <= 3.4.5
     
     ## Detect enclosing circles
     circles = [cv2.minEnclosingCircle(v) for v in contours]
@@ -92,7 +92,7 @@ class Plugin(Layer):
         src = self.lgbt.calc(frame, otsu) # image <uint8>
         
         circles = find_circles(src, self.rmin.value, self.rmax.value)
-        self.message("found {} circles".format(len(circles)))
+        self.message("Found {} circles.".format(len(circles)))
         
         if circles:
             N = self.maxcount

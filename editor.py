@@ -267,12 +267,11 @@ def centroid(src):
     return cx, cy
 
 
-def find_ellipses(src, frmin=None, frmax=None, ksize=1, sortby='size'):
+def find_ellipses(src, ksize=1, otsu=True, sortby='size'):
     """Find the rotated rectangle in which the ellipse is inscribed.
+    Otsu's method is used for thresholding src image.
     
     Args:
-        frmin   : min threshold ratio (to src.shape) of ellipses to find
-        frmax   : max threshold
         ksize   : size of blur window
         sortby  : key of sorted list (pos or size:default)
     
@@ -282,32 +281,35 @@ def find_ellipses(src, frmin=None, frmax=None, ksize=1, sortby='size'):
         (cx,cy) : center of the rectangle [pix]
         (ra,rb) : ra:width < rb:height of the rectangle [pix]
         angle   : rotation angle in clockwise (from 00:00 o'clock)
+    
+    Note:
+        Filter ellipses with rectangle sizes from ra to rb:
+        >>> ls = [(c,r,a) for c,r,a in ellipses if ra < r[0] and r[1] < rb]
     """
     src = imconv(src) # src image is overwritten
     h, w = src.shape
-    rmin = 2
-    rmax = np.hypot(h, w)
-    if frmin: rmin = rmax * frmin
-    if frmax: rmax = rmax * frmax
     if ksize > 1:
         src = cv2.GaussianBlur(src, (ksize, ksize), 0)
     
-    t, buf = cv2.threshold(src, 0, 255, cv2.THRESH_OTSU)
+    if 0 <= otsu < 1:
+        t = np.percentile(src, 100 * otsu)
+        t, buf = cv2.threshold(src, t, 255, cv2.THRESH_BINARY)
+    else:
+        t, buf = cv2.threshold(src, 0, 255, cv2.THRESH_OTSU)
+    
     argv = cv2.findContours(buf, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     try:
         contours, hierarchy = argv
     except ValueError:
-        ## opencv <= 3.4.5
-        _c, contours, hierarchy = argv
+        _c, contours, hierarchy = argv # opencv <= 3.4.5
     
     ## There should be at least 5 points to fit the ellipse
     ellipses = [cv2.fitEllipse(v) for v in contours if len(v) > 4]
-    ls = [(c,r,a) for c,r,a in ellipses if rmin < r[0] and r[1] < rmax]
     
     if sortby == 'size':
-        return sorted(ls, key=lambda v: v[1][0], reverse=1) # 大きさで降順ソート
-    
-    return sorted(ls, key=lambda v: np.hypot(v[0][0]-w/2, v[0][1]-h/2)) # 位置で昇順ソート
+        return sorted(ellipses, key=lambda v: v[1][0], reverse=1) # 大きさで降順ソート
+    else:
+        return sorted(ellipses, key=lambda v: np.hypot(v[0][0]-w/2, v[0][1]-h/2)) # 位置で昇順ソート
 
 
 def calc_ellipse(src, ellipse):

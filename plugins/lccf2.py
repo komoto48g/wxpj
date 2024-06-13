@@ -21,11 +21,11 @@ def find_ellipses(src, rmin, rmax, tol=0.75):
     """
     ## Finds contours in binary image
     ## ▲ src は上書きされるので後で使うときは注意する
+    argv = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     try:
-        ## opencv <= 3.4.5
-        c, contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours, hierarchy = argv
     except ValueError:
-        contours, hierarchy = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        _c, contours, hierarchy = argv # opencv <= 3.4.5
     
     ## Detect enclosing rectangles
     ellipses = [cv2.fitEllipse(v) for v in contours if len(v) > 4]
@@ -98,17 +98,17 @@ class Plugin(Layer):
             otsu = wx.GetKeyState(wx.WXK_SHIFT)
         
         src = self.lgbt.calc(frame, otsu) # image <uint8>
+        h, w = src.shape
         
         circles = find_ellipses(src, self.rmin.value, self.rmax.value)
-        self.message("found {} circles".format(len(circles)))
         
+        self.message("found {} circles".format(len(circles)))
         if circles:
             N = self.maxcount
             if len(circles) > N:
                 self.message("\b is too many, chopped (< {})".format(N))
                 circles = circles[:N]
             
-            h, w = src.shape
             xy = []
             for (cx, cy), (ra, rb), angle in circles:
                 if ra and rb/ra < self.maxratio:
@@ -131,16 +131,16 @@ class Plugin(Layer):
                     ya = max(0, y-r)
                     buf = frame.buffer[ya:y+r+1, xa:x+r+1]
                     
-                    ## ▲偏りが出るので NG: local maximum that is found first in the region.
+                    ## local maximum that is found first in the region. ▲偏りが出るので NG
                     ## dy, dx = np.unravel_index(buf.argmax(), buf.shape)
                     
-                    ## local maximum :averaged (強度の偏りを考慮する)
-                    yy, xx = np.where(buf == np.amax(buf))
-                    dy, dx = np.average(yy), np.average(xx)
+                    ## local maximum :averaged (強度の偏りを考慮する) ▲偏りが出るので NG
+                    ## yy, xx = np.where(buf == np.amax(buf))
+                    ## dy, dx = np.average(yy), np.average(xx)
                     
                     ## centroid of masked array
-                    ## buf = np.ma.masked_array(buf, mask_ellipse(ra, rb, angle))
-                    ## dx, dy = edi.centroid(buf)
+                    buf = np.ma.masked_array(buf, mask_ellipse(ra, rb, angle))
+                    dx, dy = edi.centroid(buf)
                     
                     x, y = frame.xyfrompixel(xa+dx, ya+dy)
                     xy.append((x, y))
