@@ -18,8 +18,8 @@ hostnames = [
 ]
 
 typenames_info = { # 0:maxcnt, (pixel_size, bins, gains,
-         "camera" : (65535, ), # dummy for offline
-        "TVCAM_U" : (65535, ), # Flash cam
+    "camera"      : (65535, ), # dummy for offline
+    "TVCAM_U"     : (65535, ), # Flash cam
     "TVCAM_SCR_L" : ( 4095, ), # Large screen
     "TVCAM_SCR_F" : ( 4095, ), # Focus screen
 }
@@ -54,7 +54,6 @@ class Camera(object):
         self.pixel_size = 0.05
         self.cached_time = 0
         self.cached_image = None
-        self.cached_saturation = None
         self.max_count = typenames_info[self.name][0]
         try:
             self.cont.StartCache() # setup cache
@@ -88,10 +87,15 @@ class Camera(object):
             buf.resize(self.shape)
             self.cached_image = buf
             self.cached_time = time.time()
-            self.cached_saturation = (buf.max() == self.max_count)
             return buf
         finally:
             Camera.busy -= 1
+    
+    @property
+    def cached_saturation(self):
+        buf = self.cached_image
+        if buf is not None:
+            return buf.max() == self.max_count
     
     ## pixel size [mm/pix] without binning modification
     pixel_size = 0.05
@@ -152,7 +156,6 @@ class DummyCamera(object):
         self.exposure = 0.05
         self.cached_time = 0
         self.cached_image = None
-        self.cached_saturation = None
         self.max_count = typenames_info[self.name][0]
     
     def cache(self):
@@ -161,8 +164,13 @@ class DummyCamera(object):
         buf = self.parent.graph.buffer
         self.cached_image = buf
         self.cached_time = time.time()
-        self.cached_saturation = (buf.max() == self.max_count)
         return buf
+    
+    @property
+    def cached_saturation(self):
+        buf = self.cached_image
+        if buf is not None:
+            return buf.max() == self.max_count
     
     pixel_size = 0.05
     pixel_unit = property(lambda self: self.pixel_size * self.binning)
