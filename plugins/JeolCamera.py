@@ -3,10 +3,7 @@
 """
 from datetime import datetime
 import time
-import os
-import wx
 import numpy as np
-from PIL import Image
 
 from jgdk import Layer, Param, LParam, Button, Choice
 from pyJeol.detector import Detector
@@ -190,9 +187,6 @@ class Plugin(Layer):
         self.exposure_selector = LParam("exp", (0, 5, 0.05), 0.05, handler=self.set_exposure)
         self.gain_selector = LParam("gain", (1, 10, 0.5), 5, handler=self.set_gain)
         
-        self.dark_chk = wx.CheckBox(self, label="dark")
-        self.dark_chk.Enable(0)
-        
         self.name_selector = Choice(self,
             choices=list(typenames_info), size=(100,22), readonly=1)
         
@@ -212,7 +206,6 @@ class Plugin(Layer):
         )
         self.layout((
                 Button(self, "Capture", self.capture_ex, icon='camera'),
-                self.dark_chk,
             ),
             row=2,
         )
@@ -220,85 +213,16 @@ class Plugin(Layer):
                 self.name_selector,
                 self.host_selector,
                 self.unit_selector,
-                
                 Button(self, "Connect", self.connect, size=(-1,20)),
-                Button(self, "Prepare/dark", self.prepare_dark, size=(-1,20)),
             ),
             title="Setup", show=0,
             type=None, lw=-1, tw=50,
         )
-        self.__camera = None
+        self.camera = None
     
     ## --------------------------------
     ## Camera Attributes
     ## --------------------------------
-    @property
-    def camera(self):
-        return self.__camera
-    
-    def set_exposure(self, p):
-        if p.value < 0.01:
-            p.value = 0.01
-        if self.camera:
-            self.camera.exposure = p.value
-    
-    def set_binning(self, p):
-        if self.camera:
-            self.camera.binning = p.value
-            self.preset_dark()
-    
-    def set_gain(self, p):
-        if self.camera:
-            self.camera.gain = p.value
-    
-    def set_pixsize(self, p):
-        if self.camera:
-            self.camera.pixel_size = p.value
-    
-    def connect(self, evt=None):
-        name = self.name_selector.value
-        host = self.host_selector.value
-        if not name:
-            print(self.message("- Camera name is not specified."))
-            return
-        try:
-            if name != 'camera':
-                self.__camera = Camera(name, host)
-                self.camera.start()
-            else:
-                self.__camera = DummyCamera(self)
-            
-            self.message("Connected to {!r}".format(self.camera))
-            
-            ## <--- set camera parameter
-            self.camera.pixel_size = self.unit_selector.value
-            
-            ## ---> get camera info from system
-            self.gain_selector.value = self.camera.gain
-            self.binning_selector.value = self.camera.binning
-            self.exposure_selector.value = self.camera.exposure
-            self.preset_dark()
-            return self.camera
-        
-        except Exception as e:
-            print(self.message("- Connection failed; {!r}".format(e)))
-            self.__camera = None
-    
-    ## --------------------------------
-    ## Camera Interface
-    ## --------------------------------
-    dark_image = None
-    
-    @property
-    def dark_filename(self):
-        if self.camera:
-            name = self.camera.name
-            binning = self.camera.binning
-        else:
-            name = self.name_selector.value
-            binning = self.binning_selector.value
-            
-        return "{}-dark-bin{}.tif".format(name, binning)
     
     @property
     def attributes(self):
@@ -310,28 +234,63 @@ class Plugin(Layer):
           'acq_datetime' : datetime.now(), # acquired datetime stamp
         }
     
-    def acquire(self):
-        """Acquire image with no dark subtraction."""
+    def set_exposure(self, p):
+        if p.value < 0.01:
+            p.value = 0.01
+        if self.camera:
+            self.camera.exposure = p.value
+    
+    def set_binning(self, p):
+        if self.camera:
+            self.camera.binning = p.value
+    
+    def set_gain(self, p):
+        if self.camera:
+            self.camera.gain = p.value
+    
+    def set_pixsize(self, p):
+        if self.camera:
+            self.camera.pixel_size = p.value
+    
+    def connect(self):
+        name = self.name_selector.value
+        host = self.host_selector.value
+        if not name:
+            print(self.message("- Camera name is not specified."))
+            return
+        try:
+            if name != 'camera':
+                self.camera = Camera(name, host)
+                self.camera.start()
+            else:
+                self.camera = DummyCamera(self)
+            
+            self.message("Connected to {!r}".format(self.camera))
+            
+            ## <--- set camera parameter
+            self.camera.pixel_size = self.unit_selector.value
+            
+            ## ---> get camera info from system
+            self.gain_selector.value = self.camera.gain
+            self.binning_selector.value = self.camera.binning
+            self.exposure_selector.value = self.camera.exposure
+            return self.camera
+        
+        except Exception as e:
+            print(self.message("- Connection failed; {!r}".format(e)))
+            self.camera = None
+    
+    def capture(self):
+        """Capture image."""
         try:
             if self.camera is None:
                 self.connect()
             return self.camera.cache().copy()
         except Exception as e:
             print(self.message("- Failed to acquire image: {!r}".format(e)))
+            return None
     
-    def capture(self):
-        """Capture image.
-        
-        If 'dark subtraction' is checked, the image is dark-subtracted,
-        and the result image is dtype:float32, otherwise uint16.
-        """
-        buf = self.acquire()
-        if buf is not None:
-            if self.dark_chk.Value and self.dark_image is not None:
-                return buf - self.dark_image
-        return buf
-    
-    def capture_ex(self, evt=None):
+    def capture_ex(self):
         """Capture image and load to the target window.
         """
         self.message("Capturing image...")
@@ -341,48 +300,3 @@ class Plugin(Layer):
                 localunit=self.camera.pixel_unit, **self.attributes)
             self.parent.handler('frame_cached', frame)
             return frame
-    
-    def preset_dark(self, evt=None): # internal use only
-        f = self.dark_filename
-        if os.path.exists(f):
-            self.dark_image = np.asarray(Image.open(f)) # cf. read_buffer
-            self.dark_chk.Enable(1)
-            self.dark_chk.SetToolTip("Subtract dark: {!r}".format(f))
-        else:
-            ## self.message("- No such file: {!r}".format(f))
-            self.dark_chk.Enable(0)
-    
-    def prepare_dark(self, evt=None, verbose=True):
-        """Prepare dark reference.
-        
-        Before execution, blank the beam manually.
-        Please close the curtain to prevent light leakage.
-        """
-        if not self.camera:
-            wx.MessageBox(
-                "The camera is not ready",
-                self.__module__,
-                style=wx.ICON_WARNING)
-            return
-        
-        if verbose:
-            if wx.MessageBox(
-                    "Proceeding new dark reference.",
-                    self.__module__,
-                    style=wx.ICON_INFORMATION) != wx.OK:
-                return
-        
-        f = self.dark_filename
-        
-        self.dark_image = self.acquire().astype(np.float32) # for underflow in subtraction
-        self.dark_chk.Value = True
-        self.dark_chk.Enable(1)
-        self.dark_chk.SetToolTip("Subtract dark: {!r}".format(f))
-        
-        Image.fromarray(self.dark_image).save(f) # cf. write_buffer
-        
-        frame = self.output.load(self.dark_image, name=f,
-            localunit=self.camera.pixel_unit, pathname=f, **self.attributes)
-        
-        self.parent.handler('frame_cached', frame)
-        self.message("dark ref saved to {!r}".format(f))
