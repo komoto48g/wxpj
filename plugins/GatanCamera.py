@@ -14,7 +14,7 @@ hostnames = [
     '172.17.41.13',
 ]
 
-typenames_info = { # [mm/pix], h, w, (bins,
+typenames_info = { # pixel_size, h, w, ...
     "USC1000" : (0.0140, 2048, 2048, ),
     "SC200"   : (0.0074, 2048, 2048, ),
     "K2"      : (0.0050, 3710, 3838, ),
@@ -28,7 +28,9 @@ class Camera(gatan.GatanSocket):
     """
     busy = 0
     
-    pixel_unit = property(lambda self: self.pixel_size * self.binning)
+    @property
+    def pixel_unit(self):
+        return self.pixel_size * self.binning
     
     def __init__(self, name, host):
         gatan.GatanSocket.__init__(self, host)

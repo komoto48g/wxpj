@@ -22,7 +22,7 @@ typenames_info = { # 0:maxcnt, (pixel_size, bins, gains,
 }
 
 
-class Camera(object):
+class Camera:
     """Jeol camera (proxy of Detector).
     
     Args:
@@ -41,7 +41,7 @@ class Camera(object):
         max_count   : the maximum count (used to check if saturated)
     """
     busy = 0
-    bins = (1,2,4)
+    bins = (1, 2, 4)
     gains = np.arange(1, 10.1, 0.5)
     
     def __init__(self, name, host):
@@ -49,8 +49,8 @@ class Camera(object):
         self.host = host
         self.cont = Detector(name, host)
         self.pixel_size = 0.05
-        self.cached_time = 0
-        self.cached_image = None
+        self._cached_time = 0
+        self._cached_image = None
         self.max_count = typenames_info[self.name][0]
         try:
             self.cont.StartCache() # setup cache
@@ -75,28 +75,28 @@ class Camera(object):
             while Camera.busy:
                 time.sleep(0.01) # ここで通信待機
             Camera.busy += 1
-            if time.time() - self.cached_time < self.exposure:
-                if self.cached_image is not None:
-                    return self.cached_image
+            if time.time() - self._cached_time < self.exposure:
+                if self._cached_image is not None:
+                    return self._cached_image
             
             data = self.cont.Cache()
             buf = np.frombuffer(data, dtype=np.uint16)
             buf.resize(self.shape)
-            self.cached_image = buf
-            self.cached_time = time.time()
+            self._cached_image = buf
+            self._cached_time = time.time()
             return buf
         finally:
             Camera.busy -= 1
     
     @property
     def cached_saturation(self):
-        buf = self.cached_image
+        buf = self._cached_image
         if buf is not None:
             return buf.max() == self.max_count
     
-    ## pixel size [mm/pix] without binning modification
-    pixel_size = 0.05
-    pixel_unit = property(lambda self: self.pixel_size * self.binning)
+    @property
+    def pixel_unit(self):
+        return self.pixel_size * self.binning
     
     @property
     def shape(self):
@@ -141,7 +141,7 @@ class Camera(object):
             self.cont['GainIndex'] = int(j)
 
 
-class DummyCamera(object):
+class DummyCamera:
     """Dummy camera (proxy of Detector).
     """
     def __init__(self, parent):
@@ -151,26 +151,28 @@ class DummyCamera(object):
         self.gain = 1
         self.binning = 1
         self.exposure = 0.05
-        self.cached_time = 0
-        self.cached_image = None
+        self.pixel_size = 0.05
+        self._cached_time = 0
+        self._cached_image = None
         self.max_count = typenames_info[self.name][0]
     
     def cache(self):
         ## n = 2048 // self.binning
         ## buf = np.uint16(np.random.randn(n, n) * self.max_count)
         buf = self.parent.graph.buffer
-        self.cached_image = buf
-        self.cached_time = time.time()
+        self._cached_image = buf
+        self._cached_time = time.time()
         return buf
     
     @property
     def cached_saturation(self):
-        buf = self.cached_image
+        buf = self._cached_image
         if buf is not None:
             return buf.max() == self.max_count
     
-    pixel_size = 0.05
-    pixel_unit = property(lambda self: self.pixel_size * self.binning)
+    @property
+    def pixel_unit(self):
+        return self.pixel_size * self.binning
     
     @property
     def shape(self):
