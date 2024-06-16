@@ -9,11 +9,12 @@ HEADER = {"connection" : "close"}
 
 
 class Detector:
-    """Detector controller.
+    """Detector controller via REST API.
     
     Args:
         name : detector name
-        host : host server (default to '172.17.41.1')
+        host : host server ip (default to '172.17.41.1')
+        port : host server port + /DetectorRESTService/Detector/
     
     Select one of the following detector names:
     
@@ -29,22 +30,24 @@ class Detector:
         - OffsetIndex <int>
         - BinningIndex <int>
     """
-    HOST = "172.17.41.1"
-    PORT = "49226/DetectorRESTService/Detector" # host:port/path/
+    ## HOST = "172.17.41.1"
+    ## PORT = "49226/DetectorRESTService/Detector" # TEMCENTER
+    ## PORT = "49260/DetectorRESTService/Detector" # SIGHTX
     
     def _requests(self, command, method="GET", body=None):
-        url = f"http://{self.HOST}:{self.PORT}/{command}" # name is not needed
+        url = f"http://{self.host}:{self.port}/{command}" # name is not needed
         res, con = HTTP.request(url, method, body, headers=HEADER)
         return con
     
     def _request(self, command, method="GET", body=None):
-        url = f"http://{self.HOST}:{self.PORT}/{self.name}/{command}"
+        url = f"http://{self.host}:{self.port}/{self.name}/{command}"
         res, con = HTTP.request(url, method, body, headers=HEADER)
         return con
     
-    def __init__(self, name, host=HOST):
+    def __init__(self, name, host, port=49226):
         self.name = name
-        self.HOST = host
+        self.host = host
+        self.port = f"{port}/DetectorRESTService/Detector"
     
     def __getitem__(self, attr):
         """Get detector setting attributes."""
