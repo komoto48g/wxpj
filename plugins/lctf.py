@@ -155,17 +155,9 @@ class Plugin(Layer):
     menukey = "CTF/"
     
     def Init(self):
-        self.rmin = LParam("rmin", (0.001, 0.1, 0.001), 0.05,
-                           updater=self.calc_ring,
-                           tip="Ratio to the radius.")
-        
-        self.rmax = LParam("rmax", (0.1, 0.5, 0.01), 0.5,
-                           updater=self.calc_ring,
-                           tip="Ratio to the radius.")
-        
-        self.tol = LParam("tol", (0, 0.1, 0.001), 0.01,
-                           updater=self.calc_peak,
-                           tip="Ratio to the radius of blurring pixels.")
+        self.rmin = LParam("rmin", (0.001, 0.1, 0.001), 0.05, updater=self.calc_ring)
+        self.rmax = LParam("rmax", (0.1, 0.5, 0.01), 0.5, updater=self.calc_ring)
+        self.tol = LParam("tol", (0, 0.1, 0.001), 0.01, updater=self.calc_peak)
         
         self.layout((
                 self.rmin,
@@ -188,6 +180,8 @@ class Plugin(Layer):
     
     def calc_ring(self, show=True):
         """Calc log-polar of ring pattern.
+        
+        Referenced rmin/rmax is the ratio to the radius.
         """
         frame = self.selected_frame
         src = self.selected_roi
@@ -220,6 +214,8 @@ class Plugin(Layer):
     
     def calc_peak(self, show=True):
         """Calc min/max peak detection.
+        
+        Referenced tol is the ratio of blur pixels to the radius.
         """
         if self.data is None:
             self.message("- no data.")

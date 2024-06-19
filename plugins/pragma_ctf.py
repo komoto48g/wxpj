@@ -34,16 +34,11 @@ class Plugin(Layer):
     em = property(lambda self: self.su.em)
     
     def Init(self):
-        self.cmax = LParam("limit", (2, 50), 10,
-                           updater=self.calc_optvar,
-                           tip="Set maximum index for fitting")
-        
-        self.ru = LParam("A/pix", (0, 2, 0.001), 0.5, fmt="{:5.3f}".format,
-                         tip="Angstrom per pixel")
+        self.limit = LParam("limit", (2, 50), 10, updater=self.calc_optvar)
+        self.ru = LParam("A/pix", (0, 2, 0.001), 0.5, fmt="{:5.3f}".format)
         
         self.cs = LParam("Cs", (0, 5, 0.01), 1.0, fmt="{:5.2f}".format,
-                         updater=self.calc_sherzer,
-                         tip="Design value of Cs")
+                         updater=self.calc_sherzer)
         
         self.layout((
             self.lctf.rmin,
@@ -56,11 +51,11 @@ class Plugin(Layer):
             self.ru,
             self.cs,
             ),
-            title="TEM/Image Cond.", show=0,
+            title="TEM/Image Cond.",
             type='vspin', style='button', cw=-1, lw=28, tw=50,
         )
         self.layout((
-            self.cmax,
+            self.limit,
             None,
             Button(self, "CTF", self.run, icon='->'),
             Button(self, "clf", plt.clf, icon='-'),
@@ -71,6 +66,8 @@ class Plugin(Layer):
     
     def calc_sherzer(self):
         """Sherzer focus [m] defined as sin(2*pi/3) = 0.866
+        
+        Referenced cs is the design value of TEM Cs.
         """
         el = self.em.elambda
         cs = self.cs.value * 1e-3
@@ -86,6 +83,8 @@ class Plugin(Layer):
     
     def calc_optvar(self, show=True):
         """Calc optical variables.
+
+        Referenced limit is maximum index for fitting.
         """
         xx = self.lctf.lpoints[0] # selected peak points of x:ref
         ## yy = np.arange(len(xx)) # selected peak indices # ▲昇順のみを仮定している
@@ -115,7 +114,7 @@ class Plugin(Layer):
                     print("  {}, {:.1f} mm, res: {:g}".format(ya, df*1e9, res))
                 return res
         
-        n = min(self.cmax.value, len(xx))
+        n = min(self.limit.value, len(xx))
         lres = []
         lyy = []
         while n > 1:

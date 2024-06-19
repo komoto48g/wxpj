@@ -30,15 +30,14 @@ class Plugin(Layer):
         self.score = LParam("score", (0.01, 10, 0.01), 0.1)
         
         self.grid = Choice(self, label="grid [mm]", size=(140,-1),
-            handler=lambda p: self.calc_mag(),
-            updater=lambda p: self.calc_ru(),
+            handler=self.calc_mag,
+            updater=self.calc_ru,
             choices=[
                 '1/2000', # Standard grating(Ted Pera)
                 '1/2160', # Standard Gatan grating
                 '2.356e-7', # Au single 111
                 '2.040e-7', # Au single 200
                 ],
-            tip="Set grid length [mm/grid] to calculate Mag."
         )
         self.grid.Selection = 0
         
