@@ -52,10 +52,10 @@ class Camera:
         self._cached_time = 0
         self._cached_image = None
         self.max_count = typenames_info[self.name][0]
-        try:
-            self.cont.StartCache() # setup cache
-        except Exception:
-            pass
+        ## try:
+        ##     self.cont.StartCache() # setup cache
+        ## except Exception:
+        ##     pass
     
     def __del__(self):
         try:
@@ -65,8 +65,10 @@ class Camera:
     
     def start(self):
         self.cont.LiveStart()
+        self.cont.StartCache() # setup cache
     
     def stop(self):
+        self.cont.StopCache()  # close cache
         self.cont.LiveStop()
     
     def cache(self):
@@ -75,7 +77,7 @@ class Camera:
             while Camera.busy:
                 time.sleep(0.01) # ここで通信待機
             Camera.busy += 1
-            if time.time() - self._cached_time < self.exposure:
+            if time.perf_counter() - self._cached_time < self.exposure:
                 if self._cached_image is not None:
                     return self._cached_image
             
@@ -83,7 +85,7 @@ class Camera:
             buf = np.frombuffer(data, dtype=np.uint16)
             buf.resize(self.shape)
             self._cached_image = buf
-            self._cached_time = time.time()
+            self._cached_time = time.perf_counter()
             return buf
         finally:
             Camera.busy -= 1
