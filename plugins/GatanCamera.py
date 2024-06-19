@@ -5,7 +5,7 @@ from datetime import datetime
 import time
 
 from jgdk import Layer, Param, LParam, Button, Choice
-from pyGatan import gatan
+from pyGatan import GatanSocket
 
 
 hostnames = [
@@ -23,7 +23,7 @@ typenames_info = { # pixel_size, h, w, ...
 }
 
 
-class Camera(gatan.GatanSocket):
+class Camera(GatanSocket):
     """Gatan camera (proxy of Detector).
     """
     busy = 0
@@ -33,7 +33,7 @@ class Camera(gatan.GatanSocket):
         return self.pixel_size * self.binning
     
     def __init__(self, name, host):
-        gatan.GatanSocket.__init__(self, host)
+        GatanSocket.__init__(self, host)
         
         self.name = name
         self.info = typenames_info[name]
