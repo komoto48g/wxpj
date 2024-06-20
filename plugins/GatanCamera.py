@@ -134,16 +134,6 @@ class Plugin(Layer):
     ## Camera Attributes
     ## --------------------------------
     
-    @property
-    def attributes(self):
-        return {
-                'camera' : self.camera.name,
-                 'pixel' : self.camera.pixel_size,
-               'binning' : self.camera.binning,
-              'exposure' : self.camera.exposure,
-          'acq_datetime' : datetime.now(), # acquired datetime stamp
-        }
-    
     def set_exposure(self, p):
         if p.value < 0.01:
             p.value = 0.01
@@ -203,7 +193,12 @@ class Plugin(Layer):
         else:
             if blit and buf is not None:
                 frame = self.graph.load(buf,
-                    localunit=self.camera.pixel_unit, **self.attributes)
+                        localunit = self.camera.pixel_unit,
+                           camera = self.camera.name,
+                            pixel = self.camera.pixel_size,
+                          binning = self.camera.binning,
+                         exposure = self.camera.exposure,
+                     acq_datetime = datetime.now())
                 self.parent.handler('frame_cached', frame)
         return buf
     

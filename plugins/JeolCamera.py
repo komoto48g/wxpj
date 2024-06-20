@@ -159,6 +159,12 @@ class DummyCamera:
         self._cached_image = None
         self.max_count = typenames_info[self.name][0]
     
+    def start(self):
+        pass
+    
+    def stop(self):
+        pass
+    
     def cache(self):
         ## n = 2048 // self.binning
         ## buf = np.uint16(np.random.randn(n, n) * self.max_count)
@@ -229,16 +235,6 @@ class Plugin(Layer):
     ## Camera Attributes
     ## --------------------------------
     
-    @property
-    def attributes(self):
-        return {
-                'camera' : self.camera.name,
-                 'pixel' : self.camera.pixel_size,
-               'binning' : self.camera.binning,
-              'exposure' : self.camera.exposure,
-          'acq_datetime' : datetime.now(), # acquired datetime stamp
-        }
-    
     def set_exposure(self, p):
         if p.value < 0.01:
             p.value = 0.01
@@ -265,11 +261,11 @@ class Plugin(Layer):
             return
         try:
             self.message(f"Connecting to {name}...")
-            if name != 'camera':
-                self.camera = Camera(name, host)
-                self.camera.start()
-            else:
+            if name == 'camera':
                 self.camera = DummyCamera(self)
+            else:
+                self.camera = Camera(name, host)
+            self.camera.start()
             
             self.message("Connected to", self.camera)
             
@@ -302,7 +298,12 @@ class Plugin(Layer):
         else:
             if blit and buf is not None:
                 frame = self.graph.load(buf,
-                    localunit=self.camera.pixel_unit, **self.attributes)
+                        localunit = self.camera.pixel_unit,
+                           camera = self.camera.name,
+                            pixel = self.camera.pixel_size,
+                          binning = self.camera.binning,
+                         exposure = self.camera.exposure,
+                     acq_datetime = datetime.now())
                 self.parent.handler('frame_cached', frame)
         return buf
     
