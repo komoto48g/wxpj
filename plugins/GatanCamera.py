@@ -158,13 +158,14 @@ class Plugin(Layer):
         name = self.name_selector.value
         host = self.host_selector.value
         if not name:
-            print(self.message("- Camera name is not specified."))
+            self.message("- Camera name is not specified.")
             return
         try:
+            self.message(f"Connecting to {name}...")
             self.camera = Camera(name, host)
             
-            self.message("Connected to {!r}".format(self.camera))
-            self.message("\b GMS ver.{}".format(self.camera.GetDMVersion()))
+            self.message("Connected to", self.camera)
+            self.message("\b GMS ver.", self.camera.GetDMVersion())
             
             ## <--- set camera parameter
             self.camera.binning = self.binning_selector.value
@@ -175,7 +176,7 @@ class Plugin(Layer):
             return self.camera
         
         except Exception as e:
-            print(self.message("- Connection failed; {!r}".format(e)))
+            self.message("- Connection failed:", e)
             self.camera = None
     
     def insert(self, ins=True):
@@ -194,13 +195,13 @@ class Plugin(Layer):
             self.message("Capturing image...")
             if self.camera is None:
                 self.connect()
-            buf = self.camera.cache().copy()
+            buf = self.camera.cache()
         except Exception as e:
             self.message("- Failed to acquire image:", e)
             traceback.print_exc()
             buf = None
         else:
-            if blit:
+            if blit and buf is not None:
                 frame = self.graph.load(buf,
                     localunit=self.camera.pixel_unit, **self.attributes)
                 self.parent.handler('frame_cached', frame)
