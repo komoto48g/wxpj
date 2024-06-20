@@ -3,6 +3,7 @@
 """
 from datetime import datetime
 import time
+import traceback
 
 from jgdk import Layer, Param, LParam, Button, Choice
 from pyGatan import GatanSocket
@@ -185,23 +186,26 @@ class Plugin(Layer):
             else:
                 self.camera.InsertCamera(0, False)
     
-    def capture(self):
-        """Capture image."""
+    def capture(self, blit=False):
+        """Capture image.
+        If blit is True, it will be loaded into the graph view.
+        """
         try:
+            self.message("Capturing image...")
             if self.camera is None:
                 self.connect()
-            return self.camera.cache().copy()
+            buf = self.camera.cache().copy()
         except Exception as e:
-            print(self.message("- Failed to acquire image: {!r}".format(e)))
-            return None
+            self.message("- Failed to acquire image:", e)
+            traceback.print_exc()
+            buf = None
+        else:
+            if blit:
+                frame = self.graph.load(buf,
+                    localunit=self.camera.pixel_unit, **self.attributes)
+                self.parent.handler('frame_cached', frame)
+        return buf
     
     def capture_ex(self):
-        """Capture image and load to the target window.
-        """
-        self.message("Capturing image...")
-        buf = self.capture()
-        if buf is not None:
-            frame = self.graph.load(buf,
-                localunit=self.camera.pixel_unit, **self.attributes)
-            self.parent.handler('frame_cached', frame)
-            return frame
+        """Capture image and load into the graph view."""
+        return self.capture(blit=True)
