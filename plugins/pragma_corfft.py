@@ -116,7 +116,7 @@ class Plugin(Layer):
         """
         frame = self.result_frame
         if not frame:
-            print(self.message("- No *result*"))
+            self.message("- No *result*")
             return
         self.message("\b @lccf...")
         if self.score.value is nan:
@@ -127,7 +127,7 @@ class Plugin(Layer):
     def calc_fit(self):
         frame = self.result_frame
         if not frame:
-            print(self.message("- No *result*"))
+            self.message("- No *result*")
             return
         self.message("\b @ldc...")
         self.ldc.run(frame)
@@ -141,7 +141,7 @@ class Plugin(Layer):
         """
         frame = self.result_frame
         if not frame:
-            print(self.message("- No *result*"))
+            self.message("- No *result*")
             return
         u = frame.unit                    # [u/pix]
         g = self.ldc.grid_params[0].value # [u/grid] image or 1/g :FFT
@@ -170,7 +170,7 @@ class Plugin(Layer):
         """
         frame = self.result_frame
         if not frame:
-            print(self.message("- No *result*"))
+            self.message("- No *result*")
             return
         x, y = frame.selector
         if len(x) < 2:
