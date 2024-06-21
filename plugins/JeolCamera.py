@@ -74,13 +74,13 @@ class Camera:
     
     def cache(self):
         """Cache of the current image <uint16>."""
+        if time.perf_counter() - self._cached_time < self.exposure:
+            if self._cached_image is not None:
+                return self._cached_image
         try:
             while Camera.busy:
                 time.sleep(0.01) # ここで通信待機
             Camera.busy += 1
-            if time.perf_counter() - self._cached_time < self.exposure:
-                if self._cached_image is not None:
-                    return self._cached_image
             
             data = self.cont.Cache()
             buf = np.frombuffer(data, dtype=np.uint16)
