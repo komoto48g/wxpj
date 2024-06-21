@@ -140,9 +140,9 @@ class MainFrame(Frame):
         """Read a buffer from path file (override) +.dm3 extension.
         """
         if path[-4:] in ('.dm3', '.dm4'):
-            import pyDM3reader as DM3lib
+            from pyDM3reader import DM3
             
-            dmf = DM3lib.DM3(path)
+            dmf = DM3(path)
             buf = dmf.imagedata # cf. dmf.image <PIL Image file>
             info = dmf.info
             return buf, {'header': info}

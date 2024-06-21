@@ -3,9 +3,10 @@
 """
 from datetime import datetime
 import time
+import traceback
 
 from jgdk import Layer, Param, LParam, Button, Choice
-from pyGatan import gatan
+from pyGatan import GatanSocket
 
 
 hostnames = [
@@ -23,7 +24,7 @@ typenames_info = { # pixel_size, h, w, ...
 }
 
 
-class Camera(gatan.GatanSocket):
+class Camera(GatanSocket):
     """Gatan camera (proxy of Detector).
     """
     busy = 0
@@ -33,7 +34,7 @@ class Camera(gatan.GatanSocket):
         return self.pixel_size * self.binning
     
     def __init__(self, name, host):
-        gatan.GatanSocket.__init__(self, host)
+        GatanSocket.__init__(self, host)
         
         self.name = name
         self.info = typenames_info[name]
@@ -133,16 +134,6 @@ class Plugin(Layer):
     ## Camera Attributes
     ## --------------------------------
     
-    @property
-    def attributes(self):
-        return {
-                'camera' : self.camera.name,
-                 'pixel' : self.camera.pixel_size,
-               'binning' : self.camera.binning,
-              'exposure' : self.camera.exposure,
-          'acq_datetime' : datetime.now(), # acquired datetime stamp
-        }
-    
     def set_exposure(self, p):
         if p.value < 0.01:
             p.value = 0.01
@@ -157,13 +148,14 @@ class Plugin(Layer):
         name = self.name_selector.value
         host = self.host_selector.value
         if not name:
-            print(self.message("- Camera name is not specified."))
+            self.message("- Camera name is not specified.")
             return
         try:
+            self.message(f"Connecting to {name}...")
             self.camera = Camera(name, host)
             
-            self.message("Connected to {!r}".format(self.camera))
-            self.message("\b GMS ver.{}".format(self.camera.GetDMVersion()))
+            self.message("Connected to", self.camera)
+            self.message("\b GMS ver.", self.camera.GetDMVersion())
             
             ## <--- set camera parameter
             self.camera.binning = self.binning_selector.value
@@ -174,7 +166,7 @@ class Plugin(Layer):
             return self.camera
         
         except Exception as e:
-            print(self.message("- Connection failed; {!r}".format(e)))
+            self.message("- Connection failed:", e)
             self.camera = None
     
     def insert(self, ins=True):
@@ -185,23 +177,31 @@ class Plugin(Layer):
             else:
                 self.camera.InsertCamera(0, False)
     
-    def capture(self):
-        """Capture image."""
+    def capture(self, blit=False):
+        """Capture image.
+        If blit is True, it will be loaded into the graph view.
+        """
         try:
+            self.message("Capturing image...")
             if self.camera is None:
                 self.connect()
-            return self.camera.cache().copy()
+            buf = self.camera.cache()
         except Exception as e:
-            print(self.message("- Failed to acquire image: {!r}".format(e)))
-            return None
+            self.message("- Failed to acquire image:", e)
+            traceback.print_exc()
+            buf = None
+        else:
+            if blit and buf is not None:
+                frame = self.graph.load(buf,
+                        localunit = self.camera.pixel_unit,
+                           camera = self.camera.name,
+                            pixel = self.camera.pixel_size,
+                          binning = self.camera.binning,
+                         exposure = self.camera.exposure,
+                     acq_datetime = datetime.now())
+                self.parent.handler('frame_cached', frame)
+        return buf
     
     def capture_ex(self):
-        """Capture image and load to the target window.
-        """
-        self.message("Capturing image...")
-        buf = self.capture()
-        if buf is not None:
-            frame = self.graph.load(buf,
-                localunit=self.camera.pixel_unit, **self.attributes)
-            self.parent.handler('frame_cached', frame)
-            return frame
+        """Capture image and load into the graph view."""
+        return self.capture(blit=True)

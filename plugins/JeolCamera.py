@@ -3,6 +3,7 @@
 """
 from datetime import datetime
 import time
+import traceback
 import numpy as np
 
 from jgdk import Layer, Param, LParam, Button, Choice
@@ -52,10 +53,10 @@ class Camera:
         self._cached_time = 0
         self._cached_image = None
         self.max_count = typenames_info[self.name][0]
-        try:
-            self.cont.StartCache() # setup cache
-        except Exception:
-            pass
+        ## try:
+        ##     self.cont.StartCache() # setup cache
+        ## except Exception:
+        ##     pass
     
     def __del__(self):
         try:
@@ -65,25 +66,27 @@ class Camera:
     
     def start(self):
         self.cont.LiveStart()
+        self.cont.StartCache() # setup cache
     
     def stop(self):
+        self.cont.StopCache()  # close cache
         self.cont.LiveStop()
     
     def cache(self):
         """Cache of the current image <uint16>."""
+        if time.perf_counter() - self._cached_time < self.exposure:
+            if self._cached_image is not None:
+                return self._cached_image
         try:
             while Camera.busy:
                 time.sleep(0.01) # ここで通信待機
             Camera.busy += 1
-            if time.time() - self._cached_time < self.exposure:
-                if self._cached_image is not None:
-                    return self._cached_image
             
             data = self.cont.Cache()
             buf = np.frombuffer(data, dtype=np.uint16)
             buf.resize(self.shape)
             self._cached_image = buf
-            self._cached_time = time.time()
+            self._cached_time = time.perf_counter()
             return buf
         finally:
             Camera.busy -= 1
@@ -156,12 +159,18 @@ class DummyCamera:
         self._cached_image = None
         self.max_count = typenames_info[self.name][0]
     
+    def start(self):
+        pass
+    
+    def stop(self):
+        pass
+    
     def cache(self):
         ## n = 2048 // self.binning
         ## buf = np.uint16(np.random.randn(n, n) * self.max_count)
         buf = self.parent.graph.buffer
         self._cached_image = buf
-        self._cached_time = time.time()
+        self._cached_time = time.perf_counter()
         return buf
     
     @property
@@ -226,16 +235,6 @@ class Plugin(Layer):
     ## Camera Attributes
     ## --------------------------------
     
-    @property
-    def attributes(self):
-        return {
-                'camera' : self.camera.name,
-                 'pixel' : self.camera.pixel_size,
-               'binning' : self.camera.binning,
-              'exposure' : self.camera.exposure,
-          'acq_datetime' : datetime.now(), # acquired datetime stamp
-        }
-    
     def set_exposure(self, p):
         if p.value < 0.01:
             p.value = 0.01
@@ -258,16 +257,17 @@ class Plugin(Layer):
         name = self.name_selector.value
         host = self.host_selector.value
         if not name:
-            print(self.message("- Camera name is not specified."))
+            self.message("- Camera name is not specified.")
             return
         try:
-            if name != 'camera':
-                self.camera = Camera(name, host)
-                self.camera.start()
-            else:
+            self.message(f"Connecting to {name}...")
+            if name == 'camera':
                 self.camera = DummyCamera(self)
+            else:
+                self.camera = Camera(name, host)
+            self.camera.start()
             
-            self.message("Connected to {!r}".format(self.camera))
+            self.message("Connected to", self.camera)
             
             ## <--- set camera parameter
             self.camera.pixel_size = self.unit_selector.value
@@ -279,26 +279,34 @@ class Plugin(Layer):
             return self.camera
         
         except Exception as e:
-            print(self.message("- Connection failed; {!r}".format(e)))
+            self.message("- Connection failed:", e)
             self.camera = None
     
-    def capture(self):
-        """Capture image."""
+    def capture(self, blit=False):
+        """Capture image.
+        If blit is True, it will be loaded into the graph view.
+        """
         try:
+            self.message("Capturing image...")
             if self.camera is None:
                 self.connect()
-            return self.camera.cache().copy()
+            buf = self.camera.cache()
         except Exception as e:
-            print(self.message("- Failed to acquire image: {!r}".format(e)))
-            return None
+            self.message("- Failed to acquire image:", e)
+            traceback.print_exc()
+            buf = None
+        else:
+            if blit and buf is not None:
+                frame = self.graph.load(buf,
+                        localunit = self.camera.pixel_unit,
+                           camera = self.camera.name,
+                            pixel = self.camera.pixel_size,
+                          binning = self.camera.binning,
+                         exposure = self.camera.exposure,
+                     acq_datetime = datetime.now())
+                self.parent.handler('frame_cached', frame)
+        return buf
     
     def capture_ex(self):
-        """Capture image and load to the target window.
-        """
-        self.message("Capturing image...")
-        buf = self.capture()
-        if buf is not None:
-            frame = self.graph.load(buf,
-                localunit=self.camera.pixel_unit, **self.attributes)
-            self.parent.handler('frame_cached', frame)
-            return frame
+        """Capture image and load into the graph view."""
+        return self.capture(blit=True)
