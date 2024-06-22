@@ -177,9 +177,13 @@ class Plugin(Layer):
             else:
                 self.camera.InsertCamera(0, False)
     
-    def capture(self, blit=False):
+    def capture(self, view=False, **kwargs):
         """Capture image.
-        If blit is True, it will be loaded into the graph view.
+        
+        Args:
+            view    : If True, the buffer will be loaded into the graph view.
+            **kwargs: Additional attributes of the buffer frame.
+                      Used only if view is True.
         """
         try:
             self.message("Capturing image...")
@@ -191,17 +195,19 @@ class Plugin(Layer):
             traceback.print_exc()
             buf = None
         else:
-            if blit and buf is not None:
-                frame = self.graph.load(buf,
-                        localunit = self.camera.pixel_unit,
-                           camera = self.camera.name,
-                            pixel = self.camera.pixel_size,
-                          binning = self.camera.binning,
-                         exposure = self.camera.exposure,
-                     acq_datetime = datetime.now())
+            if view and buf is not None:
+                attributes = {
+                    'localunit' : self.camera.pixel_unit,
+                       'camera' : self.camera.name,
+                        'pixel' : self.camera.pixel_size,
+                      'binning' : self.camera.binning,
+                     'exposure' : self.camera.exposure,
+                 'acq_datetime' : datetime.now(),
+                }
+                frame = self.graph.load(buf, **attributes, **kwargs)
                 self.parent.handler('frame_cached', frame)
         return buf
     
     def capture_ex(self):
         """Capture image and load into the graph view."""
-        return self.capture(blit=True)
+        return self.capture(True)
