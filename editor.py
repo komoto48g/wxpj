@@ -2,7 +2,7 @@
 """Editor's collection of wxpj.
 """
 import numpy as np
-from numpy import pi,cos,sin
+from numpy import pi, cos, sin
 from numpy.fft import fft2, fftshift
 import cv2
 from matplotlib import pyplot as plt
@@ -303,8 +303,12 @@ def find_ellipses(src, ksize=1, otsu=True, sortby='size'):
     except ValueError:
         _c, contours, hierarchy = argv # opencv <= 3.4.5
     
-    ## There should be at least 5 points to fit the ellipse
+    ## Detect enclosing rectangles.
+    ## Note: There should be at least 5 points to fit the ellipse.
+    ##       To detect small spots, increase the amount of blur.
     ellipses = [cv2.fitEllipse(v) for v in contours if len(v) > 4]
+    
+    ellipses = filter(lambda v: not np.any(np.isnan(v[0:2])), ellipses) # nan を排除する
     
     if sortby == 'size':
         return sorted(ellipses, key=lambda v: v[1][0], reverse=1) # 大きさで降順ソート
@@ -333,6 +337,8 @@ def calc_ellipse(src, ellipse):
     xx = (x-xo) * cos(t) + (y-yo)*sin(t)
     yy = (x-xo) *-sin(t) + (y-yo)*cos(t)
     mask = np.hypot(xx/ra*2, yy/rb*2) < 1 # 楕円の短径 ra/2 < 長径 rb/2
+    
+    src = src.astype(np.float32) # カウント数 sum<int32> では不十分
     
     N = src.sum()   # 全カウント数
     S = src.size    # 全ピクセル数
