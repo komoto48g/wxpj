@@ -15,9 +15,9 @@ hostnames = [
     '172.17.41.1',  # TEM server
 ]
 
-typenames_info = { # 0:maxcnt, (pixel_size, bins, gains,
-    "camera"      : (65535, ), # dummy for offline
-    "TVCAM_U"     : (65535, ), # Flash cam
+typenames_info = { # maxcnt,
+    "camera"      : (65535, ), # dummy camera
+    "TVCAM_U"     : (65535, ), # Flash camera
     "TVCAM_SCR_L" : ( 4095, ), # Large screen
     "TVCAM_SCR_F" : ( 4095, ), # Focus screen
 }
@@ -39,7 +39,6 @@ class Camera:
         binning     : binning number (typ. 1,2,4) in bins <list>
         gain        : gain number (1 -- 10) in gains <list>
         shape       : (h,w) height and width of image
-        max_count   : the maximum count (used to check if saturated)
     """
     busy = 0
     bins = (1, 2, 4)
@@ -52,11 +51,6 @@ class Camera:
         self.pixel_size = 0.05
         self._cached_time = 0
         self._cached_image = None
-        self.max_count = typenames_info[self.name][0]
-        ## try:
-        ##     self.cont.StartCache() # setup cache
-        ## except Exception:
-        ##     pass
     
     def __del__(self):
         try:
@@ -90,12 +84,6 @@ class Camera:
             return buf
         finally:
             Camera.busy -= 1
-    
-    @property
-    def cached_saturation(self):
-        buf = self._cached_image
-        if buf is not None:
-            return buf.max() == self.max_count
     
     @property
     def pixel_unit(self):
@@ -147,17 +135,14 @@ class Camera:
 class DummyCamera:
     """Dummy camera (proxy of Detector).
     """
-    def __init__(self, parent):
-        self.parent = parent
-        self.name = 'camera'
-        self.host = 'localhost'
+    def __init__(self, name, host):
+        self.name = name
+        self.host = host
         self.gain = 1
         self.binning = 1
         self.exposure = 0.05
         self.pixel_size = 0.05
-        self._cached_time = 0
-        self._cached_image = None
-        self.max_count = typenames_info[self.name][0]
+        self.max_size = 1024
     
     def start(self):
         pass
@@ -166,18 +151,9 @@ class DummyCamera:
         pass
     
     def cache(self):
-        ## n = 2048 // self.binning
-        ## buf = np.uint16(np.random.randn(n, n) * self.max_count)
-        buf = self.parent.graph.buffer
-        self._cached_image = buf
-        self._cached_time = time.perf_counter()
+        n = self.max_size // self.binning
+        buf = np.uint16((0.5 + 0.1 * np.random.randn(n, n)) * 0xffff)
         return buf
-    
-    @property
-    def cached_saturation(self):
-        buf = self._cached_image
-        if buf is not None:
-            return buf.max() == self.max_count
     
     @property
     def pixel_unit(self):
@@ -185,7 +161,8 @@ class DummyCamera:
     
     @property
     def shape(self):
-        return self.parent.graph.buffer.shape
+        w = h = self.max_size // self.binning
+        return w, h
 
 
 class Plugin(Layer):
@@ -262,7 +239,7 @@ class Plugin(Layer):
         try:
             self.message(f"Connecting to {name}...")
             if name == 'camera':
-                self.camera = DummyCamera(self)
+                self.camera = DummyCamera(name, host)
             else:
                 self.camera = Camera(name, host)
             self.camera.start()
