@@ -1,5 +1,5 @@
 #! python3
-"""Legacy TEM13 information class
+"""TEM Notify information
 
 Class for notify optics state and hardware status
 """
