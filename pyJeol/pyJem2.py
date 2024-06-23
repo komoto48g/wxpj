@@ -9,13 +9,13 @@ try:
     from temisc import mrange
     from temisc import FLHex, OLHex
     from legacy import cmdl, cntf
-    from legacy import LensSystem, DeflSystem, FocusSystem
+    from jtypes import LensSystem, DeflSystem, FocusSystem
 except ImportError:
     from . import teminfo
     from .temisc import mrange
     from .temisc import FLHex, OLHex
     from .legacy import cmdl, cntf
-    from .legacy import LensSystem, DeflSystem, FocusSystem
+    from .jtypes import LensSystem, DeflSystem, FocusSystem
 
 Command = cmdl.Command
 NotifyCommand = cntf.NotifyCommand
