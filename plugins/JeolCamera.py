@@ -3,6 +3,7 @@
 """
 from datetime import datetime
 import time
+import threading
 import traceback
 import numpy as np
 
@@ -40,7 +41,6 @@ class Camera:
         gain        : gain number (1 -- 10) in gains <list>
         shape       : (h,w) height and width of image
     """
-    busy = 0
     bins = (1, 2, 4)
     gains = np.arange(1, 10.1, 0.5)
     
@@ -51,6 +51,8 @@ class Camera:
         self.pixel_size = 0.05
         self._cached_time = 0
         self._cached_image = None
+        self._cached_exposure = 0.1
+        self._lock = threading.RLock()
     
     def __del__(self):
         try:
@@ -59,31 +61,28 @@ class Camera:
             pass
     
     def start(self):
+        """Start live and cache."""
         self.cont.LiveStart()
-        self.cont.StartCache() # setup cache
+        self.cont.StartCache()
+        self._cached_exposure = self.exposure
     
     def stop(self):
-        self.cont.StopCache()  # close cache
+        """Stop live and cache."""
         self.cont.LiveStop()
+        self.cont.StopCache()
     
     def cache(self):
         """Cache of the current image <uint16>."""
-        if time.perf_counter() - self._cached_time < self.exposure:
+        if time.perf_counter() - self._cached_time < self._cached_exposure:
             if self._cached_image is not None:
                 return self._cached_image
-        try:
-            while Camera.busy:
-                time.sleep(0.01) # ここで通信待機
-            Camera.busy += 1
-            
+        with self._lock:
             data = self.cont.Cache()
             buf = np.frombuffer(data, dtype=np.uint16)
             buf.resize(self.shape)
             self._cached_image = buf
             self._cached_time = time.perf_counter()
             return buf
-        finally:
-            Camera.busy -= 1
     
     @property
     def pixel_unit(self):
@@ -91,45 +90,53 @@ class Camera:
     
     @property
     def shape(self):
-        info = self.cont['OutputImageInformation']['ImageSize']
-        h = info['Height']
-        w = info['Width']
-        return h, w
+        with self._lock:
+            info = self.cont['OutputImageInformation']['ImageSize']
+            h = info['Height']
+            w = info['Width']
+            return h, w
     
     @property
     def exposure(self):
-        return self.cont['ExposureTimeValue'] / 1e3
+        with self._lock:
+            return self.cont['ExposureTimeValue'] / 1e3
     
     @exposure.setter
     def exposure(self, sec):
-        if abs(self.exposure - sec) > 1e-6:
-            self.cont['ExposureTimeValue'] = sec * 1e3
-        
+        with self._lock:
+            if abs(self.exposure - sec) > 1e-6:
+                self.cont['ExposureTimeValue'] = sec * 1e3
+                self._cached_exposure = sec
+    
     @property
     def binning(self):
-        try:
-            return self.bins[self.cont['BinningIndex']]
-        except KeyError:
-            pass
+        with self._lock:
+            try:
+                return self.bins[self.cont['BinningIndex']]
+            except KeyError:
+                pass
     
     @binning.setter
     def binning(self, v):
-        if 0 < v <= self.bins[-1]:
-            j = np.searchsorted(self.bins, v) #<np.int64> crashes online▲
-            self.cont['BinningIndex'] = int(j)
+        with self._lock:
+            if 0 < v <= self.bins[-1]:
+                j = np.searchsorted(self.bins, v) #<np.int64> crashes online▲
+                self.cont['BinningIndex'] = int(j)
     
     @property
     def gain(self):
-        try:
-            return self.gains[self.cont['GainIndex']]
-        except KeyError:
-            pass
+        with self._lock:
+            try:
+                return self.gains[self.cont['GainIndex']]
+            except KeyError:
+                pass
     
     @gain.setter
     def gain(self, v):
-        if 0 < v <= self.gains[-1]:
-            j = np.searchsorted(self.gains, v) #<np.int64> crashes online▲
-            self.cont['GainIndex'] = int(j)
+        with self._lock:
+            if 0 < v <= self.gains[-1]:
+                j = np.searchsorted(self.gains, v) #<np.int64> crashes online▲
+                self.cont['GainIndex'] = int(j)
 
 
 class DummyCamera:
@@ -140,7 +147,7 @@ class DummyCamera:
         self.host = host
         self.gain = 1
         self.binning = 1
-        self.exposure = 0.05
+        self.exposure = 0.1
         self.pixel_size = 0.05
         self.max_size = 1024
     
@@ -268,12 +275,10 @@ class Plugin(Layer):
                       Used only if view is True.
         """
         try:
-            self.message("Capturing image...")
             if self.camera is None:
                 self.connect()
             buf = self.camera.cache()
-        except Exception as e:
-            self.message("- Failed to acquire image:", e)
+        except Exception:
             traceback.print_exc()
             buf = None
         else:

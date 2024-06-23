@@ -3,6 +3,7 @@
 """
 from datetime import datetime
 import time
+import threading
 import traceback
 
 from jgdk import Layer, Param, LParam, Button, Choice
@@ -27,8 +28,6 @@ typenames_info = { # pixel_size, h, w, ...
 class Camera(GatanSocket):
     """Gatan camera (proxy of Detector).
     """
-    busy = 0
-    
     @property
     def pixel_unit(self):
         return self.pixel_size * self.binning
@@ -42,6 +41,10 @@ class Camera(GatanSocket):
         self.shape = self.info[1:3]
         self.binning = 1
         self.exposure = 0.1
+        self._cached_time = 0
+        self._cached_image = None
+        self._lock = threading.Lock()
+        
         if name == 'K3':
             # [K2] 0:Linear, 1:Counting, 2:S/Res
             # [K3] 3:linear, 4:S/Res
@@ -60,11 +63,7 @@ class Camera(GatanSocket):
     
     def cache(self):
         """Cache of the current image."""
-        try:
-            while Camera.busy:
-                time.sleep(0.01) # ここで通信待機
-            Camera.busy += 1
-            
+        with self._lock:
             h, w = H, W = self.shape
             bin = self.binning
             if self.mode == 4:
@@ -84,9 +83,9 @@ class Camera(GatanSocket):
                 exposure = self.exposure,
             shutterDelay = 0,
             )
+            self._cached_image = buf
+            self._cached_time = time.perf_counter()
             return buf
-        finally:
-            Camera.busy -= 1
 
 
 class Plugin(Layer):
@@ -186,12 +185,10 @@ class Plugin(Layer):
                       Used only if view is True.
         """
         try:
-            self.message("Capturing image...")
             if self.camera is None:
                 self.connect()
             buf = self.camera.cache()
-        except Exception as e:
-            self.message("- Failed to acquire image:", e)
+        except Exception:
             traceback.print_exc()
             buf = None
         else:
