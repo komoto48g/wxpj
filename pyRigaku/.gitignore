@@ -13,9 +13,7 @@ Makefile
 exclude_files
 
 # Resources
-test*/
-docfiles*/
-!requirements.txt
+src/
 
 # Byte-compiled files
 __pycache__/
