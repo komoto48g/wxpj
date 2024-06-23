@@ -104,11 +104,12 @@ class Plugin(Layer):
         ## TEST for ellipses detection
         if self.detect_chk.Value:
             ellipses = edi.find_ellipses(src, ksize=3, sortby='size')
-            if ellipses:
+            try:
                 cc, rc, angle = ellipses[0]
                 cc = np.int32(np.array(cc) * ratio)
                 rc = np.int32(np.array(rc) * ratio / 2)
                 dst = cv2.cvtColor(dst, cv2.COLOR_GRAY2BGR)
                 cv2.ellipse(dst, cc, rc, angle, 0, 360, (192,192,0), 2) # cyan:"#00c0c0"
-        
+            except Exception:
+                pass
         cv2.imshow(title, dst)
