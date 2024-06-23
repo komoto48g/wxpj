@@ -682,8 +682,6 @@ class Filter(Device):
 
 
 if __name__ == "__main__":
-    ## cmdl.HOST = cntf.HOST = '172.17.41.201'
-    ## cmdl.HOST = cntf.HOST = 'localhost'
     cmdl.open()
     cntf.open()
     

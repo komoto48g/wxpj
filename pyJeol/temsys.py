@@ -20,10 +20,6 @@ class NotifyHandler(object):
         2. update() -> update manually when config changed
         3. bind/unbind transactions to the handler
         4. stop() -> close the streams
-    
-    Note:
-        To check whether the streams are open,
-        see cmdl.STREAM, cntf.STREAM, and self.thread.active
     """
     thread = property(lambda self: self.__thread)   #: Notify thread instance
     handler = property(lambda self: self.__handler) #: Notify command handler instance
@@ -45,7 +41,7 @@ class NotifyHandler(object):
             self.handler("illumination_info", self.illumination.request())
             self.handler("imaging_info", self.imaging.request())
         except IOError as e:
-            print("- Failed to get TEM/Optics info: {!r}.".format(e))
+            print("- Failed to get TEM/Optics info:", e)
         
         try:
             ## 最初の時点では OMEGA-TYPE 不明▲
@@ -54,7 +50,7 @@ class NotifyHandler(object):
                 self.handler("omega_info", self.omega.request())
                 self.handler("efilter_info", self.efilter.request())
         except IOError as e:
-            print("- Failed to get TEM/Filter info: {!r}.".format(e))
+            print("- Failed to get TEM/Filter info:", e)
         
         try:
             self.tem.lsys.read() # -> beep
@@ -71,7 +67,7 @@ class NotifyHandler(object):
             self.handler("scr_info", self.scr_info(self.eos._get_scr()))
             ## self.handler("det_info", self.det_info(self.eos._get_det())) # ▼not supported
         except IOError as e:
-            print("- Failed to get TEM/Device info: {!r}.".format(e))
+            print("- Failed to get TEM/Device info:", e)
         
         try:
             ## 最初の時点では APT-EXTYPE 不明▲
@@ -79,7 +75,7 @@ class NotifyHandler(object):
             self.apts = pj.ApertureEx if extype else pj.Aperture
             self.handler("apt_info", self.apts.request())
         except IOError as e:
-            print("- Failed to get TEM/APT info: {!r}.".format(e))
+            print("- Failed to get TEM/APT info:", e)
     
     def __init__(self, parent, logger):
         self.__parent = parent
@@ -291,7 +287,7 @@ class NotifyLogger(wx.ListCtrl, ListCtrlAutoWidthMixin):
                 break
         else:
             i = len(self.__items)
-            item = [name, 1, iid, pid, data] # format; add counter(1), get rid of status
+            item = [name, 1, iid, pid, data] # add counter(1), get rid of status
             self.__items.append(item)
             self.InsertItem(i, str(name))
         
