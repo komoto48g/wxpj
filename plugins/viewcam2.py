@@ -12,32 +12,21 @@ class Plugin(Layer):
     """
     menukey = "Cameras/"
     
-    @property
-    def cameraman(self):
-        cam = self.camera_selector.value
-        if not cam:
-            self.message("- No camera specified.")
-            return None
-        return self.parent.require(cam)
-    
     def Init(self):
         self.viewer = Thread(self)
         
         self.camera_selector = Choice(self,
                                 updater=self.viewer.wraps(self.run),
                                 choices=['JeolCamera', 'RigakuCamera'],
-                                icon='camera', readonly=1)
+                                icon='camera', size=(114,-1), readonly=1)
         
         self.detect_chk = wx.CheckBox(self, label="Ellipse detection")
-        
-        self.hi = LParam("hi", (0, 10, 0.01), 0.1)
-        self.lo = LParam("lo", (0, 10, 0.01), 0.0)
         
         self.rate_param = LParam('rate', (0,500,50), 500)
         self.size_param = Param('size', (128,256,512,1024), 512)
         
         self.layout((
-                self.camera_selector, None, 4,
+                self.camera_selector, None, 6,
                 self.detect_chk,
             ),
             row=2,
@@ -45,11 +34,9 @@ class Plugin(Layer):
         self.layout((
                 self.rate_param,
                 self.size_param,
-                self.hi,
-                self.lo,
             ),
-            title="Detection settings", row=1, show=0,
-            type='vspin', cw=-1, lw=30, tw=40
+            title="Live view setting", row=1, show=0,
+            type='vspin', cw=-1, lw=36, tw=44,
         )
     
     def Destroy(self):
@@ -60,26 +47,32 @@ class Plugin(Layer):
             return Layer.Destroy(self)
     
     def run(self):
+        """Live view using the specified camera manager."""
         title = self.camera_selector.value
         if not title:
             self.message("- No camera specified.")
             return
-        ## cv2.startWindowThread()
-        cv2.namedWindow(title)
+        cameraman = self.parent.require(title)
+        _prev = None
         try:
+            ## cv2.startWindowThread()
+            cv2.namedWindow(title)
             while self.viewer.active:
-                buf = self.cameraman.capture()
-                if buf is not None:
-                    self.display(title, buf)
+                buf = cameraman.capture()
+                if buf is not _prev:
+                    dst = self.display(buf)
+                    cv2.imshow(title, dst)
+                _prev = buf
                 cv2.waitKey(self.rate_param.value + 1)
                 if cv2.getWindowProperty(title, 0) < 0:
                     break
         except cv2.error:
             pass
-        finally:
-            cv2.destroyAllWindows()
+        except Exception:
+            ## cv2.destroyAllWindows()
+            cv2.destroyWindow(title)
     
-    def display(self, title, buf):
+    def display(self, buf):
         ## 画像サイズの縮小
         src = edi.imconv(buf, hi=0.1)
         h, w = src.shape
@@ -112,4 +105,4 @@ class Plugin(Layer):
                 cv2.ellipse(dst, cc, rc, angle, 0, 360, (192,192,0), 2) # cyan:"#00c0c0"
             except Exception:
                 pass
-        cv2.imshow(title, dst)
+        return dst
