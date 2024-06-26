@@ -2,10 +2,7 @@
 """Rigaku camera module.
 """
 from datetime import datetime
-import time
-import re
 import traceback
-import numpy as np
 
 from jgdk import Layer, Param, LParam, Button, Choice
 from pyRigaku import Camera
@@ -114,12 +111,10 @@ class Plugin(Layer):
                       Used only if view is True.
         """
         try:
-            self.message("Capturing image...")
             if self.camera is None:
                 self.connect()
             buf = self.camera.cache()
-        except Exception as e:
-            self.message("- Failed to acquire image:", e)
+        except Exception:
             traceback.print_exc()
             buf = None
         else:
