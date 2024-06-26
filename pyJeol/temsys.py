@@ -1,5 +1,5 @@
 #! python3
-"""Plug manager
+"""TEM Notify system
 """
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin

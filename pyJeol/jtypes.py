@@ -2,7 +2,7 @@
 """Jeol Lens/Deflector system types
 """
 from mwx.controls import LParam
-from . import _cmdl as cmdl
+from .legacy import cmdl
 
 Command = cmdl.Command
 
