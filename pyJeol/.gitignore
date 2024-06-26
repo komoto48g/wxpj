@@ -13,7 +13,7 @@ Makefile
 exclude_files
 
 # Resources
-legacy/src/
+src/
 
 # Byte-compiled files
 __pycache__/

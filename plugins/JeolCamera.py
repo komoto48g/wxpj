@@ -2,13 +2,10 @@
 """Jeol Camera module.
 """
 from datetime import datetime
-import time
-import threading
 import traceback
-import numpy as np
 
 from jgdk import Layer, Param, LParam, Button, Choice
-from pyJeol.detector import Detector
+from pyJeol import Camera, DummyCamera
 
 
 hostnames = [
@@ -22,154 +19,6 @@ typenames_info = { # maxcnt,
     "TVCAM_SCR_L" : ( 4095, ), # Large screen
     "TVCAM_SCR_F" : ( 4095, ), # Focus screen
 }
-
-
-class Camera:
-    """Jeol camera (proxy of Detector).
-    
-    Args:
-        name : name of selected camera
-        host : localhost if offline (default) otherwise 172.17.41.1
-    
-    Camera property::
-    
-        cont        : camera controller
-        pixel_size  : raw pixel size [u/pix]
-        pixel_unit  : pixel (with binning) size [u/pix]
-        exposure    : exposure time [s]
-        binning     : binning number (typ. 1,2,4) in bins <list>
-        gain        : gain number (1 -- 10) in gains <list>
-        shape       : (h,w) height and width of image
-    """
-    bins = (1, 2, 4)
-    gains = np.arange(1, 10.1, 0.5)
-    
-    def __init__(self, name, host):
-        self.name = name
-        self.host = host
-        self.cont = Detector(name, host)
-        self.pixel_size = 0.05
-        self._cached_time = 0
-        self._cached_image = None
-        self._cached_exposure = 0.1
-        self._lock = threading.RLock()
-    
-    def __del__(self):
-        try:
-            self.cont.StopCache()  # close cache
-        except Exception:
-            pass
-    
-    def start(self):
-        """Start live and cache."""
-        self.cont.LiveStart()
-        self.cont.StartCache()
-        self._cached_exposure = self.exposure
-    
-    def stop(self):
-        """Stop live and cache."""
-        self.cont.LiveStop()
-        self.cont.StopCache()
-    
-    def cache(self):
-        """Cache of the current image <uint16>."""
-        if time.perf_counter() - self._cached_time < self._cached_exposure:
-            if self._cached_image is not None:
-                return self._cached_image
-        with self._lock:
-            data = self.cont.Cache()
-            buf = np.frombuffer(data, dtype=np.uint16)
-            buf.resize(self.shape)
-            self._cached_image = buf
-            self._cached_time = time.perf_counter()
-            return buf
-    
-    @property
-    def pixel_unit(self):
-        return self.pixel_size * self.binning
-    
-    @property
-    def shape(self):
-        with self._lock:
-            info = self.cont['OutputImageInformation']['ImageSize']
-            h = info['Height']
-            w = info['Width']
-            return h, w
-    
-    @property
-    def exposure(self):
-        with self._lock:
-            return self.cont['ExposureTimeValue'] / 1e3
-    
-    @exposure.setter
-    def exposure(self, sec):
-        with self._lock:
-            if abs(self.exposure - sec) > 1e-6:
-                self.cont['ExposureTimeValue'] = sec * 1e3
-                self._cached_exposure = sec
-    
-    @property
-    def binning(self):
-        with self._lock:
-            try:
-                return self.bins[self.cont['BinningIndex']]
-            except KeyError:
-                pass
-    
-    @binning.setter
-    def binning(self, v):
-        with self._lock:
-            if 0 < v <= self.bins[-1]:
-                j = np.searchsorted(self.bins, v) #<np.int64> crashes online▲
-                self.cont['BinningIndex'] = int(j)
-    
-    @property
-    def gain(self):
-        with self._lock:
-            try:
-                return self.gains[self.cont['GainIndex']]
-            except KeyError:
-                pass
-    
-    @gain.setter
-    def gain(self, v):
-        with self._lock:
-            if 0 < v <= self.gains[-1]:
-                j = np.searchsorted(self.gains, v) #<np.int64> crashes online▲
-                self.cont['GainIndex'] = int(j)
-
-
-class DummyCamera:
-    """Dummy camera (proxy of Detector).
-    """
-    def __init__(self, name, host):
-        self.name = name
-        self.host = host
-        self.gain = 1
-        self.binning = 1
-        self.exposure = 0.1
-        self.pixel_size = 0.05
-        self.max_size = 1024
-    
-    def start(self):
-        pass
-    
-    def stop(self):
-        pass
-    
-    def cache(self):
-        n = self.max_size // self.binning
-        buf = np.uint16((0.5 + 0.1 * np.random.randn(n, n)) * 0xffff)
-        return buf
-    
-    @property
-    def pixel_unit(self):
-        return self.pixel_size * self.binning
-    
-    @property
-    def shape(self):
-        w = h = self.max_size // self.binning
-        return w, h
 
 
 class Plugin(Layer):
