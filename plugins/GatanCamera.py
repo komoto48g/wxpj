@@ -4,7 +4,6 @@
 from datetime import datetime
 import time
 import threading
-import traceback
 
 from jgdk import Layer, Param, LParam, Button, Choice
 from pyGatan import GatanSocket
@@ -111,7 +110,7 @@ class Plugin(Layer):
                 self.exposure_selector,
             ),
             title="Acquire setting",
-            type='vspin', cw=-1, lw=32, tw=40
+            type='vspin', cw=-1, lw=32, tw=46,
         )
         self.layout((
                 Button(self, "Capture", self.capture_ex, icon='camera'),
@@ -148,7 +147,7 @@ class Plugin(Layer):
         host = self.host_selector.value
         if not name:
             self.message("- Camera name is not specified.")
-            return
+            return None
         try:
             self.message(f"Connecting to {name}...")
             self.camera = Camera(name, host)
@@ -167,6 +166,7 @@ class Plugin(Layer):
         except Exception as e:
             self.message("- Connection failed:", e)
             self.camera = None
+            return None
     
     def insert(self, ins=True):
         if self.camera:
@@ -184,25 +184,21 @@ class Plugin(Layer):
             **kwargs: Additional attributes of the buffer frame.
                       Used only if view is True.
         """
-        try:
-            if self.camera is None:
-                self.connect()
-            buf = self.camera.cache()
-        except Exception:
-            traceback.print_exc()
-            buf = None
-        else:
-            if view and buf is not None:
-                attributes = {
-                    'localunit' : self.camera.pixel_unit,
-                       'camera' : self.camera.name,
-                        'pixel' : self.camera.pixel_size,
-                      'binning' : self.camera.binning,
-                     'exposure' : self.camera.exposure,
-                 'acq_datetime' : datetime.now(),
-                }
-                frame = self.graph.load(buf, **attributes, **kwargs)
-                self.parent.handler('frame_cached', frame)
+        if not self.camera:
+            if not self.connect():
+                return None
+        buf = self.camera.cache()
+        if view and buf is not None:
+            attributes = {
+                'localunit' : self.camera.pixel_unit,
+                   'camera' : self.camera.name,
+                    'pixel' : self.camera.pixel_size,
+                  'binning' : self.camera.binning,
+                 'exposure' : self.camera.exposure,
+             'acq_datetime' : datetime.now(),
+            }
+            frame = self.graph.load(buf, **attributes, **kwargs)
+            self.parent.handler('frame_cached', frame)
         return buf
     
     def capture_ex(self):
