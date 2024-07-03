@@ -16,7 +16,6 @@ class Plugin(Layer):
     """
     menukey = "Plugins/&Pragma Tools/"
     
-    su = property(lambda self: self.parent.require('startup'))
     lgbt = property(lambda self: self.parent.require('lgbt'))
     lccf = property(lambda self: self.parent.require('lccf2'))
     ldc = property(lambda self: self.parent.require('ld_cgrid'))
@@ -47,7 +46,7 @@ class Plugin(Layer):
                 Button(self, "1. Eval", self.evaluate, icon='help', size=(72,-1)),
                 self.choice,
                 
-                Button(self, "2. Mark", self.calmark, icon='help', size=(72,-1)),
+                Button(self, "2. Mark", self.calc_mark, icon='help', size=(72,-1)),
                 self.score,
                 
                 Button(self, "3. Run", self.run, icon='help', size=(72,-1)),
@@ -63,7 +62,7 @@ class Plugin(Layer):
             ),
             title="Output", row=0, show=1, vspacing=2,
         )
-        self.lgbt.ksize.value = 5 # default blur window size
+        self.lgbt.ksize.value = 13 # default blur window size
     
     @property
     def result_frame(self):
@@ -83,7 +82,6 @@ class Plugin(Layer):
     ## Before calculating Mags, check unit length [mm/pixel]
     
     def show_settings(self):
-        self.su.Show()
         self.lccf.Show()
     
     def run(self):
@@ -109,7 +107,7 @@ class Plugin(Layer):
         else:
             self.test_cor(frame)
     
-    def calmark(self):
+    def calc_mark(self):
         """Feature detection.
         
         Set parameter: Ratio [%] of upper counts to extract spots.

@@ -53,7 +53,7 @@ class Plugin(Layer):
         if k > 1:
             src = edi.imcv(src)
             src = cv2.GaussianBlur(src, (k, k), s)
-        buf = edi.imconv(src) # -> uint8
+        buf = edi.imconv(src)
         self.output.load(buf, "*Gauss*", localunit=frame.unit)
         
         if 0 < otsu < 1:

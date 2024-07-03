@@ -120,16 +120,14 @@ class Plugin(Layer):
                     art.angle = 90-angle
                     self.attach_artists(frame.axes, art)
                     
-                    ## 検出した楕円の中心をそのまま記録する (強度の偏りが出る)
-                    ## x, y = art.center
-                    ## xy.append((x[0], y[0]))
+                    ## 検出した楕円の中心をそのまま記録する
+                    ## 強度の偏りが出るのを防ぐため，十分ぼかし幅をとること
+                    xy.append(art.center)
                     
-                    ## max radius enclosing the area (cf. cv2.minEnclosingCircle)
-                    r = int(max(ra, rb) / 2)
-                    x, y = int(cx), int(cy)
-                    xa = max(0, x-r)
-                    ya = max(0, y-r)
-                    buf = frame.buffer[ya:y+r+1, xa:x+r+1]
+                    ## r = int(np.hypot(ra, rb) / 2) # max radius enclosing the area rectangle
+                    ## x, y = int(cx), int(cy)
+                    ## buf = frame.buffer[y-r:y+r+1, x-r:x+r+1]
+                    ## img = frame.image[y-r:y+r+1, x-r:x+r+1]
                     
                     ## local maximum that is found first in the region. ▲偏りが出るので NG
                     ## dy, dx = np.unravel_index(buf.argmax(), buf.shape)
@@ -139,20 +137,32 @@ class Plugin(Layer):
                     ## dy, dx = np.average(yy), np.average(xx)
                     
                     ## centroid of masked array
-                    buf = np.ma.masked_array(buf, mask_ellipse(ra, rb, angle))
-                    dx, dy = edi.centroid(buf)
-                    
-                    x, y = frame.xyfrompixel(xa+dx, ya+dy)
-                    xy.append((x, y))
+                    ## buf = np.ma.masked_array(img, mask_ellipse(r, ra, rb, angle))
+                    ## dx, dy = centroid(buf)
+                    ## x, y = frame.xyfrompixel(x-r+dx, y-r+dy)
+                    ## xy.append((x, y))
             
             frame.markers = np.array(xy).T # scatter markers if any xy
 
 
-def mask_ellipse(ra, rb, angle):
-    r = int(max(ra, rb) /2) # max radius enclosing the area cf. cv2.minEnclosingCircle
+def centroid(src):
+    """centroids (重心).
+    cf. ndi.measurements.center_of_mass
+    """
+    ## Note:
+    ##     moments は findContours と組み合わせても使用される．
+    ##     src <int32/float32> はコンター座標とみなされる．
+    buf = edi.imconv(src)
+    M = cv2.moments(buf)
+    cx = M['m10']/M['m00']
+    cy = M['m01']/M['m00']
+    return cx, cy
+
+
+def mask_ellipse(r, ra, rb, angle):
     y, x = np.ogrid[-r:r+1, -r:r+1]
     yo, xo = 0, 0
     t = angle * pi/180
-    xx = (x-xo) * cos(t) + (y-yo)*sin(t)
-    yy = (x-xo) *-sin(t) + (y-yo)*cos(t)
+    xx = (x-xo) * cos(t) + (y-yo) * sin(t)
+    yy = (x-xo) *-sin(t) + (y-yo) * cos(t)
     return np.hypot(xx/ra*2, yy/rb*2) > 1 # 楕円の短径 ra/2 < 長径 rb/2

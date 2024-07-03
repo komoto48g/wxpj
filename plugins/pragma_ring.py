@@ -26,7 +26,7 @@ class Plugin(Layer):
             title="Evaluate ring pattern", row=2,
             type='vspin', cw=-1, lw=0, tw=44,
         )
-        self.lgbt.ksize.value = 5 # default blur window size
+        self.lgbt.ksize.value = 13 # default blur window size
     
     def show_setting(self):
         """Show the settings."""

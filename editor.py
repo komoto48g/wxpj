@@ -38,40 +38,30 @@ def imcv(src):
     return src
 
 
-def imtrunc(buf, lo=0, hi=0):
-    """Truncate buffer with cutoff (lo, hi) %."""
-    a = np.percentile(buf, lo)
-    b = np.percentile(buf, 100-hi)
-    img = buf.copy()
-    img[buf < a] = a
-    img[buf > b] = b
-    return img
-
-
-def imconv(buf, lo=0, hi=0):
-    """Convert buffer to dst<uint8> with cutoff (lo, hi) %.
+def imconv(src, hi=0, lo=0):
+    """Convert buffer to dst<uint8> with cutoff hi/lo %.
     
     >>> dst = (src-a) * 255 / (b-a)
     """
-    if buf.dtype == np.uint8:
-        return buf
+    if src.dtype == np.uint8:
+        return src
     
-    if buf.dtype in (np.complex64, np.complex128): # fft pattern
-        buf = np.log(1 + abs(buf))
+    if src.dtype in (np.complex64, np.complex128): # fft pattern
+        src = np.log(1 + abs(src))
     
-    if buf.ndim > 2:
-        ## R,G,B = buf[..., 0:3]
+    if src.ndim > 2:
+        ## R,G,B = src[..., 0:3]
         ## y = R * 0.299 + G * 0.587 + B * 0.114
-        ## return y.astype(buf.dtype)
-        buf = cv2.cvtColor(buf, cv2.COLOR_RGB2GRAY) # rgb2gray
+        ## return y.astype(src.dtype)
+        src = cv2.cvtColor(src, cv2.COLOR_RGB2GRAY) # rgb2gray
     
-    a = np.percentile(buf, lo) if lo else buf.min()
-    b = np.percentile(buf, 100-hi) if hi else buf.max()
+    a = np.percentile(src, lo) if lo else src.min()
+    b = np.percentile(src, 100-hi) if hi else src.max()
     
     r = (255 / (b - a)) if a < b else 1
-    img = np.uint8((buf - a) * r) # copy buffer
-    img[buf < a] = 0
-    img[buf > b] = 255
+    img = np.uint8((src - a) * r) # copy buffer
+    img[src < a] = 0
+    img[src > b] = 255
     return img
 
 
@@ -79,9 +69,9 @@ def imconv(buf, lo=0, hi=0):
 ## maplotlib (in-shell use only)
 ## --------------------------------
 
-def imshow(buf):
+def imshow(src):
     plt.clf()
-    plt.imshow(buf, cmap=cm.gray)
+    plt.imshow(src, cmap=cm.gray)
     plt.grid(True)
     plt.show()
 
@@ -219,11 +209,6 @@ def match_pattern(src, temp, method=cv2.TM_CCOEFF_NORMED):
     return res, maxLoc
 
 
-def eval_shift(src, src2, div=4):
-    """Evaluate shift src --> src2 [pix] using cv2.matchTemplate."""
-    return np.array(eval_match_shift(src2, src, div)) # for backward compatibility
-
-
 def eval_match_shift(src, tmp, d=4):
     """Evaluate shift [pix] of src from tmp (template) using cv2.matchTemplate."""
     h, w = tmp.shape
@@ -256,16 +241,6 @@ def eval_corr_shift(src, tmp, subpix=True):
 ## --------------------------------
 ## Image analysis; Detect ellipses
 ## --------------------------------
-
-def centroid(src):
-    """centroids (重心).
-    cf. ndi.measurements.center_of_mass
-    """
-    M = cv2.moments(src)
-    cx = M['m10']/M['m00']
-    cy = M['m01']/M['m00']
-    return cx, cy
-
 
 def find_ellipses(src, ksize=1, otsu=True, sortby='size'):
     """Find the rotated rectangle in which the ellipse is inscribed.
