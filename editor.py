@@ -38,30 +38,30 @@ def imcv(src):
     return src
 
 
-def imconv(buf, hi=0, lo=0):
+def imconv(src, hi=0, lo=0):
     """Convert buffer to dst<uint8> with cutoff hi/lo %.
     
     >>> dst = (src-a) * 255 / (b-a)
     """
-    if buf.dtype == np.uint8:
-        return buf
+    if src.dtype == np.uint8:
+        return src
     
-    if buf.dtype in (np.complex64, np.complex128): # fft pattern
-        buf = np.log(1 + abs(buf))
+    if src.dtype in (np.complex64, np.complex128): # fft pattern
+        src = np.log(1 + abs(src))
     
-    if buf.ndim > 2:
-        ## R,G,B = buf[..., 0:3]
+    if src.ndim > 2:
+        ## R,G,B = src[..., 0:3]
         ## y = R * 0.299 + G * 0.587 + B * 0.114
-        ## return y.astype(buf.dtype)
-        buf = cv2.cvtColor(buf, cv2.COLOR_RGB2GRAY) # rgb2gray
+        ## return y.astype(src.dtype)
+        src = cv2.cvtColor(src, cv2.COLOR_RGB2GRAY) # rgb2gray
     
-    a = np.percentile(buf, lo) if lo else buf.min()
-    b = np.percentile(buf, 100-hi) if hi else buf.max()
+    a = np.percentile(src, lo) if lo else src.min()
+    b = np.percentile(src, 100-hi) if hi else src.max()
     
     r = (255 / (b - a)) if a < b else 1
-    img = np.uint8((buf - a) * r) # copy buffer
-    img[buf < a] = 0
-    img[buf > b] = 255
+    img = np.uint8((src - a) * r) # copy buffer
+    img[src < a] = 0
+    img[src > b] = 255
     return img
 
 
@@ -69,9 +69,9 @@ def imconv(buf, hi=0, lo=0):
 ## maplotlib (in-shell use only)
 ## --------------------------------
 
-def imshow(buf):
+def imshow(src):
     plt.clf()
-    plt.imshow(buf, cmap=cm.gray)
+    plt.imshow(src, cmap=cm.gray)
     plt.grid(True)
     plt.show()
 
