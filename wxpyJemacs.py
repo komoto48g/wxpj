@@ -95,9 +95,11 @@ class MainFrame(Frame):
             print(f"Executing {si.__file__!r}")
             si.init_mainframe(self)
         
+        ## Accessing editor functions.
         import editor
         self.edi = editor
         
+        ## Startup module is required before any other plugins.
         self.su = self.require('startup')
         
         from mwx.plugins import frame_listview, line_profile, fft_view
