@@ -38,18 +38,8 @@ def imcv(src):
     return src
 
 
-def imtrunc(buf, lo=0, hi=0):
-    """Truncate buffer with cutoff (lo, hi) %."""
-    a = np.percentile(buf, lo)
-    b = np.percentile(buf, 100-hi)
-    img = buf.copy()
-    img[buf < a] = a
-    img[buf > b] = b
-    return img
-
-
-def imconv(buf, lo=0, hi=0):
-    """Convert buffer to dst<uint8> with cutoff (lo, hi) %.
+def imconv(buf, hi=0, lo=0):
+    """Convert buffer to dst<uint8> with cutoff hi/lo %.
     
     >>> dst = (src-a) * 255 / (b-a)
     """
@@ -219,11 +209,6 @@ def match_pattern(src, temp, method=cv2.TM_CCOEFF_NORMED):
     return res, maxLoc
 
 
-def eval_shift(src, src2, div=4):
-    """Evaluate shift src --> src2 [pix] using cv2.matchTemplate."""
-    return np.array(eval_match_shift(src2, src, div)) # for backward compatibility
-
-
 def eval_match_shift(src, tmp, d=4):
     """Evaluate shift [pix] of src from tmp (template) using cv2.matchTemplate."""
     h, w = tmp.shape
@@ -256,16 +241,6 @@ def eval_corr_shift(src, tmp, subpix=True):
 ## --------------------------------
 ## Image analysis; Detect ellipses
 ## --------------------------------
-
-def centroid(src):
-    """centroids (重心).
-    cf. ndi.measurements.center_of_mass
-    """
-    M = cv2.moments(src)
-    cx = M['m10']/M['m00']
-    cy = M['m01']/M['m00']
-    return cx, cy
-
 
 def find_ellipses(src, ksize=1, otsu=True, sortby='size'):
     """Find the rotated rectangle in which the ellipse is inscribed.
