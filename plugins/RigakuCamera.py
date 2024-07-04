@@ -32,14 +32,13 @@ class Plugin(Layer):
         self.host_selector = Choice(self,
             choices=hostnames, size=(100,22))
         
-        self.unit_selector = LParam("mm/pix", (0,1,1e-4), 0.1)
+        self.unit_selector = LParam("mm/pix", (0, 1, 1e-4), 0.1)
         
         self.layout((
                 self.binning_selector,
                 self.exposure_selector,
             ),
-            title="Acquire setting",
-            type='vspin', cw=-1, lw=32, tw=46, editable=0,
+            title="Acquire setting", type='vspin', cw=-1, lw=32, tw=46,
         )
         self.layout((
                 Button(self, "Capture", self.capture_ex, icon='camera'),
@@ -52,8 +51,7 @@ class Plugin(Layer):
                 self.unit_selector,
                 Button(self, "Connect", self.connect, size=(-1,20)),
             ),
-            title="Setup", show=0,
-            type=None, lw=-1, tw=50, editable=0,
+            title="Setup", show=0, type=None, lw=-1, tw=50,
         )
         self.camera = None
     
