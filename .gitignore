@@ -15,8 +15,6 @@ exclude_files
 # Resources
 test*/
 docfiles*/
-plugins/RigakuCamera*.py
-pyJeol/legacy/src/
 !requirements.txt
 
 # Byte-compiled files
