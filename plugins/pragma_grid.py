@@ -1,6 +1,4 @@
 #! python3
-import wx
-
 from jgdk import Layer, Button
 
 
@@ -12,7 +10,7 @@ class Plugin(Layer):
     caption = "Grid"
     
     lgbt = property(lambda self: self.parent.require('lgbt'))
-    lccf = property(lambda self: self.parent.require('lccf'))
+    lccf = property(lambda self: self.parent.require('lccf2'))
     ld = property(lambda self: self.parent.require('ld_grid'))
     
     def Init(self):

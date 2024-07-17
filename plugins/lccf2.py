@@ -10,17 +10,8 @@ import editor as edi
 
 
 def find_ellipses(src, rmin, rmax, tol=0.75):
-    """Find ellipses with radius (rmin, rmax).
-    excluding circles at the edges of the image < tol*r.
-    
-    Returns:
-        list of (c:=(cx,cy), r:=(ra<rb), angle) sorted by pos.
-        cx,cy : center of the rectangle [pix]
-        ra,rb : ra:width < rb:height of the rectangle [pix]
-        angle : rotation angle in clockwise (from 00:00 o'clock)
-    """
     ## Finds contours in binary image
-    ## ▲ src は上書きされるので後で使うときは注意する
+    ## ▲ src 第一引数は上書きされるので後で使うときは注意する
     argv = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     try:
         contours, hierarchy = argv
@@ -29,21 +20,15 @@ def find_ellipses(src, rmin, rmax, tol=0.75):
     
     ## Detect enclosing rectangles
     ellipses = [cv2.fitEllipse(v) for v in contours if len(v) > 4]
-    
-    ## There should be at least 5 points to fit the ellipse (c,r,a)
-    ## To detect small spots, increase the amount of blur.
-    
     h, w = src.shape
     
-    def distance(v): # 位置で昇順ソートする
-        c = v[0]
-        return np.hypot(c[0]-w/2, c[1]-h/2)
-    
-    def isinside(c, r): # 画像の端にある円を除く
-        d = tol * r[1]
+    def _inside(v):
+        c, r, a = v
+        d = tol * r[1] # 画像の端にある円を除く
         return (rmin < r[0] and r[1] < rmax and d < c[0] < w-d and d < c[1] < h-d)
     
-    return sorted([(c,r,a) for c,r,a in ellipses if isinside(c,r)], key=distance)
+    return sorted(filter(_inside, ellipses),
+                  key=lambda v: np.hypot(v[0][0]-w/2, v[0][1]-h/2))
 
 
 class Plugin(Layer):
@@ -92,47 +77,45 @@ class Plugin(Layer):
         src = self.lgbt.calc(frame, otsu)
         
         circles = find_ellipses(src, self.rmin.value, self.rmax.value)
+        xy = []
+        for k, v in enumerate(circles):
+            (cx, cy), (ra, rb), angle = v
+            if k == self.maxcount:
+                self.message(f"Found too many circles. Limiting to {k} markers.")
+                break
+            
+            if ra and rb/ra < self.maxratio:
+                ## 不特定多数の円を描画する
+                art = patches.Circle((0, 0), 0, color='r', ls='dotted', lw=1, fill=0)
+                art.center = frame.xyfrompixel(cx, cy)
+                art.height = ra * frame.unit
+                art.width = rb * frame.unit
+                art.angle = 90-angle
+                self.attach_artists(frame.axes, art)
+                
+                ## 検出した楕円の中心をそのまま記録する
+                ## 強度の偏りが出るのを防ぐため，十分ぼかし幅をとること
+                xy.append(art.center)
+                
+                ## r = int(np.hypot(ra, rb) / 2) # max radius enclosing the area rectangle
+                ## x, y = int(cx), int(cy)
+                ## buf = frame.buffer[y-r:y+r+1, x-r:x+r+1]
+                ## img = frame.image[y-r:y+r+1, x-r:x+r+1]
+                
+                ## local maximum that is found first in the region. ▲偏りが出るので NG
+                ## dy, dx = np.unravel_index(buf.argmax(), buf.shape)
+                
+                ## local maximum :averaged (強度の偏りを考慮する) ▲偏りが出るので NG
+                ## yy, xx = np.where(buf == np.amax(buf))
+                ## dy, dx = np.average(yy), np.average(xx)
+                
+                ## centroid of masked array
+                ## buf = np.ma.masked_array(img, mask_ellipse(r, ra, rb, angle))
+                ## dx, dy = centroid(buf)
+                ## x, y = frame.xyfrompixel(x-r+dx, y-r+dy)
+                ## xy.append((x, y))
         
-        if circles:
-            N = self.maxcount
-            if len(circles) > N:
-                self.message(f"Found too many circles. Limiting to {N} markers.")
-                circles = circles[:N]
-            
-            xy = []
-            for (cx, cy), (ra, rb), angle in circles:
-                if ra and rb/ra < self.maxratio:
-                    ## 不特定多数の円を描画する
-                    art = patches.Circle((0, 0), 0, color='r', ls='dotted', lw=1, fill=0)
-                    art.center = frame.xyfrompixel(cx, cy)
-                    art.height = ra * frame.unit
-                    art.width = rb * frame.unit
-                    art.angle = 90-angle
-                    self.attach_artists(frame.axes, art)
-                    
-                    ## 検出した楕円の中心をそのまま記録する
-                    ## 強度の偏りが出るのを防ぐため，十分ぼかし幅をとること
-                    xy.append(art.center)
-                    
-                    ## r = int(np.hypot(ra, rb) / 2) # max radius enclosing the area rectangle
-                    ## x, y = int(cx), int(cy)
-                    ## buf = frame.buffer[y-r:y+r+1, x-r:x+r+1]
-                    ## img = frame.image[y-r:y+r+1, x-r:x+r+1]
-                    
-                    ## local maximum that is found first in the region. ▲偏りが出るので NG
-                    ## dy, dx = np.unravel_index(buf.argmax(), buf.shape)
-                    
-                    ## local maximum :averaged (強度の偏りを考慮する) ▲偏りが出るので NG
-                    ## yy, xx = np.where(buf == np.amax(buf))
-                    ## dy, dx = np.average(yy), np.average(xx)
-                    
-                    ## centroid of masked array
-                    ## buf = np.ma.masked_array(img, mask_ellipse(r, ra, rb, angle))
-                    ## dx, dy = centroid(buf)
-                    ## x, y = frame.xyfrompixel(x-r+dx, y-r+dy)
-                    ## xy.append((x, y))
-            
-            frame.markers = np.array(xy).T # scatter markers if any xy
+        frame.markers = np.array(xy).T # scatter markers if any xy
 
 
 def centroid(src):

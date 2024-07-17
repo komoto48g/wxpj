@@ -107,10 +107,9 @@ class MainFrame(Frame):
         self.load_plug(line_profile)
         self.load_plug(fft_view)
         
-        from plugins import lgbt, lcrf, lccf, lccf2
+        from plugins import lgbt, lcrf, lccf2
         self.load_plug(lgbt)
         self.load_plug(lcrf)
-        self.load_plug(lccf)
         self.load_plug(lccf2)
         
         from plugins import ld_grid, ld_ring
