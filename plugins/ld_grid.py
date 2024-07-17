@@ -106,7 +106,8 @@ class Plugin(Layer):
         )
         
         self.btn = wx.Button(self, label="+Execute", size=(80,22))
-        self.btn.Bind(wx.EVT_BUTTON, lambda v: self.thread.Start(self.run))
+        self.btn.Bind(wx.EVT_BUTTON,
+                      lambda v: self.thread.Start(self.run, skip=wx.GetKeyState(wx.WXK_SHIFT)))
         self.btn.SetToolTip(self.run.__doc__.strip())
         
         self.order = LParam("order", (0,6,1), 3)
@@ -171,14 +172,11 @@ class Plugin(Layer):
         
         Args:
             frame   : target frame
-                      If not specified, the last selected frame is given.
+                      If not specified, the selected frame will be used.
             skip    : Skip `find_init_grid` order(0) process.
-                      True is given if the shift key is being pressed.
         """
         if not frame:
             frame = self.selected_view.frame
-        
-        skip = skip or wx.GetKeyState(wx.WXK_SHIFT)
         
         x, y = frame.markers
         if not x.size:

@@ -70,43 +70,33 @@ class Plugin(Layer):
                 self.rmin,
                 self.rmax
             ),
-            title="radii", cw=0, lw=40, tw=40
+            title="rectangles", cw=0, lw=40, tw=40
         )
         self.layout((btn2,), row=2)
     
     maxcount = 256 # 選択する点の数を制限する
     maxratio = 5.0 # ひずみの大きい楕円は除外する
     
-    def run(self, frame=None, otsu=None):
-        """Set markers at the peak position in ellipses.
-        
-        Search ellipses patterns.
-        Find the average position of the peaks within the masked areas.
-        [S-Lbutton] Estimate the threshold using Otsu's algorithm.
+    def run(self, frame=None, otsu=True):
+        """Set markers at the center of ellipses.
         
         Args:
             frame   : target frame
-                      If not specified, the last selected frame is given.
+                      If not specified, the selected frame will be used.
             otsu    : Use Otsu's algorithm.
-                      True is given if the shift key is being pressed.
         """
         if not frame:
             frame = self.selected_view.frame
         del self.Arts
         
-        if otsu is None:
-            otsu = wx.GetKeyState(wx.WXK_SHIFT)
-        
-        src = self.lgbt.calc(frame, otsu) # image <uint8>
-        h, w = src.shape
+        src = self.lgbt.calc(frame, otsu)
         
         circles = find_ellipses(src, self.rmin.value, self.rmax.value)
         
-        self.message("found {} circles".format(len(circles)))
         if circles:
             N = self.maxcount
             if len(circles) > N:
-                self.message("\b is too many, chopped (< {})".format(N))
+                self.message(f"Found too many circles. Limiting to {N} markers.")
                 circles = circles[:N]
             
             xy = []

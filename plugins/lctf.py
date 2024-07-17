@@ -78,7 +78,7 @@ def find_ring_center(src, lo, hi, N=256, tol=0.01):
     ## remove leaps(2): tol より小さいとびを許容する (画素サイズに比例)
     tolr = max(5, tol * w/2)
     xx, yy = [0.], [0.]
-    for x,y in zip(X[1:], Y[1:]):
+    for x, y in zip(X[1:], Y[1:]):
         if abs(y - yy[-1]) < tolr:
             xx.append(x)
             yy.append(y)
@@ -176,14 +176,14 @@ class Plugin(Layer):
     
     @property
     def selected_roi(self):
-        return edi.fftcrop(self.selected_frame.roi, maxsize=2048)
+        return edi.fftcrop(self.selected_frame.roi)
     
     def calc_ring(self, show=True):
         """Calc log-polar of ring pattern.
         
         Referenced rmin/rmax is the ratio to the radius.
         """
-        frame = self.selected_frame
+        ## frame = self.selected_frame
         src = self.selected_roi
         h, w = src.shape
         

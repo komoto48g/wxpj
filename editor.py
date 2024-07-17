@@ -162,10 +162,10 @@ def enhanced_fft(src, ratio=1):
     return dst
 
 
-def fftcrop(src, maxsize=2048, center=None):
-    """Crop src image in 2**N square ROI centered at (x, y)."""
+def fftcrop(src, center=None):
+    """Crop src image in 2^k square ROI centered at (x, y)."""
     h, w = src.shape
-    m = min(h, w, maxsize)
+    m = min(h, w)
     n = 1 if m < 2 else 2 ** int(np.log2(m) - 1) # +-m/2
     x, y = center or (w//2, h//2)
     return src[y-n:y+n, x-n:x+n]
@@ -210,7 +210,11 @@ def match_pattern(src, temp, method=cv2.TM_CCOEFF_NORMED):
 
 
 def eval_match_shift(src, tmp, d=4):
-    """Evaluate shift [pix] of src from tmp (template) using cv2.matchTemplate."""
+    """Evaluate shift [pix] of src from tmp (template) using cv2.matchTemplate.
+    
+    Args:
+        d : Cut the template pattern divided by d from tmp.
+    """
     h, w = tmp.shape
     xo, yo = w//2, h//2  # center position
     wt, ht = w//d, h//d  # template pattern (tmp divided by d)
@@ -223,10 +227,16 @@ def eval_match_shift(src, tmp, d=4):
     return dx, dy
 
 
-def eval_corr_shift(src, tmp, subpix=True):
-    """Evaluate shift [pix] of src from tmp (template) using Corr."""
-    src = fftcrop(src)
-    tmp = fftcrop(tmp)
+def eval_corr_shift(src, tmp, crop=False, subpix=False):
+    """Evaluate shift [pix] of src from tmp (template) using Corr.
+    
+    Args:
+       crop   : Limit image size 2^k using fftcrop.
+       subpix : Return the shift value in sub-pixel.
+    """
+    if crop:
+        src = fftcrop(src)
+        tmp = fftcrop(tmp)
     dst = Corr(src, tmp)
     if subpix:
         x, y, z, _ok = find_local_extremum2d(dst)

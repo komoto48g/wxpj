@@ -23,7 +23,7 @@ class Model(object):
         self.params = result[0]
     
     def __call__(self, x):
-        a,b,c,d,e = self.params
+        a, b, c, d, e = self.params
         return a + b * np.cos(x-c) + d * np.cos(2*x-e)
     
     def residual(self, params, x, y):
@@ -42,12 +42,10 @@ class Model(object):
             2D-array of modulated image
         """
         h, w = buf.shape
-        shift = [self(x) for x in np.arange(0,h)/h * 2*pi][::-1] # shift vector
-        ## axis = np.arange(0., w)
+        rsv = [self(x) for x in np.arange(0,h)/h * 2*pi][::-1] # radial-shift vectors
         data = np.resize(0., (h, w))
-        for j,(x,v) in enumerate(zip(buf, shift)):
+        for j, (x, v) in enumerate(zip(buf, rsv)):
             data[j] = np.roll(x, -int(v))
-            ## data[j] = np.interp(axis+v, axis, x)
         return data
     
     def mod1d(self, buf):
@@ -116,7 +114,7 @@ def find_ring_center(src, center, lo, hi, N=256, tol=0.01):
     if 1:
         tolr = max(5, tol * w/2) # default < 0.5% までなら許しちゃる
         xx, yy = [X[0]], [Y[0]]
-        for x,y in zip(X[1:], Y[1:]):
+        for x, y in zip(X[1:], Y[1:]):
             if abs(y - yy[-1]) < tolr:
                 xx.append(x)
                 yy.append(y)
@@ -167,7 +165,7 @@ class Plugin(Layer):
         self.rmax = LParam("rmax", (0, 2, 0.01), 1.0, handler=self.set_radii)
         
         btn = wx.Button(self, label="+Execute", size=(64,22))
-        btn.Bind(wx.EVT_BUTTON, lambda v: self.run())
+        btn.Bind(wx.EVT_BUTTON, lambda v: self.run(shift=wx.GetKeyState(wx.WXK_SHIFT)))
         btn.SetToolTip(self.run.__doc__.strip())
         
         self.chkplt = wx.CheckBox(self, label="rdist")
@@ -186,7 +184,7 @@ class Plugin(Layer):
     
     target_view = None
     
-    def run(self, frame=None, shift=None, maxloop=5):
+    def run(self, frame=None, shift=False, maxloop=5):
         """Set markers on the diffraction ring.
         
         Search center position and fit the model parameters.
@@ -196,9 +194,8 @@ class Plugin(Layer):
         
         Args:
             frame   : target frame
-                      If not specified, the last selected frame is given.
+                      If not specified, the selected frame will be used.
             shift   : The selector is used as the initial center position.
-                      True is given if the shift key is being pressed.
             maxloop : maximum number of loops to search for the center position.
         """
         if not frame:
@@ -207,11 +204,9 @@ class Plugin(Layer):
             return
         self.target_view = frame.parent
         
-        if shift is None:
-            shift = wx.GetKeyState(wx.WXK_SHIFT)
-        
         src = frame.buffer
         h, w = src.shape
+        
         if shift and frame.selector.size > 0:
             nx, ny = frame.xytopixel(*frame.selector)
             c = int(nx[0]), int(ny[0])
