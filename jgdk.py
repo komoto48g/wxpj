@@ -12,3 +12,6 @@ class Layer(Layer):
         ## Accessing editor functions.
         import editor
         self.edi = editor
+
+        ## Cross references.
+        editor.output = self.output

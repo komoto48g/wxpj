@@ -3,7 +3,7 @@ import wx
 import cv2
 import numpy as np
 
-from jgdk import Layer, Thread, Param, LParam, Button, Choice
+from jgdk import Layer, Thread, Param, LParam, Choice
 import editor as edi
 
 

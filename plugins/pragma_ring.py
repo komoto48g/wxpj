@@ -1,6 +1,4 @@
 #! python3
-import wx
-
 from jgdk import Layer, Button
 
 

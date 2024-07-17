@@ -263,8 +263,8 @@ def find_ellipses(src, ksize=1, otsu=True, sortby='size'):
     Returns:
         RotatedRect: (cx,cy), (ra,rb), angle
         
-        (cx,cy) : center of the rectangle [pix]
-        (ra,rb) : ra:width < rb:height of the rectangle [pix]
+        cx, cy  : center of the rectangle [pix]
+        ra, rb  : ra:width < rb:height of the rectangle [pix]
         angle   : rotation angle in clockwise (from 00:00 o'clock)
     
     Note:
