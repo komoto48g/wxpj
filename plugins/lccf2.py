@@ -9,9 +9,9 @@ from jgdk import Layer, LParam
 import editor as edi
 
 
-def find_ellipses(src, rmin, rmax, tol=0.75):
-    ## Finds contours in binary image
-    ## ▲ src 第一引数は上書きされるので後で使うときは注意する
+def find_ellipses(src, rmin, rmax):
+    ## Find contours in binary image
+    ## ▲ src 第一引数は上書きされるので後で参照するときは注意する
     argv = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     try:
         contours, hierarchy = argv
@@ -19,16 +19,20 @@ def find_ellipses(src, rmin, rmax, tol=0.75):
         _c, contours, hierarchy = argv # opencv <= 3.4.5
     
     ## Detect enclosing rectangles
+    ## Note:
+    ##     At least 5 points are needed to fit an ellipse.
+    ##     NaN should be eliminated.
     ellipses = [cv2.fitEllipse(v) for v in contours if len(v) > 4]
+    ellipses = filter(lambda v: not np.any(np.isnan(v[0:2])), ellipses) # nan を排除する
     h, w = src.shape
     
-    def _inside(v):
+    def _inside(v, tol=0.75/2): # 画像の端にある円を除く
         c, r, a = v
-        d = tol * r[1] # 画像の端にある円を除く
+        d = tol * r[1]
         return (rmin < r[0] and r[1] < rmax and d < c[0] < w-d and d < c[1] < h-d)
     
     return sorted(filter(_inside, ellipses),
-                  key=lambda v: np.hypot(v[0][0]-w/2, v[0][1]-h/2))
+                  key=lambda v: np.hypot(v[0][0]-w/2, v[0][1]-h/2)) # 位置で昇順ソート
 
 
 class Plugin(Layer):

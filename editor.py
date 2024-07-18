@@ -254,11 +254,11 @@ def eval_corr_shift(src, tmp, crop=False, subpix=False):
 
 def find_ellipses(src, ksize=1, otsu=True, sortby='size'):
     """Find the rotated rectangle in which the ellipse is inscribed.
-    Otsu's method is used for thresholding src image.
     
     Args:
         ksize   : size of blur window
-        sortby  : a keyword indicating how to sort ('pos' or 'size')
+        otsu    : Otsu's method is used for thresholding src image.
+        sortby  : how to sort ('pos' or 'size')
     
     Returns:
         RotatedRect: (cx,cy), (ra,rb), angle
@@ -268,13 +268,12 @@ def find_ellipses(src, ksize=1, otsu=True, sortby='size'):
         angle   : rotation angle in clockwise (from 00:00 o'clock)
     
     Note:
-        There should be at least 5 points to fit the ellipse.
         To detect small spots, increase the amount of blur.
-    
         To filter ellipses with rectangle sizes from rmin to rmax:
         >>> ls = [(c,r,a) for c,r,a in ellipses if rmin < r[0] and r[1] < rmax]
     """
-    src = imconv(src) # src image is overwritten
+    ## GaussianBlur and binarize using threshold.
+    src = imconv(src)
     h, w = src.shape
     if ksize > 1:
         src = cv2.GaussianBlur(src, (ksize, ksize), 0)
@@ -285,8 +284,8 @@ def find_ellipses(src, ksize=1, otsu=True, sortby='size'):
     else:
         t, buf = cv2.threshold(src, 0, 255, cv2.THRESH_OTSU)
     
-    ## Finds contours in binary image
-    ## ▲ buf 第一引数は上書きされるので後で使うときは注意する
+    ## Find contours in binary image
+    ## ▲ buf 第一引数は上書きされるので後で参照するときは注意する
     argv = cv2.findContours(buf, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     try:
         contours, hierarchy = argv
@@ -294,9 +293,11 @@ def find_ellipses(src, ksize=1, otsu=True, sortby='size'):
         _c, contours, hierarchy = argv # opencv <= 3.4.5
     
     ## Detect enclosing rectangles.
+    ## Note:
+    ##     At least 5 points are needed to fit an ellipse.
+    ##     NaN should be eliminated.
     ellipses = [cv2.fitEllipse(v) for v in contours if len(v) > 4]
-    
-    ellipses = filter(lambda v: not np.any(np.isnan(v[0:2])), ellipses) # nan を排除する
+    ellipses = filter(lambda v: not np.any(np.isnan(v[0:2])), ellipses)
     
     if sortby == 'size':
         return sorted(ellipses,
