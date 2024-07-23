@@ -77,17 +77,23 @@ class Plugin(Layer):
         if not frame:
             frame = self.selected_view.frame
         del self.Arts
+        del frame.markers
         
         src = self.lgbt.calc(frame, otsu)
         
         circles = find_ellipses(src, self.rmin.value, self.rmax.value)
+        
+        n = len(circles)
+        self.message(f"Found {n} circles.")
+        if not circles:
+            return
+        N = self.maxcount
+        if n > N:
+            self.message(f"Too many circles found. Limiting number to {N}.")
+            circles = circles[:N]
+        
         xy = []
-        for k, v in enumerate(circles):
-            (cx, cy), (ra, rb), angle = v
-            if k == self.maxcount:
-                self.message(f"Found too many circles. Limiting to {k} markers.")
-                break
-            
+        for (cx, cy), (ra, rb), angle in circles:
             if ra and rb/ra < self.maxratio:
                 ## 不特定多数の円を描画する
                 art = patches.Circle((0, 0), 0, color='r', ls='dotted', lw=1, fill=0)
@@ -118,8 +124,8 @@ class Plugin(Layer):
                 ## dx, dy = centroid(buf)
                 ## x, y = frame.xyfrompixel(x-r+dx, y-r+dy)
                 ## xy.append((x, y))
-        
-        frame.markers = np.array(xy).T # scatter markers if any xy
+        if xy:
+            frame.markers = np.array(xy).T # scatter markers if any xy
 
 
 def centroid(src):
