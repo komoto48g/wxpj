@@ -211,19 +211,15 @@ class Plugin(Layer):
         return self.output.load(dst, COR_FRAME_NAME, localunit=frame.unit)
     
     def test_fft(self, frame, crossline=0):
-        src = frame.roi
-        h, w = src.shape
-        
-        n = pow(2, int(np.log2(min(h, w)))-1) # resize to 2n = 2**N squared ROI
-        i, j = h//2, w//2
-        src = src[i-n:i+n,j-n:j+n]
+        src = edi.fftcrop(frame.roi)
         
         self.message("Processing enhanced FFT...")
         dst = edi.enhanced_fft(src, 0.75)
         
-        ## 十紋形切ちょんぱマスク (option)
+        n = src.shape[0] // 2
         d = max(int(n * 0.002), 2)
         
+        ## 十紋形切ちょんぱマスク (option)
         if crossline:
             dst[:,n-d:n+d+1] = 0
             dst[n-d:n+d+1,:] = 0

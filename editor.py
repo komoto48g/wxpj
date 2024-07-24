@@ -163,10 +163,10 @@ def enhanced_fft(src, ratio=1):
 
 
 def fftcrop(src, center=None):
-    """Crop src image in 2^k square ROI centered at (x, y)."""
+    """Crop src image in +- 2**nn square ROI centered at (x, y)."""
     h, w = src.shape
     m = min(h, w)
-    n = 1 if m < 2 else 2 ** int(np.log2(m) - 1) # +-m/2
+    n = 1 if m < 2 else 2**int(np.log2(m) - 1) # 2**nn
     x, y = center or (w//2, h//2)
     return src[y-n:y+n, x-n:x+n]
 
@@ -257,7 +257,10 @@ def find_ellipses(src, ksize=1, otsu=True, sortby='size'):
     
     Args:
         ksize   : size of blur window
+                  If a False value is specified, no blurring will be performed.
         otsu    : Otsu's method is used for thresholding src image.
+                  True (r = 1) specifies to use Otsu's algorithm.
+                  A float number (r < 1) specifies threshold percentile.
         sortby  : how to sort ('pos' or 'size')
     
     Returns:
@@ -275,7 +278,7 @@ def find_ellipses(src, ksize=1, otsu=True, sortby='size'):
     ## GaussianBlur and binarize using threshold.
     src = imconv(src)
     h, w = src.shape
-    if ksize > 1:
+    if ksize and ksize > 1:
         src = cv2.GaussianBlur(src, (ksize, ksize), 0)
     
     if 0 <= otsu < 1:
