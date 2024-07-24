@@ -199,14 +199,13 @@ class Plugin(Layer):
         
         n = h//8            # 特徴点を選んで ROI をとりたいところだが，
         i, j = h//2, w//2   # ld_cgrid を使うので，画像の中心であることが必須．
-        temp = src[i-n:i+n, j-n:j+n]
+        tmp = src[i-n:i+n, j-n:j+n]
         
         self.message("Processing pattern matching...")
-        dst, (x, y) = edi.match_pattern(src, temp)
+        dst, (x, y) = edi.match_pattern(src, tmp)
         
         ## self.message("Processing corr...")
-        ## dst = edi.Corr(src, temp)
-        ## y, x = np.unravel_index(dst.argmax(), dst.shape)
+        ## dst, (x, y) = edi.eval_corr_shift(src, tmp)
         
         return self.output.load(dst, COR_FRAME_NAME, localunit=frame.unit)
     

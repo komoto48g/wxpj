@@ -190,7 +190,7 @@ def Corr(src, tmp, mode='same'):
         return signal.fftconvolve(src, tmp[::-1,::-1], mode)
 
 
-def match_pattern(src, temp, method=cv2.TM_CCOEFF_NORMED):
+def match_pattern(src, tmp, method=cv2.TM_CCOEFF_NORMED):
     """Match_pattern of src image to template image.
     
     The depth must be (CV_8U or CV_32F)
@@ -201,30 +201,22 @@ def match_pattern(src, temp, method=cv2.TM_CCOEFF_NORMED):
         'TM_SQDIFF', 'TM_SQDIFF_NORMED',
     """
     src = imconv(src)
-    temp = imconv(temp)
-    res = cv2.matchTemplate(src, temp, method)
+    tmp = imconv(tmp)
+    res = cv2.matchTemplate(src, tmp, method)
     minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(res)
     if method in (cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED):
         return res, minLoc
     return res, maxLoc
 
 
-def eval_match_shift(src, tmp, d=4):
+def eval_match_shift(src, tmp):
     """Evaluate shift [pix] of src from tmp (template) using cv2.matchTemplate.
-    
-    Args:
-        d : Cut the template pattern divided by d from tmp.
     """
-    h, w = tmp.shape
-    xo, yo = w//2, h//2  # center position
-    wt, ht = w//d, h//d  # template pattern (tmp divided by d)
-    xt = xo - wt//2
-    yt = yo - ht//2
-    dst, (x, y) = match_pattern(src, tmp[yt:yt+ht, xt:xt+wt])
+    dst, (x, y) = match_pattern(src, tmp)
     h, w = dst.shape
     dx = x - w//2
     dy = y - h//2
-    return dx, dy
+    return dst, (dx, dy)
 
 
 def eval_corr_shift(src, tmp, crop=False, subpix=False):
@@ -245,7 +237,7 @@ def eval_corr_shift(src, tmp, crop=False, subpix=False):
     h, w = dst.shape
     dx = x - w//2
     dy = y - h//2
-    return dx, dy
+    return dst, (dx, dy)
 
 
 ## --------------------------------
