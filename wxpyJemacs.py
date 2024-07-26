@@ -1,14 +1,7 @@
 #! python3
 """The frontend of Graph and Plug manager.
-
-Development phase::
-
-    Phase 1. Legacy (2015--2017) TEM control.
-    Phase 2. Phoenix (2018--2020) Integrated system for image analysis.
-    Phase 3. Analysis center phoenix (2020--2021).
-    Phase 4. Automation center phoenix (2022--2023).
 """
-__version__ = "0.56"
+__version__ = "0.64"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 __license__ = """\
@@ -24,16 +17,10 @@ import wx
 import wx.adv
 import numpy as np
 
-from mwx.graphman import Frame
+from jgdk import Frame, add_paths
 
 HOME = os.path.dirname(__file__)
 eggs = r"nest/*-py{}.{}.egg".format(*sys.version_info)
-
-def add_paths(*paths):
-    for f in paths:
-        f = os.path.normpath(f)
-        if f not in sys.path:
-            sys.path.insert(0, f)
 
 add_paths(
     *glob.glob(os.path.join(HOME, eggs)), # from eggs import 3rd-packages
