@@ -2,6 +2,7 @@
 """Jeol Camera module.
 """
 from datetime import datetime
+import wx
 
 from jgdk import Layer, Param, LParam, Button, Choice
 from pyJeol import Camera, DummyCamera
@@ -17,6 +18,7 @@ typenames_info = { # maxcnt,
     "TVCAM_U"     : (65535, ), # Flash camera
     "TVCAM_SCR_L" : ( 4095, ), # Large screen
     "TVCAM_SCR_F" : ( 4095, ), # Focus screen
+    "bottomCCD"   : (65535, ), # bottom camera 2100+
 }
 
 
@@ -39,6 +41,9 @@ class Plugin(Layer):
         self.unit_selector = LParam("mm/pix", (0, 1, 1e-4), self.graph.unit,
             handler=self.set_pixsize)
         
+        self.chk = wx.CheckBox(self, label="...")
+        self.chk.SetToolTip("Use snapshot if cache is not supported.")
+        
         self.layout((
                 self.binning_selector,
                 self.exposure_selector,
@@ -48,6 +53,7 @@ class Plugin(Layer):
         )
         self.layout((
                 Button(self, "Capture", self.capture_ex, icon='camera'),
+                self.chk,
             ),
             row=2,
         )
@@ -124,7 +130,10 @@ class Plugin(Layer):
         if not self.camera:
             if not self.connect():
                 return None
-        buf = self.camera.cache()
+        if not self.chk.Value:
+            buf = self.camera.cache()
+        else:
+            buf = self.camera.snapshot()
         if view and buf is not None:
             attributes = {
                 'localunit' : self.camera.pixel_unit,
