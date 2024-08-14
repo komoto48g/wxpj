@@ -26,7 +26,7 @@ class Plugin(Layer):
         self.size_param = Param('size', (128,256,512,1024), 512)
         
         self.layout((
-                self.camera_selector, None, 6,
+                self.camera_selector, None, (4,-1),
                 self.detect_chk,
             ),
             row=2,
@@ -39,12 +39,9 @@ class Plugin(Layer):
             type='vspin', cw=-1, lw=36, tw=44,
         )
     
-    def Destroy(self):
-        try:
-            if self.viewer.active:
-                self.viewer.Stop()
-        finally:
-            return Layer.Destroy(self)
+    def update_brightness(self, argv):
+        el, p, q = argv
+        self.message("{}/pix (S/N {:g})".format(int(p), p/q))
     
     def run(self):
         """Live view using the specified camera manager."""
@@ -57,6 +54,7 @@ class Plugin(Layer):
         try:
             ## cv2.startWindowThread()
             cv2.namedWindow(title)
+            cv2.setMouseCallback(title, self.on_mouse_button)
             while self.viewer.active:
                 buf = cameraman.capture()
                 if buf is not _prev:
@@ -97,12 +95,48 @@ class Plugin(Layer):
         ## TEST for ellipses detection
         if self.detect_chk.Value:
             ellipses = edi.find_ellipses(src, ksize=3, sortby='size')
-            try:
-                cc, rc, angle = ellipses[0]
+            if ellipses:
+                el = ellipses[0]
+                R, n, s = edi.calc_ellipse(src, el)
+                p = R * n/s
+                q = R * (1-n)/(1-s)
+                self.update_brightness((el, p, q))
+                cc, rc, angle = el
                 cc = np.int32(np.array(cc) * ratio)
                 rc = np.int32(np.array(rc) * ratio / 2)
                 dst = cv2.cvtColor(dst, cv2.COLOR_GRAY2BGR)
                 cv2.ellipse(dst, cc, rc, angle, 0, 360, (192,192,0), 2) # cyan:"#00c0c0"
-            except Exception:
-                pass
         return dst
+    
+    def on_mouse_button(self, event, x, y, flags, param):
+        """Cv2 mouse callback method.
+        Triggers [det/mod-key] (x, y) notify events.
+        """
+        if event == 0: key = 'motion'
+        elif event in (1,4,7): key = 'Lbutton'
+        elif event in (2,5,8): key = 'Rbutton'
+        elif event in (3,6,9): key = 'Mbutton'
+        ## elif event == 10:
+        ##     key = 'wheel' + ('up' if flags > 0 else 'down')
+        ## elif event == 11:
+        ##     key = 'wheel' + ('right' if flags > 0 else 'left')
+        else:
+            return
+        
+        if event > 0:
+            if event < 4: key += ' pressed'
+            elif event < 7: key += ' released'
+            elif event < 10: key += ' dblclick'
+        
+        mod = ''
+        if flags & cv2.EVENT_FLAG_CTRLKEY:  mod += "C-"
+        if flags & cv2.EVENT_FLAG_ALTKEY:   mod += "M-"
+        if flags & cv2.EVENT_FLAG_SHIFTKEY: mod += "S-"
+        
+        try:
+            ## title = self.__module__
+            ## x, y, w, h = print(cv2.getWindowImageRect(title))
+            r = self._ratio
+            self.parent.notify.handler(f"det/{mod}{key}", x/r, y/r)
+        except Exception:
+            pass
