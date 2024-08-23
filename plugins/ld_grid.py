@@ -13,7 +13,6 @@ def calc_dist(u, D, d):
 
 def calc_aspect(u, r, t):
     t *= pi/180
-    ## return ((1+r) * u + (1-r) * np.conj(u) * exp(2j*t)) / 2
     return u + (1-r) * np.conj(u) * exp(2j*t)
 
 
