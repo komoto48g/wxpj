@@ -86,9 +86,7 @@ class LensSystem(Systembase):
     flc2set = Command("E263", "!49H", "!49H", doc="FLCデータ設定")
     
     def __init__(self):
-        self.__Lenses = [LensParam(name, (0, 0xffff), fmt=hex,
-                                   handler=self.write,
-                                   updater=self.setflag) for name in self.TAGS[:24]]
+        self.__Lenses = [LensParam(name, (0, 0xffff), fmt=hex) for name in self.TAGS[:24]]
         self["FLC"].range = (0, 0xfff)
         self["FLF"].range = (0, 0xfff)
         self["FLCOMP1"].range = (0, 0xfff)
@@ -159,6 +157,9 @@ class FocusSystem(LensSystem):
     
     def Write(self, name, value):
         self.ldset(self.TAGS.index(name), int(value))
+    
+    def setflag(self, lens):
+        pass
 
 
 class DeflSystem(Systembase):
@@ -205,8 +206,7 @@ class DeflSystem(Systembase):
     _algn1set = Command("E321", "!HH", "!H", doc="偏向系データ個別設定")
     
     def __init__(self):
-        self.__Lenses = [LensParam(name, (0, 0xffff), fmt=hex,
-                                   handler=self.write) for name in self.TAGS[:62]]
+        self.__Lenses = [LensParam(name, (0, 0xffff), fmt=hex) for name in self.TAGS[:62]]
     
     def read(self, stdbase=False):
         data = self.algn2get() # --> get (62) deflectors record
