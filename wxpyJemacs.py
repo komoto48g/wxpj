@@ -81,31 +81,6 @@ class MainFrame(Frame):
         else:
             print(f"Executing {si.__file__!r}")
             si.init_mainframe(self)
-        
-        ## Accessing editor functions.
-        import editor
-        self.edi = editor
-        
-        ## Startup module is required before any other plugins.
-        self.su = self.require('startup')
-        
-        from mwx.plugins import frame_listview, line_profile, fft_view
-        self.load_plug(frame_listview)
-        self.load_plug(line_profile)
-        self.load_plug(fft_view)
-        
-        from plugins import lgbt, lcrf, lccf2
-        self.load_plug(lgbt)
-        self.load_plug(lcrf)
-        self.load_plug(lccf2)
-        
-        from plugins import ld_grid, ld_ring
-        self.load_plug(ld_grid)
-        self.load_plug(ld_ring)
-        
-        from plugins import ld_cgrid, ld_cring
-        self.load_plug(ld_cgrid)
-        self.load_plug(ld_cring)
     
     def Destroy(self):
         self.nfront.Destroy()
