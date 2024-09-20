@@ -1,0 +1,4 @@
+[submodule "pyDM3reader"]
+	path = pyDM3reader
+	url = https://github.com/komoto48g/pyDM3reader.git
+	branch = monkey-patch
