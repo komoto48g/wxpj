@@ -7,15 +7,6 @@ from mwx.controls import Button, ToggleButton, TextCtrl, Choice, Gauge, Indicato
 import editor as edi
 
 
-def add_paths(*paths):
-    import sys
-    import os
-    for f in paths:
-        f = os.path.normpath(f)
-        if f not in sys.path:
-            sys.path.insert(0, f)
-
-
 class Layer(Layer):
     """Layer with TEM notify interface.
     """

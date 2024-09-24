@@ -16,6 +16,8 @@ exclude_files
 test*/
 docfiles*/
 !requirements.txt
+pyGatan
+pyRigaku
 
 # Byte-compiled files
 __pycache__/

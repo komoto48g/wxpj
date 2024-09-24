@@ -1,7 +1,7 @@
 #! python3
 """The frontend of Graph and Plug manager.
 """
-__version__ = "0.65"
+__version__ = "0.66"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 __license__ = """\
@@ -17,15 +17,7 @@ import wx
 import wx.adv
 import numpy as np
 
-from jgdk import Frame, add_paths
-
-HOME = os.path.dirname(__file__)
-eggs = r"nest/*-py{}.{}.egg".format(*sys.version_info)
-
-add_paths(
-    *glob.glob(os.path.join(HOME, eggs)), # from eggs import 3rd-packages
-    ## os.path.join(HOME, r"../gdk-packages"), # for debugging 3rd-packages
-)
+from jgdk import Frame
 
 
 class MainFrame(Frame):
@@ -68,12 +60,16 @@ class MainFrame(Frame):
         ]
         self.menubar.reset()
         
+        HOME = os.path.dirname(__file__)
         self.SetIcon(wx.Icon(os.path.join(HOME, "Jun.ico"), wx.BITMAP_TYPE_ICO))
         
-        add_paths(
+        paths = [
             HOME,   # Add ~/ to import si:home
             '',     # Add ./ to import si:local first
-        )
+        ]
+        for f in paths:
+            if f not in sys.path:
+                sys.path.insert(0, f)
         try:
             si = __import__('siteinit')
         except ImportError:
