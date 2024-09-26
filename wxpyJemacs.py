@@ -1,7 +1,7 @@
 #! python3
 """The frontend of Graph and Plug manager.
 """
-__version__ = "0.66"
+__version__ = "0.67"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 __license__ = """\
@@ -18,6 +18,7 @@ import wx.adv
 import numpy as np
 
 from jgdk import Frame
+from jgdk import stylus
 
 
 class MainFrame(Frame):
@@ -77,6 +78,7 @@ class MainFrame(Frame):
         else:
             print(f"Executing {si.__file__!r}")
             si.init_mainframe(self)
+        stylus(self.shellframe)
     
     def Destroy(self):
         self.nfront.Destroy()
@@ -157,10 +159,5 @@ if __name__ == "__main__":
             frm.load_session(session, flush=False)
         except FileNotFoundError:
             print(f"- No such file {session!r}")
-    try:
-        from wxpyNautilus import debut
-        debut.main(frm.shellframe)
-    except ImportError:
-        pass
     frm.Show()
     app.MainLoop()
