@@ -98,7 +98,9 @@ class MainFrame(Frame):
     def read_buffer(path):
         """Read a buffer from path file (override) +.dm3 extension.
         """
-        if path[-4:] in ('.dm3', '.dm4'):
+        _, ext = os.path.splitext(path)
+        
+        if ext in ('.dm3', '.dm4'):
             from pyDM3reader import DM3
             
             dmf = DM3(path)
@@ -106,12 +108,12 @@ class MainFrame(Frame):
             info = dmf.info
             return buf, {'header': info}
         
-        if path[-4:] == '.img':
+        if ext == '.img':
             with open(path, 'rb') as i:
                 head = i.read(4096).decode()
                 head = head[1:head.find('}')] # get header in '{...}'
-                head = re.sub(r"(\w+)=\s(.*?);\n", r"\1='\2',", head)
-                info = eval("dict({})".format(head))
+                head = re.sub(r"(\w+)=\s(.*?);\n", r"\1=r'\2',", head)
+                info = eval(f"dict({head})")
                 w = int(info['SIZE1'])
                 h = int(info['SIZE2'])
                 type = info['Data_type']
@@ -120,7 +122,7 @@ class MainFrame(Frame):
                 elif type == 'unsigned long int':
                     dtype = np.uint32
                 else:
-                    raise Exception("unexpected data type {!r}".format(type))
+                    raise Exception(f"unexpected data type {type!r}")
                 buf = np.frombuffer(i.read(), dtype)
                 buf.resize(h, w)
             return buf, {'header': info}
@@ -131,10 +133,9 @@ class MainFrame(Frame):
     def write_buffer(path, buf):
         """Write a buffer to path file (override) +.dm3 extension.
         """
-        ext = path[-4:]
+        _, ext = os.path.splitext(path)
         if ext in ('.dm3', '.dm4', '.img'):
-            raise NotImplementedError(
-                "Saving as {} type is not supported".format(ext))
+            raise NotImplementedError(f"Saving as {ext} type is not supported")
         
         return Frame.write_buffer(path, buf)
 
