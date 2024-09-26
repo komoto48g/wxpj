@@ -19,8 +19,8 @@ class Plugin(Layer):
         self.thresh = LParam("thresh", (0,255,1), 128)
         
         btn = wx.Button(self, label="+Bin", size=(40,22))
-        btn.Bind(wx.EVT_BUTTON, lambda v: self.calc(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
-        btn.SetToolTip(self.calc.__doc__.strip())
+        btn.Bind(wx.EVT_BUTTON, lambda v: self.execute(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
+        btn.SetToolTip(self.execute.__doc__.strip())
         
         self.layout(
             self.params, title="blur-threshold",
@@ -30,7 +30,7 @@ class Plugin(Layer):
     
     params = property(lambda self: (self.ksize, self.sigma, self.thresh))
     
-    def calc(self, frame=None, otsu=True):
+    def execute(self, frame=None, otsu=True):
         """GaussianBlur and binarize using threshold.
         
         [S-Lbutton] Estimate the threshold using Otsu's algorithm.

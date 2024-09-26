@@ -48,8 +48,8 @@ class Plugin(Layer):
         self.rmax = LParam("rmax", (0,1000,1), 200)
         
         btn2 = wx.Button(self, label="+Execute", size=(64,22))
-        btn2.Bind(wx.EVT_BUTTON, lambda v: self.run())
-        btn2.SetToolTip(self.run.__doc__.strip())
+        btn2.Bind(wx.EVT_BUTTON, lambda v: self.execute())
+        btn2.SetToolTip(self.execute.__doc__.strip())
         
         self.layout(
             self.lgbt.params,
@@ -66,7 +66,7 @@ class Plugin(Layer):
     maxcount = 256 # 選択する点の数を制限する
     maxratio = 5.0 # ひずみの大きい楕円は除外する
     
-    def run(self, frame=None, otsu=True):
+    def execute(self, frame=None, otsu=True):
         """Set markers at the center of ellipses.
         
         Args:
@@ -79,7 +79,7 @@ class Plugin(Layer):
         del self.Arts
         del frame.markers
         
-        src = self.lgbt.calc(frame, otsu)
+        src = self.lgbt.execute(frame, otsu)
         
         circles = find_ellipses(src, self.rmin.value, self.rmax.value)
         

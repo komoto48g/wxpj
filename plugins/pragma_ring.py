@@ -18,7 +18,7 @@ class Plugin(Layer):
                 Button(self, "1. Mark", self.calmark, icon='help', size=(72,-1)),
                 self.lcrf.rmin,
                 
-                Button(self, "2. Run", self.run, icon='help', size=(72,-1)),
+                Button(self, "2. Run", self.execute, icon='help', size=(72,-1)),
                 Button(self, "Setting", self.show_setting),
             ),
             title="Evaluate ring pattern", row=2,
@@ -30,10 +30,10 @@ class Plugin(Layer):
         """Show the settings."""
         self.lcrf.Show()
     
-    def run(self):
+    def execute(self):
         """Run the fitting procedure."""
         frame = self.graph.frame
-        self.ld.thread.Start(self.ld.run, frame)
+        self.ld.thread.Start(self.ld.execute, frame)
         self.ld.Show()
     
     def calmark(self, frame=None):
@@ -42,4 +42,4 @@ class Plugin(Layer):
         Set parameter: Minimum radius [%] of rings to be detected.
         """
         frame = self.graph.frame
-        self.lcrf.run(frame)
+        self.lcrf.execute(frame)

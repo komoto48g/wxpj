@@ -3,7 +3,6 @@
 """
 import sys
 import os
-import numpy as np
 
 
 def init_mainframe(self):

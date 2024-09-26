@@ -165,8 +165,8 @@ class Plugin(Layer):
         self.rmax = LParam("rmax", (0, 2, 0.01), 1.0, handler=self.set_radii)
         
         btn = wx.Button(self, label="+Execute", size=(64,22))
-        btn.Bind(wx.EVT_BUTTON, lambda v: self.run(shift=wx.GetKeyState(wx.WXK_SHIFT)))
-        btn.SetToolTip(self.run.__doc__.strip())
+        btn.Bind(wx.EVT_BUTTON, lambda v: self.execute(shift=wx.GetKeyState(wx.WXK_SHIFT)))
+        btn.SetToolTip(self.execute.__doc__.strip())
         
         self.chkplt = wx.CheckBox(self, label="rdist")
         
@@ -184,7 +184,7 @@ class Plugin(Layer):
     
     target_view = None
     
-    def run(self, frame=None, shift=False, maxloop=5):
+    def execute(self, frame=None, shift=False, maxloop=5):
         """Set markers on the diffraction ring.
         
         Search center position and fit the model parameters.

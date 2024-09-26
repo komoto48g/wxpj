@@ -57,7 +57,7 @@ class Plugin(Layer):
         self.layout((
             self.limit,
             None,
-            Button(self, "CTF", self.run, icon='->'),
+            Button(self, "CTF", self.execute, icon='->'),
             Button(self, "clf", plt.clf, icon='-'),
             ),
             row=2,
@@ -198,7 +198,7 @@ class Plugin(Layer):
               "cs* = {:g} mm".format(cs * 1e3),
         ))
     
-    def run(self):
+    def execute(self):
         """Execute all processes.
         
         1. Calc log-polar of ring pattern.

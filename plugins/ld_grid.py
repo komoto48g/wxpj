@@ -106,8 +106,8 @@ class Plugin(Layer):
         
         self.btn = wx.Button(self, label="+Execute", size=(80,22))
         self.btn.Bind(wx.EVT_BUTTON,
-                      lambda v: self.thread.Start(self.run, skip=wx.GetKeyState(wx.WXK_SHIFT)))
-        self.btn.SetToolTip(self.run.__doc__.strip())
+                      lambda v: self.thread.Start(self.execute, skip=wx.GetKeyState(wx.WXK_SHIFT)))
+        self.btn.SetToolTip(self.execute.__doc__.strip())
         
         self.order = LParam("order", (0,6,1), 3)
         
@@ -164,7 +164,7 @@ class Plugin(Layer):
         )))
         return R1, R2
     
-    def run(self, frame=None, skip=False):
+    def execute(self, frame=None, skip=False):
         """Calculate parameters for fitting markers as a grid pattern.
         
         [S-Lbutton] Skip estimation of the initial grid params.

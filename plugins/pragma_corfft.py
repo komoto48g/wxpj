@@ -49,7 +49,7 @@ class Plugin(Layer):
                 Button(self, "2. Mark", self.calc_mark, icon='help', size=(72,-1)),
                 self.score,
                 
-                Button(self, "3. Run", self.run, icon='help', size=(72,-1)),
+                Button(self, "3. Run", self.execute, icon='help', size=(72,-1)),
                 
                 Button(self, "Settings", self.show_settings),
             ),
@@ -84,7 +84,7 @@ class Plugin(Layer):
     def show_settings(self):
         self.lccf.Show()
     
-    def run(self):
+    def execute(self):
         """Run the fitting procedure."""
         self.ldc.reset_params()
         self.ldc.thread.Start(self.calc_fit)
@@ -118,9 +118,9 @@ class Plugin(Layer):
             return
         self.message("\b @lccf...")
         if self.score.value is nan:
-            self.lccf.run(frame, otsu=True)
+            self.lccf.execute(frame, otsu=True)
         else:
-            self.lccf.run(frame, otsu=1-self.score.value/100)
+            self.lccf.execute(frame, otsu=1-self.score.value/100)
     
     def calc_fit(self):
         frame = self.result_frame
@@ -128,8 +128,8 @@ class Plugin(Layer):
             self.message("- No *result*")
             return
         self.message("\b @ldc...")
-        self.ldc.run(frame)
-        self.ldc.run(frame) # 計算 x2 回目
+        self.ldc.execute(frame)
+        self.ldc.execute(frame) # 計算 x2 回目
         self.ldc.Show()
         self.calc_mag()
         frame.parent.select(frame)
