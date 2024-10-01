@@ -7,7 +7,7 @@ from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from mwx import FSM, MiniFrame
 from . import teminfo
 from . import pyJem2 as pj
-from .legacy import cmdl, cntf
+from .legacy import cmdl, cntf, set_host
 
 
 class NotifyHandler(object):
@@ -347,6 +347,8 @@ class NotifyLogger(wx.ListCtrl, ListCtrlAutoWidthMixin):
 class NotifyFront(MiniFrame):
     """Notify front-end.
     """
+    set_host = staticmethod(set_host)
+
     def __init__(self, parent):
         MiniFrame.__init__(self, parent,
             title="Notify", size=(640,320), style=wx.DEFAULT_FRAME_STYLE)

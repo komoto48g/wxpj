@@ -325,20 +325,29 @@ quote_unqoute = """
 """
 
 def main(target=None, **kwargs):
+    from pyJeol.temsys import NotifyFront
+
     app = wx.GetApp() or wx.App()
-    frame = mwx.deb(target, loop=0, # Don't enter loop.
-                    introText=(__doc__ or '') + quote_unqoute,
-                    **kwargs)
-    stylus(frame)
-    if 1:
-        ## To skip debugging a specific module, add module:str to debugger.skip:set.
-        frame.debugger.skip -= {
-            mwx.FSM.__module__, # for debugging FSM
-        }
-        shell = dive(frame)
-        wx.CallAfter(shell.SetFocus)
+    self = mwx.deb(target, loop=0,
+                   introText=(__doc__ or '') + quote_unqoute,
+                   **kwargs)
+    stylus(self)
+    shell = dive(self)
+    wx.CallAfter(shell.SetFocus)
+
+    ## Open notify
+    from pyJeol.temsys import NotifyFront
+    self.nfront = NotifyFront(self)
+    self.nfront.set_host('localhost', offline=1)
+    self.notify = self.nfront.notify
+    self.notify.start()
+    self.nfront.Show()
+
     if not app.GetMainLoop():
         app.MainLoop()
+
+    ## Close notify finally
+    self.notify.stop()
 
 
 if __name__ == "__main__":
