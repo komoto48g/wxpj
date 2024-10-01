@@ -10,33 +10,23 @@ Wx Import Warning:
 import sys
 import numpy as np
 from numpy import inf
+
+from .temisc import mrange
+from .temisc import FLHex, OLHex
+
 try:
-    from temisc import mrange
-    from temisc import FLHex, OLHex
-except ImportError:
-    from .temisc import mrange
-    from .temisc import FLHex, OLHex
-try:
-    Offline = 0 # switch case when this modulue is tested in standalone
-    
     if 'PyJEM.offline' in sys.modules:
-        print('Loading TEM3:offline module has already loaded.')
         from PyJEM.offline import TEM3
-        Offline = True
-    elif 'PyJEM.TEM3' in sys.modules:
-        print('Loading TEM3:online module has already loaded.')
-        from PyJEM import TEM3
-        Offline = False
+        print('Loaded TEM3:offline module.')
+        OFFLINE = True
     else:
-        print(__doc__)
-        if Offline:
-            from PyJEM.offline import TEM3
-        else:
-            from PyJEM import TEM3
+        from PyJEM import TEM3  # TEMExternal is required.
+        print('Loaded TEM3:online module.')
+        OFFLINE = False
 except ImportError as e:
     print(e)
-    print("Current version is Python {}".format(sys.version))
-    Offline = None
+    print("Current version is {}".format(sys.version))
+    OFFLINE = None
     TEM3 = None
 else:
     APT  = TEM3.Apt3()
@@ -105,7 +95,7 @@ class TEM(object):
     
     GUNA1 = static2property('GetGunA1', 'SetGunA1')
     GUNA2 = static2property('GetGunA2', 'SetGunA2')
-    SPOTA = static2property('GetSpotA', 'SetSpotA') # Offline 版は SetSpotA が抜けている▲
+    SPOTA = static2property('GetSpotA', 'SetSpotA') # オフライン版は SetSpotA が抜けている▲
     CLA1 = static2property('GetCLA1', 'SetCLA1')
     CLA2 = static2property('GetCLA2', 'SetCLA2')
     SHIFT = static2property('GetShifBal', 'SetShifBal')
@@ -292,7 +282,7 @@ class Imaging(Optics):
     
     @property
     def Mag(self):
-        return EOS.GetMagValue()[0] # --> [200,'X','X200'][0] ▲Offline 板は 400k 抜け
+        return EOS.GetMagValue()[0] # --> [200,'X','X200'][0] ▲オフライン板は 400k 抜け
     
     @Mag.setter
     def Mag(self, v):
@@ -456,8 +446,8 @@ class ApertureEx(Aperture):
         ('ENTA', (inf, 120,  60, 40, 20)),
         ('HXA',  (inf, 200,   0,  0,  0)),
     ))
-    ## Offline 版には Exp 系のコマンドがない▲
-    if not Offline:
+    ## オフライン版には Exp 系のコマンドがない▲
+    if 1:
         select_apt = APT.SelectExpKind # extype=1
         get_sel = APT.GetExpSize
         set_sel = APT.SetExpSize
@@ -540,17 +530,3 @@ class Filter(object):
             FILTER.SetEnergyShift(v)
         else:
             FILTER.SetEnergyShiftSw(0)
-
-
-if __name__ == "__main__":
-    eos = EOsys()
-    tem = TEM()
-    ca = Aperture('CLA')
-    sa = Aperture('SAA')
-    oa = Aperture('OLA')
-    i = Illumination()
-    j = Imaging()
-    k = Omega()
-    g = Stage()
-    fl = Filter()
-    ht = HTsys()

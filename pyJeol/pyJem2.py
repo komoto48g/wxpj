@@ -4,18 +4,13 @@
 import time
 import numpy as np
 from numpy import inf
-try:
-    import teminfo
-    from temisc import mrange
-    from temisc import FLHex, OLHex
-    from legacy import cmdl, cntf
-    from jtypes import LensSystem, DeflSystem, FocusSystem
-except ImportError:
-    from . import teminfo
-    from .temisc import mrange
-    from .temisc import FLHex, OLHex
-    from .legacy import cmdl, cntf
-    from .jtypes import LensSystem, DeflSystem, FocusSystem
+
+from . import teminfo
+from .temisc import mrange
+from .temisc import FLHex, OLHex
+from .legacy import cmdl, cntf
+from .jtypes import LensSystem, DeflSystem, FocusSystem
+
 
 Command = cmdl.Command
 NotifyCommand = cntf.NotifyCommand
@@ -679,25 +674,3 @@ class Filter(Device):
             Filter._set_esv(v)
         else:
             Filter._set_es(0) # energy shift off
-
-
-if __name__ == "__main__":
-    cmdl.open()
-    cntf.open()
-    
-    extype = bool(ApertureEx._get_info())
-    print("extype =", extype)
-    if extype:
-        Aperture = ApertureEx
-    
-    eos = EOsys()
-    tem = TEM()
-    ca = Aperture('CLA')
-    sa = Aperture('SAA')
-    oa = Aperture('OLA')
-    i = Illumination()
-    j = Imaging()
-    k = Omega()
-    g = Stage()
-    fl = Filter()
-    ht = HTsys()
