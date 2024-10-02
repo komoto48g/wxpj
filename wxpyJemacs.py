@@ -63,11 +63,10 @@ class MainFrame(Frame):
         HOME = os.path.dirname(__file__)
         self.SetIcon(wx.Icon(os.path.join(HOME, "Jun.ico"), wx.BITMAP_TYPE_ICO))
         
-        paths = [
-            HOME,   # Add ~/ to import si:home
-            '',     # Add ./ to import si:local first
-        ]
-        for f in paths:
+        for f in [
+                HOME,   # Add ~/ to import si:home
+                '',     # Add ./ to import si:local first
+                ]:
             if f not in sys.path:
                 sys.path.insert(0, f)
         try:

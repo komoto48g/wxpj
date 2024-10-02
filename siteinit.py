@@ -12,10 +12,11 @@ def init_mainframe(self):
 
     for f in [
             r"C:\usr\home\workspace\tem13\wxpj-data",
+            ## r"C:\usr\home\workspace\tem13\wxpj-packages",
             ]:
         f = os.path.normpath(f)
         if f not in sys.path:
-            sys.path.append(f)
+            sys.path.insert(0, f)
 
     ## Image/CCD unit length per pixel [mm/pix]
     ## 0.042 mm/pix - FLASH @JEM-3300
