@@ -8,7 +8,7 @@ import os
 def init_mainframe(self):
     """Program settings of mainframe
     """
-    self.Editor = "C:/usr/home/bin/xyzzy/xyzzy.exe"
+    self.EDITOR = "C:/usr/home/bin/xyzzy/xyzzy.exe"
 
     for f in [
             r"C:\usr\home\workspace\tem13\wxpj-data",
