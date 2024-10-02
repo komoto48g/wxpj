@@ -3,7 +3,7 @@
 """
 from datetime import datetime
 
-from jgdk import Layer, Param, LParam, Button, Choice
+from wxpj import Layer, Param, LParam, Button, Choice
 from pyRigaku import Camera
 
 

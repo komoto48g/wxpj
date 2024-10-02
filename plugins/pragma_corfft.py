@@ -3,7 +3,7 @@ import wx
 import numpy as np
 from numpy import nan
 
-from jgdk import Layer, LParam, Button, Choice
+from wxpj import Layer, LParam, Button, Choice
 import editor as edi
 
 

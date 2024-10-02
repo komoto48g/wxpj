@@ -5,7 +5,7 @@ from datetime import datetime
 import time
 import threading
 
-from jgdk import Layer, Param, LParam, Button, Choice
+from wxpj import Layer, Param, LParam, Button, Choice
 from pyGatan import GatanSocket
 
 

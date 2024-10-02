@@ -5,7 +5,7 @@ import numpy as np
 from numpy import pi,cos,sin
 from matplotlib import patches
 
-from jgdk import Layer, LParam
+from wxpj import Layer, LParam
 import editor as edi
 
 

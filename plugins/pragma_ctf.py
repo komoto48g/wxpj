@@ -4,7 +4,7 @@ from numpy import pi
 from scipy import optimize
 from matplotlib import pyplot as plt
 
-from jgdk import Layer, LParam, Button
+from wxpj import Layer, LParam, Button
 
 
 def _make_indices(i, j, N):

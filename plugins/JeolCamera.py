@@ -4,7 +4,7 @@
 from datetime import datetime
 import wx
 
-from jgdk import Layer, Param, LParam, Button, Choice
+from wxpj import Layer, Param, LParam, Button, Choice
 from pyJeol import Camera, DummyCamera
 
 

@@ -1,5 +1,5 @@
 #! python3
-from jgdk import Layer, Button
+from wxpj import Layer, Button
 
 
 class Plugin(Layer):

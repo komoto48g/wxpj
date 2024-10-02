@@ -39,6 +39,7 @@ class Layer(Layer):
         ## Cross references.
         self.edi.output = self.output
 
+
 ## --------------------------------
 ## Configuration of Shell / Editor 
 ## --------------------------------

@@ -8,7 +8,7 @@ from scipy import signal
 from matplotlib import pyplot as plt
 from matplotlib import patches
 
-from jgdk import Layer, LParam
+from wxpj import Layer, LParam
 import editor as edi
 
 

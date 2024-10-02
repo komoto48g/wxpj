@@ -16,8 +16,8 @@ import wx
 import wx.adv
 import numpy as np
 
-from jgdk import Frame
-from jgdk import stylus
+from wxpj import Frame
+from wxpj import stylus
 
 
 class MainFrame(Frame):

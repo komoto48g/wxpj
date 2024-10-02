@@ -1,7 +1,7 @@
 #! python3
 """Startup utility.
 """
-from jgdk import Layer, Param, LParam
+from wxpj import Layer, Param, LParam
 from pyJeol import Environ
 
 

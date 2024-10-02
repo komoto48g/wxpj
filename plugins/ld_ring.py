@@ -4,7 +4,7 @@ import numpy as np
 from numpy import pi,exp,cos,sin
 from scipy import optimize
 
-from jgdk import Layer, Thread, LParam
+from wxpj import Layer, Thread, LParam
 
 
 def calc_dist(u, D, d):
