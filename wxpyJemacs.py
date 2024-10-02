@@ -9,7 +9,6 @@ This program is under MIT license
 see https://opensource.org/licenses/MIT
 """
 import getopt
-import glob
 import sys
 import os
 import re

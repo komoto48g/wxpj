@@ -325,8 +325,6 @@ quote_unqoute = """
 """
 
 def main(target=None, **kwargs):
-    from pyJeol.temsys import NotifyFront
-
     app = wx.GetApp() or wx.App()
     self = mwx.deb(target, loop=0,
                    introText=(__doc__ or '') + quote_unqoute,
@@ -338,7 +336,6 @@ def main(target=None, **kwargs):
     ## Open notify
     from pyJeol.temsys import NotifyFront
     self.nfront = NotifyFront(self)
-    self.nfront.set_host('localhost', offline=1)
     self.notify = self.nfront.notify
     self.notify.start()
     self.nfront.Show()
