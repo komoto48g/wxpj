@@ -34,9 +34,12 @@ class Layer(Layer):
         
         ## Accessing editor's functions.
         self.edi = edi
-        
+
         ## Cross references.
-        self.edi.output = self.output
+        try:
+            self.edi.output = self.output
+        except AttributeError:
+            print(f"- {self!r} deos not have an output reference.")
 
 
 ## --------------------------------
@@ -332,19 +335,8 @@ def main(target=None, **kwargs):
     stylus(self)
     shell = dive(self)
     wx.CallAfter(shell.SetFocus)
-
-    ## Open notify
-    from pyJeol.temsys import NotifyFront
-    self.nfront = NotifyFront(self)
-    self.notify = self.nfront.notify
-    self.notify.start()
-    self.nfront.Show()
-
     if not app.GetMainLoop():
         app.MainLoop()
-
-    ## Close notify finally
-    self.notify.stop()
 
 
 if __name__ == "__main__":
