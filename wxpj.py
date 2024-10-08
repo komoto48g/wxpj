@@ -1,6 +1,7 @@
 #! python3
 """GDK utilus ver 1.0rc
 """
+from contextlib import contextmanager
 import sys
 import os
 import wx
@@ -40,6 +41,18 @@ class Layer(Layer):
             self.edi.output = self.output
         except AttributeError:
             print(f"- {self!r} deos not have an output reference.")
+
+
+@contextmanager
+def TestPanel(**kwargs):
+    app = wx.GetApp() or wx.App()
+    frm = wx.Frame(None, **kwargs)
+    panel = ControlPanel(frm, **kwargs)
+    yield panel
+    panel.Sizer.Fit(frm)
+    frm.Show()
+    if not app.GetMainLoop():
+        app.MainLoop()
 
 
 ## --------------------------------
