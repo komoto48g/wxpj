@@ -1,11 +1,10 @@
 #! python3
-import wx
 import cv2
 import numpy as np
 from numpy import pi,cos,sin
 from matplotlib import patches
 
-from wxpj import Layer, LParam
+from wxpj import Layer, LParam, Button
 import editor as edi
 
 
@@ -47,9 +46,7 @@ class Plugin(Layer):
         self.rmin = LParam("rmin", (0,1000,1), 2)
         self.rmax = LParam("rmax", (0,1000,1), 200)
         
-        btn2 = wx.Button(self, label="+Execute", size=(64,22))
-        btn2.Bind(wx.EVT_BUTTON, lambda v: self.execute())
-        btn2.SetToolTip(self.execute.__doc__.strip())
+        btn = Button(self, label="+Execute", handler=self.execute)
         
         self.layout(
             self.lgbt.params,
@@ -61,7 +58,7 @@ class Plugin(Layer):
             ),
             title="rectangles", cw=0, lw=40, tw=40
         )
-        self.layout((btn2,), row=2)
+        self.layout((btn,))
     
     maxcount = 256 # 選択する点の数を制限する
     maxratio = 5.0 # ひずみの大きい楕円は除外する

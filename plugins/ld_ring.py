@@ -4,7 +4,7 @@ import numpy as np
 from numpy import pi,exp,cos,sin
 from scipy import optimize
 
-from wxpj import Layer, Thread, LParam
+from wxpj import Layer, Thread, LParam, Button
 
 
 def calc_dist(u, D, d):
@@ -114,10 +114,8 @@ class Plugin(Layer):
             LParam("yc", (-200, 200, 0.1), 0.0, **kwds),
         )
         
-        self.btn = wx.Button(self, label="+Execute", size=(80,22))
-        self.btn.Bind(wx.EVT_BUTTON,
-                      lambda v: self.thread.Start(self.execute, skip=wx.GetKeyState(wx.WXK_SHIFT)))
-        self.btn.SetToolTip(self.execute.__doc__.strip())
+        self.btn = Button(self, label="+Execute",
+                          handler=lambda v: self.thread.Start(self.execute, skip=wx.GetKeyState(wx.WXK_SHIFT)))
         
         self.order = LParam("ring", (1,10,1), 3)
         

@@ -8,7 +8,7 @@ from scipy import signal
 from matplotlib import pyplot as plt
 from matplotlib import patches
 
-from wxpj import Layer, LParam
+from wxpj import Layer, LParam, Button
 import editor as edi
 
 
@@ -164,9 +164,8 @@ class Plugin(Layer):
         self.rmin = LParam("rmin", (0, 1, 0.01), 0.1, handler=self.set_radii)
         self.rmax = LParam("rmax", (0, 2, 0.01), 1.0, handler=self.set_radii)
         
-        btn = wx.Button(self, label="+Execute", size=(64,22))
-        btn.Bind(wx.EVT_BUTTON, lambda v: self.execute(shift=wx.GetKeyState(wx.WXK_SHIFT)))
-        btn.SetToolTip(self.execute.__doc__.strip())
+        btn = Button(self, label="+Execute",
+                     handler=lambda v: self.execute(shift=wx.GetKeyState(wx.WXK_SHIFT)))
         
         self.chkplt = wx.CheckBox(self, label="rdist")
         

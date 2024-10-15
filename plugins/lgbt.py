@@ -3,7 +3,7 @@ import wx
 import cv2
 import numpy as np
 
-from wxpj import Layer, LParam
+from wxpj import Layer, LParam, Button
 import editor as edi
 
 
@@ -18,9 +18,8 @@ class Plugin(Layer):
         self.sigma = LParam("sigma", (0,100,1), 0)
         self.thresh = LParam("thresh", (0,255,1), 128)
         
-        btn = wx.Button(self, label="+Bin", size=(40,22))
-        btn.Bind(wx.EVT_BUTTON, lambda v: self.execute(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
-        btn.SetToolTip(self.execute.__doc__.strip())
+        btn = Button(self, label="+Exectue",
+                     handler=lambda v: self.execute(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
         
         self.layout(
             self.params, title="blur-threshold",
