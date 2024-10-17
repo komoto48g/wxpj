@@ -193,31 +193,30 @@ class Plugin(Layer):
         ## re-init (erase) grid bound to the frame
         self.init_grid(frame.axes)
         
-        with self.thread.entry():
-            ## 近傍にあるピーク位置をぼかして検出する
-            if not skip:
-                nx, ny = frame.xytopixel(x, y)
-                nx, ny = self.find_near_maximum(frame.buffer, nx, ny, times=2)
-                x, y = frame.markers = frame.xyfrompixel(nx, ny)
-            
-            ## 最適グリッドパラメータの見積もり
-            self.model.Index = self.order.value - 1
-            
-            result = optimize.leastsq(self.model.residual,
-                                np.float32(self.fitting_params),
-                                args=(x,y), ftol=1e-6)
-            
-            for lp, v in zip(self.fitting_params, result[0]):
-                lp.value = v
-            
-            ## Check the final result.
-            res = self.model.residual(np.float32(self.fitting_params), x, y)
-            
-            print("... refined with order({})".format(6),
-                  ":res {:g}".format(np.sqrt(np.average(res)) / frame.unit))
-            self.calc()
-            
-            frame.annotation = ', '.join(self.text.Value.splitlines())
+        ## 近傍にあるピーク位置をぼかして検出する
+        if not skip:
+            nx, ny = frame.xytopixel(x, y)
+            nx, ny = self.find_near_maximum(frame.buffer, nx, ny, times=2)
+            x, y = frame.markers = frame.xyfrompixel(nx, ny)
+        
+        ## 最適グリッドパラメータの見積もり
+        self.model.Index = self.order.value - 1
+        
+        result = optimize.leastsq(self.model.residual,
+                            np.float32(self.fitting_params),
+                            args=(x,y), ftol=1e-6)
+        
+        for lp, v in zip(self.fitting_params, result[0]):
+            lp.value = v
+        
+        ## Check the final result.
+        res = self.model.residual(np.float32(self.fitting_params), x, y)
+        
+        print("... refined with order({})".format(6),
+              ":res {:g}".format(np.sqrt(np.average(res)) / frame.unit))
+        self.calc()
+        
+        frame.annotation = ', '.join(self.text.Value.splitlines())
     
     def find_near_maximum(self, src, nx, ny, n=5, times=2):
         """Find the nearest maximum peak position

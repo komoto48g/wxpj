@@ -183,30 +183,29 @@ class Plugin(Layer):
         ## re-init (erase) grid bound to the frame
         self.init_grid(frame.axes)
         
-        with self.thread.entry():
-            ## 初期グリッドパラメータの見積もり
-            if not skip:
-                print("estimating initial grid paramtres... order(0)")
-                self.find_init_grid(x, y)
+        ## 初期グリッドパラメータの見積もり
+        if not skip:
+            print("estimating initial grid paramtres... order(0)")
+            self.find_init_grid(x, y)
+        
+        ## 最適グリッドパラメータの見積もり
+        order = self.order.value
+        if order > 0:
+            result = optimize.leastsq(self.model.residual,
+                                np.float32(self.fitting_params),
+                                args=(x,y), ftol=10**-order)
             
-            ## 最適グリッドパラメータの見積もり
-            order = self.order.value
-            if order > 0:
-                result = optimize.leastsq(self.model.residual,
-                                    np.float32(self.fitting_params),
-                                    args=(x,y), ftol=10**-order)
-                
-                for lp, v in zip(self.fitting_params, result[0]):
-                    lp.value = v
-            
-            ## check the final result
-            res = self.model.residual(np.float32(self.fitting_params), x, y)
-            
-            print("... refined with order({})".format(order),
-                  ":res {:g}".format(np.sqrt(np.average(res)) / frame.unit))
-            self.calc()
-            
-            frame.annotation = ', '.join(self.text.Value.splitlines())
+            for lp, v in zip(self.fitting_params, result[0]):
+                lp.value = v
+        
+        ## check the final result
+        res = self.model.residual(np.float32(self.fitting_params), x, y)
+        
+        print("... refined with order({})".format(order),
+              ":res {:g}".format(np.sqrt(np.average(res)) / frame.unit))
+        self.calc()
+        
+        frame.annotation = ', '.join(self.text.Value.splitlines())
     
     def find_init_grid(self, x, y):
         """Find the initial grid position."""
