@@ -57,8 +57,9 @@ class Model(object):
         return [p + cam * a * exp(2j*t) for a in self.Angles]
     
     def residual(self, fitting_params, x, y):
-        """最小自乗法の剰余函数
-        """
+        """最小自乗法の剰余函数"""
+        self.owner.thread.check()
+        
         cam, xc, yc, ratio, phi = fitting_params
         z = calc_aspect(x + 1j*y, 1/ratio, phi) # z = x+iy --> 逆変換 1/r
         
@@ -68,10 +69,6 @@ class Model(object):
             if phi < -90: phi += 180
             elif phi > 90: phi -= 180
             fitting_params[4] = phi
-        
-        if not self.owner.thread.active:
-            print("... Iteration stopped")
-            raise StopIteration
         
         ## 真円からのズレを評価する
         x, y = z.real, z.imag

@@ -6,8 +6,9 @@ import ld_ring as base
 
 class Model(base.Model):
     def residual(self, fitting_params, x, y):
-        """最小自乗法の剰余函数
-        """
+        """最小自乗法の剰余函数"""
+        self.owner.thread.check()
+        
         xc, yc = 0, 0
         cam, ratio, phi = fitting_params
         z = base.calc_aspect(x + 1j*y, 1/ratio, phi) # z = x+iy --> 逆変換 1/r
@@ -18,10 +19,6 @@ class Model(base.Model):
             if phi < -90: phi += 180
             elif phi > 90: phi -= 180
             fitting_params[2] = phi
-        
-        if not self.owner.thread.active:
-            print("... Iteration stopped")
-            raise StopIteration
         
         ## 真円からのズレを評価する
         x, y = z.real, z.imag

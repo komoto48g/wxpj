@@ -42,8 +42,9 @@ class Model(object):
              + [(x + 1j * Y) for x in X]
     
     def residual(self, fitting_params, x, y):
-        """最小自乗法の剰余函数
-        """
+        """最小自乗法の剰余函数"""
+        self.owner.thread.check()
+        
         grid, tilt, xc, yc, ratio, phi, D, d = fitting_params
         z = x + 1j*y
         
@@ -53,10 +54,6 @@ class Model(object):
             if phi < -90: phi += 180
             elif phi > 90: phi -= 180
             fitting_params[5] = phi
-        
-        if not self.owner.thread.active:
-            print("... Iteration stopped")
-            raise StopIteration
         
         ## 検索範囲（描画範囲ではない）の基準グリッド (-N:N 十分広く設定する)
         N = int(max(np.hypot(x,y)) / grid) + 1
