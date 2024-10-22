@@ -1,20 +1,19 @@
 
+<!DOCTYPE html>
 
-<!doctype html>
-
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>plugins.lcrf &#8212; wxpj  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=5283bb3d" />
     
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -23,7 +22,7 @@
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -45,20 +44,22 @@
             
   <h1>Source code for plugins.lcrf</h1><div class="highlight"><pre>
 <span></span><span class="ch">#! python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="kn">import</span> <span class="nn">wx</span>
 <span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">patches</span>
 
-<span class="kn">from</span> <span class="nn">jgdk</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">LParam</span>
+<span class="kn">from</span> <span class="nn">wxpj</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">LParam</span><span class="p">,</span> <span class="n">Button</span>
 <span class="kn">import</span> <span class="nn">editor</span> <span class="k">as</span> <span class="nn">edi</span>
 
 
-<div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Model">[docs]</a><span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Model">
+<a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Model">[docs]</a>
+<span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Cor-fitting model function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -69,16 +70,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span>
         <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="n">d</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="o">-</span><span class="n">e</span><span class="p">)</span>
     
-<div class="viewcode-block" id="Model.residual"><a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Model.residual">[docs]</a>    <span class="k">def</span> <span class="nf">residual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="Model.residual">
+<a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Model.residual">[docs]</a>
+    <span class="k">def</span> <span class="nf">residual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
         <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">&quot;</span><span class="o">*</span><span class="mi">72</span> <span class="o">+</span> <span class="s2">&quot;point(</span><span class="si">{}</span><span class="s2">): residual </span><span class="si">{:g}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="nb">sum</span><span class="p">(</span><span class="n">res</span><span class="p">)),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">res</span></div>
+
     
-<div class="viewcode-block" id="Model.mod2d"><a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Model.mod2d">[docs]</a>    <span class="k">def</span> <span class="nf">mod2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">):</span>
+<div class="viewcode-block" id="Model.mod2d">
+<a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Model.mod2d">[docs]</a>
+    <span class="k">def</span> <span class="nf">mod2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate modulated image.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
@@ -88,15 +94,16 @@
 <span class="sd">            2D-array of modulated image</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">buf</span><span class="o">.</span><span class="n">shape</span>
-        <span class="n">shift</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">h</span><span class="p">)</span><span class="o">/</span><span class="n">h</span> <span class="o">*</span> <span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># shift vector</span>
-        <span class="c1">## axis = np.arange(0., w)</span>
+        <span class="n">rsv</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">h</span><span class="p">)</span><span class="o">/</span><span class="n">h</span> <span class="o">*</span> <span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># radial-shift vectors</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">j</span><span class="p">,(</span><span class="n">x</span><span class="p">,</span><span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">shift</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">rsv</span><span class="p">)):</span>
             <span class="n">data</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
-            <span class="c1">## data[j] = np.interp(axis+v, axis, x)</span>
         <span class="k">return</span> <span class="n">data</span></div>
+
     
-<div class="viewcode-block" id="Model.mod1d"><a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Model.mod1d">[docs]</a>    <span class="k">def</span> <span class="nf">mod1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">):</span>
+<div class="viewcode-block" id="Model.mod1d">
+<a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Model.mod1d">[docs]</a>
+    <span class="k">def</span> <span class="nf">mod1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate line profile averaged with modulation correction.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
@@ -107,10 +114,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">buf</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">data</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mod2d</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">data</span> <span class="o">/</span> <span class="n">h</span></div></div>
+        <span class="k">return</span> <span class="n">data</span> <span class="o">/</span> <span class="n">h</span></div>
+</div>
 
 
-<div class="viewcode-block" id="find_ring_center"><a class="viewcode-back" href="../../plugins.html#plugins.lcrf.find_ring_center">[docs]</a><span class="k">def</span> <span class="nf">find_ring_center</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+
+<div class="viewcode-block" id="find_ring_center">
+<a class="viewcode-back" href="../../plugins.html#plugins.lcrf.find_ring_center">[docs]</a>
+<span class="k">def</span> <span class="nf">find_ring_center</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find center of ring pattern in buffer.</span>
 <span class="sd">    </span>
 <span class="sd">    極座標変換した後，角度セグメントに分割して相互相関をとる．</span>
@@ -131,6 +142,7 @@
     <span class="n">lo</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">lo</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
     <span class="n">hi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">hi</span><span class="p">,</span> <span class="n">w</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
     
+    <span class="n">src</span> <span class="o">=</span> <span class="n">edi</span><span class="o">.</span><span class="n">imcv</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
     <span class="n">dst</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">linearPolar</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">WARP_FILL_OUTLIERS</span><span class="p">)</span>
     
     <span class="c1">## Mask X (radial) axis</span>
@@ -161,14 +173,16 @@
     <span class="k">if</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">tolr</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># default &lt; 0.5% までなら許しちゃる</span>
         <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="p">[</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">Y</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-        <span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">Y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">Y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
             <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">yy</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">tolr</span><span class="p">:</span>
                 <span class="n">xx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
                 <span class="n">yy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     
     <span class="n">fitting_curve</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">)</span>
     
-    <span class="c1">## edi.plot(xx, yy, &#39;+&#39;, X, fitting_curve(X))</span>
+    <span class="c1">## plt.plot(xx, yy, &#39;+&#39;, X, fitting_curve(X))</span>
+    <span class="c1">## plt.grid(True)</span>
+    <span class="c1">## plt.show()</span>
     
     <span class="n">a</span> <span class="o">=</span> <span class="n">fitting_curve</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># (平均を基準とする) 全体のオフセット量</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">fitting_curve</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -181,7 +195,10 @@
     <span class="k">return</span> <span class="n">dst</span><span class="p">,</span> <span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">),</span> <span class="n">fitting_curve</span></div>
 
 
-<div class="viewcode-block" id="find_radial_peaks"><a class="viewcode-back" href="../../plugins.html#plugins.lcrf.find_radial_peaks">[docs]</a><span class="k">def</span> <span class="nf">find_radial_peaks</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+
+<div class="viewcode-block" id="find_radial_peaks">
+<a class="viewcode-back" href="../../plugins.html#plugins.lcrf.find_radial_peaks">[docs]</a>
+<span class="k">def</span> <span class="nf">find_radial_peaks</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find radial peaks in polar-transformed buffer.</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
@@ -197,7 +214,10 @@
     <span class="k">return</span> <span class="n">ys</span><span class="p">,</span> <span class="n">peaks</span></div>
 
 
-<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Plugin">
+<a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Plugin">[docs]</a>
+<span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Center of Rings finder ver 1.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">menukey</span> <span class="o">=</span> <span class="s2">&quot;Plugins/&amp;Basic Tools/&quot;</span>
@@ -205,13 +225,14 @@
     
     <span class="n">lgbt</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;lgbt&#39;</span><span class="p">))</span>
     
-<div class="viewcode-block" id="Plugin.Init"><a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Plugin.Init">[docs]</a>    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.Init">
+<a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Plugin.Init">[docs]</a>
+    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rmin</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;rmin&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">set_radii</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rmax</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;rmax&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">set_radii</span><span class="p">)</span>
         
-        <span class="n">btn</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;+Execute&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span><span class="mi">22</span><span class="p">))</span>
-        <span class="n">btn</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">())</span>
-        <span class="n">btn</span><span class="o">.</span><span class="n">SetToolTip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="vm">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="n">btn</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;+Execute&quot;</span><span class="p">,</span>
+                     <span class="n">handler</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">GetKeyState</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">WXK_SHIFT</span><span class="p">)))</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">chkplt</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;rdist&quot;</span><span class="p">)</span>
         
@@ -221,15 +242,18 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">rmin</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">rmax</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rmax</span><span class="p">,</span>
             <span class="p">),</span>
             <span class="n">title</span><span class="o">=</span><span class="s2">&quot;radii&quot;</span><span class="p">,</span> <span class="n">cw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">tw</span><span class="o">=</span><span class="mi">40</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span><span class="n">btn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chkplt</span><span class="p">),</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
     
     <span class="n">target_view</span> <span class="o">=</span> <span class="kc">None</span>
     
-<div class="viewcode-block" id="Plugin.run"><a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Plugin.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxloop</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.execute">
+<a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Plugin.execute">[docs]</a>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">maxloop</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set markers on the diffraction ring.</span>
 <span class="sd">        </span>
 <span class="sd">        Search center position and fit the model parameters.</span>
@@ -239,9 +263,8 @@
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            frame   : target frame</span>
-<span class="sd">                      If not specified, the last selected frame is given.</span>
+<span class="sd">                      If not specified, the selected frame will be used.</span>
 <span class="sd">            shift   : The selector is used as the initial center position.</span>
-<span class="sd">                      True is given if the shift key is being pressed.</span>
 <span class="sd">            maxloop : maximum number of loops to search for the center position.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">frame</span><span class="p">:</span>
@@ -250,13 +273,11 @@
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_view</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">parent</span>
         
-        <span class="k">if</span> <span class="n">shift</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">shift</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">GetKeyState</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">WXK_SHIFT</span><span class="p">)</span>
-        
         <span class="n">src</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">buffer</span>
         <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span>
+        
         <span class="k">if</span> <span class="n">shift</span> <span class="ow">and</span> <span class="n">frame</span><span class="o">.</span><span class="n">selector</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">xytopixel</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">selector</span><span class="p">)</span>
+            <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">xytopixel</span><span class="p">(</span><span class="o">*</span><span class="n">frame</span><span class="o">.</span><span class="n">selector</span><span class="p">)</span>
             <span class="n">c</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nx</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">ny</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
@@ -272,7 +293,7 @@
             <span class="n">c</span> <span class="o">=</span> <span class="n">_c</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fitting_curve</span> <span class="o">=</span> <span class="n">fitting_curve</span>
         
-        <span class="n">frame</span><span class="o">.</span><span class="n">selector</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">xyfrompixel</span><span class="p">(</span><span class="n">_c</span><span class="p">)</span> <span class="c1"># set seletor to the center</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">selector</span> <span class="o">=</span> <span class="n">c</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">xyfrompixel</span><span class="p">(</span><span class="o">*</span><span class="n">_c</span><span class="p">)</span> <span class="c1"># set selector to the center</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="s2">&quot;*lin-polar*&quot;</span><span class="p">,</span> <span class="n">localunit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         
@@ -283,9 +304,11 @@
         <span class="n">rdist</span><span class="p">,</span> <span class="n">peaks</span> <span class="o">=</span> <span class="n">find_radial_peaks</span><span class="p">(</span><span class="n">rdist</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chkplt</span><span class="o">.</span><span class="n">Value</span><span class="p">:</span> <span class="c1"># this should be called for MainThread</span>
-            <span class="n">edi</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
-            <span class="n">edi</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdist</span><span class="p">)</span>
-            <span class="n">edi</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">peaks</span><span class="p">,</span> <span class="n">rdist</span><span class="p">[</span><span class="n">peaks</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdist</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">peaks</span><span class="p">,</span> <span class="n">rdist</span><span class="p">[</span><span class="n">peaks</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;peaks =&quot;</span><span class="p">,</span> <span class="n">peaks</span><span class="p">)</span>
         
         <span class="c1">## 強度の高いところにおおざっぱ (oz) にマーカーを打つ (100/3 程度)</span>
@@ -293,7 +316,7 @@
         <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="o">*</span><span class="n">pi</span>
         <span class="n">nr</span> <span class="o">=</span> <span class="n">peaks</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">fitting_curve</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">nr</span> <span class="o">*</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">selector</span>
+        
         <span class="n">X</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
         <span class="n">Y</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
         
@@ -310,27 +333,35 @@
             <span class="n">patches</span><span class="o">.</span><span class="n">Circle</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">hi</span> <span class="o">*</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Arts</span> <span class="o">+=</span> <span class="n">frame</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;c-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span></div>
+
     
-<div class="viewcode-block" id="Plugin.set_radii"><a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Plugin.set_radii">[docs]</a>    <span class="k">def</span> <span class="nf">set_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.set_radii">
+<a class="viewcode-back" href="../../plugins.html#plugins.lcrf.Plugin.set_radii">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set threshold ratio of [min:max] radii that gives a peak search range.</span>
 <span class="sd">        Default is [0.1:1.0] to the image height.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_view</span><span class="p">:</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_view</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">view</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">view</span><span class="o">.</span><span class="n">frame</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_view</span><span class="o">.</span><span class="n">frame</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">frame</span>
         <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">shape</span>
-        <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Arts</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
-        <span class="c1">## c1.center = c2.center = c</span>
-        <span class="n">c1</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmin</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
-        <span class="n">c2</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmax</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Draw</span><span class="p">()</span></div></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Arts</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">c1</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmin</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
+            <span class="n">c2</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmax</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Draw</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+</div>
+
 </pre></div>
 
             <div class="clearer"></div>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h3><a href="../../index.html">Table of Contents</a></h3>
 <p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
@@ -346,7 +377,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyJeol.html">pyJeol package</a></li>
 </ul>
 
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -354,13 +385,13 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -375,8 +406,8 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

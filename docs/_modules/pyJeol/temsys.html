@@ -1,20 +1,19 @@
 
+<!DOCTYPE html>
 
-<!doctype html>
-
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pyJeol.temsys &#8212; wxpj  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=5283bb3d" />
     
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -23,7 +22,7 @@
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -45,27 +44,21 @@
             
   <h1>Source code for pyJeol.temsys</h1><div class="highlight"><pre>
 <span></span><span class="ch">#! python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;Plug manager</span>
-
-<span class="sd">Author: Kazuya O&#39;moto &lt;komoto@jeol.co.jp&gt;</span>
+<span class="sd">&quot;&quot;&quot;TEM Notify system</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
 <span class="kn">import</span> <span class="nn">wx</span>
 <span class="kn">from</span> <span class="nn">wx.lib.mixins.listctrl</span> <span class="kn">import</span> <span class="n">ListCtrlAutoWidthMixin</span>
-<span class="kn">from</span> <span class="nn">mwx</span> <span class="kn">import</span> <span class="n">FSM</span><span class="p">,</span> <span class="n">Frame</span><span class="p">,</span> <span class="n">MiniFrame</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">pyJem2</span> <span class="k">as</span> <span class="nn">pj</span>
-    <span class="kn">from</span> <span class="nn">legacy</span> <span class="kn">import</span> <span class="n">info</span> <span class="k">as</span> <span class="n">jinfo</span>
-    <span class="kn">from</span> <span class="nn">legacy</span> <span class="kn">import</span> <span class="n">cntf</span><span class="p">,</span> <span class="n">cmdl</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">pyJem2</span> <span class="k">as</span> <span class="n">pj</span>
-    <span class="kn">from</span> <span class="nn">.legacy</span> <span class="kn">import</span> <span class="n">info</span> <span class="k">as</span> <span class="n">jinfo</span>
-    <span class="kn">from</span> <span class="nn">.legacy</span> <span class="kn">import</span> <span class="n">cntf</span><span class="p">,</span> <span class="n">cmdl</span>
+
+<span class="kn">from</span> <span class="nn">mwx</span> <span class="kn">import</span> <span class="n">FSM</span><span class="p">,</span> <span class="n">MiniFrame</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">teminfo</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">pyJem2</span> <span class="k">as</span> <span class="n">pj</span>
+<span class="kn">from</span> <span class="nn">.legacy</span> <span class="kn">import</span> <span class="n">cmdl</span><span class="p">,</span> <span class="n">cntf</span><span class="p">,</span> <span class="n">set_host</span>
 
 
-<div class="viewcode-block" id="NotifyHandler"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler">[docs]</a><span class="k">class</span> <span class="nc">NotifyHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Notify handler</span>
+<div class="viewcode-block" id="NotifyHandler">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler">[docs]</a>
+<span class="k">class</span> <span class="nc">NotifyHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Notify handler.</span>
 <span class="sd">    </span>
 <span class="sd">    This class has both notify and request stream.</span>
 <span class="sd">    To communicate with TEM, do the following steps:</span>
@@ -74,45 +67,50 @@
 <span class="sd">        2. update() -&gt; update manually when config changed</span>
 <span class="sd">        3. bind/unbind transactions to the handler</span>
 <span class="sd">        4. stop() -&gt; close the streams</span>
-<span class="sd">    </span>
-<span class="sd">    Note:</span>
-<span class="sd">        To check whether the streams are open,</span>
-<span class="sd">        see cmdl.STREAM, cntf.STREAM, and self.thread.active</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">thread</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span><span class="p">)</span>   <span class="c1">#: Notify thread instance</span>
     <span class="n">handler</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__handler</span><span class="p">)</span> <span class="c1">#: Notify command handler instance</span>
     
-    <span class="n">substr</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span> <span class="c1"># 3-fields for mode:str</span>
-    <span class="n">modestr</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">substr</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-    
-<div class="viewcode-block" id="NotifyHandler.start"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open notify/request command stream&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="NotifyHandler.start">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.start">[docs]</a>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open notify/request command stream.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span><span class="o">.</span><span class="n">Start</span><span class="p">()</span> <span class="c1"># open the notify port</span>
-        <span class="k">if</span> <span class="n">cmdl</span><span class="o">.</span><span class="n">open</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">cmdl</span><span class="o">.</span><span class="n">open</span><span class="p">():</span>       <span class="c1"># open the request port</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+
     
-<div class="viewcode-block" id="NotifyHandler.stop"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close notify/request command stream&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="NotifyHandler.stop">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.stop">[docs]</a>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close notify/request command stream.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span><span class="o">.</span><span class="n">Stop</span><span class="p">()</span> <span class="c1"># close the notify port</span>
         <span class="n">cmdl</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
     
-<div class="viewcode-block" id="NotifyHandler.update"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Request information from TEM server&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="NotifyHandler.update">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.update">[docs]</a>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Request information from TEM server.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;illumination_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">illumination</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;imaging_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">imaging</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
-            
-            <span class="c1">## 最初の時点では OMEGA-TYPE 不明▲</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;omega_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">omega</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;filter_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">efilter</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
         <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- NotifyHandler failed to get filter info: </span><span class="si">{!r}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Failed to get TEM/Optics info:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
         
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">lsys</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="c1">## self.tem.dsys.read()</span>
-            <span class="c1">## self.tem.foci.read()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;lens_notify&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">foci</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="c1">## 最初の時点では OMEGA-TYPE 不明▲</span>
+            <span class="n">omega_type</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">pj</span><span class="o">.</span><span class="n">Omega</span><span class="o">.</span><span class="n">_get_info</span><span class="p">())</span> <span class="c1"># -&gt; beep</span>
+            <span class="k">if</span> <span class="n">omega_type</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;omega_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">omega</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;efilter_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">efilter</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Failed to get TEM/Filter info:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">lsys</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># -&gt; beep</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;lens_notify&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;defl_notify&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">dsys</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
             
             <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;ht_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hts</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
@@ -120,17 +118,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;gonio_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gonio</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
             
             <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;beam_valve&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eos</span><span class="o">.</span><span class="n">_get_v1_state</span><span class="p">())</span>
-            <span class="c1">## self.handler(&quot;scr_info&quot;, self.eos._get_scr())</span>
-            <span class="c1">## self.handler(&quot;det_info&quot;, self.eos._get_det()) # ▼not supported</span>
             
             <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;scr_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scr_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eos</span><span class="o">.</span><span class="n">_get_scr</span><span class="p">()))</span>
-            
+            <span class="c1">## self.handler(&quot;det_info&quot;, self.det_info(self.eos._get_det())) # ▼not supported</span>
+        <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Failed to get TEM/Device info:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
             <span class="c1">## 最初の時点では APT-EXTYPE 不明▲</span>
             <span class="n">extype</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">pj</span><span class="o">.</span><span class="n">ApertureEx</span><span class="o">.</span><span class="n">_get_info</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">apts</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">ApertureEx</span> <span class="k">if</span> <span class="n">extype</span> <span class="k">else</span> <span class="n">pj</span><span class="o">.</span><span class="n">Aperture</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;apt_info&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">apts</span><span class="o">.</span><span class="n">request</span><span class="p">())</span>
         <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- NotifyHandler failed to get TEM info: </span><span class="si">{!r}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Failed to get TEM/APT info:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span></div>
+
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__parent</span> <span class="o">=</span> <span class="n">parent</span>
@@ -153,9 +154,9 @@
                      <span class="s2">&quot;det_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span> <span class="c1"># called when detectors are drived</span>
                      <span class="s2">&quot;scr_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span> <span class="c1"># called when screen are drived (invalid for BK-TEMCENTER)▲</span>
                    <span class="s2">&quot;gonio_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span> <span class="c1"># called when gonio is drived</span>
-                  <span class="s2">&quot;filter_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span> <span class="c1"># called when filter is drived</span>
+                 <span class="s2">&quot;efilter_info&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span> <span class="c1"># called when energy filter is drived</span>
                   <span class="s2">&quot;lens_notify&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">lsys</span><span class="p">(</span><span class="n">v</span><span class="p">),</span>
-                                          <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">foci</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="p">],</span> <span class="c1"># called when lense data changed</span>
+                                          <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">fsys</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="p">],</span> <span class="c1"># called when lense data changed</span>
                   <span class="s2">&quot;defl_notify&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tem</span><span class="o">.</span><span class="n">dsys</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="p">],</span> <span class="c1"># called when deflector data changed</span>
                   <span class="c1">#&quot;lfc_notify&quot; : [ None ], # called when Lens Free Control is used (obsolete)</span>
                      <span class="s2">&quot;fl_focus&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="kc">None</span> <span class="p">],</span>
@@ -196,7 +197,7 @@
             <span class="n">default</span> <span class="o">=</span> <span class="n">TEM</span>
         <span class="p">)</span>
         
-        <span class="c1">## pj で定義されている情報 (pmpj/Info) を参照する</span>
+        <span class="c1">## pj で定義されている情報 (Info) を参照する</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">illumination</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">Illumination</span><span class="p">()</span> <span class="c1"># -&gt; illumination_info</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imaging</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">Imaging</span><span class="p">()</span> <span class="c1"># -&gt; imaging_info</span>
@@ -205,18 +206,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">eos</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">EOsys</span><span class="p">()</span> <span class="c1"># -&gt; eos_info</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hts</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">HTsys</span><span class="p">()</span> <span class="c1"># -&gt; ht_info</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gonio</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">Stage</span><span class="p">()</span> <span class="c1"># -&gt; gonio_info</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">efilter</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">Filter</span><span class="p">()</span> <span class="c1"># -&gt; filter_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">efilter</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">Filter</span><span class="p">()</span> <span class="c1"># -&gt; efilter_info</span>
         
         <span class="c1">## Aperture system typeinfo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">apts</span> <span class="o">=</span> <span class="n">pj</span><span class="o">.</span><span class="n">ApertureEx</span>
         
         <span class="c1">## pj で定義されない情報はここで実体を定義する</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">htsub_info</span> <span class="o">=</span> <span class="n">jinfo</span><span class="o">.</span><span class="n">HTsub_info</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">htsub2_info</span> <span class="o">=</span> <span class="n">jinfo</span><span class="o">.</span><span class="n">HTsub2_info</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cur_info</span> <span class="o">=</span> <span class="n">jinfo</span><span class="o">.</span><span class="n">Current_info</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scr_info</span> <span class="o">=</span> <span class="n">jinfo</span><span class="o">.</span><span class="n">Screen_info</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">det_info</span> <span class="o">=</span> <span class="n">jinfo</span><span class="o">.</span><span class="n">Detector_info</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">htsub_info</span> <span class="o">=</span> <span class="n">teminfo</span><span class="o">.</span><span class="n">HTsub_info</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">htsub2_info</span> <span class="o">=</span> <span class="n">teminfo</span><span class="o">.</span><span class="n">HTsub2_info</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur_info</span> <span class="o">=</span> <span class="n">teminfo</span><span class="o">.</span><span class="n">Current_info</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scr_info</span> <span class="o">=</span> <span class="n">teminfo</span><span class="o">.</span><span class="n">Screen_info</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">det_info</span> <span class="o">=</span> <span class="n">teminfo</span><span class="o">.</span><span class="n">Detector_info</span><span class="p">()</span>
         
         <span class="n">_NC</span> <span class="o">=</span> <span class="n">cntf</span><span class="o">.</span><span class="n">NotifyCommand</span>
         
@@ -261,11 +262,14 @@
             <span class="n">_NC</span><span class="p">(</span><span class="s2">&quot;N817&quot;</span><span class="p">,</span> <span class="s2">&quot;!6H&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;auto_ems&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)),</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">degauss_sw</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_substr</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span> <span class="c1"># 3-fields for mode:str</span>
     
-<div class="viewcode-block" id="NotifyHandler.on_filter_fork"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_filter_fork">[docs]</a>    <span class="k">def</span> <span class="nf">on_filter_fork</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
+<div class="viewcode-block" id="NotifyHandler.on_filter_fork">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_filter_fork">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_filter_fork</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when filter is drived.&quot;&quot;&quot;</span>
         <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">efilter</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;filter_info&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;efilter_info&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">degauss_sw</span><span class="p">:</span>
@@ -274,6 +278,7 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">degauss_sw</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">degauss_sw</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">&quot;degauss end&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span></div>
+
     
     <span class="c1">## def on_mode_fork(self, argv):</span>
     <span class="c1">##     &quot;&quot;&quot;Called when optical mode is changing or changed.&quot;&quot;&quot;</span>
@@ -283,24 +288,43 @@
     <span class="c1">##     else:</span>
     <span class="c1">##         self.handler(&quot;mode changed&quot;, id)</span>
     
-<div class="viewcode-block" id="NotifyHandler.on_htsub_fork"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_htsub_fork">[docs]</a>    <span class="k">def</span> <span class="nf">on_htsub_fork</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span> <span class="c1">#&lt;htsub_info&gt;</span>
+<div class="viewcode-block" id="NotifyHandler.on_htsub_fork">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_htsub_fork">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_htsub_fork</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span> <span class="c1">#&lt;htsub_info&gt;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s1">&#39;ht_info&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hts</span><span class="o">.</span><span class="n">request</span><span class="p">())</span></div>
+
     
-<div class="viewcode-block" id="NotifyHandler.on_illumination_notify"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_illumination_notify">[docs]</a>    <span class="k">def</span> <span class="nf">on_illumination_notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span> <span class="c1">#&lt;illumination_info&gt;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">substr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{mode_name}</span><span class="s2">[</span><span class="si">{spot}</span><span class="s2">-</span><span class="si">{alpha}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">info</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__parent</span><span class="o">.</span><span class="n">statusbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modestr</span><span class="p">)</span></div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">modestr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_substr</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
     
-<div class="viewcode-block" id="NotifyHandler.on_imaging_notify"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_imaging_notify">[docs]</a>    <span class="k">def</span> <span class="nf">on_imaging_notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span> <span class="c1">#&lt;imaging_info&gt;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">substr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{mode_name}</span><span class="s2">[</span><span class="si">{submodestr}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">info</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__parent</span><span class="o">.</span><span class="n">statusbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modestr</span><span class="p">)</span></div>
+<div class="viewcode-block" id="NotifyHandler.on_illumination_notify">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_illumination_notify">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_illumination_notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span> <span class="c1">#&lt;illumination_info&gt;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_substr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{mode_name}</span><span class="s2">[</span><span class="si">{spot}</span><span class="s2">,</span><span class="si">{alpha}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">info</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__parent</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modestr</span><span class="p">)</span></div>
+
     
-<div class="viewcode-block" id="NotifyHandler.on_omega_notify"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_omega_notify">[docs]</a>    <span class="k">def</span> <span class="nf">on_omega_notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span> <span class="c1">#&lt;omega_info&gt;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">substr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{mode_name}</span><span class="s2">[</span><span class="si">{submodestr}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">info</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__parent</span><span class="o">.</span><span class="n">statusbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modestr</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="NotifyHandler.on_imaging_notify">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_imaging_notify">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_imaging_notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span> <span class="c1">#&lt;imaging_info&gt;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_substr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{mode_name}</span><span class="s2">[</span><span class="si">{submode_str}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">info</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__parent</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modestr</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="NotifyHandler.on_omega_notify">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyHandler.on_omega_notify">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_omega_notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span> <span class="c1">#&lt;omega_info&gt;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_substr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{mode_name}</span><span class="s2">[</span><span class="si">{submode_str}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">info</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__parent</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modestr</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="NotifyLogger"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger">[docs]</a><span class="k">class</span> <span class="nc">NotifyLogger</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ListCtrl</span><span class="p">,</span> <span class="n">ListCtrlAutoWidthMixin</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Notify logger</span>
+
+<div class="viewcode-block" id="NotifyLogger">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger">[docs]</a>
+<span class="k">class</span> <span class="nc">NotifyLogger</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ListCtrl</span><span class="p">,</span> <span class="n">ListCtrlAutoWidthMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Notify logger.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">selected_items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -337,7 +361,7 @@
                 <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="p">)</span>
-            <span class="n">item</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">iid</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">data</span><span class="p">]</span> <span class="c1"># format; add counter(1), get rid of status</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">iid</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">data</span><span class="p">]</span> <span class="c1"># add counter(1), get rid of status</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">InsertItem</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
         
@@ -350,52 +374,76 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">SetItem</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">blink</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
     
-<div class="viewcode-block" id="NotifyLogger.blink"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.blink">[docs]</a>    <span class="k">def</span> <span class="nf">blink</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<div class="viewcode-block" id="NotifyLogger.blink">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.blink">[docs]</a>
+    <span class="k">def</span> <span class="nf">blink</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetItemBackgroundColour</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">!=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Colour</span><span class="p">(</span><span class="s1">&#39;yellow&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">SetItemBackgroundColour</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">)</span>
             <span class="k">def</span> <span class="nf">reset_color</span><span class="p">():</span>
                 <span class="k">if</span> <span class="bp">self</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ItemCount</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">SetItemBackgroundColour</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">)</span>
             <span class="n">wx</span><span class="o">.</span><span class="n">CallAfter</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">CallLater</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">reset_color</span><span class="p">)</span></div>
+
     
-<div class="viewcode-block" id="NotifyLogger.OnSortItems"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.OnSortItems">[docs]</a>    <span class="k">def</span> <span class="nf">OnSortItems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span> <span class="c1">#&lt;wx._controls.ListEvent&gt;</span>
+<div class="viewcode-block" id="NotifyLogger.OnSortItems">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.OnSortItems">[docs]</a>
+    <span class="k">def</span> <span class="nf">OnSortItems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span> <span class="c1">#&lt;wx._controls.ListEvent&gt;</span>
         <span class="n">col</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">GetColumn</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__dir</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__dir</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">SetItem</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
+
     
-<div class="viewcode-block" id="NotifyLogger.OnMotion"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.OnMotion">[docs]</a>    <span class="k">def</span> <span class="nf">OnMotion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span> <span class="c1">#&lt;wx._core.MouseEvent&gt;</span>
+<div class="viewcode-block" id="NotifyLogger.OnMotion">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.OnMotion">[docs]</a>
+    <span class="k">def</span> <span class="nf">OnMotion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span> <span class="c1">#&lt;wx._core.MouseEvent&gt;</span>
         <span class="n">j</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">HitTest</span><span class="p">(</span><span class="n">evt</span><span class="o">.</span><span class="n">GetPosition</span><span class="p">())</span>
-        <span class="n">tip</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">if</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-            <span class="n">tip</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">bytes)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">NOTIFY_COMMANDS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
-            <span class="n">tip</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ToolTip</span> <span class="o">=</span> <span class="n">tip</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">bytes)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">NOTIFY_COMMANDS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ToolTip</span> <span class="o">=</span> <span class="n">text</span>
         <span class="n">evt</span><span class="o">.</span><span class="n">Skip</span><span class="p">()</span></div>
+
     
-<div class="viewcode-block" id="NotifyLogger.copy"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NotifyLogger.copy">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_items</span><span class="p">)</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">TheClipboard</span><span class="o">.</span><span class="n">Open</span><span class="p">()</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">TheClipboard</span><span class="o">.</span><span class="n">SetData</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">TextDataObject</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">TheClipboard</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span></div>
+
     
-<div class="viewcode-block" id="NotifyLogger.delete"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NotifyLogger.delete">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_items</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">DeleteItem</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__items</span><span class="p">[</span><span class="n">j</span><span class="p">]</span></div>
+
     
-<div class="viewcode-block" id="NotifyLogger.delete_all"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.delete_all">[docs]</a>    <span class="k">def</span> <span class="nf">delete_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NotifyLogger.delete_all">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyLogger.delete_all">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">DeleteAllItems</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__items</span> <span class="o">=</span> <span class="p">[]</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__items</span> <span class="o">=</span> <span class="p">[]</span></div>
+</div>
 
 
-<div class="viewcode-block" id="NotifyFront"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyFront">[docs]</a><span class="k">class</span> <span class="nc">NotifyFront</span><span class="p">(</span><span class="n">MiniFrame</span><span class="p">):</span>
-    
+
+<div class="viewcode-block" id="NotifyFront">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyFront">[docs]</a>
+<span class="k">class</span> <span class="nc">NotifyFront</span><span class="p">(</span><span class="n">MiniFrame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Notify front-end.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">set_host</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">set_host</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="n">MiniFrame</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span>
             <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Notify&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span><span class="mi">320</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">DEFAULT_FRAME_STYLE</span><span class="p">)</span>
@@ -422,11 +470,17 @@
                 <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">delete_all</span><span class="p">()),</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StatusBar</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
     
-<div class="viewcode-block" id="NotifyFront.Destroy"><a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyFront.Destroy">[docs]</a>    <span class="k">def</span> <span class="nf">Destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">wx</span><span class="o">.</span><span class="n">MiniFrame</span><span class="o">.</span><span class="n">Destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="NotifyFront.Destroy">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.temsys.NotifyFront.Destroy">[docs]</a>
+    <span class="k">def</span> <span class="nf">Destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">wx</span><span class="o">.</span><span class="n">MiniFrame</span><span class="o">.</span><span class="n">Destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+</div>
+
 
 
 <span class="n">NOTIFY_COMMANDS</span> <span class="o">=</span> <span class="p">{</span>
@@ -727,44 +781,13 @@
     <span class="s2">&quot;F930&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;排気系情報通知&quot;</span><span class="p">,</span>
     <span class="s2">&quot;F973&quot;</span> <span class="p">:</span> <span class="sa">u</span><span class="s2">&quot;試料ホルダータイプ通知&quot;</span><span class="p">,</span>
 <span class="p">}</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">cmdl</span><span class="o">.</span><span class="n">HOST</span> <span class="o">=</span> <span class="n">cntf</span><span class="o">.</span><span class="n">HOST</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
-    <span class="c1">## cmdl.OFFLINE = True</span>
-    
-    <span class="k">class</span> <span class="nc">TestFrame</span><span class="p">(</span><span class="n">Frame</span><span class="p">):</span>
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="nb">super</span><span class="p">(</span><span class="n">TestFrame</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            
-            <span class="bp">self</span><span class="o">.</span><span class="n">nfront</span> <span class="o">=</span> <span class="n">NotifyFront</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfront</span><span class="o">.</span><span class="n">notify</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="mi">4</span>
-            
-            <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="p">[</span><span class="s2">&quot;File&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
-                <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;&amp;Notifyee</span><span class="se">\t</span><span class="s2">F11&quot;</span><span class="p">,</span> <span class="s2">&quot;Notify logger frame&quot;</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ITEM_CHECK</span><span class="p">,</span>
-                    <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfront</span><span class="o">.</span><span class="n">Show</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">()),</span>
-                    <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">Check</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nfront</span><span class="o">.</span><span class="n">IsShown</span><span class="p">())),</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-        
-        <span class="k">def</span> <span class="nf">Destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">nfront</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">Frame</span><span class="o">.</span><span class="n">Destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-    
-    <span class="n">app</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">()</span>
-    <span class="n">frm</span> <span class="o">=</span> <span class="n">TestFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-    <span class="c1">## frm = NotifyFront(None)</span>
-    <span class="n">frm</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span>
 </pre></div>
 
             <div class="clearer"></div>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h3><a href="../../index.html">Table of Contents</a></h3>
 <p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
@@ -780,7 +803,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyJeol.html">pyJeol package</a></li>
 </ul>
 
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -788,13 +811,13 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -809,8 +832,8 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

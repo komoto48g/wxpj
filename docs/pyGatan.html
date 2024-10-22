@@ -1,0 +1,412 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>pyGatan package &#8212; wxpj  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css?v=5283bb3d" />
+    
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyGatan package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="pygatan-package">
+<h1>pyGatan package<a class="headerlink" href="#pygatan-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pyGatan.gatansocket3">
+<span id="pygatan-gatansocket3-module"></span><h2>pyGatan.gatansocket3 module<a class="headerlink" href="#module-pyGatan.gatansocket3" title="Link to this heading"></a></h2>
+<p>## gatansocket3.py.</p>
+<p><cite>gatansocket3.py</cite> defines a client class to interface with the socket based DM plugin.</p>
+<p>The script adapted from [Leginon](<a class="reference external" href="http://emg.nysbc.org/redmine/projects/leginon/wiki/Leginon_Homepage">http://emg.nysbc.org/redmine/projects/leginon/wiki/Leginon_Homepage</a>). Leginon is licenced under the Apache License, Version 2.0. The code (<cite>gatansocket3.py</cite>) was converted from Python2.7 to Python3.6+ from [here](<a class="reference external" href="http://emg.nysbc.org/redmine/projects/leginon/repository/revisions/trunk/entry/pyscope/gatansocket.py">http://emg.nysbc.org/redmine/projects/leginon/repository/revisions/trunk/entry/pyscope/gatansocket.py</a>).</p>
+<p>It needs the SERIALEMCCD plugin to be installed in DigitalMicrograph. The relevant instructions from the [SerialEM documentation](<a class="reference external" href="https://bio3d.colorado.edu/SerialEM/hlp/html/setting_up_serialem.htm">https://bio3d.colorado.edu/SerialEM/hlp/html/setting_up_serialem.htm</a>) are referenced below.</p>
+<p>### Setup [1]</p>
+<dl class="simple">
+<dt>To connect to DigitalMicrograph through a socket interface on the same or a different computer, such as for a K2/K3 camera with SerialEM running on an FEI microscope, you need to do the following:</dt><dd><ul class="simple">
+<li><p>Determine the IP address of the computer running DM on the network which that computer shares with the computer running SerialEM.  If SerialEM and DM are running on the same computer, use <cite>127.0.0.1</cite> for the address.</p></li>
+<li><dl class="simple">
+<dt>Copy the appropriate SerialEMCDD plugin from the SerialEM_3-x-x folder to a Plugins folder on the other computer (the one running DM). Specifically:</dt><dd><ul>
+<li><p>If the other computer is running 64-bit Windows, copy  <cite>SEMCCD-GMS2.31-64.dll</cite>, <cite>SEMCCD-GMS3.30-64.dll</cite>, or <cite>SEMCCD-GMS3.31-64.dll</cite> to <cite>C:ProgramDataGatanPlugins</cite> and rename it to <cite>SEMCCD-GMS2-64.dll</cite></p></li>
+<li><p>If the other computer is running GMS2 on Windows XP or Windows 7 32-bit, copy <cite>SEMCCD-GMS2.0-32.dll</cite> or <cite>SEMCCD-GMS2.3-32.dll</cite> to <cite>C:Program FilesGatanPlugins</cite> and rename it to <cite>SEMCCD-GMS2-32.dll</cite></p></li>
+<li><p>If the other computer is running GMS 1, copy <cite>SerialEMCCD.dll</cite> to <cite>C:Program FilesGatanDigitalMicrographPlugins</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>If DM and SerialEM are running on the same computer, the installer should have placed the right plugin in the right folder, but if not, follow the procedure just given.</p></li>
+<li><p>On the computer running DM, define a system environment variable <cite>SERIALEMCCD_PORT</cite> with the value <cite>48890</cite> or other selected port number, as described in the section above.</p></li>
+<li><p>Make sure that this port is open for communication between SerialEM and DM. If there is any possibility of either machine being exposed to the internet, do not simply turn off the firewalls; open only this specific port in the firewall, and allow access only by the other machine or the local subnet.  Even if just this one port is exposed to the world, port scanners can interfere with communication and DM function.</p></li>
+<li><p>Restart DM. Note that no registration is needed for the plugin when using a socket interface.</p></li>
+<li><dl class="simple">
+<dt>If the connection does not work, debugging output can be obtained on both sides by:</dt><dd><ul>
+<li><p>Setting an environment variable <cite>SERIALEMCCD_DEBUG</cite> with the value of <cite>1</cite> or <cite>2</cite>, where <cite>2</cite> will give more verbose output related to the socket operations.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p>[1]. <a class="reference external" href="https://bio3d.colorado.edu/SerialEM/hlp/html/setting_up_serialem.htm">https://bio3d.colorado.edu/SerialEM/hlp/html/setting_up_serialem.htm</a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.Message">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyGatan.gatansocket3.</span></span><span class="sig-name descname"><span class="pre">Message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">longargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boolargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dblargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longarray</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#Message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.Message" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Information packet to send and receive on the socket.</p>
+<p>Initialize with the sequences of args (longs, bools, doubles) and
+optional long array.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.Message.pack">
+<span class="sig-name descname"><span class="pre">pack</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#Message.pack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.Message.pack" title="Link to this definition"></a></dt>
+<dd><p>Serialize the data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.Message.unpack">
+<span class="sig-name descname"><span class="pre">unpack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#Message.unpack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.Message.unpack" title="Link to this definition"></a></dt>
+<dd><p>Unpack buffer into our data structure.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.log">
+<span class="sig-prename descclassname"><span class="pre">pyGatan.gatansocket3.</span></span><span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.log" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.logwrap">
+<span class="sig-prename descclassname"><span class="pre">pyGatan.gatansocket3.</span></span><span class="sig-name descname"><span class="pre">logwrap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#logwrap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.logwrap" title="Link to this definition"></a></dt>
+<dd><p>Decorator for socket send and recv calls, so they can make log.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyGatan.gatansocket3.</span></span><span class="sig-name descname"><span class="pre">GatanSocket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'127.0.0.1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">48890</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.hasScriptFunction">
+<span class="sig-name descname"><span class="pre">hasScriptFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.hasScriptFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.hasScriptFunction" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.connect" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.disconnect">
+<span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.disconnect" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.reconnect">
+<span class="sig-name descname"><span class="pre">reconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.reconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.reconnect" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.send_data">
+<span class="sig-name descname"><span class="pre">send_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.send_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.send_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.recv_data">
+<span class="sig-name descname"><span class="pre">recv_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.recv_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.recv_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.ExchangeMessages">
+<span class="sig-name descname"><span class="pre">ExchangeMessages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_send</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_recv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.ExchangeMessages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.ExchangeMessages" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.GetLong">
+<span class="sig-name descname"><span class="pre">GetLong</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">funcName</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.GetLong"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.GetLong" title="Link to this definition"></a></dt>
+<dd><p>Common class of function that gets a single long.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.SendLongGetLong">
+<span class="sig-name descname"><span class="pre">SendLongGetLong</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">funcName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longarg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.SendLongGetLong"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.SendLongGetLong" title="Link to this definition"></a></dt>
+<dd><p>Common class of function with one long arg that returns a single
+long.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.GetDMVersion">
+<span class="sig-name descname"><span class="pre">GetDMVersion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.GetDMVersion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.GetDMVersion" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.GetNumberOfCameras">
+<span class="sig-name descname"><span class="pre">GetNumberOfCameras</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.GetNumberOfCameras"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.GetNumberOfCameras" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.GetPluginVersion">
+<span class="sig-name descname"><span class="pre">GetPluginVersion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.GetPluginVersion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.GetPluginVersion" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.IsCameraInserted">
+<span class="sig-name descname"><span class="pre">IsCameraInserted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">camera</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.IsCameraInserted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.IsCameraInserted" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.InsertCamera">
+<span class="sig-name descname"><span class="pre">InsertCamera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">camera</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.InsertCamera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.InsertCamera" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.SetReadMode">
+<span class="sig-name descname"><span class="pre">SetReadMode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.SetReadMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.SetReadMode" title="Link to this definition"></a></dt>
+<dd><p>Set the read mode and the scaling factor.</p>
+<p>For K2, pass 0, 1, or 2 for linear, counting, super-res.
+For K3, pass 3 or 4 for linear or super-res: this is THE signal that it is a K3.
+For OneView, pass -3 for regular imaging or -2 for diffraction.
+For camera not needing read mode, pass -1.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.SetShutterNormallyClosed">
+<span class="sig-name descname"><span class="pre">SetShutterNormallyClosed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">camera</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shutter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.SetShutterNormallyClosed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.SetShutterNormallyClosed" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.SetK2Parameters">
+<span class="sig-name descname"><span class="pre">SetK2Parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.SetK2Parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.SetK2Parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.setNumGrabSum">
+<span class="sig-name descname"><span class="pre">setNumGrabSum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">earlyReturnFrameCount</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">earlyReturnRamGrabs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.setNumGrabSum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.setNumGrabSum" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.getNumGrabSum">
+<span class="sig-name descname"><span class="pre">getNumGrabSum</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.getNumGrabSum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.getNumGrabSum" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.SetupFileSaving">
+<span class="sig-name descname"><span class="pre">SetupFileSaving</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.SetupFileSaving"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.SetupFileSaving" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.SelectCamera">
+<span class="sig-name descname"><span class="pre">SelectCamera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cameraid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.SelectCamera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.SelectCamera" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.UpdateK2HardwareDarkReference">
+<span class="sig-name descname"><span class="pre">UpdateK2HardwareDarkReference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cameraid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.UpdateK2HardwareDarkReference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.UpdateK2HardwareDarkReference" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.GetEnergyFilter">
+<span class="sig-name descname"><span class="pre">GetEnergyFilter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.GetEnergyFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.GetEnergyFilter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.SetEnergyFilter">
+<span class="sig-name descname"><span class="pre">SetEnergyFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.SetEnergyFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.SetEnergyFilter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.GetEnergyFilterWidth">
+<span class="sig-name descname"><span class="pre">GetEnergyFilterWidth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.GetEnergyFilterWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.GetEnergyFilterWidth" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.SetEnergyFilterWidth">
+<span class="sig-name descname"><span class="pre">SetEnergyFilterWidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.SetEnergyFilterWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.SetEnergyFilterWidth" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.GetEnergyFilterOffset">
+<span class="sig-name descname"><span class="pre">GetEnergyFilterOffset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.GetEnergyFilterOffset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.GetEnergyFilterOffset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.SetEnergyFilterOffset">
+<span class="sig-name descname"><span class="pre">SetEnergyFilterOffset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.SetEnergyFilterOffset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.SetEnergyFilterOffset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.AlignEnergyFilterZeroLossPeak">
+<span class="sig-name descname"><span class="pre">AlignEnergyFilterZeroLossPeak</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.AlignEnergyFilterZeroLossPeak"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.AlignEnergyFilterZeroLossPeak" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.GetImage">
+<span class="sig-name descname"><span class="pre">GetImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.GetImage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.GetImage" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.ExecuteSendCameraObjectionFunction">
+<span class="sig-name descname"><span class="pre">ExecuteSendCameraObjectionFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.ExecuteSendCameraObjectionFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.ExecuteSendCameraObjectionFunction" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.ExecuteGetLongCameraObjectFunction">
+<span class="sig-name descname"><span class="pre">ExecuteGetLongCameraObjectFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.ExecuteGetLongCameraObjectFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.ExecuteGetLongCameraObjectFunction" title="Link to this definition"></a></dt>
+<dd><p>Execute DM script function that requires camera object as input and
+output one long integer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.ExecuteGetDoubleCameraObjectFunction">
+<span class="sig-name descname"><span class="pre">ExecuteGetDoubleCameraObjectFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.ExecuteGetDoubleCameraObjectFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.ExecuteGetDoubleCameraObjectFunction" title="Link to this definition"></a></dt>
+<dd><p>Execute DM script function that requires camera object as input and
+output double floating point number.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.ExecuteCameraObjectFunction">
+<span class="sig-name descname"><span class="pre">ExecuteCameraObjectFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recv_longargs_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recv_dblargs_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recv_longarray_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.ExecuteCameraObjectFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.ExecuteCameraObjectFunction" title="Link to this definition"></a></dt>
+<dd><p>Execute DM script function that requires camera object as input.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.ExecuteSendScript">
+<span class="sig-name descname"><span class="pre">ExecuteSendScript</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command_line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_camera</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.ExecuteSendScript"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.ExecuteSendScript" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.ExecuteGetLongScript">
+<span class="sig-name descname"><span class="pre">ExecuteGetLongScript</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command_line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_camera</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.ExecuteGetLongScript"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.ExecuteGetLongScript" title="Link to this definition"></a></dt>
+<dd><p>Execute DM script and return the result as integer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.ExecuteGetDoubleScript">
+<span class="sig-name descname"><span class="pre">ExecuteGetDoubleScript</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command_line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_camera</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.ExecuteGetDoubleScript"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.ExecuteGetDoubleScript" title="Link to this definition"></a></dt>
+<dd><p>Execute DM script that gets one double float number.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.ExecuteScript">
+<span class="sig-name descname"><span class="pre">ExecuteScript</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command_line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_camera</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recv_longargs_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recv_dblargs_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recv_longarray_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.ExecuteScript"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.ExecuteScript" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.GatanSocket.RunScript">
+<span class="sig-name descname"><span class="pre">RunScript</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#GatanSocket.RunScript"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.GatanSocket.RunScript" title="Link to this definition"></a></dt>
+<dd><p>Run a DM script.</p>
+<dl class="simple">
+<dt>fn: str</dt><dd><p>Path to the script to run</p>
+</dd>
+<dt>background: bool</dt><dd><p>Prepend <cite>// $BACKGROUND$</cite> to run the script in the background
+and make it non-blocking.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyGatan.gatansocket3.test1">
+<span class="sig-prename descclassname"><span class="pre">pyGatan.gatansocket3.</span></span><span class="sig-name descname"><span class="pre">test1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyGatan/gatansocket3.html#test1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyGatan.gatansocket3.test1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pyGatan">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyGatan" title="Link to this heading"></a></h2>
+<p>pyGatan package</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="0_how-to-start.html">1. Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_how-to-use.html">2. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_image-processing.html">3. Image Analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="wxpyJemacs.html">wxpyJemacs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyJeol.html">pyJeol package</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pyGatan.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyGatan package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

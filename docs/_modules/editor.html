@@ -1,6 +1,5 @@
 
-
-<!doctype html>
+<!DOCTYPE html>
 
 <html lang="en" data-content_root="../">
   <head>
@@ -8,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>editor &#8212; wxpj  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=649a27d8" />
-    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=532c1bf3" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=5283bb3d" />
     
     <script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -23,7 +22,7 @@
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -45,122 +44,40 @@
             
   <h1>Source code for editor</h1><div class="highlight"><pre>
 <span></span><span class="ch">#! python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;Editor&#39;s collection of wxpj.</span>
-
-<span class="sd">Author: Kazuya O&#39;moto &lt;komoto@jeol.co.jp&gt;</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span><span class="n">cos</span><span class="p">,</span><span class="n">sin</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
-<span class="c1">## from numpy.fft import fft,ifft,fftfreq</span>
-<span class="c1">## from numpy.fft import fft2,ifft2,fftshift</span>
-<span class="c1">## from mpl_toolkits.mplot3d import axes3d</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span>
+<span class="kn">from</span> <span class="nn">numpy.fft</span> <span class="kn">import</span> <span class="n">fft2</span><span class="p">,</span> <span class="n">fftshift</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">patches</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
-
-<span class="kn">from</span> <span class="nn">jgdk</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">LParam</span><span class="p">,</span> <span class="n">Button</span>
-
-
-<div class="viewcode-block" id="Plugin">
-<a class="viewcode-back" href="../editor.html#editor.Plugin">[docs]</a>
-<span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plugin as testsuite for editors functions.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">menukey</span> <span class="o">=</span> <span class="s2">&quot;Plugins/Functions/&amp;Editor&quot;</span>
-    
-<div class="viewcode-block" id="Plugin.Init">
-<a class="viewcode-back" href="../editor.html#editor.Plugin.Init">[docs]</a>
-    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cutoffs</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;lo&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">),</span>
-            <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;hi&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cutoffs</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;truncation&quot;</span><span class="p">,</span> <span class="c1"># cutoff lo/hi</span>
-            <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">tw</span><span class="o">=</span><span class="mi">40</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span>
-                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;imconv&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_imconv</span><span class="p">),</span>
-                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;imtrunc&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_imtrunc</span><span class="p">),</span>
-                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;imcorr&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_imcorr</span><span class="p">),</span>
-                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;ellipse&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_ellipse</span><span class="p">),</span>
-            <span class="p">),</span>
-            <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">art</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attach_artists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">art</span><span class="p">)</span> <span class="c1"># -&gt; self.Arts</span></div>
-
-    
-<div class="viewcode-block" id="Plugin.test_imconv">
-<a class="viewcode-back" href="../editor.html#editor.Plugin.test_imconv">[docs]</a>
-    <span class="k">def</span> <span class="nf">test_imconv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">buffer</span>
-        <span class="n">dst</span> <span class="o">=</span> <span class="n">imconv</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoffs</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;*result of imconv*&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dst</span></div>
-
-    
-<div class="viewcode-block" id="Plugin.test_imtrunc">
-<a class="viewcode-back" href="../editor.html#editor.Plugin.test_imtrunc">[docs]</a>
-    <span class="k">def</span> <span class="nf">test_imtrunc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">buffer</span>
-        <span class="n">dst</span> <span class="o">=</span> <span class="n">imtrunc</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoffs</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;*result of imtrunc*&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dst</span></div>
-
-    
-<div class="viewcode-block" id="Plugin.test_imcorr">
-<a class="viewcode-back" href="../editor.html#editor.Plugin.test_imcorr">[docs]</a>
-    <span class="k">def</span> <span class="nf">test_imcorr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">buffer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;*result of Corr*&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Corr</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">src</span><span class="p">)</span></div>
-
-    
-<div class="viewcode-block" id="Plugin.test_ellipse">
-<a class="viewcode-back" href="../editor.html#editor.Plugin.test_ellipse">[docs]</a>
-    <span class="k">def</span> <span class="nf">test_ellipse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_view</span><span class="o">.</span><span class="n">frame</span>
-        <span class="n">src</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">buffer</span>
-        <span class="n">ellipses</span> <span class="o">=</span> <span class="n">find_ellipses</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">{}</span><span class="s2"> circles.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ellipses</span><span class="p">))))</span>
-        <span class="k">if</span> <span class="n">ellipses</span><span class="p">:</span>
-            <span class="c1">## Draw the first ellipse if detected.</span>
-            <span class="n">el</span> <span class="o">=</span> <span class="n">ellipses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">draw_ellipse</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="p">))</span> <span class="c1"># Show the last message.</span></div>
-
-    
-<div class="viewcode-block" id="Plugin.draw_ellipse">
-<a class="viewcode-back" href="../editor.html#editor.Plugin.draw_ellipse">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_ellipse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-        <span class="p">(</span><span class="n">cx</span><span class="p">,</span><span class="n">cy</span><span class="p">),</span> <span class="p">(</span><span class="n">ra</span><span class="p">,</span><span class="n">rb</span><span class="p">),</span> <span class="n">angle</span> <span class="o">=</span> <span class="n">el</span>
-        <span class="n">R</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">calc_ellipse</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">el</span><span class="p">)</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">n</span><span class="o">/</span><span class="n">s</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">n</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">s</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">p</span><span class="o">/</span><span class="n">q</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># signal borderline</span>
-            <span class="n">art</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Arts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">art</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">xyfrompixel</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">)</span>
-            <span class="n">art</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">rb</span> <span class="o">*</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
-            <span class="n">art</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">ra</span> <span class="o">*</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
-            <span class="n">art</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="o">-</span><span class="n">angle</span>
-            <span class="n">art</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span>
-                <span class="s2">&quot;c=(</span><span class="si">{:.1f}</span><span class="s2">, </span><span class="si">{:.1f}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">),</span>
-                <span class="s2">&quot;r=(</span><span class="si">{:.1f}</span><span class="s2">, </span><span class="si">{:.1f}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">rb</span><span class="p">),</span>
-                <span class="s2">&quot;</span><span class="si">{:.1f}</span><span class="s2"> deg&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span>
-            <span class="p">)))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">; BRIGHTNESS </span><span class="si">{:.2f}</span><span class="s2">/</span><span class="si">{:.2f}</span><span class="s2"> (S/N </span><span class="si">{:.2f}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">p</span><span class="o">/</span><span class="n">q</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selected_view</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div>
-</div>
-
 
 
 <span class="c1">## --------------------------------</span>
 <span class="c1">## Image conv/plot/view</span>
 <span class="c1">## --------------------------------</span>
+
+<div class="viewcode-block" id="read_buffer">
+<a class="viewcode-back" href="../editor.html#editor.read_buffer">[docs]</a>
+<span class="k">def</span> <span class="nf">read_buffer</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">wxpyJemacs</span> <span class="kn">import</span> <span class="n">MainFrame</span> <span class="k">as</span> <span class="n">Frame</span>
+
+    <span class="n">buf</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">Frame</span><span class="o">.</span><span class="n">read_buffer</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">buf</span><span class="p">,</span> <span class="n">info</span></div>
+
+
+
+<div class="viewcode-block" id="write_buffer">
+<a class="viewcode-back" href="../editor.html#editor.write_buffer">[docs]</a>
+<span class="k">def</span> <span class="nf">write_buffer</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">buf</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">wxpyJemacs</span> <span class="kn">import</span> <span class="n">MainFrame</span> <span class="k">as</span> <span class="n">Frame</span>
+
+    <span class="k">return</span> <span class="n">Frame</span><span class="o">.</span><span class="n">write_buffer</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span></div>
+
+
 
 <div class="viewcode-block" id="imcv">
 <a class="viewcode-back" href="../editor.html#editor.imcv">[docs]</a>
@@ -175,57 +92,45 @@
 
 
 
-<div class="viewcode-block" id="imtrunc">
-<a class="viewcode-back" href="../editor.html#editor.imtrunc">[docs]</a>
-<span class="k">def</span> <span class="nf">imtrunc</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">lo</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hi</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Truncate buffer with cutoff lo/hi [%].</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">lo</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">hi</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">lo</span><span class="p">)</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">100</span><span class="o">-</span><span class="n">hi</span><span class="p">)</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">buf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">img</span><span class="p">[</span><span class="n">buf</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
-        <span class="n">img</span><span class="p">[</span><span class="n">buf</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span>
-        <span class="k">return</span> <span class="n">img</span>
-    <span class="k">return</span> <span class="n">buf</span></div>
-
-
-
 <div class="viewcode-block" id="imconv">
 <a class="viewcode-back" href="../editor.html#editor.imconv">[docs]</a>
-<span class="k">def</span> <span class="nf">imconv</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">lo</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hi</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert buffer to dst&lt;uint8&gt; with cutoff lo/hi [%].</span>
+<span class="k">def</span> <span class="nf">imconv</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">hi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lo</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert buffer to dst&lt;uint8&gt; with cutoff hi/lo %.</span>
 <span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; dst = (src-a) * 255 / (b-a)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">buf</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">buf</span>
+    <span class="k">if</span> <span class="n">src</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">src</span>
     
-    <span class="k">if</span> <span class="n">buf</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">):</span> <span class="c1"># fft pattern</span>
-        <span class="n">buf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">src</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">):</span> <span class="c1"># fft pattern</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">src</span><span class="p">))</span>
     
-    <span class="k">if</span> <span class="n">buf</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="c1">## R,G,B = buf[..., 0:3]</span>
+    <span class="k">if</span> <span class="n">src</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="c1">## R,G,B = src[..., 0:3]</span>
         <span class="c1">## y = R * 0.299 + G * 0.587 + B * 0.114</span>
-        <span class="c1">## return y.astype(buf.dtype)</span>
-        <span class="n">buf</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGB2GRAY</span><span class="p">)</span> <span class="c1"># rgb2gray</span>
+        <span class="c1">## return y.astype(src.dtype)</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGB2GRAY</span><span class="p">)</span> <span class="c1"># rgb2gray</span>
     
-    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">lo</span><span class="p">)</span> <span class="k">if</span> <span class="n">lo</span> <span class="k">else</span> <span class="n">buf</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">100</span><span class="o">-</span><span class="n">hi</span><span class="p">)</span> <span class="k">if</span> <span class="n">hi</span> <span class="k">else</span> <span class="n">buf</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">lo</span><span class="p">)</span> <span class="k">if</span> <span class="n">lo</span> <span class="k">else</span> <span class="n">src</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="mi">100</span><span class="o">-</span><span class="n">hi</span><span class="p">)</span> <span class="k">if</span> <span class="n">hi</span> <span class="k">else</span> <span class="n">src</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
     
     <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span> <span class="o">/</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">))</span> <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span> <span class="k">else</span> <span class="mi">1</span>
-    <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">((</span><span class="n">buf</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span> <span class="c1"># copy buffer</span>
-    <span class="n">img</span><span class="p">[</span><span class="n">buf</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">img</span><span class="p">[</span><span class="n">buf</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="mi">255</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">((</span><span class="n">src</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span> <span class="c1"># copy buffer</span>
+    <span class="n">img</span><span class="p">[</span><span class="n">src</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">img</span><span class="p">[</span><span class="n">src</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="mi">255</span>
     <span class="k">return</span> <span class="n">img</span></div>
 
 
 
+<span class="c1">## --------------------------------</span>
+<span class="c1">## maplotlib (in-shell use only)</span>
+<span class="c1">## --------------------------------</span>
+
 <div class="viewcode-block" id="imshow">
 <a class="viewcode-back" href="../editor.html#editor.imshow">[docs]</a>
-<span class="k">def</span> <span class="nf">imshow</span><span class="p">(</span><span class="n">buf</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">imshow</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">gray</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">gray</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
@@ -274,6 +179,7 @@
 
 <span class="n">clear</span> <span class="o">=</span> <span class="n">clf</span>
 
+
 <span class="c1">## --------------------------------</span>
 <span class="c1">## Image processing</span>
 <span class="c1">## --------------------------------</span>
@@ -286,24 +192,6 @@
     <span class="n">M</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getRotationMatrix2D</span><span class="p">((</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">angle</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">warpAffine</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span></div>
 
-
-<span class="c1">## def blur1d(src, lw=11, window=np.hanning):</span>
-<span class="c1">##     &quot;&quot;&quot;Smooth 1D array.</span>
-<span class="c1">##     window function: hanning, hamming, bartlett, blackman, or, None</span>
-<span class="c1">##     &quot;&quot;&quot;</span>
-<span class="c1">##     w = np.ones(lw,&#39;d&#39;) if not window else window(lw)</span>
-<span class="c1">##     return np.convolve(w/w.sum(), src, mode=&#39;same&#39;)</span>
-<span class="c1">## </span>
-<span class="c1">## def gaussian_blur1d(src, lw=11, p=1, sigma=4):</span>
-<span class="c1">##     &quot;&quot;&quot;Smooth 1D array with Gaussian window (cf. cv2.GaussianBlur).</span>
-<span class="c1">##     lw : length of window</span>
-<span class="c1">##      p : shape; p = 1 is identical to Normal gaussian,</span>
-<span class="c1">##                 p = 1/2 the same as Laplace distribution.</span>
-<span class="c1">##     &quot;&quot;&quot;</span>
-<span class="c1">##     window = signal.general_gaussian(lw, p, sig=sigma)</span>
-<span class="c1">##     f = signal.fftconvolve(window, src)</span>
-<span class="c1">##     f = (np.average(src) / np.average(f)) * f</span>
-<span class="c1">##     return np.roll(f, -lw//2)</span>
 
 
 <div class="viewcode-block" id="gradx">
@@ -328,86 +216,197 @@
 
 
 
+<span class="c1">## --------------------------------</span>
+<span class="c1">## Image analysis using FFT / misc.</span>
+<span class="c1">## --------------------------------</span>
+
+<div class="viewcode-block" id="enhanced_fft">
+<a class="viewcode-back" href="../editor.html#editor.enhanced_fft">[docs]</a>
+<span class="k">def</span> <span class="nf">enhanced_fft</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;FFT intensity image with pseudo background subtraction using cv2.linearPolar.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        ratio: ratio of the polar-transform radius to n,</span>
+<span class="sd">               where the src shape is (2n, 2n).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">fftshift</span><span class="p">(</span><span class="n">fft2</span><span class="p">(</span><span class="n">src</span><span class="p">))</span>   <span class="c1"># fft2</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">src</span><span class="p">))</span>  <span class="c1"># log intensity</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">buf</span><span class="o">.</span><span class="n">shape</span>            <span class="c1"># shape: (2n, 2n)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">h</span><span class="o">//</span><span class="mi">2</span>
+    <span class="n">rmax</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">ratio</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">linearPolar</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">WARP_FILL_OUTLIERS</span><span class="p">)</span>
+    <span class="n">buf</span> <span class="o">-=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">/</span> <span class="n">h</span> <span class="c1"># バックグラウンド(ぽい)強度を引いてみる</span>
+    
+    <span class="n">buf</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">linearPolar</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">WARP_INVERSE_MAP</span><span class="p">)</span>
+    <span class="c1">## Note:</span>
+    <span class="c1">##     ↓逆変換を何度か呼び出すと変な結果になるバグ？▲θ=±πの部分が回復しない</span>
+    <span class="c1">## N = np.arange(-n, n, dtype=np.float32),</span>
+    <span class="c1">## X, Y = np.meshgrid(N, N)</span>
+    <span class="c1">## map_r = w/rmax * np.hypot(Y, X)</span>
+    <span class="c1">## map_t = (pi + np.arctan2(Y, X)) * h/2 /pi</span>
+    <span class="c1">## buf = cv2.remap(buf.astype(np.float32), map_r, map_t,</span>
+    <span class="c1">##                 cv2.INTER_CUBIC, cv2.WARP_FILL_OUTLIERS)</span>
+    
+    <span class="n">dst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="c1"># log --&gt; exp で戻す</span>
+    <span class="k">return</span> <span class="n">dst</span></div>
+
+
+
+<div class="viewcode-block" id="fftcrop">
+<a class="viewcode-back" href="../editor.html#editor.fftcrop">[docs]</a>
+<span class="k">def</span> <span class="nf">fftcrop</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">maxsize</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Crop src image in +- 2**nn square ROI centered at (x, y).&quot;&quot;&quot;</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">maxsize</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">m</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="mi">2</span><span class="o">**</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># 2**nn</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">center</span> <span class="ow">or</span> <span class="p">(</span><span class="n">w</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">src</span><span class="p">[</span><span class="n">y</span><span class="o">-</span><span class="n">n</span><span class="p">:</span><span class="n">y</span><span class="o">+</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="o">-</span><span class="n">n</span><span class="p">:</span><span class="n">x</span><span class="o">+</span><span class="n">n</span><span class="p">]</span></div>
+
+
+
 <div class="viewcode-block" id="Corr">
 <a class="viewcode-back" href="../editor.html#editor.Corr">[docs]</a>
-<span class="k">def</span> <span class="nf">Corr</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">Corr</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Correlation product</span>
 <span class="sd">    using an fft-based array flipped convolution (i.e. correlation).</span>
 <span class="sd">    </span>
 <span class="sd">    cf. cv2.phaseCorrelate: translational shifts between two images</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
+
     <span class="n">src</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">-</span> <span class="n">src</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
     <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">-</span> <span class="n">tmp</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">src</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1">## *not-FFT-based* is too slow</span>
         <span class="c1">## return signal.convolve2d(src, tmp[::-1,::-1], mode=&#39;same&#39;)</span>
         <span class="c1">## return signal.correlate2d(src, tmp, mode=&#39;same&#39;, boundary=&#39;fill&#39;)</span>
-        <span class="k">return</span> <span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">,::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">,::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="p">)</span></div>
 
 
 
-<span class="c1">## --------------------------------</span>
-<span class="c1">## Image analysis</span>
-<span class="c1">##   find peaks, figures, etc.</span>
-<span class="c1">## --------------------------------</span>
-
-<div class="viewcode-block" id="centroid">
-<a class="viewcode-back" href="../editor.html#editor.centroid">[docs]</a>
-<span class="k">def</span> <span class="nf">centroid</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;centroids (重心).</span>
-<span class="sd">    cf. ndi.measurements.center_of_mass</span>
+<div class="viewcode-block" id="match_pattern">
+<a class="viewcode-back" href="../editor.html#editor.match_pattern">[docs]</a>
+<span class="k">def</span> <span class="nf">match_pattern</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">TM_CCOEFF_NORMED</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Match_pattern of src image to template image.</span>
+<span class="sd">    </span>
+<span class="sd">    The depth must be (CV_8U or CV_32F)</span>
+<span class="sd">    </span>
+<span class="sd">    The comparison method is one of the following:</span>
+<span class="sd">        &#39;TM_CCOEFF&#39;, &#39;TM_CCOEFF_NORMED&#39;,</span>
+<span class="sd">        &#39;TM_CCORR&#39;,  &#39;TM_CCORR_NORMED&#39;,</span>
+<span class="sd">        &#39;TM_SQDIFF&#39;, &#39;TM_SQDIFF_NORMED&#39;,</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">M</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">moments</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
-    <span class="n">cx</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="s1">&#39;m10&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;m00&#39;</span><span class="p">]</span>
-    <span class="n">cy</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="s1">&#39;m01&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;m00&#39;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span></div>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">imconv</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">imconv</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">matchTemplate</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+    <span class="n">minVal</span><span class="p">,</span> <span class="n">maxVal</span><span class="p">,</span> <span class="n">minLoc</span><span class="p">,</span> <span class="n">maxLoc</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">minMaxLoc</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">TM_SQDIFF</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">TM_SQDIFF_NORMED</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">res</span><span class="p">,</span> <span class="n">minLoc</span>
+    <span class="k">return</span> <span class="n">res</span><span class="p">,</span> <span class="n">maxLoc</span></div>
 
 
+
+<div class="viewcode-block" id="eval_match_shift">
+<a class="viewcode-back" href="../editor.html#editor.eval_match_shift">[docs]</a>
+<span class="k">def</span> <span class="nf">eval_match_shift</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate shift [pix] of src from tmp (template) using cv2.matchTemplate.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dst</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">match_pattern</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">dst</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">w</span><span class="o">//</span><span class="mi">2</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">h</span><span class="o">//</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">dst</span><span class="p">,</span> <span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="eval_corr_shift">
+<a class="viewcode-back" href="../editor.html#editor.eval_corr_shift">[docs]</a>
+<span class="k">def</span> <span class="nf">eval_corr_shift</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">crop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">subpix</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate shift [pix] of src from tmp (template) using Corr.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">       crop   : Limit image size 2^k using fftcrop.</span>
+<span class="sd">       subpix : Return the shift value in sub-pixel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">crop</span><span class="p">:</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="n">fftcrop</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">fftcrop</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+    <span class="n">dst</span> <span class="o">=</span> <span class="n">Corr</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">subpix</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">_ok</span> <span class="o">=</span> <span class="n">find_local_extremum2d</span><span class="p">(</span><span class="n">dst</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">dst</span><span class="o">.</span><span class="n">argmax</span><span class="p">(),</span> <span class="n">dst</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">dst</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">w</span><span class="o">//</span><span class="mi">2</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">h</span><span class="o">//</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">dst</span><span class="p">,</span> <span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span></div>
+
+
+
+<span class="c1">## --------------------------------</span>
+<span class="c1">## Image analysis; Detect ellipses</span>
+<span class="c1">## --------------------------------</span>
 
 <div class="viewcode-block" id="find_ellipses">
 <a class="viewcode-back" href="../editor.html#editor.find_ellipses">[docs]</a>
-<span class="k">def</span> <span class="nf">find_ellipses</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">frmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sortby</span><span class="o">=</span><span class="s1">&#39;size&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">find_ellipses</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">otsu</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sortby</span><span class="o">=</span><span class="s1">&#39;size&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find the rotated rectangle in which the ellipse is inscribed.</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
-<span class="sd">        frmin   : min threshold ratio (to src.shape) of ellipses to find</span>
-<span class="sd">        frmax   : max threshold</span>
 <span class="sd">        ksize   : size of blur window</span>
-<span class="sd">        sortby  : key of sorted list (pos or size:default)</span>
+<span class="sd">                  If a False value is specified, no blurring will be performed.</span>
+<span class="sd">        otsu    : Otsu&#39;s method is used for thresholding src image.</span>
+<span class="sd">                  True (r = 1) specifies to use Otsu&#39;s algorithm.</span>
+<span class="sd">                  A float number (r &lt; 1) specifies threshold percentile.</span>
+<span class="sd">        sortby  : how to sort (&#39;pos&#39; or &#39;size&#39;)</span>
 <span class="sd">    </span>
 <span class="sd">    Returns:</span>
 <span class="sd">        RotatedRect: (cx,cy), (ra,rb), angle</span>
 <span class="sd">        </span>
-<span class="sd">        (cx,cy) : center of the rectangle [pix]</span>
-<span class="sd">        (ra,rb) : ra:width &lt; rb:height of the rectangle [pix]</span>
+<span class="sd">        cx, cy  : center of the rectangle [pix]</span>
+<span class="sd">        ra, rb  : ra:width &lt; rb:height of the rectangle [pix]</span>
 <span class="sd">        angle   : rotation angle in clockwise (from 00:00 o&#39;clock)</span>
+<span class="sd">    </span>
+<span class="sd">    Note:</span>
+<span class="sd">        To detect small spots, increase the amount of blur.</span>
+<span class="sd">        To filter ellipses with rectangle sizes from rmin to rmax:</span>
+<span class="sd">        &gt;&gt;&gt; ls = [(c,r,a) for c,r,a in ellipses if rmin &lt; r[0] and r[1] &lt; rmax]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">src</span> <span class="o">=</span> <span class="n">imconv</span><span class="p">(</span><span class="n">src</span><span class="p">)</span> <span class="c1"># src image is overwritten</span>
+    <span class="c1">## GaussianBlur and binarize using threshold.</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">imconv</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
     <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span>
-    <span class="n">rmin</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">rmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">frmin</span><span class="p">:</span> <span class="n">rmin</span> <span class="o">=</span> <span class="n">rmax</span> <span class="o">*</span> <span class="n">frmin</span>
-    <span class="k">if</span> <span class="n">frmax</span><span class="p">:</span> <span class="n">rmax</span> <span class="o">=</span> <span class="n">rmax</span> <span class="o">*</span> <span class="n">frmax</span>
-    <span class="k">if</span> <span class="n">ksize</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">ksize</span> <span class="ow">and</span> <span class="n">ksize</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">src</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="p">(</span><span class="n">ksize</span><span class="p">,</span> <span class="n">ksize</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
     
-    <span class="n">t</span><span class="p">,</span> <span class="n">buf</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_OTSU</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="c1">## opencv &lt;= 3.4.5</span>
-        <span class="n">c</span><span class="p">,</span> <span class="n">contours</span><span class="p">,</span> <span class="n">hierarchy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="n">contours</span><span class="p">,</span> <span class="n">hierarchy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
+    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">otsu</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">otsu</span><span class="p">)</span>
+        <span class="n">t</span><span class="p">,</span> <span class="n">buf</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">t</span><span class="p">,</span> <span class="n">buf</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_OTSU</span><span class="p">)</span>
     
-    <span class="c1">## There should be at least 5 points to fit the ellipse</span>
+    <span class="c1">## Find contours in binary image</span>
+    <span class="c1">## ▲ buf 第一引数は上書きされるので後で参照するときは注意する</span>
+    <span class="n">argv</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">contours</span><span class="p">,</span> <span class="n">hierarchy</span> <span class="o">=</span> <span class="n">argv</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">_c</span><span class="p">,</span> <span class="n">contours</span><span class="p">,</span> <span class="n">hierarchy</span> <span class="o">=</span> <span class="n">argv</span> <span class="c1"># opencv &lt;= 3.4.5</span>
+    
+    <span class="c1">## Detect enclosing rectangles.</span>
+    <span class="c1">## Note:</span>
+    <span class="c1">##     At least 5 points are needed to fit an ellipse.</span>
+    <span class="c1">##     NaN should be eliminated.</span>
     <span class="n">ellipses</span> <span class="o">=</span> <span class="p">[</span><span class="n">cv2</span><span class="o">.</span><span class="n">fitEllipse</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">contours</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">]</span>
-    <span class="n">ls</span> <span class="o">=</span> <span class="p">[(</span><span class="n">c</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">a</span> <span class="ow">in</span> <span class="n">ellipses</span> <span class="k">if</span> <span class="n">rmin</span> <span class="o">&lt;</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rmax</span><span class="p">]</span>
+    <span class="n">ellipses</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])),</span> <span class="n">ellipses</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">sortby</span> <span class="o">==</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ls</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 大きさで降順ソート</span>
-    
-    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ls</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span> <span class="c1"># 位置で昇順ソート</span></div>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ellipses</span><span class="p">,</span>
+                      <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 大きさで降順ソート</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ellipses</span><span class="p">,</span>
+                      <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span> <span class="c1"># 位置で昇順ソート</span></div>
 
 
 
@@ -435,6 +434,8 @@
     <span class="n">yy</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">xo</span><span class="p">)</span> <span class="o">*-</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">yo</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">xx</span><span class="o">/</span><span class="n">ra</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">yy</span><span class="o">/</span><span class="n">rb</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="c1"># 楕円の短径 ra/2 &lt; 長径 rb/2</span>
     
+    <span class="n">src</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="c1"># カウント数 sum&lt;int32&gt; では不十分</span>
+    
     <span class="n">N</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>   <span class="c1"># 全カウント数</span>
     <span class="n">S</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">size</span>    <span class="c1"># 全ピクセル数</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">N</span> <span class="o">/</span> <span class="n">S</span>       <span class="c1"># Averaged count/pix</span>
@@ -447,28 +448,17 @@
 
 
 
-<span class="c1">## def find_peaks(y):</span>
-<span class="c1">##     peaks, dic = signal.find_peaks(y,</span>
-<span class="c1">##             height = y.mean(),      # height of peaks</span>
-<span class="c1">##           distance = None,          # minimal horizontal distance</span>
-<span class="c1">##          threshold = None,          # threshold of peaks (the vertical distance to its neighbouring)</span>
-<span class="c1">##         prominence = 0.05,          # prominence of peaks</span>
-<span class="c1">##              width = y.size/1000,   # width of peaks</span>
-<span class="c1">##     )</span>
-<span class="c1">##     return peaks</span>
+<span class="c1">## --------------------------------</span>
+<span class="c1">## Image analysis; Detect peaks</span>
+<span class="c1">## --------------------------------</span>
 
-<span class="c1">## def find_peaks(y):</span>
-<span class="c1">##     widths = np.array([2.0])</span>
-<span class="c1">##     return signal.find_peaks_cwt(y, widths)</span>
-
-
-<div class="viewcode-block" id="qrsp">
-<a class="viewcode-back" href="../editor.html#editor.qrsp">[docs]</a>
-<span class="k">def</span> <span class="nf">qrsp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_qrsp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;x[3],y[3]: x,y 近接した３点から 2次式で極値の箇所を推定する．</span>
 <span class="sd">    </span>
 <span class="sd">    Returns:</span>
-<span class="sd">        中央位置 x[1] からの差分値 (dx,dy)</span>
+<span class="sd">        dx, dy : 中央位置 (x[1], y[1]) からの差分値</span>
+<span class="sd">        convex : 極値が凸：極大であるかどうか a&lt;0 ?</span>
+<span class="sd">        inside : 極値が範囲内に存在するか ?</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x0</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">x2</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -479,15 +469,14 @@
     <span class="c1">## cf. a,b,c = np.polyfit(x, y, 2)</span>
     <span class="n">dx</span> <span class="o">=</span> <span class="o">-</span><span class="n">b</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="mi">2</span>
     <span class="n">dy</span> <span class="o">=</span> <span class="n">dx</span> <span class="o">*</span> <span class="n">b</span><span class="o">/</span><span class="mi">2</span>
-    <span class="k">return</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">a</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">x0</span><span class="o">&lt;</span><span class="n">dx</span><span class="o">&lt;</span><span class="n">x2</span><span class="p">,</span></div>
-
+    <span class="k">return</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">a</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">x0</span><span class="o">&lt;</span><span class="n">dx</span><span class="o">&lt;</span><span class="n">x2</span><span class="p">,</span>
 
 
 <div class="viewcode-block" id="find_local_extremum">
 <a class="viewcode-back" href="../editor.html#editor.find_local_extremum">[docs]</a>
 <span class="k">def</span> <span class="nf">find_local_extremum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;2次式で極値の箇所を推定する．</span>
-<span class="sd">    Estimates the max/min peak pos y[x] and the value.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimates the max/min peak pos y[x] and the value.</span>
+<span class="sd">    2次式で極値の箇所を推定する．</span>
 <span class="sd">    </span>
 <span class="sd">    x は昇順ソートされていること．少なくとも３点なくてはならない</span>
 <span class="sd">    推定位置が範囲内になければ，範囲内の極値点と判定結果を返す</span>
@@ -499,9 +488,10 @@
     <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">N</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;find_local_extremum: data length must be more than 2&quot;</span><span class="p">)</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">if</span> <span class="nb">max</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="c1"># 最大か最小のどちらかを求める</span>
-    <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">n</span><span class="o">==</span><span class="mi">0</span> <span class="k">else</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span> <span class="k">if</span> <span class="n">n</span><span class="o">==</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">n</span> <span class="c1"># 端であれば一つ内側にずらしておく</span>
-    <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">convex</span><span class="p">,</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">qrsp</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">])</span> <span class="c1"># ３点評価</span>
+    
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">if</span> <span class="nb">max</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>   <span class="c1"># 最大か最小のどちらかを求める</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">n</span><span class="o">==</span><span class="mi">0</span> <span class="k">else</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span> <span class="k">if</span> <span class="n">n</span><span class="o">==</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">n</span>     <span class="c1"># 端であれば内側にずらしておく</span>
+    <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">convex</span><span class="p">,</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">_qrsp</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">])</span> <span class="c1"># ３点評価</span>
     
     <span class="n">valid</span> <span class="o">=</span> <span class="n">ok</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">max</span> <span class="ow">and</span> <span class="n">convex</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">max</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">convex</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">valid</span><span class="p">:</span>
@@ -517,99 +507,34 @@
 <div class="viewcode-block" id="find_local_extremum2d">
 <a class="viewcode-back" href="../editor.html#editor.find_local_extremum2d">[docs]</a>
 <span class="k">def</span> <span class="nf">find_local_extremum2d</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;2次式で極値の箇所を推定する．</span>
-<span class="sd">    Estimates the max/min peak pos [x,y] and the value.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate the max/min peak pos [x,y] and the value.</span>
+<span class="sd">    2次式で極値の箇所を推定する．</span>
 <span class="sd">    </span>
 <span class="sd">    推定位置が範囲内にあるとは限らない．</span>
 <span class="sd">    max:凹，min:凸，および，鞍点の場合は None を返す</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Ny</span><span class="p">,</span> <span class="n">Nx</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span> <span class="k">if</span> <span class="nb">max</span> <span class="k">else</span> <span class="n">src</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
-    <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-    <span class="n">jx</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">nx</span><span class="o">==</span><span class="mi">0</span> <span class="k">else</span> <span class="n">Nx</span><span class="o">-</span><span class="mi">2</span> <span class="k">if</span> <span class="n">nx</span><span class="o">==</span><span class="n">Nx</span><span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">nx</span>
-    <span class="n">jy</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">ny</span><span class="o">==</span><span class="mi">0</span> <span class="k">else</span> <span class="n">Ny</span><span class="o">-</span><span class="mi">2</span> <span class="k">if</span> <span class="n">ny</span><span class="o">==</span><span class="n">Ny</span><span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">ny</span>
-    <span class="n">dx</span><span class="p">,</span> <span class="n">dzx</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">ok_x</span> <span class="o">=</span> <span class="n">qrsp</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">src</span><span class="p">[</span><span class="n">jy</span><span class="p">,</span> <span class="n">jx</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">jx</span><span class="o">+</span><span class="mi">2</span><span class="p">])</span>
-    <span class="n">dy</span><span class="p">,</span> <span class="n">dzy</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">ok_y</span> <span class="o">=</span> <span class="n">qrsp</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">src</span><span class="p">[</span><span class="n">jy</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">jy</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">jx</span><span class="p">])</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span> <span class="k">if</span> <span class="nb">max</span> <span class="k">else</span> <span class="n">src</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>   <span class="c1"># 最大か最小のどちらかを求める</span>
+    <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>     <span class="c1"># 極大値 or 極小値の位置 (x,y)</span>
+    
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">nx</span><span class="o">==</span><span class="mi">0</span> <span class="k">else</span> <span class="n">w</span><span class="o">-</span><span class="mi">2</span> <span class="k">if</span> <span class="n">nx</span><span class="o">==</span><span class="n">w</span><span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">nx</span>  <span class="c1"># 端であれば内側にずらしておく</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">ny</span><span class="o">==</span><span class="mi">0</span> <span class="k">else</span> <span class="n">h</span><span class="o">-</span><span class="mi">2</span> <span class="k">if</span> <span class="n">ny</span><span class="o">==</span><span class="n">h</span><span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">ny</span>  <span class="c1"># 〃</span>
+    
+    <span class="n">dx</span><span class="p">,</span> <span class="n">dzx</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">ok_x</span> <span class="o">=</span> <span class="n">_qrsp</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">src</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">dy</span><span class="p">,</span> <span class="n">dzy</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">ok_y</span> <span class="o">=</span> <span class="n">_qrsp</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">src</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
     
     <span class="n">valid</span> <span class="o">=</span> <span class="n">ok_x</span> <span class="ow">and</span> <span class="n">ok_y</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">max</span> <span class="ow">and</span> <span class="n">cx</span> <span class="ow">and</span> <span class="n">cy</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">max</span> <span class="ow">or</span> <span class="n">cx</span> <span class="ow">or</span> <span class="n">cy</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">valid</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">jx</span><span class="o">+</span><span class="n">dx</span><span class="p">,</span> <span class="n">jy</span><span class="o">+</span><span class="n">dy</span><span class="p">,</span> <span class="n">src</span><span class="p">[</span><span class="n">jy</span><span class="p">,</span><span class="n">jx</span><span class="p">]</span><span class="o">+</span><span class="n">dzx</span><span class="o">+</span><span class="n">dzy</span><span class="p">,</span> <span class="n">valid</span>
+        <span class="k">return</span> <span class="n">j</span><span class="o">+</span><span class="n">dx</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="n">dy</span><span class="p">,</span> <span class="n">src</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">dzx</span><span class="o">+</span><span class="n">dzy</span><span class="p">,</span> <span class="n">valid</span>
     <span class="k">return</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">src</span><span class="p">[</span><span class="n">ny</span><span class="p">,</span><span class="n">nx</span><span class="p">],</span> <span class="n">valid</span></div>
 
-
-
-<div class="viewcode-block" id="match_pattern">
-<a class="viewcode-back" href="../editor.html#editor.match_pattern">[docs]</a>
-<span class="k">def</span> <span class="nf">match_pattern</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">TM_CCOEFF_NORMED</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Match_pattern of src image to template image.</span>
-<span class="sd">    </span>
-<span class="sd">    The depth must be (CV_8U or CV_32F)</span>
-<span class="sd">    </span>
-<span class="sd">    The comparison method is one of the following:</span>
-<span class="sd">        &#39;TM_CCOEFF&#39;, &#39;TM_CCOEFF_NORMED&#39;,</span>
-<span class="sd">        &#39;TM_CCORR&#39;,  &#39;TM_CCORR_NORMED&#39;,</span>
-<span class="sd">        &#39;TM_SQDIFF&#39;, &#39;TM_SQDIFF_NORMED&#39;,</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">src</span> <span class="o">=</span> <span class="n">imconv</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
-    <span class="n">temp</span> <span class="o">=</span> <span class="n">imconv</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">matchTemplate</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
-    <span class="n">minVal</span><span class="p">,</span> <span class="n">maxVal</span><span class="p">,</span> <span class="n">minLoc</span><span class="p">,</span> <span class="n">maxLoc</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">minMaxLoc</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">TM_SQDIFF</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">TM_SQDIFF_NORMED</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">res</span><span class="p">,</span> <span class="n">minLoc</span>
-    <span class="k">return</span> <span class="n">res</span><span class="p">,</span> <span class="n">maxLoc</span></div>
-
-
-
-<div class="viewcode-block" id="eval_shift">
-<a class="viewcode-back" href="../editor.html#editor.eval_shift">[docs]</a>
-<span class="k">def</span> <span class="nf">eval_shift</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">src2</span><span class="p">,</span> <span class="n">div</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span>
-    <span class="n">ht</span><span class="p">,</span> <span class="n">wt</span> <span class="o">=</span> <span class="n">h</span><span class="o">//</span><span class="n">div</span><span class="p">,</span> <span class="n">w</span><span class="o">//</span><span class="n">div</span>  <span class="c1"># template pattern in the src divided by div</span>
-    <span class="n">xt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">w</span> <span class="o">-</span> <span class="n">wt</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>   <span class="c1"># template position lt = (xt, yt)</span>
-    <span class="n">yt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">h</span> <span class="o">-</span> <span class="n">ht</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>   <span class="c1"># </span>
-    <span class="n">temp</span> <span class="o">=</span> <span class="n">src</span><span class="p">[</span><span class="n">yt</span><span class="p">:</span><span class="n">yt</span><span class="o">+</span><span class="n">ht</span><span class="p">,</span> <span class="n">xt</span><span class="p">:</span><span class="n">xt</span><span class="o">+</span><span class="n">wt</span><span class="p">]</span>
-    
-    <span class="n">dst</span><span class="p">,</span> <span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="n">match_pattern</span><span class="p">(</span><span class="n">src2</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span>
-    <span class="n">ho</span><span class="p">,</span> <span class="n">wo</span> <span class="o">=</span> <span class="n">dst</span><span class="o">.</span><span class="n">shape</span>
-    <span class="n">dx</span> <span class="o">=</span> <span class="n">l</span> <span class="o">-</span> <span class="n">wo</span><span class="o">//</span><span class="mi">2</span>
-    <span class="n">dy</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">ho</span><span class="o">//</span><span class="mi">2</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">))</span></div>
-
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-        <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
-        <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
-        <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
-    <span class="p">])</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">find_local_extremum2d</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">find_local_extremum2d</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">()</span>
-    
-    <span class="c1">## fig = plt.figure()</span>
-    <span class="c1">## ax = fig.add_subplot(111, projection=&#39;3d&#39;)</span>
-    <span class="c1">## x, y = np.mgrid[-1:1:3j,-1:1:3j]</span>
-    <span class="c1">## ax.plot_wireframe(x, y, z)</span>
-    <span class="c1">## plt.show()</span>
-    
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
-    
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qrsp(x,y) =&quot;</span><span class="p">,</span> <span class="n">qrsp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;find_local_extremum(x,y) =&quot;</span><span class="p">,</span> <span class="n">find_local_extremum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">))</span>
-    
-    <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">poly1d</span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">))</span>
-    <span class="n">xx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="mi">100</span><span class="p">)</span>
-    <span class="n">plot</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">p</span><span class="p">(</span><span class="n">xx</span><span class="p">),</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 
             <div class="clearer"></div>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h3><a href="../index.html">Table of Contents</a></h3>
 <p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
@@ -625,7 +550,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../pyJeol.html">pyJeol package</a></li>
 </ul>
 
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
@@ -633,13 +558,13 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -655,7 +580,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

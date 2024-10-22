@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyJeol.jtypes &#8212; wxpj  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=5283bb3d" />
+    
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">wxpj  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyJeol.jtypes</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyJeol.jtypes</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! python3</span>
+<span class="sd">&quot;&quot;&quot;Jeol Lens/Deflector system types</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">mwx</span> <span class="kn">import</span> <span class="n">LParam</span>
+<span class="kn">from</span> <span class="nn">.legacy</span> <span class="kn">import</span> <span class="n">cmdl</span>
+
+<span class="n">Command</span> <span class="o">=</span> <span class="n">cmdl</span><span class="o">.</span><span class="n">Command</span>
+
+
+<div class="viewcode-block" id="LensParam">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.LensParam">[docs]</a>
+<span class="k">class</span> <span class="nc">LensParam</span><span class="p">(</span><span class="n">LParam</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Lens/Deflector coil hex param.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">flag</span> <span class="o">=</span> <span class="n">LParam</span><span class="o">.</span><span class="n">check</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_iter_pair</span><span class="p">(</span><span class="n">ls</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">ls</span><span class="p">),</span><span class="n">n</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="Systembase">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.Systembase">[docs]</a>
+<span class="k">class</span> <span class="nc">Systembase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class of Lens/Deflector system.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">lp</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lenses</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
+            <span class="n">lp</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span> <span class="c1"># change offset</span>
+        <span class="k">return</span> <span class="bp">self</span>
+    
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TAGS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lenses</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TAGS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">LensParam</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;setting value must be a LensParam, not </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Lenses</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lenses</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0.name:12s}</span><span class="s2"> </span><span class="si">{0.value:04X}</span><span class="s2">(</span><span class="si">{0.offset:+5X}</span><span class="s2">) [</span><span class="si">{0.flag:d}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="se">\t</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">f</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">_iter_pair</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lenses</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="LensSystem">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.LensSystem">[docs]</a>
+<span class="k">class</span> <span class="nc">LensSystem</span><span class="p">(</span><span class="n">Systembase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Lens (Free Control) System.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TAGS</span> <span class="o">=</span> <span class="p">(</span>
+             <span class="s1">&#39;CL1&#39;</span><span class="p">,</span> <span class="c1">#  0 : CL1                </span>
+             <span class="s1">&#39;CL2&#39;</span><span class="p">,</span> <span class="c1">#  1 : CL2                </span>
+             <span class="s1">&#39;CL3&#39;</span><span class="p">,</span> <span class="c1">#  2 : CL3                </span>
+              <span class="s1">&#39;CM&#39;</span><span class="p">,</span> <span class="c1">#  3 : CM                 </span>
+     <span class="s1">&#39;Preserved_0&#39;</span><span class="p">,</span> <span class="c1">#  4 : 照射系予備1        </span>
+     <span class="s1">&#39;Preserved_1&#39;</span><span class="p">,</span> <span class="c1">#  5 : 照射系予備2        </span>
+             <span class="s1">&#39;OLC&#39;</span><span class="p">,</span> <span class="c1">#  6 : OL Coarse          </span>
+             <span class="s1">&#39;OLF&#39;</span><span class="p">,</span> <span class="c1">#  7 : OL Fine            </span>
+             <span class="s1">&#39;OM1&#39;</span><span class="p">,</span> <span class="c1">#  8 : OM1                </span>
+             <span class="s1">&#39;OM2&#39;</span><span class="p">,</span> <span class="c1">#  9 : 操作不可(OM2)      </span>
+             <span class="s1">&#39;IL1&#39;</span><span class="p">,</span> <span class="c1"># 10 : IL1                </span>
+             <span class="s1">&#39;IL2&#39;</span><span class="p">,</span> <span class="c1"># 11 : IL2                </span>
+             <span class="s1">&#39;IL3&#39;</span><span class="p">,</span> <span class="c1"># 12 : IL3                </span>
+             <span class="s1">&#39;IL4&#39;</span><span class="p">,</span> <span class="c1"># 13 : IL4                </span>
+             <span class="s1">&#39;PL1&#39;</span><span class="p">,</span> <span class="c1"># 14 : PL1                </span>
+             <span class="s1">&#39;PL2&#39;</span><span class="p">,</span> <span class="c1"># 15 : PL2                </span>
+             <span class="s1">&#39;PL3&#39;</span><span class="p">,</span> <span class="c1"># 16 : PL3                </span>
+     <span class="s1">&#39;Preserved_2&#39;</span><span class="p">,</span> <span class="c1"># 17 : 結像系予備1        </span>
+     <span class="s1">&#39;Preserved_3&#39;</span><span class="p">,</span> <span class="c1"># 18 : 結像系予備2        </span>
+             <span class="s1">&#39;FLC&#39;</span><span class="p">,</span> <span class="c1"># 19 : FL Coarse          </span>
+             <span class="s1">&#39;FLF&#39;</span><span class="p">,</span> <span class="c1"># 20 : FL Fine            </span>
+            <span class="s1">&#39;FL2R&#39;</span><span class="p">,</span> <span class="c1"># 21 : FL Ratio           </span>
+         <span class="s1">&#39;FLCOMP1&#39;</span><span class="p">,</span> <span class="c1"># 22 : 操作不可(FL1 Comp) * no record in FLC</span>
+         <span class="s1">&#39;FLCOMP2&#39;</span><span class="p">,</span> <span class="c1"># 23 : 操作不可(FL2 Comp) * no record in FLC</span>
+     <span class="s1">&#39;Preserved_4&#39;</span><span class="p">,</span> <span class="c1"># 24 : 分光系予備1        </span>
+     <span class="s1">&#39;Preserved_5&#39;</span><span class="p">,</span> <span class="c1"># 25 : 分光系予備2        </span>
+              <span class="s1">&#39;U*&#39;</span><span class="p">,</span> <span class="c1"># 26 : U*補正             * OM2R (reverse) in FLC</span>
+    <span class="p">)</span>
+    <span class="n">Lenses</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Lenses</span><span class="p">)</span>
+    
+    <span class="n">flc</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E269&quot;</span><span class="p">,</span> <span class="s2">&quot;!HH&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;FLCモード (個別設定)&quot;</span><span class="p">)</span>
+    <span class="n">flcn</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E270&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;FLCモード (同時設定)&quot;</span><span class="p">)</span>
+    <span class="n">flc1set</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E268&quot;</span><span class="p">,</span> <span class="s2">&quot;!HH&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;FLCデータ設定&quot;</span><span class="p">)</span>
+    <span class="n">flc2get</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E262&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!49H&quot;</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;FLCデータ取得&quot;</span><span class="p">)</span>
+    <span class="n">flc2set</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E263&quot;</span><span class="p">,</span> <span class="s2">&quot;!49H&quot;</span><span class="p">,</span> <span class="s2">&quot;!49H&quot;</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;FLCデータ設定&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__Lenses</span> <span class="o">=</span> <span class="p">[</span><span class="n">LensParam</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0xffff</span><span class="p">),</span> <span class="n">fmt</span><span class="o">=</span><span class="nb">hex</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">TAGS</span><span class="p">[:</span><span class="mi">24</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;FLC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0xfff</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;FLF&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0xfff</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;FLCOMP1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0xfff</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;FLCOMP2&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0xfff</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="LensSystem.read">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.LensSystem.read">[docs]</a>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stdbase</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flc2get</span><span class="p">()</span> <span class="c1"># --&gt; get (49 = 24*2+1) record</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Failed to read online data </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+        
+        <span class="n">flags</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># 0--46</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># 1--47</span>
+        <span class="k">for</span> <span class="n">lp</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lenses</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">flags</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">stdbase</span><span class="p">:</span>
+                <span class="n">lp</span><span class="o">.</span><span class="n">std_value</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="n">lp</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="n">lp</span><span class="o">.</span><span class="n">flag</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="k">return</span> <span class="n">values</span></div>
+
+    
+<div class="viewcode-block" id="LensSystem.write">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.LensSystem.write">[docs]</a>
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">lens</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">49</span> <span class="c1"># &lt;-- set (49 = 24*2+1) record</span>
+            <span class="n">flags</span> <span class="o">=</span> <span class="p">[</span><span class="n">lp</span><span class="o">.</span><span class="n">flag</span> <span class="k">for</span> <span class="n">lp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lenses</span><span class="p">]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">lp</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">lp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lenses</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">flags</span>
+            <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flc2set</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">lens</span><span class="o">.</span><span class="n">flag</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">lens</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="LensSystem.Write">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.LensSystem.Write">[docs]</a>
+    <span class="k">def</span> <span class="nf">Write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flc1set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TAGS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="LensSystem.setflag">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.LensSystem.setflag">[docs]</a>
+    <span class="k">def</span> <span class="nf">setflag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">lens</span><span class="o">.</span><span class="n">flag</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">lens</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TAGS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="kc">False</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FocusSystem">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.FocusSystem">[docs]</a>
+<span class="k">class</span> <span class="nc">FocusSystem</span><span class="p">(</span><span class="n">LensSystem</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Lens (Focus :variable) System.</span>
+<span class="sd">    </span>
+<span class="sd">    [Brightness,OBJ,DIFF,IL,PL,FL] に割り当てられたレンズのみ変更可能</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ldget</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E261&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!27H&quot;</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;レンズ情報取得&quot;</span><span class="p">)</span>
+    <span class="n">ldset</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E271&quot;</span><span class="p">,</span> <span class="s2">&quot;!HH&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;レンズデータ出力値 絶対値設定&quot;</span><span class="p">)</span>
+    <span class="n">ldclr</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E236&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;レンズデータ可変値クリア&quot;</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="FocusSystem.read">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.FocusSystem.read">[docs]</a>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stdbase</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ldget</span><span class="p">()</span> <span class="c1"># --&gt; get (27) lenses record</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Failed to read online data </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+        
+        <span class="k">for</span> <span class="n">lp</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">stdbase</span><span class="p">:</span>
+                <span class="n">lp</span><span class="o">.</span><span class="n">std_value</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="n">lp</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+    
+<div class="viewcode-block" id="FocusSystem.write">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.FocusSystem.write">[docs]</a>
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">lens</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">lp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lenses</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">lp</span><span class="o">.</span><span class="n">flag</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ldset</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">lp</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">lens</span><span class="o">.</span><span class="n">flag</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">lens</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="FocusSystem.Write">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.FocusSystem.Write">[docs]</a>
+    <span class="k">def</span> <span class="nf">Write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ldset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TAGS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="FocusSystem.setflag">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.FocusSystem.setflag">[docs]</a>
+    <span class="k">def</span> <span class="nf">setflag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DeflSystem">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.DeflSystem">[docs]</a>
+<span class="k">class</span> <span class="nc">DeflSystem</span><span class="p">(</span><span class="n">Systembase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Deflector (Maint/User) System.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TAGS</span> <span class="o">=</span> <span class="p">(</span>
+          <span class="s1">&#39;GUNA1X&#39;</span><span class="p">,</span>       <span class="s1">&#39;GUNA1Y&#39;</span><span class="p">,</span> <span class="c1">#  0 : GunA1 X             1 : GunA1 Y            </span>
+          <span class="s1">&#39;GUNA2X&#39;</span><span class="p">,</span>       <span class="s1">&#39;GUNA2Y&#39;</span><span class="p">,</span> <span class="c1">#  2 : GunA2 X             3 : GunA2 Y            </span>
+           <span class="s1">&#39;CLA1X&#39;</span><span class="p">,</span>        <span class="s1">&#39;CLA1Y&#39;</span><span class="p">,</span> <span class="c1">#  4 : CLA1 X              5 : CLA1 Y             </span>
+           <span class="s1">&#39;CLA2X&#39;</span><span class="p">,</span>        <span class="s1">&#39;CLA2Y&#39;</span><span class="p">,</span> <span class="c1">#  6 : CLA2 X              7 : CLA2 Y             </span>
+          <span class="s1">&#39;SHIFTX&#39;</span><span class="p">,</span>       <span class="s1">&#39;SHIFTY&#39;</span><span class="p">,</span> <span class="c1">#  8 : Shift Balance X     9 : Shift Balance Y    </span>
+           <span class="s1">&#39;TILTX&#39;</span><span class="p">,</span>        <span class="s1">&#39;TILTY&#39;</span><span class="p">,</span> <span class="c1"># 10 : Tilt Balance X     11 : Tilt Balance Y     </span>
+          <span class="s1">&#39;ANGLEX&#39;</span><span class="p">,</span>       <span class="s1">&#39;ANGLEY&#39;</span><span class="p">,</span> <span class="c1"># 12 : Angle Balance X    13 : Angle Balance Y    </span>
+            <span class="s1">&#39;CLSX&#39;</span><span class="p">,</span>         <span class="s1">&#39;CLSY&#39;</span><span class="p">,</span> <span class="c1"># 14 : CL Stig X          15 : CL Stig Y          </span>
+          <span class="s1">&#39;SPOTAX&#39;</span><span class="p">,</span>       <span class="s1">&#39;SPOTAY&#39;</span><span class="p">,</span> <span class="c1"># 16 : SPOTA X            17 : SPOTA Y            </span>
+    <span class="s1">&#39;Preserved_0X&#39;</span><span class="p">,</span> <span class="s1">&#39;Preserved_0Y&#39;</span><span class="p">,</span> <span class="c1"># 18 : 照射系データ予備1  19 : 照射系データ予備2  </span>
+    <span class="s1">&#39;Preserved_1X&#39;</span><span class="p">,</span> <span class="s1">&#39;Preserved_1Y&#39;</span><span class="p">,</span> <span class="c1"># 20 : 照射系データ予備3  21 : 照射系データ予備4  </span>
+            <span class="s1">&#39;OLSX&#39;</span><span class="p">,</span>         <span class="s1">&#39;OLSY&#39;</span><span class="p">,</span> <span class="c1"># 22 : OL Stig X          23 : OL Stig Y          </span>
+            <span class="s1">&#39;ILSX&#39;</span><span class="p">,</span>         <span class="s1">&#39;ILSY&#39;</span><span class="p">,</span> <span class="c1"># 24 : IL Stig X          25 : IL Stig Y          </span>
+            <span class="s1">&#39;IS1X&#39;</span><span class="p">,</span>         <span class="s1">&#39;IS1Y&#39;</span><span class="p">,</span> <span class="c1"># 26 : ISC1 X             27 : ISC1 Y             </span>
+            <span class="s1">&#39;IS2X&#39;</span><span class="p">,</span>         <span class="s1">&#39;IS2Y&#39;</span><span class="p">,</span> <span class="c1"># 28 : ISC2 X             29 : ISC2 Y             </span>
+            <span class="s1">&#39;PLAX&#39;</span><span class="p">,</span>         <span class="s1">&#39;PLAY&#39;</span><span class="p">,</span> <span class="c1"># 30 : PLA X              31 : PLA Y              </span>
+    <span class="s1">&#39;Preserved_2X&#39;</span><span class="p">,</span> <span class="s1">&#39;Preserved_2Y&#39;</span><span class="p">,</span> <span class="c1"># 32 : 結像系データ予備1  33 : 結像系データ予備2  </span>
+    <span class="s1">&#39;Preserved_3X&#39;</span><span class="p">,</span> <span class="s1">&#39;Preserved_3Y&#39;</span><span class="p">,</span> <span class="c1"># 34 : 結像系データ予備3  35 : 結像系データ予備4  </span>
+           <span class="s1">&#39;FLA1X&#39;</span><span class="p">,</span>        <span class="s1">&#39;FLA1Y&#39;</span><span class="p">,</span> <span class="c1"># 36 : FLA1 X             37 : FLA1 Y             </span>
+           <span class="s1">&#39;FLA2X&#39;</span><span class="p">,</span>        <span class="s1">&#39;FLA2Y&#39;</span><span class="p">,</span> <span class="c1"># 38 : FLA2 X             39 : FLA2 Y             </span>
+           <span class="s1">&#39;FLS1X&#39;</span><span class="p">,</span>        <span class="s1">&#39;FLS1Y&#39;</span><span class="p">,</span> <span class="c1"># 40 : FL Stig1 X         41 : FL Stig1 Y         </span>
+           <span class="s1">&#39;FLS2X&#39;</span><span class="p">,</span>        <span class="s1">&#39;FLS2Y&#39;</span><span class="p">,</span> <span class="c1"># 42 : FL Stig2 X         43 : FL Stig2 Y         </span>
+    <span class="s1">&#39;Preserved_4X&#39;</span><span class="p">,</span> <span class="s1">&#39;Preserved_4Y&#39;</span><span class="p">,</span> <span class="c1"># 44 : 分光系データ予備1  45 : 分光系データ予備2  </span>
+    <span class="s1">&#39;Preserved_5X&#39;</span><span class="p">,</span> <span class="s1">&#39;Preserved_5Y&#39;</span><span class="p">,</span> <span class="c1"># 46 : 分光系データ予備3  47 : 分光系データ予備4  </span>
+                                    <span class="c1"># </span>
+              <span class="s1">&#39;U*&#39;</span><span class="p">,</span>          <span class="s1">&#39;U*&#39;</span> <span class="p">,</span> <span class="c1"># 48 : Def U* 補正        49 : Def U* 補正        </span>
+        <span class="s1">&#39;CLA_Comp&#39;</span><span class="p">,</span>     <span class="s1">&#39;CLA_Comp&#39;</span><span class="p">,</span> <span class="c1"># 50 : CLA Comp           51 : CLA Comp           </span>
+     <span class="s1">&#39;MagAdjust_H&#39;</span><span class="p">,</span>  <span class="s1">&#39;MagAdjust_V&#39;</span><span class="p">,</span> <span class="c1"># 52 : MAG Adjust H       53 : MAG Adjust V       </span>
+    <span class="s1">&#39;Correction_H&#39;</span><span class="p">,</span> <span class="s1">&#39;Correction_V&#39;</span><span class="p">,</span> <span class="c1"># 54 : Correction H       55 : Correction V       </span>
+      <span class="s1">&#39;Rotation_H&#39;</span><span class="p">,</span>   <span class="s1">&#39;Rotation_V&#39;</span><span class="p">,</span> <span class="c1"># 56 : Rotation H         57 : Rotation V         </span>
+        <span class="s1">&#39;Offset_H&#39;</span><span class="p">,</span>     <span class="s1">&#39;Offset_V&#39;</span><span class="p">,</span> <span class="c1"># 58 : Offset H           59 : Offset V           </span>
+         <span class="s1">&#39;STEMISX&#39;</span><span class="p">,</span>      <span class="s1">&#39;STEMISY&#39;</span><span class="p">,</span> <span class="c1"># 60 : ASID Image Shift X 61 : ASID Image Shift Y </span>
+    <span class="p">)</span>
+    <span class="n">Lenses</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Lenses</span><span class="p">)</span>
+    
+    <span class="n">algn2get</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E341&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!62H&quot;</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;偏向系データ取得&quot;</span><span class="p">)</span>
+    <span class="n">algn2set</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E342&quot;</span><span class="p">,</span> <span class="s2">&quot;!72H&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;偏向系データ設定&quot;</span><span class="p">)</span>
+    <span class="n">_algn1set</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E321&quot;</span><span class="p">,</span> <span class="s2">&quot;!HH&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;偏向系データ個別設定&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__Lenses</span> <span class="o">=</span> <span class="p">[</span><span class="n">LensParam</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0xffff</span><span class="p">),</span> <span class="n">fmt</span><span class="o">=</span><span class="nb">hex</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">TAGS</span><span class="p">[:</span><span class="mi">62</span><span class="p">]]</span>
+    
+<div class="viewcode-block" id="DeflSystem.read">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.DeflSystem.read">[docs]</a>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stdbase</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">algn2get</span><span class="p">()</span> <span class="c1"># --&gt; get (62) deflectors record</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Failed to read online data </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+        
+        <span class="k">for</span> <span class="n">lp</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lenses</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">stdbase</span><span class="p">:</span>
+                <span class="n">lp</span><span class="o">.</span><span class="n">std_value</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="n">lp</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+    
+<div class="viewcode-block" id="DeflSystem.write">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.DeflSystem.write">[docs]</a>
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">lens</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">72</span> <span class="c1"># &lt;-- set (72 = 24*3) deflectors record</span>
+            <span class="n">flags</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">flag</span> <span class="ow">or</span> <span class="n">y</span><span class="o">.</span><span class="n">flag</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">_iter_pair</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lenses</span><span class="p">)]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lenses</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">24</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">algn2set</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">lens</span><span class="o">.</span><span class="n">flag</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">lens</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DeflSystem.Write">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.jtypes.DeflSystem.Write">[docs]</a>
+    <span class="k">def</span> <span class="nf">Write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">Tags</span> <span class="o">=</span> <span class="p">(</span>
+             <span class="s1">&#39;GUNA1X&#39;</span><span class="p">,</span>       <span class="s1">&#39;GUNA1Y&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;GUNA2X&#39;</span><span class="p">,</span>       <span class="s1">&#39;GUNA2Y&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;CLA1X&#39;</span><span class="p">,</span>        <span class="s1">&#39;CLA1Y&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;CLA2X&#39;</span><span class="p">,</span>        <span class="s1">&#39;CLA2Y&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;SHIFTX&#39;</span><span class="p">,</span>       <span class="s1">&#39;SHIFTY&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;TILTX&#39;</span><span class="p">,</span>        <span class="s1">&#39;TILTY&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;ANGLEX&#39;</span><span class="p">,</span>       <span class="s1">&#39;ANGLEY&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;CLSX&#39;</span><span class="p">,</span>         <span class="s1">&#39;CLSY&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;IS1X&#39;</span><span class="p">,</span>         <span class="s1">&#39;IS1Y&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;IS2X&#39;</span><span class="p">,</span>         <span class="s1">&#39;IS2Y&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;SPOTAX&#39;</span><span class="p">,</span>       <span class="s1">&#39;SPOTAY&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;PLAX&#39;</span><span class="p">,</span>         <span class="s1">&#39;PLAY&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;OLSX&#39;</span><span class="p">,</span>         <span class="s1">&#39;OLSY&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;ILSX&#39;</span><span class="p">,</span>         <span class="s1">&#39;ILSY&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;FLS1X&#39;</span><span class="p">,</span>        <span class="s1">&#39;FLS1Y&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;FLS2X&#39;</span><span class="p">,</span>        <span class="s1">&#39;FLS2Y&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;FLA1X&#39;</span><span class="p">,</span>        <span class="s1">&#39;FLA1Y&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;FLA2X&#39;</span><span class="p">,</span>        <span class="s1">&#39;FLA2Y&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;DETAX&#39;</span><span class="p">,</span>        <span class="s1">&#39;DETAY&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;&#39;</span><span class="p">,</span>             <span class="s1">&#39;&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;SCAN1X&#39;</span><span class="p">,</span>       <span class="s1">&#39;SCAN1Y&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;SCAN2X&#39;</span><span class="p">,</span>       <span class="s1">&#39;SCAN2Y&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;STEMISX&#39;</span><span class="p">,</span>      <span class="s1">&#39;STEMISY&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;CMSX&#39;</span><span class="p">,</span>         <span class="s1">&#39;CMSY&#39;</span><span class="p">,</span> <span class="c1"># [46--65] adds to JEM-1300NEF</span>
+              <span class="s1">&#39;ISC3X&#39;</span><span class="p">,</span>        <span class="s1">&#39;ISC3Y&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;ILA1X&#39;</span><span class="p">,</span>        <span class="s1">&#39;ILA1Y&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;ILA2X&#39;</span><span class="p">,</span>        <span class="s1">&#39;ILA2Y&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;ILA3X&#39;</span><span class="p">,</span>        <span class="s1">&#39;ILA3Y&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;FLDQX&#39;</span><span class="p">,</span>        <span class="s1">&#39;FLDQY&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;FLDHX&#39;</span><span class="p">,</span>        <span class="s1">&#39;FLDHY&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;FLDDX&#39;</span><span class="p">,</span>        <span class="s1">&#39;FLDDY&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;CLA3X&#39;</span><span class="p">,</span>        <span class="s1">&#39;CLA3Y&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;CLA4X&#39;</span><span class="p">,</span>        <span class="s1">&#39;CLA4Y&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;CLA1FINEX&#39;</span><span class="p">,</span>    <span class="s1">&#39;CLA1FINEY&#39;</span><span class="p">,</span> <span class="c1"># [66--93] adds to JEM-1000KRS</span>
+          <span class="s1">&#39;CLA2FINEX&#39;</span><span class="p">,</span>    <span class="s1">&#39;CLA2FINEY&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;CMS2X&#39;</span><span class="p">,</span>        <span class="s1">&#39;CMS2Y&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;GUNSHIFTX&#39;</span><span class="p">,</span>    <span class="s1">&#39;GUNSHIFTY&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;GUNTILTX&#39;</span><span class="p">,</span>     <span class="s1">&#39;GUNTILTY&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;GUNANGLEX&#39;</span><span class="p">,</span>    <span class="s1">&#39;GUNANGLEY&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;IS1SHIFTX&#39;</span><span class="p">,</span>    <span class="s1">&#39;IS1SHIFTY&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;IS1TILTX&#39;</span><span class="p">,</span>     <span class="s1">&#39;IS1TILTY&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;IS1ANGLEX&#39;</span><span class="p">,</span>    <span class="s1">&#39;IS1ANGLEY&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;IS2SHIFTX&#39;</span><span class="p">,</span>    <span class="s1">&#39;IS2SHIFTY&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;IS2TILTX&#39;</span><span class="p">,</span>     <span class="s1">&#39;IS2TILTY&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;IS2ANGLEX&#39;</span><span class="p">,</span>     <span class="s1">&#39;IS2TILTY&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;OMA1X&#39;</span><span class="p">,</span>        <span class="s1">&#39;OMA1Y&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;OMA2X&#39;</span><span class="p">,</span>        <span class="s1">&#39;OMA2Y&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_algn1set</span><span class="p">(</span><span class="n">Tags</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../0_how-to-start.html">1. Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../1_how-to-use.html">2. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_image-processing.html">3. Image Analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../wxpyJemacs.html">wxpyJemacs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins.html">plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyJeol.html">pyJeol package</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">wxpj  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyJeol.jtypes</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

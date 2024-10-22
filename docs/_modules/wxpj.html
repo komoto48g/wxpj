@@ -1,0 +1,465 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>wxpj &#8212; wxpj  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=5283bb3d" />
+    
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">wxpj  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">wxpj</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for wxpj</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! python3</span>
+<span class="sd">&quot;&quot;&quot;GDK utilus ver 1.0rc</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">wx</span>
+
+<span class="kn">import</span> <span class="nn">mwx</span>
+<span class="kn">from</span> <span class="nn">mwx.utilus</span> <span class="kn">import</span> <span class="n">ignore</span>
+<span class="kn">from</span> <span class="nn">mwx.graphman</span> <span class="kn">import</span> <span class="n">Frame</span><span class="p">,</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Thread</span><span class="p">,</span> <span class="n">Graph</span> <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">mwx.controls</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">LParam</span><span class="p">,</span> <span class="n">ControlPanel</span><span class="p">,</span> <span class="n">Clipboard</span><span class="p">,</span> <span class="n">Icon</span> <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">mwx.controls</span> <span class="kn">import</span> <span class="n">Button</span><span class="p">,</span> <span class="n">ToggleButton</span><span class="p">,</span> <span class="n">TextCtrl</span><span class="p">,</span> <span class="n">Choice</span><span class="p">,</span> <span class="n">Gauge</span><span class="p">,</span> <span class="n">Indicator</span> <span class="c1"># noqa</span>
+
+<span class="kn">import</span> <span class="nn">editor</span> <span class="k">as</span> <span class="nn">edi</span>
+
+
+<div class="viewcode-block" id="Layer">
+<a class="viewcode-back" href="../wxpj.html#wxpj.Layer">[docs]</a>
+<span class="k">class</span> <span class="nc">Layer</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Layer with TEM notify interface.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">su</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;startup&#39;</span><span class="p">))</span>
+
+    <span class="n">illumination</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">illumination</span><span class="p">)</span>
+    <span class="n">imaging</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">imaging</span><span class="p">)</span>
+    <span class="n">omega</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">omega</span><span class="p">)</span>
+    <span class="n">tem</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">tem</span><span class="p">)</span>
+    <span class="n">eos</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">eos</span><span class="p">)</span>
+    <span class="n">hts</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">hts</span><span class="p">)</span>
+    <span class="n">apts</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">apts</span><span class="p">)</span>
+    <span class="n">gonio</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">gonio</span><span class="p">)</span>
+    <span class="n">efilter</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">efilter</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+        <span class="c1">## Accessing editor&#39;s functions.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edi</span> <span class="o">=</span> <span class="n">edi</span>
+
+        <span class="c1">## Cross references.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edi</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s2"> deos not have an output reference.&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="c1">## --------------------------------</span>
+<span class="c1">## Configuration of Shell / Editor </span>
+<span class="c1">## --------------------------------</span>
+
+<div class="viewcode-block" id="init_stc_interface">
+<a class="viewcode-back" href="../wxpj.html#wxpj.init_stc_interface">[docs]</a>
+<span class="k">def</span> <span class="nf">init_stc_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Customize the common keymaps.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;f8&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">toggle_wrap_mode</span><span class="p">():</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;no-wrap&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;word-wrap&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;char-wrap&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;whitespace-wrap&#39;</span>
+                <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">WrapMode</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">WrapMode</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_message</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2"> </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mode</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">WrapMode</span><span class="p">]))</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;S-f8&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">toggle_eol_view</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ViewEOL</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ViewEOL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ViewWhiteSpace</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ViewWhiteSpace</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x [&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">beginning_of_buffer</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x ]&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_of_buffer</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-c C-c&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">goto_matched_paren</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x C-x&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exchange_point_and_mark</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="init_buffer">
+<a class="viewcode-back" href="../wxpj.html#wxpj.init_buffer">[docs]</a>
+<span class="k">def</span> <span class="nf">init_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Customize the keymaps of the Buffer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">## Buffer text control</span>
+    <span class="n">init_stc_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">newline_and_indent</span><span class="p">():</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">py_electric_indent</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AddText</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-enter&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">newline_and_indent_eol</span><span class="p">():</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">py_electric_indent</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">goto_char</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eol</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AddText</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-S-enter&#39;</span><span class="p">)</span>
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;S-enter&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">open_line_and_indent</span><span class="p">():</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">py_current_indent</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">goto_char</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bol</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">InsertText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bol</span><span class="p">,</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">goto_char</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cpos</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="c1"># relative indentation position</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;M-w&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">copy_region</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mark</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Copy</span><span class="p">()</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-w&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">kill_region</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mark</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Cut</span><span class="p">()</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x C-insert&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">copy_line</span><span class="p">():</span>
+        <span class="n">text</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CurLine</span>
+        <span class="n">Clipboard</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cline</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="init_editor">
+<a class="viewcode-back" href="../wxpj.html#wxpj.init_editor">[docs]</a>
+<span class="k">def</span> <span class="nf">init_editor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Customize the keymaps of the Editor.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x k&#39;</span><span class="p">,</span>   <span class="bp">self</span><span class="o">.</span><span class="n">kill_all_buffers</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x C-k&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kill_buffer</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x C-n&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_buffer</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x C-l&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_buffer</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x s&#39;</span><span class="p">,</span>   <span class="bp">self</span><span class="o">.</span><span class="n">save_all_buffers</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x C-s&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_buffer</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x S-s&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_buffer_as</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x C-f&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_file</span><span class="p">)</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;S-f5&#39;</span><span class="p">,</span> <span class="n">load</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;f5&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">eval_buffer</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">load</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">load</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_buffer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">exec_region</span><span class="p">()</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-S-f9&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">load_file</span><span class="p">():</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">SelectedText</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">expr_at_caret</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">filename</span><span class="p">),</span> <span class="n">text</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">post_message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2"> </span><span class="si">{</span><span class="n">text</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="init_shell">
+<a class="viewcode-back" href="../wxpj.html#wxpj.init_shell">[docs]</a>
+<span class="k">def</span> <span class="nf">init_shell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Customize the keymaps of the Shell.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">init_stc_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;S-enter&#39;</span><span class="p">)</span> <span class="c1"># cf. [C-RET] Shell.insertLineBreak</span>
+    <span class="k">def</span> <span class="nf">open_line</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">back_to_indentation</span><span class="p">()</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insertLineBreak</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span> <span class="o">=</span> <span class="n">p</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;M-enter&#39;</span><span class="p">)</span>
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;M-S-enter&#39;</span><span class="p">,</span> <span class="n">clear</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># insert command</span>
+    <span class="k">def</span> <span class="nf">duplicate_command</span><span class="p">(</span><span class="n">clear</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getMultilineCommand</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">cmd</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mark</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpos</span>
+            <span class="k">if</span> <span class="n">clear</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clearCommand</span><span class="p">()</span> <span class="c1"># =&gt; move to the prompt end</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;f1&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SelectedText</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">expr_at_caret</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">help</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">evt</span><span class="o">.</span><span class="n">Skip</span><span class="p">()</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;f2&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">load_target</span><span class="p">():</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SelectedText</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">expr_at_caret</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">post_message</span><span class="p">(</span><span class="s2">&quot;No target&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">post_message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2"> failed: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">post_message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2"> </span><span class="si">{</span><span class="n">text</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">post_message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2"> </span><span class="si">{</span><span class="n">text</span><span class="si">!r}</span><span class="s2"> was nowhere to be found.&quot;</span><span class="p">)</span>
+
+    <span class="n">py_error_re</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39; +File &quot;(.*?)&quot;, line ([0-9]+)&#39;</span>
+    <span class="n">py_frame_re</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot; +file &#39;(.*?)&#39;, line ([0-9]+)&quot;</span>
+    <span class="n">py_where_re</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;&gt; +([^*?&quot;&lt;&gt;|\r\n]+?):([0-9]+)&#39;</span>
+    <span class="n">py_break_re</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;at ([^*?&quot;&lt;&gt;|\r\n]+?):([0-9]+)&#39;</span>
+    <span class="n">py_grep_re</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">py_frame_re</span><span class="p">,</span> <span class="n">py_where_re</span><span class="p">,</span> <span class="n">py_break_re</span><span class="p">))</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;f4&#39;</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="n">py_error_re</span><span class="p">)</span>
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;f10&#39;</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="n">py_grep_re</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">grep_forward</span><span class="p">(</span><span class="n">pattern</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grep_forward</span><span class="p">(</span><span class="n">pattern</span><span class="p">):</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">err</span><span class="o">.</span><span class="n">groups</span><span class="p">()))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">post_message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2"> </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;S-f4&#39;</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="n">py_error_re</span><span class="p">)</span>
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;S-f10&#39;</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="n">py_grep_re</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">grep_backward</span><span class="p">(</span><span class="n">pattern</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grep_backward</span><span class="p">(</span><span class="n">pattern</span><span class="p">):</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">err</span><span class="o">.</span><span class="n">groups</span><span class="p">()))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">post_message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2"> </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;S-f12&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">clear_shell</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-f12&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">clone_shell</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">clone_shell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;M-f12&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">close_shell</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">delete_shell</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-f2&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">HL</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">highlight</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expr_at_caret</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+
+
+<span class="c1">## --------------------------------</span>
+<span class="c1">## Setup the console of Nautilus</span>
+<span class="c1">## --------------------------------</span>
+
+<div class="viewcode-block" id="stylus">
+<a class="viewcode-back" href="../wxpj.html#wxpj.stylus">[docs]</a>
+<span class="nd">@ignore</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stylus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stylize Nautilus window.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This function is executed once at startup.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">## Customize the keymaps of the ShellFrame.</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x C-S-o&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_session</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x C-S-s&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_session</span><span class="p">)</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;Xbutton1&#39;</span><span class="p">,</span> <span class="n">p</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;Xbutton2&#39;</span><span class="p">,</span> <span class="n">p</span><span class="o">=+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x p&#39;</span><span class="p">,</span> <span class="n">p</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x n&#39;</span><span class="p">,</span> <span class="n">p</span><span class="o">=+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">other_editor</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move focus to other topmost notebook page.&quot;&quot;&quot;</span>
+        <span class="n">nb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FindFocus</span><span class="p">()</span>
+        <span class="k">while</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">Parent</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">aui</span><span class="o">.</span><span class="n">AuiNotebook</span><span class="p">):</span>
+            <span class="n">nb</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">Parent</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">nb</span><span class="o">.</span><span class="n">PageCount</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">nb</span><span class="o">.</span><span class="n">Selection</span> <span class="o">=</span> <span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">Selection</span> <span class="o">+</span> <span class="n">p</span><span class="p">)</span> <span class="o">%</span> <span class="n">nb</span><span class="o">.</span><span class="n">PageCount</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;M-left&#39;</span><span class="p">,</span> <span class="n">p</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;M-right&#39;</span><span class="p">,</span> <span class="n">p</span><span class="o">=+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">other_window</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="s2">&quot;Move focus to other window&quot;</span>
+        <span class="n">pages</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_pages</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">IsShownOnScreen</span><span class="p">()]</span>
+        <span class="n">wnd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FindFocus</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">wnd</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wnd</span> <span class="ow">in</span> <span class="n">pages</span><span class="p">:</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">pages</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">wnd</span><span class="p">)</span> <span class="o">+</span> <span class="n">p</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">pages</span><span class="p">)</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">pages</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">aui</span><span class="o">.</span><span class="n">AuiNotebook</span><span class="p">):</span>
+                    <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">CurrentPage</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">SetFocus</span><span class="p">()</span>
+                <span class="k">break</span>
+            <span class="n">wnd</span> <span class="o">=</span> <span class="n">wnd</span><span class="o">.</span><span class="n">Parent</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-d&#39;</span><span class="p">)</span>
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-S-d&#39;</span><span class="p">,</span> <span class="n">clear</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># insert line</span>
+    <span class="k">def</span> <span class="nf">duplicate_line</span><span class="p">(</span><span class="n">clear</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Duplicate an expression at the caret-line.&quot;&quot;&quot;</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FindFocus</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">stc</span><span class="o">.</span><span class="n">StyledTextCtrl</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">buf</span><span class="o">.</span><span class="n">SelectedText</span> <span class="ow">or</span> <span class="n">buf</span><span class="o">.</span><span class="n">expr_at_caret</span> <span class="ow">or</span> <span class="n">buf</span><span class="o">.</span><span class="n">topic_at_caret</span>
+        <span class="k">if</span> <span class="n">text</span><span class="p">:</span>
+            <span class="n">shell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_shell</span>
+            <span class="n">buf</span><span class="o">.</span><span class="n">mark</span> <span class="o">=</span> <span class="n">buf</span><span class="o">.</span><span class="n">cpos</span>
+            <span class="k">if</span> <span class="n">clear</span><span class="p">:</span>
+                <span class="n">shell</span><span class="o">.</span><span class="n">clearCommand</span><span class="p">()</span> <span class="c1"># move to the prompt end</span>
+            <span class="n">shell</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># write at the end of command-line</span>
+            <span class="n">shell</span><span class="o">.</span><span class="n">SetFocus</span><span class="p">()</span>
+
+    <span class="c1">## Customize keymaps.</span>
+    <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_editors</span><span class="p">:</span>
+        <span class="n">init_editor</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">buf</span> <span class="ow">in</span> <span class="n">page</span><span class="o">.</span><span class="n">all_buffers</span><span class="p">:</span>
+            <span class="n">init_buffer</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="s1">&#39;buffer_new&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;buffer_new&#39;</span><span class="p">,</span> <span class="n">init_buffer</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_shells</span><span class="p">:</span>
+        <span class="n">init_shell</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="s1">&#39;shell_new&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;shell_new&#39;</span><span class="p">,</span> <span class="n">init_shell</span><span class="p">)</span>
+
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x f11&#39;</span><span class="p">,</span> <span class="n">win</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ghost</span><span class="p">)</span>
+    <span class="nd">@self</span><span class="o">.</span><span class="n">define_key</span><span class="p">(</span><span class="s1">&#39;C-x S-f11&#39;</span><span class="p">,</span> <span class="n">win</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">toggle_pane</span><span class="p">(</span><span class="n">win</span><span class="p">):</span>
+        <span class="n">pane</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mgr</span><span class="o">.</span><span class="n">GetPane</span><span class="p">(</span><span class="n">win</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pane</span><span class="o">.</span><span class="n">IsDocked</span><span class="p">():</span>
+            <span class="c1">## toggle the pnae state to maximumized or not.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">IsShown</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_mgr</span><span class="o">.</span><span class="n">MaximizePane</span><span class="p">(</span><span class="n">pane</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_mgr</span><span class="o">.</span><span class="n">RestoreMaximizedPane</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mgr</span><span class="o">.</span><span class="n">Update</span><span class="p">()</span></div>
+
+
+
+<span class="c1">## --------------------------------</span>
+<span class="c1">## Main program</span>
+<span class="c1">## --------------------------------</span>
+<span class="n">quote_unqoute</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    Anything one man can imagine, other man can make real.</span>
+<span class="s2">    --- Jules Verne (1828--1905)</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../wxpj.html#wxpj.main">[docs]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">GetApp</span><span class="p">()</span> <span class="ow">or</span> <span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">()</span>
+    <span class="bp">self</span> <span class="o">=</span> <span class="n">mwx</span><span class="o">.</span><span class="n">deb</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                   <span class="n">introText</span><span class="o">=</span><span class="p">(</span><span class="vm">__doc__</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">quote_unqoute</span><span class="p">,</span>
+                   <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">stylus</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <span class="n">shell</span> <span class="o">=</span> <span class="n">dive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <span class="n">wx</span><span class="o">.</span><span class="n">CallAfter</span><span class="p">(</span><span class="n">shell</span><span class="o">.</span><span class="n">SetFocus</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">app</span><span class="o">.</span><span class="n">GetMainLoop</span><span class="p">():</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">debrc</span><span class="o">=</span><span class="s2">&quot;.debrc&quot;</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../0_how-to-start.html">1. Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../1_how-to-use.html">2. User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2_image-processing.html">3. Image Analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../wxpyJemacs.html">wxpyJemacs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins.html">plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyJeol.html">pyJeol package</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">wxpj  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">wxpj</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

@@ -1,6 +1,5 @@
 
-
-<!doctype html>
+<!DOCTYPE html>
 
 <html lang="en" data-content_root="../../">
   <head>
@@ -8,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>plugins.ld_grid &#8212; wxpj  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=5283bb3d" />
     
     <script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -23,7 +22,7 @@
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -45,17 +44,12 @@
             
   <h1>Source code for plugins.ld_grid</h1><div class="highlight"><pre>
 <span></span><span class="ch">#! python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="kn">import</span> <span class="nn">wx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span><span class="n">exp</span><span class="p">,</span><span class="n">cos</span><span class="p">,</span><span class="n">sin</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span>
 
-<span class="kn">from</span> <span class="nn">jgdk</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Thread</span><span class="p">,</span> <span class="n">LParam</span>
-
-
-<span class="k">def</span> <span class="nf">_valist</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
-    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">wxpj</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Thread</span><span class="p">,</span> <span class="n">LParam</span><span class="p">,</span> <span class="n">Button</span>
 
 
 <div class="viewcode-block" id="calc_dist">
@@ -69,7 +63,6 @@
 <a class="viewcode-back" href="../../plugins.html#plugins.ld_grid.calc_aspect">[docs]</a>
 <span class="k">def</span> <span class="nf">calc_aspect</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
     <span class="n">t</span> <span class="o">*=</span> <span class="n">pi</span><span class="o">/</span><span class="mi">180</span>
-    <span class="c1">## return ((1+r) * u + (1-r) * np.conj(u) * exp(2j*t)) / 2</span>
     <span class="k">return</span> <span class="n">u</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span><span class="o">*</span><span class="n">t</span><span class="p">)</span></div>
 
 
@@ -93,7 +86,7 @@
     <span class="k">def</span> <span class="nf">basegrid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;描画範囲の基準グリッド (複素数配列の組)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">grid</span><span class="p">,</span> <span class="n">tilt</span><span class="p">,</span> <span class="n">xc</span><span class="p">,</span> <span class="n">yc</span> <span class="o">=</span> <span class="n">_valist</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">grid</span><span class="p">,</span> <span class="n">tilt</span><span class="p">,</span> <span class="n">xc</span><span class="p">,</span> <span class="n">yc</span> <span class="o">=</span> <span class="n">params</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">grid</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">tilt</span> <span class="o">*</span> <span class="n">pi</span><span class="o">/</span><span class="mi">180</span><span class="p">)</span>
         <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nGrid</span>
         <span class="c1">## メッシュ数と分割数は同数である必要はないが，ここでは同数</span>
@@ -107,8 +100,9 @@
 <div class="viewcode-block" id="Model.residual">
 <a class="viewcode-back" href="../../plugins.html#plugins.ld_grid.Model.residual">[docs]</a>
     <span class="k">def</span> <span class="nf">residual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitting_params</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;最小自乗法の剰余函数</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;最小自乗法の剰余函数&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
+        
         <span class="n">grid</span><span class="p">,</span> <span class="n">tilt</span><span class="p">,</span> <span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">fitting_params</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">y</span>
         
@@ -118,10 +112,6 @@
             <span class="k">if</span> <span class="n">phi</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">90</span><span class="p">:</span> <span class="n">phi</span> <span class="o">+=</span> <span class="mi">180</span>
             <span class="k">elif</span> <span class="n">phi</span> <span class="o">&gt;</span> <span class="mi">90</span><span class="p">:</span> <span class="n">phi</span> <span class="o">-=</span> <span class="mi">180</span>
             <span class="n">fitting_params</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi</span>
-        
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;... Iteration stopped&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">StopIteration</span>
         
         <span class="c1">## 検索範囲（描画範囲ではない）の基準グリッド (-N:N 十分広く設定する)</span>
         <span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">))</span> <span class="o">/</span> <span class="n">grid</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
@@ -175,9 +165,8 @@
             <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;yc&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">),</span>
         <span class="p">)</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">btn</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;+Execute&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span><span class="mi">22</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">btn</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">Start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">btn</span><span class="o">.</span><span class="n">SetToolTip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="vm">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;+Execute&quot;</span><span class="p">,</span>
+                          <span class="n">handler</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">Start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">GetKeyState</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">WXK_SHIFT</span><span class="p">)))</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
         
@@ -196,7 +185,8 @@
 <div class="viewcode-block" id="Plugin.init_grid">
 <a class="viewcode-back" href="../../plugins.html#plugins.ld_grid.Plugin.init_grid">[docs]</a>
     <span class="k">def</span> <span class="nf">init_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
-        <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">basegrid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid_params</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid_params</span><span class="p">)</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">basegrid</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Arts</span> <span class="o">=</span> <span class="p">[</span><span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="p">[],</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">]</span>\
                   <span class="o">+</span> <span class="p">[</span><span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="p">[],</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span>  <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">]</span></div>
 
@@ -209,14 +199,14 @@
 <span class="sd">        アスペクト比： R1=Y/X, R2=Y2/X2 を計算する．</span>
 <span class="sd">        アスペクト比ずれ＋３次歪率を考慮したグリッドデータに変換して描画する．</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">r</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">_valist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ratio_params</span><span class="p">)</span>
-        <span class="n">D</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">_valist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dist_params</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid_params</span><span class="p">)</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ratio_params</span><span class="p">)</span>
+        <span class="n">D</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dist_params</span><span class="p">)</span>
         
-        <span class="n">grid0</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">basegrid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid_params</span><span class="p">))</span>
+        <span class="n">grid0</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">basegrid</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
         <span class="n">grid1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">calc_aspect</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="n">calc_dist</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">grid0</span><span class="p">)</span>
-        <span class="n">grids</span> <span class="o">=</span> <span class="n">grid0</span> <span class="o">+</span> <span class="n">grid1</span> <span class="c1"># リスト和</span>
         
-        <span class="k">for</span> <span class="n">art</span><span class="p">,</span><span class="n">z</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Arts</span><span class="p">,</span> <span class="n">grids</span><span class="p">):</span> <span class="c1"># グリッドの設定</span>
+        <span class="k">for</span> <span class="n">art</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Arts</span><span class="p">,</span> <span class="n">grid0</span> <span class="o">+</span> <span class="n">grid1</span><span class="p">):</span> <span class="c1"># (リスト和) グリッドの設定</span>
             <span class="n">art</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">z</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>
             <span class="n">art</span><span class="o">.</span><span class="n">set_clip_on</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         
@@ -240,55 +230,52 @@
         <span class="k">return</span> <span class="n">R1</span><span class="p">,</span> <span class="n">R2</span></div>
 
     
-<div class="viewcode-block" id="Plugin.run">
-<a class="viewcode-back" href="../../plugins.html#plugins.ld_grid.Plugin.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.execute">
+<a class="viewcode-back" href="../../plugins.html#plugins.ld_grid.Plugin.execute">[docs]</a>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate parameters for fitting markers as a grid pattern.</span>
 <span class="sd">        </span>
 <span class="sd">        [S-Lbutton] Skip estimation of the initial grid params.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            frame   : target frame</span>
-<span class="sd">                      If not specified, the last selected frame is given.</span>
+<span class="sd">                      If not specified, the selected frame will be used.</span>
 <span class="sd">            skip    : Skip `find_init_grid` order(0) process.</span>
-<span class="sd">                      True is given if the shift key is being pressed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">frame</span><span class="p">:</span>
             <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_view</span><span class="o">.</span><span class="n">frame</span>
         
-        <span class="n">skip</span> <span class="o">=</span> <span class="n">skip</span> <span class="ow">or</span> <span class="n">wx</span><span class="o">.</span><span class="n">GetKeyState</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">WXK_SHIFT</span><span class="p">)</span>
-        
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">markers</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;- Abort: no markers in the frame: </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">name</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;- Abort: no markers in </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
             <span class="k">return</span>
         
         <span class="c1">## re-init (erase) grid bound to the frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">init_grid</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">axes</span><span class="p">)</span>
         
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="p">:</span>
-            <span class="c1">## 初期グリッドパラメータの見積もり</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">skip</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;estimating initial grid paramtres... order(0)&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">find_init_grid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="c1">## 初期グリッドパラメータの見積もり</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">skip</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;estimating initial grid paramtres... order(0)&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">find_init_grid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        
+        <span class="c1">## 最適グリッドパラメータの見積もり</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">leastsq</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">residual</span><span class="p">,</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitting_params</span><span class="p">),</span>
+                                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span> <span class="n">ftol</span><span class="o">=</span><span class="mi">10</span><span class="o">**-</span><span class="n">order</span><span class="p">)</span>
             
-            <span class="c1">## 最適グリッドパラメータの見積もり</span>
-            <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">value</span>
-            <span class="k">if</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">leastsq</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">residual</span><span class="p">,</span>
-                    <span class="n">_valist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitting_params</span><span class="p">),</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span> <span class="n">ftol</span><span class="o">=</span><span class="mi">10</span><span class="o">**-</span><span class="n">order</span><span class="p">)</span>
-                
-                <span class="k">for</span> <span class="n">lp</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitting_params</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                    <span class="n">lp</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span>
-            
-            <span class="c1">## check the final result</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">_valist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitting_params</span><span class="p">),</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-            
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;... refined with order(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="p">),</span>
-                  <span class="s2">&quot;:res </span><span class="si">{:g}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">res</span><span class="p">))</span> <span class="o">/</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="p">()</span>
-            
-            <span class="n">frame</span><span class="o">.</span><span class="n">annotation</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span></div>
+            <span class="k">for</span> <span class="n">lp</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitting_params</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">lp</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span>
+        
+        <span class="c1">## check the final result</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitting_params</span><span class="p">),</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;... refined with order(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="p">),</span>
+              <span class="s2">&quot;:res </span><span class="si">{:g}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">res</span><span class="p">))</span> <span class="o">/</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="p">()</span>
+        
+        <span class="n">frame</span><span class="o">.</span><span class="n">annotation</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span></div>
 
     
 <div class="viewcode-block" id="Plugin.find_init_grid">
@@ -307,25 +294,20 @@
             <span class="n">ly</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             
         <span class="c1">## k = ld.index(np.median(ld))</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="n">ld</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">ld</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">))</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">ld</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">ld</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">))</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">ld</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">ly</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">/</span><span class="n">lx</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">*</span> <span class="mi">180</span><span class="o">/</span><span class="n">pi</span>
         <span class="k">for</span> <span class="n">lp</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid_params</span><span class="p">,</span> <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
             <span class="n">lp</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span></div>
 </div>
 
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">basegrid</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
             <div class="clearer"></div>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h3><a href="../../index.html">Table of Contents</a></h3>
 <p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
@@ -341,7 +323,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyJeol.html">pyJeol package</a></li>
 </ul>
 
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -349,13 +331,13 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -371,7 +353,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

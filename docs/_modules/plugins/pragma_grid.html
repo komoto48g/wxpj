@@ -1,20 +1,19 @@
 
+<!DOCTYPE html>
 
-<!doctype html>
-
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>plugins.pragma_grid &#8212; wxpj  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=5283bb3d" />
     
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -23,7 +22,7 @@
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -45,56 +44,76 @@
             
   <h1>Source code for plugins.pragma_grid</h1><div class="highlight"><pre>
 <span></span><span class="ch">#! python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="kn">import</span> <span class="nn">wx</span>
-
-<span class="kn">from</span> <span class="nn">jgdk</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Button</span>
+<span class="kn">from</span> <span class="nn">wxpj</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Button</span>
 
 
-<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../plugins.html#plugins.pragma_grid.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin">
+<a class="viewcode-back" href="../../plugins.html#plugins.pragma_grid.Plugin">[docs]</a>
+<span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate distortion of Mag-Grid pattern.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">menukey</span> <span class="o">=</span> <span class="s2">&quot;Plugins/&amp;Pragma Tools/&quot;</span>
     <span class="n">category</span> <span class="o">=</span> <span class="s2">&quot;Pragma Tools&quot;</span>
     <span class="n">caption</span> <span class="o">=</span> <span class="s2">&quot;Grid&quot;</span>
     
-    <span class="n">lccf</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;lccf&#39;</span><span class="p">))</span>
+    <span class="n">lgbt</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;lgbt&#39;</span><span class="p">))</span>
+    <span class="n">lccf</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;lccf2&#39;</span><span class="p">))</span>
     <span class="n">ld</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;ld_grid&#39;</span><span class="p">))</span>
     
-<div class="viewcode-block" id="Plugin.Init"><a class="viewcode-back" href="../../plugins.html#plugins.pragma_grid.Plugin.Init">[docs]</a>    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">chkfit</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;fit&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">chkfit</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="kc">True</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">chk</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;inv&quot;</span><span class="p">)</span>
-        
+<div class="viewcode-block" id="Plugin.Init">
+<a class="viewcode-back" href="../../plugins.html#plugins.pragma_grid.Plugin.Init">[docs]</a>
+    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span>
-                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Run&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">),</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">chkfit</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">chk</span><span class="p">,</span>
-                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Setting&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_setting</span><span class="p">),</span>
+                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;1. Mark&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">calmark</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s1">&#39;help&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">72</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
+                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;2. Run&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s1">&#39;help&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">72</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
             <span class="p">),</span>
-            <span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="p">)</span></div>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Evaluate grid pattern&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;vspin&#39;</span><span class="p">,</span> <span class="n">cw</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tw</span><span class="o">=</span><span class="mi">44</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lccf</span><span class="o">.</span><span class="n">rmin</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lccf</span><span class="o">.</span><span class="n">rmax</span><span class="p">,</span>
+                <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Advanced settings&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_setting</span><span class="p">),</span>
+            <span class="p">),</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Selection ellispse&quot;</span><span class="p">,</span> <span class="n">cw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">tw</span><span class="o">=</span><span class="mi">40</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lgbt</span><span class="o">.</span><span class="n">ksize</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">13</span> <span class="c1"># default blur window size</span></div>
+
     
-<div class="viewcode-block" id="Plugin.show_setting"><a class="viewcode-back" href="../../plugins.html#plugins.pragma_grid.Plugin.show_setting">[docs]</a>    <span class="k">def</span> <span class="nf">show_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.show_setting">
+<a class="viewcode-back" href="../../plugins.html#plugins.pragma_grid.Plugin.show_setting">[docs]</a>
+    <span class="k">def</span> <span class="nf">show_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Show the settings.&quot;&quot;&quot;</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">force</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">IsShown</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">Show</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lccf</span><span class="o">.</span><span class="n">Show</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lccf</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span></div>
+
     
-<div class="viewcode-block" id="Plugin.run"><a class="viewcode-back" href="../../plugins.html#plugins.pragma_grid.Plugin.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run scripts.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lccf</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">otsu</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">chk</span><span class="o">.</span><span class="n">Value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chkfit</span><span class="o">.</span><span class="n">Value</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">Start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">run</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">show_setting</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="Plugin.execute">
+<a class="viewcode-back" href="../../plugins.html#plugins.pragma_grid.Plugin.execute">[docs]</a>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the fitting procedure.&quot;&quot;&quot;</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">Start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">execute</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="Plugin.calmark">
+<a class="viewcode-back" href="../../plugins.html#plugins.pragma_grid.Plugin.calmark">[docs]</a>
+    <span class="k">def</span> <span class="nf">calmark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Feature detection.</span>
+<span class="sd">        </span>
+<span class="sd">        Set parameter: Minimum radius [pix] of circles to be detected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lccf</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">otsu</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
             <div class="clearer"></div>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h3><a href="../../index.html">Table of Contents</a></h3>
 <p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
@@ -110,7 +129,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyJeol.html">pyJeol package</a></li>
 </ul>
 
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -118,13 +137,13 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -139,8 +158,8 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

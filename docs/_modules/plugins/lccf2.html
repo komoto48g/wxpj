@@ -1,20 +1,19 @@
 
+<!DOCTYPE html>
 
-<!doctype html>
-
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>plugins.lccf2 &#8212; wxpj  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=5283bb3d" />
     
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -23,7 +22,7 @@
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -45,69 +44,61 @@
             
   <h1>Source code for plugins.lccf2</h1><div class="highlight"><pre>
 <span></span><span class="ch">#! python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="kn">import</span> <span class="nn">wx</span>
 <span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span><span class="n">cos</span><span class="p">,</span><span class="n">sin</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">patches</span>
 
-<span class="kn">from</span> <span class="nn">jgdk</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">LParam</span>
-<span class="c1">## import editor as edi</span>
+<span class="kn">from</span> <span class="nn">wxpj</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">LParam</span><span class="p">,</span> <span class="n">Button</span>
+<span class="kn">import</span> <span class="nn">editor</span> <span class="k">as</span> <span class="nn">edi</span>
 
 
-<div class="viewcode-block" id="find_ellipses"><a class="viewcode-back" href="../../plugins.html#plugins.lccf2.find_ellipses">[docs]</a><span class="k">def</span> <span class="nf">find_ellipses</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">rmin</span><span class="p">,</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find ellipses with radius (rmin, rmax).</span>
-<span class="sd">    excluding circles at the edges of the image &lt; tol*r.</span>
-<span class="sd">    </span>
-<span class="sd">    Returns:</span>
-<span class="sd">        list of (c:=(cx,cy), r:=(ra&lt;rb), angle) sorted by pos.</span>
-<span class="sd">        cx,cy : center of the rectangle [pix]</span>
-<span class="sd">        ra,rb : ra:width &lt; rb:height of the rectangle [pix]</span>
-<span class="sd">        angle : rotation angle in clockwise (from 00:00 o&#39;clock)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1">## Finds contours in binary image</span>
-    <span class="c1">## ▲ src は上書きされるので後で使うときは注意する</span>
+<div class="viewcode-block" id="find_ellipses">
+<a class="viewcode-back" href="../../plugins.html#plugins.lccf2.find_ellipses">[docs]</a>
+<span class="k">def</span> <span class="nf">find_ellipses</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">rmin</span><span class="p">,</span> <span class="n">rmax</span><span class="p">):</span>
+    <span class="c1">## Find contours in binary image</span>
+    <span class="c1">## ▲ src 第一引数は上書きされるので後で参照するときは注意する</span>
+    <span class="n">argv</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="c1">## opencv &lt;= 3.4.5</span>
-        <span class="n">c</span><span class="p">,</span> <span class="n">contours</span><span class="p">,</span> <span class="n">hierarchy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
+        <span class="n">contours</span><span class="p">,</span> <span class="n">hierarchy</span> <span class="o">=</span> <span class="n">argv</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="n">contours</span><span class="p">,</span> <span class="n">hierarchy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
+        <span class="n">_c</span><span class="p">,</span> <span class="n">contours</span><span class="p">,</span> <span class="n">hierarchy</span> <span class="o">=</span> <span class="n">argv</span> <span class="c1"># opencv &lt;= 3.4.5</span>
     
     <span class="c1">## Detect enclosing rectangles</span>
+    <span class="c1">## Note:</span>
+    <span class="c1">##     At least 5 points are needed to fit an ellipse.</span>
+    <span class="c1">##     NaN should be eliminated.</span>
     <span class="n">ellipses</span> <span class="o">=</span> <span class="p">[</span><span class="n">cv2</span><span class="o">.</span><span class="n">fitEllipse</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">contours</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">]</span>
-    
-    <span class="c1">## There should be at least 5 points to fit the ellipse (c,r,a)</span>
-    <span class="c1">## To detect small spots, increase the amount of blur.</span>
-    
+    <span class="n">ellipses</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])),</span> <span class="n">ellipses</span><span class="p">)</span> <span class="c1"># nan を排除する</span>
     <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span>
     
-    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">v</span><span class="p">):</span> <span class="c1"># 位置で昇順ソートする</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">isinside</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span> <span class="c1"># 画像の端にある円を除く</span>
+    <span class="k">def</span> <span class="nf">_inside</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.75</span><span class="o">/</span><span class="mi">2</span><span class="p">):</span> <span class="c1"># 画像の端にある円を除く</span>
+        <span class="n">c</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">v</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">rmin</span> <span class="o">&lt;</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rmax</span> <span class="ow">and</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">w</span><span class="o">-</span><span class="n">d</span> <span class="ow">and</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">h</span><span class="o">-</span><span class="n">d</span><span class="p">)</span>
     
-    <span class="k">return</span> <span class="nb">sorted</span><span class="p">([(</span><span class="n">c</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">a</span> <span class="ow">in</span> <span class="n">ellipses</span> <span class="k">if</span> <span class="n">isinside</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">r</span><span class="p">)],</span> <span class="n">key</span><span class="o">=</span><span class="n">distance</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">_inside</span><span class="p">,</span> <span class="n">ellipses</span><span class="p">),</span>
+                  <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span> <span class="c1"># 位置で昇順ソート</span></div>
 
 
-<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../plugins.html#plugins.lccf2.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cetner of Circles (Ellipses) finder ver.2</span>
+
+<div class="viewcode-block" id="Plugin">
+<a class="viewcode-back" href="../../plugins.html#plugins.lccf2.Plugin">[docs]</a>
+<span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cetner of Ellipses finder.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">menukey</span> <span class="o">=</span> <span class="s2">&quot;Plugins/&amp;Basic Tools/&quot;</span>
     <span class="n">category</span> <span class="o">=</span> <span class="s2">&quot;Basic Tools&quot;</span>
     
     <span class="n">lgbt</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;lgbt&#39;</span><span class="p">))</span>
     
-<div class="viewcode-block" id="Plugin.Init"><a class="viewcode-back" href="../../plugins.html#plugins.lccf2.Plugin.Init">[docs]</a>    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.Init">
+<a class="viewcode-back" href="../../plugins.html#plugins.lccf2.Plugin.Init">[docs]</a>
+    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rmin</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;rmin&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rmax</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;rmax&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="mi">200</span><span class="p">)</span>
         
-        <span class="n">btn2</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;+Execute&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span><span class="mi">22</span><span class="p">))</span>
-        <span class="n">btn2</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">())</span>
-        <span class="n">btn2</span><span class="o">.</span><span class="n">SetToolTip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="vm">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="n">btn</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;+Execute&quot;</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lgbt</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
@@ -115,101 +106,116 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">rmin</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">rmax</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rmax</span><span class="p">,</span>
             <span class="p">),</span>
-            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;radii&quot;</span><span class="p">,</span> <span class="n">cw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">tw</span><span class="o">=</span><span class="mi">40</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;rectangles&quot;</span><span class="p">,</span> <span class="n">cw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">tw</span><span class="o">=</span><span class="mi">40</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span><span class="n">btn2</span><span class="p">,),</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span><span class="n">btn</span><span class="p">,))</span></div>
+
     
     <span class="n">maxcount</span> <span class="o">=</span> <span class="mi">256</span> <span class="c1"># 選択する点の数を制限する</span>
     <span class="n">maxratio</span> <span class="o">=</span> <span class="mf">5.0</span> <span class="c1"># ひずみの大きい楕円は除外する</span>
     
-<div class="viewcode-block" id="Plugin.run"><a class="viewcode-back" href="../../plugins.html#plugins.lccf2.Plugin.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">otsu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set markers at the peak position in ellipses.</span>
-<span class="sd">        </span>
-<span class="sd">        Search ellipses patterns.</span>
-<span class="sd">        Find the average position of the peaks within the masked areas.</span>
-<span class="sd">        [S-Lbutton] Estimate the threshold using Otsu&#39;s algorithm.</span>
+<div class="viewcode-block" id="Plugin.execute">
+<a class="viewcode-back" href="../../plugins.html#plugins.lccf2.Plugin.execute">[docs]</a>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">otsu</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set markers at the center of ellipses.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            frame   : target frame</span>
-<span class="sd">                      If not specified, the last selected frame is given.</span>
+<span class="sd">                      If not specified, the selected frame will be used.</span>
 <span class="sd">            otsu    : Use Otsu&#39;s algorithm.</span>
-<span class="sd">                      True is given if the shift key is being pressed.</span>
-<span class="sd">            invert  : Invert image contrast (for DFI).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">frame</span><span class="p">:</span>
             <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_view</span><span class="o">.</span><span class="n">frame</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">Arts</span>
+        <span class="k">del</span> <span class="n">frame</span><span class="o">.</span><span class="n">markers</span>
         
-        <span class="k">if</span> <span class="n">otsu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">otsu</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">GetKeyState</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">WXK_SHIFT</span><span class="p">)</span>
-        
-        <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lgbt</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">otsu</span><span class="p">,</span> <span class="n">invert</span><span class="p">)</span> <span class="c1"># image &lt;uint8&gt;</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lgbt</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">otsu</span><span class="p">)</span>
         
         <span class="n">circles</span> <span class="o">=</span> <span class="n">find_ellipses</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmin</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmax</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;found </span><span class="si">{}</span><span class="s2"> circles&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">circles</span><span class="p">)))</span>
         
-        <span class="k">if</span> <span class="n">circles</span><span class="p">:</span>
-            <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxcount</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">circles</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">N</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2"> is too many, chopped (&lt; </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
-                <span class="n">circles</span> <span class="o">=</span> <span class="n">circles</span><span class="p">[:</span><span class="n">N</span><span class="p">]</span>
-            
-            <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span>
-            <span class="n">xy</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">),</span> <span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">rb</span><span class="p">),</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">circles</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">ra</span> <span class="ow">and</span> <span class="n">rb</span><span class="o">/</span><span class="n">ra</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxratio</span><span class="p">:</span>
-                    <span class="c1">## 不特定多数の円を描画する</span>
-                    <span class="n">art</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-                    <span class="n">art</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">xyfrompixel</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">)</span>
-                    <span class="n">art</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">ra</span> <span class="o">*</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
-                    <span class="n">art</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">rb</span> <span class="o">*</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
-                    <span class="n">art</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="mi">90</span><span class="o">-</span><span class="n">angle</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">attach_artists</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">art</span><span class="p">)</span>
-                    
-                    <span class="c1">## 検出した楕円の中心を記録する</span>
-                    <span class="c1">## xy.append(art.center)</span>
-                    
-                    <span class="c1">## Show max radius enclosing the area (cf. cv2.minEnclosingCircle)</span>
-                    <span class="n">r</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">rb</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-                    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cx</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">cy</span><span class="p">)</span>
-                    <span class="n">xa</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="o">-</span><span class="n">r</span><span class="p">)</span>
-                    <span class="n">ya</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">-</span><span class="n">r</span><span class="p">)</span>
-                    <span class="n">buf</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">buffer</span><span class="p">[</span><span class="n">ya</span><span class="p">:</span><span class="n">y</span><span class="o">+</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">xa</span><span class="p">:</span><span class="n">x</span><span class="o">+</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
-                    
-                    <span class="c1">## local maximum</span>
-                    <span class="c1">## dy, dx = np.unravel_index(buf.argmax(), buf.shape)</span>
-                    
-                    <span class="c1">## local maximum :averaged (強度の偏りを考慮する)</span>
-                    <span class="n">yy</span><span class="p">,</span> <span class="n">xx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">buf</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span>
-                    <span class="n">dy</span><span class="p">,</span> <span class="n">dx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">yy</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">xx</span><span class="p">)</span>
-                    
-                    <span class="c1">## centroid of masked array</span>
-                    <span class="c1">## buf = np.ma.masked_array(buf, mask_ellipse(ra, rb, angle))</span>
-                    <span class="c1">## dx, dy = edi.centroid(buf)</span>
-                    
-                    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">xyfrompixel</span><span class="p">(</span><span class="n">xa</span><span class="o">+</span><span class="n">dx</span><span class="p">,</span> <span class="n">ya</span><span class="o">+</span><span class="n">dy</span><span class="p">)</span>
-                    <span class="n">xy</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-                    
-            <span class="n">frame</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="c1"># scatter markers if any xy</span></div></div>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">circles</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> circles.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">circles</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxcount</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="n">N</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Too many circles found. Limiting number to </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="n">circles</span> <span class="o">=</span> <span class="n">circles</span><span class="p">[:</span><span class="n">N</span><span class="p">]</span>
+        
+        <span class="n">xy</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">),</span> <span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">rb</span><span class="p">),</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">circles</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ra</span> <span class="ow">and</span> <span class="n">rb</span><span class="o">/</span><span class="n">ra</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxratio</span><span class="p">:</span>
+                <span class="c1">## 不特定多数の円を描画する</span>
+                <span class="n">art</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">art</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">xyfrompixel</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">)</span>
+                <span class="n">art</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">ra</span> <span class="o">*</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
+                <span class="n">art</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">rb</span> <span class="o">*</span> <span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
+                <span class="n">art</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="mi">90</span><span class="o">-</span><span class="n">angle</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">attach_artists</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">art</span><span class="p">)</span>
+                
+                <span class="c1">## 検出した楕円の中心をそのまま記録する</span>
+                <span class="c1">## 強度の偏りが出るのを防ぐため，十分ぼかし幅をとること</span>
+                <span class="n">xy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">art</span><span class="o">.</span><span class="n">center</span><span class="p">)</span>
+                
+                <span class="c1">## r = int(np.hypot(ra, rb) / 2) # max radius enclosing the area rectangle</span>
+                <span class="c1">## x, y = int(cx), int(cy)</span>
+                <span class="c1">## buf = frame.buffer[y-r:y+r+1, x-r:x+r+1]</span>
+                <span class="c1">## img = frame.image[y-r:y+r+1, x-r:x+r+1]</span>
+                
+                <span class="c1">## local maximum that is found first in the region. ▲偏りが出るので NG</span>
+                <span class="c1">## dy, dx = np.unravel_index(buf.argmax(), buf.shape)</span>
+                
+                <span class="c1">## local maximum :averaged (強度の偏りを考慮する) ▲偏りが出るので NG</span>
+                <span class="c1">## yy, xx = np.where(buf == np.amax(buf))</span>
+                <span class="c1">## dy, dx = np.average(yy), np.average(xx)</span>
+                
+                <span class="c1">## centroid of masked array</span>
+                <span class="c1">## buf = np.ma.masked_array(img, mask_ellipse(r, ra, rb, angle))</span>
+                <span class="c1">## dx, dy = centroid(buf)</span>
+                <span class="c1">## x, y = frame.xyfrompixel(x-r+dx, y-r+dy)</span>
+                <span class="c1">## xy.append((x, y))</span>
+        <span class="k">if</span> <span class="n">xy</span><span class="p">:</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="c1"># scatter markers if any xy</span></div>
+</div>
 
 
-<div class="viewcode-block" id="mask_ellipse"><a class="viewcode-back" href="../../plugins.html#plugins.lccf2.mask_ellipse">[docs]</a><span class="k">def</span> <span class="nf">mask_ellipse</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">rb</span><span class="p">)</span> <span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># max radius enclosing the area cf. cv2.minEnclosingCircle</span>
-    <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ogrid</span><span class="p">[</span><span class="o">-</span><span class="n">r</span><span class="p">:</span><span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="n">r</span><span class="p">:</span><span class="n">r</span><span class="p">]</span>
+
+<div class="viewcode-block" id="centroid">
+<a class="viewcode-back" href="../../plugins.html#plugins.lccf2.centroid">[docs]</a>
+<span class="k">def</span> <span class="nf">centroid</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;centroids (重心).</span>
+<span class="sd">    cf. ndi.measurements.center_of_mass</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">## Note:</span>
+    <span class="c1">##     moments は findContours と組み合わせても使用される．</span>
+    <span class="c1">##     src &lt;int32/float32&gt; はコンター座標とみなされる．</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="n">edi</span><span class="o">.</span><span class="n">imconv</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">moments</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+    <span class="n">cx</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="s1">&#39;m10&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;m00&#39;</span><span class="p">]</span>
+    <span class="n">cy</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="s1">&#39;m01&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;m00&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span></div>
+
+
+
+<div class="viewcode-block" id="mask_ellipse">
+<a class="viewcode-back" href="../../plugins.html#plugins.lccf2.mask_ellipse">[docs]</a>
+<span class="k">def</span> <span class="nf">mask_ellipse</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ogrid</span><span class="p">[</span><span class="o">-</span><span class="n">r</span><span class="p">:</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">r</span><span class="p">:</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">yo</span><span class="p">,</span> <span class="n">xo</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">angle</span> <span class="o">*</span> <span class="n">pi</span><span class="o">/</span><span class="mi">180</span>
-    <span class="n">xx</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">xo</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">yo</span><span class="p">)</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-    <span class="n">yy</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">xo</span><span class="p">)</span> <span class="o">*-</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">yo</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">xx</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">xo</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">yo</span><span class="p">)</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">yy</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">xo</span><span class="p">)</span> <span class="o">*-</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">yo</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">xx</span><span class="o">/</span><span class="n">ra</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">yy</span><span class="o">/</span><span class="n">rb</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="c1"># 楕円の短径 ra/2 &lt; 長径 rb/2</span></div>
+
 </pre></div>
 
             <div class="clearer"></div>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h3><a href="../../index.html">Table of Contents</a></h3>
 <p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
@@ -225,7 +231,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyJeol.html">pyJeol package</a></li>
 </ul>
 
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -233,13 +239,13 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -254,8 +260,8 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

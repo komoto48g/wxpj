@@ -1,6 +1,5 @@
 
-
-<!doctype html>
+<!DOCTYPE html>
 
 <html lang="en" data-content_root="../../">
   <head>
@@ -8,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pyJeol.pyJem2 &#8212; wxpj  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=5283bb3d" />
     
     <script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -23,7 +22,7 @@
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -45,25 +44,18 @@
             
   <h1>Source code for pyJeol.pyJem2</h1><div class="highlight"><pre>
 <span></span><span class="ch">#! python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;PyJEM facade of the Poor man&#39;s PyJEM</span>
-
-<span class="sd">Author: Kazuya O&#39;moto &lt;komoto@jeol.co.jp&gt;</span>
+<span class="sd">&quot;&quot;&quot;Poor man&#39;s PyJEM</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">inf</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">temisc</span> <span class="kn">import</span> <span class="n">mrange</span>
-    <span class="kn">from</span> <span class="nn">temisc</span> <span class="kn">import</span> <span class="n">FLHex</span><span class="p">,</span> <span class="n">OLHex</span>
-    <span class="kn">from</span> <span class="nn">legacy</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">cmdl</span><span class="p">,</span> <span class="n">cntf</span> 
-    <span class="kn">from</span> <span class="nn">legacy</span> <span class="kn">import</span> <span class="n">LensSystem</span><span class="p">,</span> <span class="n">DeflSystem</span><span class="p">,</span> <span class="n">FocusSystem</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">.temisc</span> <span class="kn">import</span> <span class="n">mrange</span>
-    <span class="kn">from</span> <span class="nn">.temisc</span> <span class="kn">import</span> <span class="n">FLHex</span><span class="p">,</span> <span class="n">OLHex</span>
-    <span class="kn">from</span> <span class="nn">.legacy</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">cmdl</span><span class="p">,</span> <span class="n">cntf</span> 
-    <span class="kn">from</span> <span class="nn">.legacy</span> <span class="kn">import</span> <span class="n">LensSystem</span><span class="p">,</span> <span class="n">DeflSystem</span><span class="p">,</span> <span class="n">FocusSystem</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">teminfo</span>
+<span class="kn">from</span> <span class="nn">.temisc</span> <span class="kn">import</span> <span class="n">mrange</span>
+<span class="kn">from</span> <span class="nn">.temisc</span> <span class="kn">import</span> <span class="n">FLHex</span><span class="p">,</span> <span class="n">OLHex</span>
+<span class="kn">from</span> <span class="nn">.legacy</span> <span class="kn">import</span> <span class="n">cmdl</span><span class="p">,</span> <span class="n">cntf</span>
+<span class="kn">from</span> <span class="nn">.jtypes</span> <span class="kn">import</span> <span class="n">LensSystem</span><span class="p">,</span> <span class="n">DeflSystem</span><span class="p">,</span> <span class="n">FocusSystem</span>
+
 
 <span class="n">Command</span> <span class="o">=</span> <span class="n">cmdl</span><span class="o">.</span><span class="n">Command</span>
 <span class="n">NotifyCommand</span> <span class="o">=</span> <span class="n">cntf</span><span class="o">.</span><span class="n">NotifyCommand</span>
@@ -78,12 +70,13 @@
 <span class="c1">## MAJOR_MODE = &#39;TEM&#39;, &#39;STEM&#39;</span>
 <span class="c1">## USER_MODE  = &#39;MAINT&#39;, &#39;USER&#39;, &#39;STDBASE&#39;</span>
 
-<div class="viewcode-block" id="uhex">
-<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.uhex">[docs]</a>
-<span class="k">def</span> <span class="nf">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mh">0xffff</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="mi">0</span>
-    <span class="k">elif</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">vmax</span><span class="p">:</span> <span class="k">return</span> <span class="n">vmax</span>
-    <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">_uhex</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mh">0xffff</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">vmax</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">vmax</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="staticproperty">
@@ -93,8 +86,9 @@
         <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
     <span class="k">def</span> <span class="nf">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">_uhex</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="static2property">
@@ -105,8 +99,8 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">TEM</span><span class="o">.</span><span class="n">dsys</span><span class="p">[</span><span class="n">xname</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                          <span class="n">TEM</span><span class="o">.</span><span class="n">dsys</span><span class="p">[</span><span class="n">yname</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
     <span class="k">def</span> <span class="nf">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="n">TEM</span><span class="o">.</span><span class="n">dsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">xname</span><span class="p">,</span> <span class="n">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-        <span class="n">TEM</span><span class="o">.</span><span class="n">dsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">yname</span><span class="p">,</span> <span class="n">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">dsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">xname</span><span class="p">,</span> <span class="n">_uhex</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">TEM</span><span class="o">.</span><span class="n">dsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">yname</span><span class="p">,</span> <span class="n">_uhex</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
     <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="p">)</span></div>
 
 
@@ -114,7 +108,7 @@
 <div class="viewcode-block" id="TEM">
 <a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.TEM">[docs]</a>
 <span class="k">class</span> <span class="nc">TEM</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;TEM Lens/Defl system</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;TEM Lens/Defl system.</span>
 <span class="sd">    </span>
 <span class="sd">    通常は，このクラスを基底クラスとしてプロパティを継承／使用するが，</span>
 <span class="sd">    self に依存しないので静的プロパティ (static property) としてアクセス可．</span>
@@ -147,11 +141,9 @@
     <span class="n">_set_pl_focus</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E162&quot;</span><span class="p">,</span> <span class="s2">&quot;!h&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="c1"># PL Focus</span>
     <span class="n">_set_fl_focus</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E165&quot;</span><span class="p">,</span> <span class="s2">&quot;!h&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="c1"># FL Focus</span>
     
-    <span class="n">lsys</span> <span class="o">=</span> <span class="n">LensSystem</span><span class="p">()</span>  <span class="c1"># Lens Free Control System</span>
+    <span class="n">lsys</span> <span class="o">=</span> <span class="n">LensSystem</span><span class="p">()</span>  <span class="c1"># Lens (free-control) system</span>
     <span class="n">dsys</span> <span class="o">=</span> <span class="n">DeflSystem</span><span class="p">()</span>  <span class="c1"># Deflector system</span>
     <span class="n">fsys</span> <span class="o">=</span> <span class="n">FocusSystem</span><span class="p">()</span> <span class="c1"># Focus system</span>
-    
-    <span class="n">foci</span> <span class="o">=</span> <span class="n">fsys</span> <span class="c1">#: for backward compatibility</span>
     
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
@@ -213,7 +205,7 @@
     
     <span class="nd">@FL</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">FL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="n">FLHex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">FLHex</span><span class="o">.</span><span class="n">maxval</span><span class="p">))</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">FLHex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">_uhex</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">FLHex</span><span class="o">.</span><span class="n">maxval</span><span class="p">))</span>
         <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;FLC&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">coarse</span><span class="p">)</span>
         <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;FLF&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">fine</span><span class="p">)</span>
     
@@ -225,7 +217,7 @@
     
     <span class="nd">@OL</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">OL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="n">OLHex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">uhex</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">OLHex</span><span class="o">.</span><span class="n">maxval</span><span class="p">))</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">OLHex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">_uhex</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">OLHex</span><span class="o">.</span><span class="n">maxval</span><span class="p">))</span>
         <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;OLC&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">coarse</span><span class="p">)</span>
         <span class="n">TEM</span><span class="o">.</span><span class="n">fsys</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="s1">&#39;OLF&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">fine</span><span class="p">)</span>
     
@@ -241,52 +233,59 @@
 <div class="viewcode-block" id="Optics">
 <a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Optics">[docs]</a>
 <span class="k">class</span> <span class="nc">Optics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optics mode base(mixin) class</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optics mode base(mixin) class.</span>
 <span class="sd">    </span>
 <span class="sd">    The inherited class must have MODES and Info which is to be notified.</span>
 <span class="sd">    The request command complementary to the notify must be defined as _get_info.</span>
 <span class="sd">    The Mode.setter can only function if the class has a request command _set_mode.</span>
 <span class="sd">    The Selector.setter can only function if the class has a request command _set_index.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Optics.init">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Optics.init">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alist</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MODES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">alist</span><span class="p">)</span></div>
+
+    
 <div class="viewcode-block" id="Optics.request">
 <a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Optics.request">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_info</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">i</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">key</span> <span class="k">else</span> <span class="n">i</span></div>
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_info</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">info</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">key</span> <span class="k">else</span> <span class="n">info</span></div>
 
     
-    <span class="c1">## @classmethod</span>
-    <span class="c1">## def refer(self, key=None):</span>
-    <span class="c1">##     i = self.Info</span>
-    <span class="c1">##     return i[key] if key else i</span>
-    
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">Name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;mode-specific name&quot;&quot;&quot;</span>
-        <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Mode</span>
+    <span class="k">def</span> <span class="nf">_get_mode_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">j</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MODES</span><span class="p">)[</span><span class="n">j</span><span class="p">]</span>
     
+    <span class="k">def</span> <span class="nf">_get_mode_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MODES</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="n">j</span><span class="p">]</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mode-specific name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mode_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Mode</span><span class="p">)</span>
+    
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">Mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;mode-specific index&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mode-specific index.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;mode&#39;</span><span class="p">)</span>
     
     <span class="nd">@Mode</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">Mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MODES</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-        <span class="n">j</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MODES</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">j</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Mode</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_set_mode</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MODES</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Mode</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_set_mode</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Mode index out of range&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Mode index is out of range: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">Selector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;submode-specifc index e.g., spot/alpha, mag, cam, and disp&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Submode-specifc index e.g., (spot, alpha), mag, cam, and disp.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
     
     <span class="nd">@Selector</span><span class="o">.</span><span class="n">setter</span>
@@ -298,24 +297,22 @@
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">Range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;mode-specific range&quot;&quot;&quot;</span>
-        <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Mode</span>
-        <span class="k">if</span> <span class="n">j</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MODES</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="n">j</span><span class="p">]</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mode-specific range.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mode_range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Mode</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="Illumination">
 <a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Illumination">[docs]</a>
 <span class="k">class</span> <span class="nc">Illumination</span><span class="p">(</span><span class="n">Optics</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Illumination system</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Illumination system.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">MODES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span> <span class="c1"># number of (spot, alpha)</span>
+    <span class="n">MODES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span> <span class="c1"># number of (spot, alpha)</span>
         <span class="p">(</span><span class="s1">&#39;TEM&#39;</span><span class="p">,</span>     <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
-        <span class="p">(</span><span class="s1">&#39;Koehler&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;Koehler&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
     <span class="p">))</span>
     
-    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Illumination_info</span><span class="p">()</span>
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">teminfo</span><span class="o">.</span><span class="n">Illumination_info</span><span class="p">()</span>
     
     <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E055&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!H10sHH10s&quot;</span><span class="p">)</span>
     <span class="n">_set_mode</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E050&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">)</span>
@@ -323,7 +320,9 @@
     <span class="n">_set_alpha</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E052&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">_set_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Spot</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Alpha</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="c1">## self.Spot, self.Alpha = v</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_spot</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_alpha</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">Spot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -331,7 +330,11 @@
     
     <span class="nd">@Spot</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">Spot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">v</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Spot</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Spot</span> <span class="c1"># =&gt; request</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mode_range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Info</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">])</span>
+            <span class="n">v</span> <span class="o">%=</span> <span class="n">rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="n">index</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_spot</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
     
     <span class="nd">@property</span>
@@ -340,7 +343,11 @@
     
     <span class="nd">@Alpha</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">Alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">v</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Alpha</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Alpha</span> <span class="c1"># =&gt; request</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mode_range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Info</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">])</span>
+            <span class="n">v</span> <span class="o">%=</span> <span class="n">rng</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="n">index</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_alpha</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
 
 
@@ -348,9 +355,9 @@
 <div class="viewcode-block" id="Imaging">
 <a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Imaging">[docs]</a>
 <span class="k">class</span> <span class="nc">Imaging</span><span class="p">(</span><span class="n">Optics</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Imaging system</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Imaging system.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">MODES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span>
+    <span class="n">MODES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span>
         <span class="p">(</span><span class="s1">&#39;MAG&#39;</span><span class="p">,</span>    <span class="n">mrange</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mf">1.2e6</span><span class="p">)),</span>
         <span class="p">(</span><span class="s1">&#39;MAG2&#39;</span><span class="p">,</span>   <span class="n">mrange</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mf">1.2e6</span><span class="p">)),</span>
         <span class="p">(</span><span class="s1">&#39;LOWMAG&#39;</span><span class="p">,</span> <span class="n">mrange</span><span class="p">(</span>  <span class="mi">50</span><span class="p">,</span>  <span class="mf">50e3</span><span class="p">)),</span>
@@ -358,7 +365,7 @@
         <span class="p">(</span><span class="s1">&#39;DIFF&#39;</span><span class="p">,</span>   <span class="n">mrange</span><span class="p">(</span> <span class="mi">300</span><span class="p">,</span>  <span class="mi">5000</span><span class="p">)),</span>
     <span class="p">))</span>
     
-    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Imaging_info</span><span class="p">()</span>
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">teminfo</span><span class="o">.</span><span class="n">Imaging_info</span><span class="p">()</span>
     
     <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E015&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!H10sHI10s10s&quot;</span><span class="p">)</span>
     <span class="n">_set_mode</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E010&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">)</span>
@@ -370,10 +377,10 @@
     
     <span class="nd">@Mag</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">Mag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Mag</span><span class="p">:</span>
-            <span class="n">lm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Range</span>
-            <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">lm</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lm</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Mag</span><span class="p">:</span> <span class="c1"># =&gt; request</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mode_range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Info</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">])</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">rng</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_set_index</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Mag index is out of range: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
@@ -383,14 +390,14 @@
 <div class="viewcode-block" id="Omega">
 <a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Omega">[docs]</a>
 <span class="k">class</span> <span class="nc">Omega</span><span class="p">(</span><span class="n">Optics</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Omega/Projection system</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Omega/Projection system.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">MODES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span>
+    <span class="n">MODES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span>
         <span class="p">(</span><span class="s1">&#39;Imaging&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,)),</span>
         <span class="p">(</span><span class="s1">&#39;Spectrum&#39;</span><span class="p">,</span> <span class="n">mrange</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">250</span><span class="p">)),</span> <span class="c1"># um/eV</span>
     <span class="p">))</span>
     
-    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Omega_info</span><span class="p">()</span>
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">teminfo</span><span class="o">.</span><span class="n">Omega_info</span><span class="p">()</span>
     
     <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E016&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!HH10sHI10s10s&quot;</span><span class="p">)</span>
     <span class="n">_set_mode</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E620&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!2H2I2H2IH5dH&quot;</span><span class="p">)</span>
@@ -409,10 +416,10 @@
     
     <span class="nd">@Dispersion</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">Dispersion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Dispersion</span><span class="p">:</span>
-            <span class="n">lm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Range</span>
-            <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">lm</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lm</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Dispersion</span><span class="p">:</span> <span class="c1"># =&gt; request</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mode_range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Info</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">])</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">rng</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_set_index</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Dispersion index is out of range: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
@@ -426,29 +433,26 @@
 <div class="viewcode-block" id="Device">
 <a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Device">[docs]</a>
 <span class="k">class</span> <span class="nc">Device</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Device base class mixin</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Device base class mixin.</span>
+<span class="sd">    </span>
+<span class="sd">    The request command complementary to the notify must be defined as _get_info.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="Device.request">
 <a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Device.request">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_info</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">i</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">key</span> <span class="k">else</span> <span class="n">i</span></div>
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_info</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">info</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">key</span> <span class="k">else</span> <span class="n">info</span></div>
 </div>
 
-    
-    <span class="c1">## @classmethod</span>
-    <span class="c1">## def refer(self, key=None):</span>
-    <span class="c1">##     i = self.Info</span>
-    <span class="c1">##     return i[key] if key else i</span>
 
 
 <div class="viewcode-block" id="EOsys">
 <a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.EOsys">[docs]</a>
 <span class="k">class</span> <span class="nc">EOsys</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;EM device system</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;EM device system.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Eos_info</span><span class="p">()</span>
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">teminfo</span><span class="o">.</span><span class="n">Eos_info</span><span class="p">()</span>
     
     <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E090&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!16HIH&quot;</span><span class="p">)</span>
     
@@ -501,9 +505,9 @@
 <div class="viewcode-block" id="HTsys">
 <a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.HTsys">[docs]</a>
 <span class="k">class</span> <span class="nc">HTsys</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;HT system</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;HT system.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">HT_info</span><span class="p">()</span>
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">teminfo</span><span class="o">.</span><span class="n">HT_info</span><span class="p">()</span>
     
     <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;F902&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!19hi5h&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;HT&#39;</span><span class="p">)</span>
     <span class="n">_set_htv</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;F502&quot;</span><span class="p">,</span> <span class="s2">&quot;!I&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;HT&#39;</span><span class="p">,</span> <span class="n">cmdtype</span><span class="o">=</span><span class="s1">&#39;ACK&#39;</span><span class="p">)</span> <span class="c1"># [0:130000:10V]</span>
@@ -534,19 +538,19 @@
 <div class="viewcode-block" id="Aperture">
 <a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture">[docs]</a>
 <span class="k">class</span> <span class="nc">Aperture</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Aperture system: Normal type (extype=0)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Aperture system: Normal type (extype=0).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">APERTURES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span>
-        <span class="p">(</span><span class="s1">&#39;NULL&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
-        <span class="p">(</span> <span class="s1">&#39;CLA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
-        <span class="p">(</span> <span class="s1">&#39;OLA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span>  <span class="mi">40</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span>  <span class="mi">5</span><span class="p">)),</span>
-        <span class="p">(</span> <span class="s1">&#39;HCA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span>  <span class="mi">5</span><span class="p">)),</span>
-        <span class="p">(</span> <span class="s1">&#39;SAA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span>  <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>
-        <span class="p">(</span><span class="s1">&#39;ENTA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
-        <span class="p">(</span> <span class="s1">&#39;HXA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">)),</span>
+    <span class="n">APERTURES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span>
+        <span class="p">(</span><span class="s1">&#39;NULL&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">inf</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;CLA&#39;</span><span class="p">,</span>  <span class="p">(</span><span class="n">inf</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;OLA&#39;</span><span class="p">,</span>  <span class="p">(</span><span class="n">inf</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span>  <span class="mi">40</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span>  <span class="mi">5</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;HCA&#39;</span><span class="p">,</span>  <span class="p">(</span><span class="n">inf</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span>  <span class="mi">5</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;SAA&#39;</span><span class="p">,</span>  <span class="p">(</span><span class="n">inf</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span>  <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;ENTA&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">inf</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;HXA&#39;</span><span class="p">,</span>  <span class="p">(</span><span class="n">inf</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">)),</span>
     <span class="p">))</span>
     
-    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Aperture_info</span><span class="p">()</span>
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">teminfo</span><span class="o">.</span><span class="n">Aperture_info</span><span class="p">()</span>
     
     <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E405&quot;</span><span class="p">,</span> <span class="kc">None</span> <span class="p">,</span><span class="s2">&quot;!3H798s&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span> <span class="c1"># extype=0</span>
     <span class="n">_select_apt</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E400&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span>
@@ -562,6 +566,13 @@
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">2</span><span class="p">):</span>
             <span class="n">ioset</span><span class="p">(</span><span class="mh">0xffff01c4</span> <span class="o">+</span> <span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">ioset</span><span class="p">(</span><span class="mh">0xffff01c4</span> <span class="o">+</span> <span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="Aperture.init">
+<a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Aperture.init">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alist</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">APERTURES</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">alist</span><span class="p">)</span> <span class="c1"># ID が関係するので上書きではなく更新</span></div>
 
     
 <div class="viewcode-block" id="Aperture.select_apt_name">
@@ -596,7 +607,7 @@
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;selected hole position [2:int]&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Selected hole position [2:int].&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_pos</span><span class="p">())</span>
     
@@ -618,7 +629,7 @@
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">sel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;selected hole number index&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Selected hole number index.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
     
     <span class="nd">@sel</span><span class="o">.</span><span class="n">setter</span>
@@ -627,7 +638,7 @@
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dia</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;selected hole diameter value&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Selected hole diameter value.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">]</span>
     
@@ -640,19 +651,19 @@
 <div class="viewcode-block" id="ApertureEx">
 <a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.ApertureEx">[docs]</a>
 <span class="k">class</span> <span class="nc">ApertureEx</span><span class="p">(</span><span class="n">Aperture</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Aperture system: Extended type (extype=1)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Aperture system: Extended type (extype=1).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">APERTURES</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span>
-        <span class="p">(</span> <span class="s1">&#39;CLA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
-        <span class="p">(</span><span class="s1">&#39;CLA2&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span>  <span class="mi">40</span><span class="p">,</span>  <span class="mi">30</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>
-        <span class="p">(</span> <span class="s1">&#39;OLA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span>  <span class="mi">40</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span>  <span class="mi">5</span><span class="p">)),</span>
-        <span class="p">(</span> <span class="s1">&#39;HCA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span>  <span class="mi">5</span><span class="p">)),</span>
-        <span class="p">(</span> <span class="s1">&#39;SAA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span>  <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>
-        <span class="p">(</span><span class="s1">&#39;ENTA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
-        <span class="p">(</span> <span class="s1">&#39;HXA&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="n">inf</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">)),</span>
+    <span class="n">APERTURES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span>
+        <span class="p">(</span><span class="s1">&#39;CLA&#39;</span><span class="p">,</span>  <span class="p">(</span><span class="n">inf</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;CLA2&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">inf</span><span class="p">,</span>  <span class="mi">40</span><span class="p">,</span>  <span class="mi">30</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;OLA&#39;</span><span class="p">,</span>  <span class="p">(</span><span class="n">inf</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span>  <span class="mi">40</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span>  <span class="mi">5</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;HCA&#39;</span><span class="p">,</span>  <span class="p">(</span><span class="n">inf</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span>  <span class="mi">5</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;SAA&#39;</span><span class="p">,</span>  <span class="p">(</span><span class="n">inf</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span>  <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;ENTA&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">inf</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span>  <span class="mi">60</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;HXA&#39;</span><span class="p">,</span>  <span class="p">(</span><span class="n">inf</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">)),</span>
     <span class="p">))</span>
     
-    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">ApertureEx_info</span><span class="p">()</span>
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">teminfo</span><span class="o">.</span><span class="n">ApertureEx_info</span><span class="p">()</span>
     
     <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E423&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!15H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span> <span class="c1"># extype=1</span>
     <span class="n">_select_apt</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E421&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span>
@@ -672,11 +683,11 @@
 <div class="viewcode-block" id="Stage">
 <a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Stage">[docs]</a>
 <span class="k">class</span> <span class="nc">Stage</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stage (Gonio) system</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stage (Gonio) system.</span>
 <span class="sd">    </span>
-<span class="sd">    X,Y,Z unit [um] and TX,TY [deg]</span>
+<span class="sd">    X, Y, Z [um] and TX, TY [deg].</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Gonio_info</span><span class="p">()</span>
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">teminfo</span><span class="o">.</span><span class="n">Gonio_info</span><span class="p">()</span>
     
     <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;G921&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!7d&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;GONIO&#39;</span><span class="p">)</span>
     <span class="n">_get_status</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;G920&quot;</span><span class="p">,</span> <span class="kc">None</span> <span class="p">,</span><span class="s2">&quot;!11H&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;GONIO&#39;</span><span class="p">)</span> <span class="c1"># (X,Y,Z,TX,TY,M/P,X+,Y+,Z+,TX+,TY+)</span>
@@ -740,9 +751,9 @@
 <div class="viewcode-block" id="Filter">
 <a class="viewcode-back" href="../../pyJeol.html#pyJeol.pyJem2.Filter">[docs]</a>
 <span class="k">class</span> <span class="nc">Filter</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter system</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Energy filter system.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Info</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Filter_info</span><span class="p">()</span>
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">teminfo</span><span class="o">.</span><span class="n">Filter_info</span><span class="p">()</span>
     
     <span class="n">_get_info</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E630&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;!2H2I2H2IH5dH&quot;</span><span class="p">)</span>
     <span class="n">_set_slit</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;E621&quot;</span><span class="p">,</span> <span class="s2">&quot;!H&quot;</span><span class="p">,</span> <span class="s2">&quot;!2H2I2H2IH5dH&quot;</span><span class="p">)</span>
@@ -780,37 +791,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">Filter</span><span class="o">.</span><span class="n">_set_es</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># energy shift off</span></div>
 
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="c1">## cmdl.HOST = cntf.HOST = &#39;172.17.41.201&#39;</span>
-    <span class="c1">## cmdl.HOST = cntf.HOST = &#39;localhost&#39;</span>
-    <span class="n">cmdl</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-    <span class="n">cntf</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-    
-    <span class="n">extype</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ApertureEx</span><span class="o">.</span><span class="n">_get_info</span><span class="p">())</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;extype =&quot;</span><span class="p">,</span> <span class="n">extype</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">extype</span><span class="p">:</span>
-        <span class="n">Aperture</span> <span class="o">=</span> <span class="n">ApertureEx</span>
-    
-    <span class="n">eos</span> <span class="o">=</span> <span class="n">EOsys</span><span class="p">()</span>
-    <span class="n">tem</span> <span class="o">=</span> <span class="n">TEM</span><span class="p">()</span>
-    <span class="n">ca</span> <span class="o">=</span> <span class="n">Aperture</span><span class="p">(</span><span class="s1">&#39;CLA&#39;</span><span class="p">)</span>
-    <span class="n">sa</span> <span class="o">=</span> <span class="n">Aperture</span><span class="p">(</span><span class="s1">&#39;SAA&#39;</span><span class="p">)</span>
-    <span class="n">oa</span> <span class="o">=</span> <span class="n">Aperture</span><span class="p">(</span><span class="s1">&#39;OLA&#39;</span><span class="p">)</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="n">Illumination</span><span class="p">()</span>
-    <span class="n">j</span> <span class="o">=</span> <span class="n">Imaging</span><span class="p">()</span>
-    <span class="n">k</span> <span class="o">=</span> <span class="n">Omega</span><span class="p">()</span>
-    <span class="n">g</span> <span class="o">=</span> <span class="n">Stage</span><span class="p">()</span>
-    <span class="n">fl</span> <span class="o">=</span> <span class="n">Filter</span><span class="p">()</span>
-    <span class="n">ht</span> <span class="o">=</span> <span class="n">HTsys</span><span class="p">()</span>
 </pre></div>
 
             <div class="clearer"></div>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h3><a href="../../index.html">Table of Contents</a></h3>
 <p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
@@ -826,7 +813,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyJeol.html">pyJeol package</a></li>
 </ul>
 
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -834,13 +821,13 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -856,7 +843,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

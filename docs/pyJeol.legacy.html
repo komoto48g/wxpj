@@ -1,31 +1,29 @@
 
-
-<!doctype html>
+<!DOCTYPE html>
 
 <html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>pyJeol.legacy package &#8212; wxpj  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=649a27d8" />
-    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css?v=532c1bf3" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css?v=5283bb3d" />
     
     <script src="_static/jquery.js?v=5d32c60e"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="pyJeol package" href="pyJeol.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -34,11 +32,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="pyJeol.html" title="pyJeol package"
-             accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="pyJeol.html" accesskey="U">pyJeol package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyJeol.legacy package</a></li> 
       </ul>
     </div>  
@@ -55,426 +49,13 @@
 </section>
 <section id="pyjeol-legacy-info-module">
 <h2>pyJeol.legacy.info module<a class="headerlink" href="#pyjeol-legacy-info-module" title="Link to this heading"></a></h2>
-<p id="module-pyJeol.legacy.info">tem13 information class
-Class for notify optics state and hardware status</p>
-<p>Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#37;&#52;&#48;jeol&#46;co&#46;jp">komoto<span>&#64;</span>jeol<span>&#46;</span>co<span>&#46;</span>jp</a>&gt;</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.getargs">
-<span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">getargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#getargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.getargs" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.Infodict">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">Infodict</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#Infodict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.Infodict" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">OrderedDict</span></code></p>
-<p>Mode info base class.</p>
-<p>Show how the inherited class builds keys from the docstring.
-(heads of colon-separted words after the first line are used as keywords)</p>
-<ol class="arabic simple">
-<li><p>1 行目は無視．2 行目からヘッダを解析する</p></li>
-<li><p>コロン(:) の左側の文字列をキーとする (comma-seperated words ok)</p></li>
-<li><p>コロン(:) の右側の文字列はコメントとして無視される</p></li>
-<li><p>空行は無視される</p></li>
-</ol>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.Illumination_info">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">Illumination_info</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#Illumination_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.Illumination_info" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.info.Infodict" title="pyJeol.legacy.info.Infodict"><code class="xref py py-class docutils literal notranslate"><span class="pre">Infodict</span></code></a></p>
-<p>Illumination (CL) system</p>
-<p>mode        : illumination mode {0:TEM, 1:EDS, 2:NBD, 3:CBD}
-mode_name   : illumination name
-alpha       : alpha index
-spot        : spot index
-probe       : [um]
-index       : illumination index +++ 付加情報 (コマンドには含まれない)</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.Imaging_info">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">Imaging_info</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#Imaging_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.Imaging_info" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.info.Infodict" title="pyJeol.legacy.info.Infodict"><code class="xref py py-class docutils literal notranslate"><span class="pre">Infodict</span></code></a></p>
-<p>Imaging (IL) system</p>
-<p>mode        : imaging mode {0:MAG1, 1:MAG2, 2:LOWMAG, 3:SAMAG, 4:DIFF}
-mode_name   : imaging name ditto
-index       : mag/cam index
-value       : mag/cam value
-submodestr  : mag/cam submode string
-unit        : mag/cam unit string [x][cm]</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.Omega_info">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">Omega_info</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#Omega_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.Omega_info" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.info.Infodict" title="pyJeol.legacy.info.Infodict"><code class="xref py py-class docutils literal notranslate"><span class="pre">Infodict</span></code></a></p>
-<p>Projection (Omega, PL) system</p>
-<p>mode        : spectrum mode off/on {0:Imaging, 1:Spectrum}
-mmode       : imaging mode {0:MAG1, 1:MAG2, 2:LOWMAG, 3:SAMAG, 4:DIFF}
-mmode_name  : imaging name ditto
-index       : dispersion index ▲BUG: 1181 では論理番号 1 or 2 から始まる
-value       : dispersion value
-submodestr  : dispersion submode string
-unit        : dispersion unit string [um/eV]
-mode_name   : spectrum mode +++ 付加情報 (コマンドには含まれない)</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.Eos_info">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">Eos_info</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#Eos_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.Eos_info" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.info.Infodict" title="pyJeol.legacy.info.Infodict"><code class="xref py py-class docutils literal notranslate"><span class="pre">Infodict</span></code></a></p>
-<p>EO system</p>
-<p>dark        : dark level {0:bright, 1:dark}
-dark_index  : dark level number
-bright_zoom : zoom switch off/on
-stigma_index: stigma level number
-major_mode  : operation mode {0:TEM, 1:ASID}
-ht_index    : HT level number
-maint_mode  : alignment mode {0:User, 1:Maint} (▲ドキュメントは user_mode : {0:Maint, 1:User, 2:Stdbase} になっているが機種依存 ?)
-mmode       : imaging system mode {0:MAG1, 1:MAG2, 2:LOWMAG, 3:SAMAG, 4:DIFF}
-mag         : mag/cam index
-mag2        : default MAG2 mag index
-kmode       : spectrum mode off/on
-imode       : illumination mode {0:TEM, 1:EDS, 2:NBD, 3:CBD}
-spot        : spot index
-alpha       : alpha index
-slit        : {0:out, 1:in}
-defknob     : deflector knob
-defocus     : defofcus depth [0.1nm]
-ht_suspend  : HT suspended state {0:normal, 1:suspend}</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.Aperture_info">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">Aperture_info</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#Aperture_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.Aperture_info" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.info.Infodict" title="pyJeol.legacy.info.Infodict"><code class="xref py py-class docutils literal notranslate"><span class="pre">Infodict</span></code></a></p>
-<p>Aperture system extype=0</p>
-<p>speed       : {0:fine, 1:coarse}
-csid        : currently selected aperture id (0–6): None,CLA,OLA,HCA,SAA,ENTA,HXA
-adj_mode    : {0:User, 1:Maint}
-_info       : info bytes (7*114=798bytes) — 除外される
-NULL,CLA,OLA,HCA,SAA,ENTA,HXA: hole indices (7) +++ 付加情報 (コマンドには含まれない)
-selected_name: currently selected aperture name +++</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.ApertureEx_info">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">ApertureEx_info</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#ApertureEx_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.ApertureEx_info" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.info.Infodict" title="pyJeol.legacy.info.Infodict"><code class="xref py py-class docutils literal notranslate"><span class="pre">Infodict</span></code></a></p>
-<p>Aperture system extype=1 (1601 or later)</p>
-<p>csid        : currently selected aperture id (0–11): CLA,CLA2,OLA,HCA,SAA,ENTA,HXA,BFA,…
-speed       : {0:fine, 1:coarse}
-adj_mode    : {0:User, 1:Maint}
-CLA,CLA2,OLA,HCA,SAA,ENTA,HXA,BFA,BS,Aux2,Aux3,Aux4: hole indices (!12H)
-selected_name: currently selected aperture name +++ 付加情報 (コマンドには含まれない)</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.Filter_info">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">Filter_info</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#Filter_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.Filter_info" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.info.Infodict" title="pyJeol.legacy.info.Infodict"><code class="xref py py-class docutils literal notranslate"><span class="pre">Infodict</span></code></a></p>
-<p>Energy Filter system</p>
-<p>spectrum_mode: off/on
-slit_state  : Slit state {0:out, 1:in}
-slit_width  : Slit width                [0.01eV] –&gt; [eV]
-slit_zero   : Slit width zero position  [ 〃   ] –&gt; [eV]
-slit_adj    : Slit adjustment mode
-status      : Device status {0:normal,1:on(deGauss)}
-slit_max    : Maximum slit width        [0.01eV] –&gt; [eV]
-slit_step   : Minimum slit step value   [ 〃   ] –&gt; [eV]
-es_state    : Energy shift off/on
-es_value    : Energy shift value            [eV]
-es_max      : Energy shift maximum value    [〃]
-es_step     : Energy shift min Step Value   [〃]
-es_coef_tem : Energy shift correction factor for TEM mode
-es_coef_stem: Energy shift correction factor for STEM mode
-illum_corr  : Illumination system correction off/on
-energy_shift: Energy sfhit value (None:off) +++ 付加情報 (コマンドには含まれない)</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.Gonio_info">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">Gonio_info</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#Gonio_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.Gonio_info" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.info.Infodict" title="pyJeol.legacy.info.Infodict"><code class="xref py py-class docutils literal notranslate"><span class="pre">Infodict</span></code></a></p>
-<p>Gonio ゴニオ座標情報</p>
-<p>X,Y,Z       : motor position [nm]
-TX,TY       : Tilt X [deg] and Tilt Y [deg] (or rotatoin angles)
-X_piezo     : piezo X position [nm]
-Y_piezo     : piezo Y</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.HT_info">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">HT_info</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#HT_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.HT_info" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.info.Infodict" title="pyJeol.legacy.info.Infodict"><code class="xref py py-class docutils literal notranslate"><span class="pre">Infodict</span></code></a></p>
-<p>HT 高圧モード／電子銃／アノード情報</p>
-<p>Dark        : Dark current value       [0.1uA] –&gt; [uA]
-Emission    : Emission current value   [0.1uA] –&gt; [uA]
-A1,A2       : A1/A2 current value      [10V] –&gt; [V]
-Bias        : Bias current value       [V]
-Filament    : Filament current value   [mA] –&gt; [A]
-htsub_status: Operating status of HT subsystem
-condbar_status: Operating status of conditioning shortbar {0:ope, (1,2):med, 3:cond}
-QES         : quick emission setting (0–5)
-ht_status   : Operating state of HT {0:stable, 1:ascending, 2:descending}
-ht_ready    : High pressure can be applied
-ems_ready   : Emission can be applied (FEG ready and Beam ready)
-wob_status  : Wobbler status
-ht_state    : HT off/on
-ems_state   : Emission off/on
-ems_status  : Operating state of Emission {0:stable, 1:ascending, 2:descending}
-es_state    : Energy shift off/on
-es_value    : Energy shift current value [0.2eV] –&gt; [eV]
-htsub_state : Setting of HT subsystem
-ht_value    : HT current value         [V]
-a1,a2       : A1/A2 target value       [10V] –&gt; [V]
-bias        : Bias target value        [V]
-filament    : Filament target value    [mA] –&gt; [A]
-energy_shift: Omega superimposed value [0.2eV] –&gt; [eV]</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.HTsub_info">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">HTsub_info</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#HTsub_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.HTsub_info" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.info.Infodict" title="pyJeol.legacy.info.Infodict"><code class="xref py py-class docutils literal notranslate"><span class="pre">Infodict</span></code></a></p>
-<p>HT 高圧モード／エミッション情報</p>
-<p>htsub_status: Operating status of HT subsystem
-condbar_status: Operating status of conditioning shortbar {0:ope, (1,2):med, 3:cond}
-QES         : quick emission setting (0–5)
-ht_status   : Operating state of HT {0:stable, 1:ascending, 2:descending}
-ht_ready    : High pressure can be applied
-ems_ready   : Emission can be applied (FEG ready and Beam ready)
-wob_status  : Wobbler status
-ht_state    : HT off/on
-ems_state   : Emission off/on
-ems_status  : Operating state of Emission {0:stable, 1:ascending, 2:descending}
-es_state    : Energy shift off/on
-es_value    : Energy shift current value [0.2eV] –&gt; [eV]
-htsub_state : Setting of HT subsystem</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.HTsub2_info">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">HTsub2_info</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#HTsub2_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.HTsub2_info" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.info.Infodict" title="pyJeol.legacy.info.Infodict"><code class="xref py py-class docutils literal notranslate"><span class="pre">Infodict</span></code></a></p>
-<p>HT 高圧モード／エミッション情報</p>
-<p>ht_value    : HT current value         [V]
-a1,a2       : A1/A2 target value       [10V] –&gt; [V]
-bias        : Bias target value        [V]
-filament    : Filament target value    [mA] –&gt; [A]
-energy_shift: Omega superimposed value [0.2eV] –&gt; [eV]</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.Current_info">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">Current_info</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#Current_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.Current_info" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.info.Infodict" title="pyJeol.legacy.info.Infodict"><code class="xref py py-class docutils literal notranslate"><span class="pre">Infodict</span></code></a></p>
-<p>Current density 照射電流密度</p>
-<p>value   : Current density    [0.01pA/cm2]
-exp     : Auto exposure time [0.1sec]</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.Screen_info">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">Screen_info</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#Screen_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.Screen_info" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.info.Infodict" title="pyJeol.legacy.info.Infodict"><code class="xref py py-class docutils literal notranslate"><span class="pre">Infodict</span></code></a></p>
-<p>Screen status スクリーン情報</p>
-<p>pose    : {0:0+, 1:7+, 2:90+} degs
-state   : out/in</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.info.Detector_info">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.info.</span></span><span class="sig-name descname"><span class="pre">Detector_info</span></span><a class="reference internal" href="_modules/pyJeol/legacy/info.html#Detector_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.info.Detector_info" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.info.Infodict" title="pyJeol.legacy.info.Infodict"><code class="xref py py-class docutils literal notranslate"><span class="pre">Infodict</span></code></a></p>
-<p>Detector status (!25H)
-N, SEI, EDS, BIPRISM, UDFI, TVCAM_U, SSCAM_U, FARADAY, BS, HRD : (10)
-DFI_U, FI_U, CR_F, SCR_L, DFI_B, BFI_B, SSCAM_B, TVCAM_B, EELS : (9)
-TVCAM_GIF, SSCAM_GIF, BEI_TOPO, BEI_COMPO, SEI_TOPO, SEI_COMPO : (6) BEI/SEI</p>
-</dd></dl>
-
 </section>
 <section id="pyjeol-legacy-jtypes-module">
 <h2>pyJeol.legacy.jtypes module<a class="headerlink" href="#pyjeol-legacy-jtypes-module" title="Link to this heading"></a></h2>
-<p id="module-pyJeol.legacy.jtypes">Jeol Lens/Deflector system types</p>
-<p>Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#37;&#52;&#48;jeol&#46;co&#46;jp">komoto<span>&#64;</span>jeol<span>&#46;</span>co<span>&#46;</span>jp</a>&gt;</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.LensParam">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.jtypes.</span></span><span class="sig-name descname"><span class="pre">LensParam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#LensParam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.LensParam" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LParam</span></code></p>
-<p>Base class of lens/defl linear param</p>
-<p>name        : specified in <em>TAGS</em>
-flag        : WR flag (=check) in recv/send signal
-std_value   : standard (fixed) value (default None)
-value       : total value := std_value + offset
-offset      : offset from std/v</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.LensParam.flag">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flag</span></span><a class="headerlink" href="#pyJeol.legacy.jtypes.LensParam.flag" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.iter_pair">
-<span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.jtypes.</span></span><span class="sig-name descname"><span class="pre">iter_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#iter_pair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.iter_pair" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.Systembase">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.jtypes.</span></span><span class="sig-name descname"><span class="pre">Systembase</span></span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#Systembase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.Systembase" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Base class of Lens/Deflector system</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.LensSystem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.jtypes.</span></span><span class="sig-name descname"><span class="pre">LensSystem</span></span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#LensSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.LensSystem" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.jtypes.Systembase" title="pyJeol.legacy.jtypes.Systembase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Systembase</span></code></a></p>
-<p>Lens (Free Control) System</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.LensSystem.TAGS">
-<span class="sig-name descname"><span class="pre">TAGS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('CL1',</span> <span class="pre">'CL2',</span> <span class="pre">'CL3',</span> <span class="pre">'CM',</span> <span class="pre">'Preserved_0',</span> <span class="pre">'Preserved_1',</span> <span class="pre">'OLC',</span> <span class="pre">'OLF',</span> <span class="pre">'OM1',</span> <span class="pre">'OM2',</span> <span class="pre">'IL1',</span> <span class="pre">'IL2',</span> <span class="pre">'IL3',</span> <span class="pre">'IL4',</span> <span class="pre">'PL1',</span> <span class="pre">'PL2',</span> <span class="pre">'PL3',</span> <span class="pre">'Preserved_2',</span> <span class="pre">'Preserved_3',</span> <span class="pre">'FLC',</span> <span class="pre">'FLF',</span> <span class="pre">'FL2R',</span> <span class="pre">'FLCOMP1',</span> <span class="pre">'FLCOMP2',</span> <span class="pre">'Preserved_4',</span> <span class="pre">'Preserved_5',</span> <span class="pre">'U*')</span></em><a class="headerlink" href="#pyJeol.legacy.jtypes.LensSystem.TAGS" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.LensSystem.Lenses">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Lenses</span></span><a class="headerlink" href="#pyJeol.legacy.jtypes.LensSystem.Lenses" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.LensSystem.flc">
-<span class="sig-name descname"><span class="pre">flc</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_cmdl.Command</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyJeol.legacy.jtypes.LensSystem.flc" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.LensSystem.flcn">
-<span class="sig-name descname"><span class="pre">flcn</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_cmdl.Command</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyJeol.legacy.jtypes.LensSystem.flcn" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.LensSystem.flc1set">
-<span class="sig-name descname"><span class="pre">flc1set</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_cmdl.Command</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyJeol.legacy.jtypes.LensSystem.flc1set" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.LensSystem.flc2get">
-<span class="sig-name descname"><span class="pre">flc2get</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_cmdl.Command</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyJeol.legacy.jtypes.LensSystem.flc2get" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.LensSystem.flc2set">
-<span class="sig-name descname"><span class="pre">flc2set</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_cmdl.Command</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyJeol.legacy.jtypes.LensSystem.flc2set" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.LensSystem.read">
-<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stdbase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#LensSystem.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.LensSystem.read" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.LensSystem.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#LensSystem.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.LensSystem.write" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.LensSystem.Write">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#LensSystem.Write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.LensSystem.Write" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.LensSystem.setflag">
-<span class="sig-name descname"><span class="pre">setflag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#LensSystem.setflag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.LensSystem.setflag" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.FocusSystem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.jtypes.</span></span><span class="sig-name descname"><span class="pre">FocusSystem</span></span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#FocusSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.FocusSystem" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.jtypes.LensSystem" title="pyJeol.legacy.jtypes.LensSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">LensSystem</span></code></a></p>
-<p>Lens (Focus :variable) System
-[Brightness,OBJ,DIFF,IL,PL,FL] に割り当てられたレンズのみ変更可能</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.FocusSystem.ldget">
-<span class="sig-name descname"><span class="pre">ldget</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_cmdl.Command</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyJeol.legacy.jtypes.FocusSystem.ldget" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.FocusSystem.ldset">
-<span class="sig-name descname"><span class="pre">ldset</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_cmdl.Command</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyJeol.legacy.jtypes.FocusSystem.ldset" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.FocusSystem.ldclr">
-<span class="sig-name descname"><span class="pre">ldclr</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_cmdl.Command</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyJeol.legacy.jtypes.FocusSystem.ldclr" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.FocusSystem.read">
-<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stdbase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#FocusSystem.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.FocusSystem.read" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.FocusSystem.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#FocusSystem.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.FocusSystem.write" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.FocusSystem.Write">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#FocusSystem.Write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.FocusSystem.Write" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.DeflSystem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.jtypes.</span></span><span class="sig-name descname"><span class="pre">DeflSystem</span></span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#DeflSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.DeflSystem" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyJeol.legacy.jtypes.Systembase" title="pyJeol.legacy.jtypes.Systembase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Systembase</span></code></a></p>
-<p>Deflector (Maint/User) System</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.DeflSystem.TAGS">
-<span class="sig-name descname"><span class="pre">TAGS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('GUNA1X',</span> <span class="pre">'GUNA1Y',</span> <span class="pre">'GUNA2X',</span> <span class="pre">'GUNA2Y',</span> <span class="pre">'CLA1X',</span> <span class="pre">'CLA1Y',</span> <span class="pre">'CLA2X',</span> <span class="pre">'CLA2Y',</span> <span class="pre">'SHIFTX',</span> <span class="pre">'SHIFTY',</span> <span class="pre">'TILTX',</span> <span class="pre">'TILTY',</span> <span class="pre">'ANGLEX',</span> <span class="pre">'ANGLEY',</span> <span class="pre">'CLSX',</span> <span class="pre">'CLSY',</span> <span class="pre">'SPOTAX',</span> <span class="pre">'SPOTAY',</span> <span class="pre">'Preserved_0X',</span> <span class="pre">'Preserved_0Y',</span> <span class="pre">'Preserved_1X',</span> <span class="pre">'Preserved_1Y',</span> <span class="pre">'OLSX',</span> <span class="pre">'OLSY',</span> <span class="pre">'ILSX',</span> <span class="pre">'ILSY',</span> <span class="pre">'IS1X',</span> <span class="pre">'IS1Y',</span> <span class="pre">'IS2X',</span> <span class="pre">'IS2Y',</span> <span class="pre">'PLAX',</span> <span class="pre">'PLAY',</span> <span class="pre">'Preserved_2X',</span> <span class="pre">'Preserved_2Y',</span> <span class="pre">'Preserved_3X',</span> <span class="pre">'Preserved_3Y',</span> <span class="pre">'FLA1X',</span> <span class="pre">'FLA1Y',</span> <span class="pre">'FLA2X',</span> <span class="pre">'FLA2Y',</span> <span class="pre">'FLS1X',</span> <span class="pre">'FLS1Y',</span> <span class="pre">'FLS2X',</span> <span class="pre">'FLS2Y',</span> <span class="pre">'Preserved_4X',</span> <span class="pre">'Preserved_4Y',</span> <span class="pre">'Preserved_5X',</span> <span class="pre">'Preserved_5Y',</span> <span class="pre">'U*',</span> <span class="pre">'U*',</span> <span class="pre">'CLA_Comp',</span> <span class="pre">'CLA_Comp',</span> <span class="pre">'MagAdjust_H',</span> <span class="pre">'MagAdjust_V',</span> <span class="pre">'Correction_H',</span> <span class="pre">'Correction_V',</span> <span class="pre">'Rotation_H',</span> <span class="pre">'Rotation_V',</span> <span class="pre">'Offset_H',</span> <span class="pre">'Offset_V',</span> <span class="pre">'STEMISX',</span> <span class="pre">'STEMISY')</span></em><a class="headerlink" href="#pyJeol.legacy.jtypes.DeflSystem.TAGS" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.DeflSystem.Lenses">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Lenses</span></span><a class="headerlink" href="#pyJeol.legacy.jtypes.DeflSystem.Lenses" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.DeflSystem.algn2get">
-<span class="sig-name descname"><span class="pre">algn2get</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_cmdl.Command</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyJeol.legacy.jtypes.DeflSystem.algn2get" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.DeflSystem.algn2set">
-<span class="sig-name descname"><span class="pre">algn2set</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_cmdl.Command</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyJeol.legacy.jtypes.DeflSystem.algn2set" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.DeflSystem.read">
-<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stdbase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#DeflSystem.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.DeflSystem.read" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.DeflSystem.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#DeflSystem.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.DeflSystem.write" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyJeol.legacy.jtypes.DeflSystem.Write">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyJeol/legacy/jtypes.html#DeflSystem.Write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.jtypes.DeflSystem.Write" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
-<p id="module-pyJeol.legacy">Jeol package for legacy TEM</p>
-<p>Version: None
-Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#37;&#52;&#48;jeol&#46;co&#46;jp">komoto<span>&#64;</span>jeol<span>&#46;</span>co<span>&#46;</span>jp</a>&gt;</p>
+<section id="module-pyJeol.legacy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyJeol.legacy" title="Link to this heading"></a></h2>
+<p>Jeol package for legacy TEM</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyJeol.legacy.set_host">
 <span class="sig-prename descclassname"><span class="pre">pyJeol.legacy.</span></span><span class="sig-name descname"><span class="pre">set_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyJeol/legacy.html#set_host"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyJeol.legacy.set_host" title="Link to this definition"></a></dt>
@@ -488,7 +69,7 @@ Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#3
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h3><a href="index.html">Table of Contents</a></h3>
 <p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
@@ -498,26 +79,12 @@ Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#3
 <li class="toctree-l1"><a class="reference internal" href="2_image-processing.html">3. Image Analysis</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="wxpyJemacs.html">wxpyJemacs module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plugins.html">plugins package</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="pyJeol.html">pyJeol package</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="pyJeol.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyJeol.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyJeol.html#pyjeol-detector-module">pyJeol.detector module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyJeol.html#pyjeol-pyjem2-module">pyJeol.pyJem2 module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyJeol.html#pyjeol-temisc-module">pyJeol.temisc module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyJeol.html#pyjeol-temsys-module">pyJeol.temsys module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyJeol.html#module-contents">Module contents</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="pyJeol.html">pyJeol package</a></li>
 </ul>
 
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="pyJeol.html"
-                          title="previous chapter">pyJeol package</a></p>
-  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -525,7 +92,7 @@ Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#3
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
@@ -533,13 +100,13 @@ Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#3
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -548,17 +115,13 @@ Author: Kazuya O’moto &lt;<a class="reference external" href="mailto:komoto&#3
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="pyJeol.html" title="pyJeol package"
-             >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">wxpj  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="pyJeol.html" >pyJeol package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyJeol.legacy package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

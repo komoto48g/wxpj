@@ -1,20 +1,19 @@
 
+<!DOCTYPE html>
 
-<!doctype html>
-
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>plugins.lctf &#8212; wxpj  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=5283bb3d" />
     
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -23,7 +22,7 @@
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -45,22 +44,23 @@
             
   <h1>Source code for plugins.lctf</h1><div class="highlight"><pre>
 <span></span><span class="ch">#! python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span>
 <span class="kn">from</span> <span class="nn">numpy.fft</span> <span class="kn">import</span> <span class="n">fft</span><span class="p">,</span><span class="n">ifft</span><span class="p">,</span><span class="n">fft2</span><span class="p">,</span><span class="n">ifft2</span><span class="p">,</span><span class="n">fftshift</span><span class="p">,</span><span class="n">fftfreq</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">patches</span>
 
-<span class="kn">from</span> <span class="nn">jgdk</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">LParam</span>
+<span class="kn">from</span> <span class="nn">wxpj</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">LParam</span>
 <span class="kn">import</span> <span class="nn">editor</span> <span class="k">as</span> <span class="nn">edi</span>
 
 <span class="kn">from</span> <span class="nn">lcrf</span> <span class="kn">import</span> <span class="n">Model</span>
-<span class="kn">from</span> <span class="nn">viewfft</span> <span class="kn">import</span> <span class="n">fftresize</span>
 
 
-<div class="viewcode-block" id="logpolar"><a class="viewcode-back" href="../../plugins.html#plugins.lctf.logpolar">[docs]</a><span class="k">def</span> <span class="nf">logpolar</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="logpolar">
+<a class="viewcode-back" href="../../plugins.html#plugins.lctf.logpolar">[docs]</a>
+<span class="k">def</span> <span class="nf">logpolar</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Log-Polar transform.</span>
 <span class="sd">    The area radii [r0:r1] of radius N/2 mapsto the same size of src image.</span>
 <span class="sd">    </span>
@@ -85,7 +85,10 @@
     <span class="k">return</span> <span class="n">dst</span></div>
 
 
-<div class="viewcode-block" id="find_ring_center"><a class="viewcode-back" href="../../plugins.html#plugins.lctf.find_ring_center">[docs]</a><span class="k">def</span> <span class="nf">find_ring_center</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+
+<div class="viewcode-block" id="find_ring_center">
+<a class="viewcode-back" href="../../plugins.html#plugins.lctf.find_ring_center">[docs]</a>
+<span class="k">def</span> <span class="nf">find_ring_center</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find ring pattern in src image with fixed center.</span>
 <span class="sd">    </span>
 <span class="sd">    Polar 変換した後，角度セグメントに分割して相互相関をとる．</span>
@@ -125,14 +128,16 @@
     <span class="c1">## remove leaps(2): tol より小さいとびを許容する (画素サイズに比例)</span>
     <span class="n">tolr</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">Y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">Y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">yy</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">tolr</span><span class="p">:</span>
             <span class="n">xx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="n">yy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     
     <span class="n">fitting_curve</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">)</span>
     
-    <span class="c1">## edi.plot(xx, yy, &#39;+&#39;, X, fitting_curve(X))</span>
+    <span class="c1">## plt.plot(xx, yy, &#39;+&#39;, X, fitting_curve(X))</span>
+    <span class="c1">## plt.grid(True)</span>
+    <span class="c1">## plt.show()</span>
     
     <span class="n">fitting_curve</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># (平均を基準とする) 全体のオフセット量</span>
     <span class="n">fitting_curve</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
@@ -141,7 +146,10 @@
     <span class="k">return</span> <span class="n">dst</span><span class="p">,</span> <span class="n">fitting_curve</span></div>
 
 
-<div class="viewcode-block" id="smooth1d"><a class="viewcode-back" href="../../plugins.html#plugins.lctf.smooth1d">[docs]</a><span class="k">def</span> <span class="nf">smooth1d</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+
+<div class="viewcode-block" id="smooth1d">
+<a class="viewcode-back" href="../../plugins.html#plugins.lctf.smooth1d">[docs]</a>
+<span class="k">def</span> <span class="nf">smooth1d</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
     <span class="n">w</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">lw</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">lw</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -149,7 +157,10 @@
     <span class="k">return</span> <span class="n">signal</span><span class="o">.</span><span class="n">savgol_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">lw</span><span class="p">,</span> <span class="n">polyorder</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="blur1d"><a class="viewcode-back" href="../../plugins.html#plugins.lctf.blur1d">[docs]</a><span class="k">def</span> <span class="nf">blur1d</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+
+<div class="viewcode-block" id="blur1d">
+<a class="viewcode-back" href="../../plugins.html#plugins.lctf.blur1d">[docs]</a>
+<span class="k">def</span> <span class="nf">blur1d</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
     <span class="n">w</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">lw</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">lw</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -168,7 +179,10 @@
     <span class="k">return</span> <span class="n">ys</span><span class="p">[</span><span class="n">lw</span><span class="p">:</span><span class="o">-</span><span class="n">lw</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="find_radial_peaks"><a class="viewcode-back" href="../../plugins.html#plugins.lctf.find_radial_peaks">[docs]</a><span class="k">def</span> <span class="nf">find_radial_peaks</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+
+<div class="viewcode-block" id="find_radial_peaks">
+<a class="viewcode-back" href="../../plugins.html#plugins.lctf.find_radial_peaks">[docs]</a>
+<span class="k">def</span> <span class="nf">find_radial_peaks</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find local maxima/minima in data.</span>
 <span class="sd">    smoothing with Gaussian window (signal.windows.gaussian).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -194,23 +208,20 @@
     <span class="k">return</span> <span class="n">ys</span><span class="p">,</span> <span class="n">maxima</span><span class="p">,</span> <span class="n">minima</span> <span class="c1"># np.sort(np.append(maxima, minima))</span></div>
 
 
-<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../plugins.html#plugins.lctf.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Plugin">
+<a class="viewcode-back" href="../../plugins.html#plugins.lctf.Plugin">[docs]</a>
+<span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;CTF finder ver 1.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">menukey</span> <span class="o">=</span> <span class="s2">&quot;CTF/&quot;</span>
     
-<div class="viewcode-block" id="Plugin.Init"><a class="viewcode-back" href="../../plugins.html#plugins.lctf.Plugin.Init">[docs]</a>    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rmin</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;rmin&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">),</span> <span class="mf">0.05</span><span class="p">,</span>
-                           <span class="n">updater</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_ring</span><span class="p">,</span>
-                           <span class="n">tip</span><span class="o">=</span><span class="s2">&quot;Ratio to the radius.&quot;</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">rmax</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;rmax&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">,</span>
-                           <span class="n">updater</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_ring</span><span class="p">,</span>
-                           <span class="n">tip</span><span class="o">=</span><span class="s2">&quot;Ratio to the radius.&quot;</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;tol&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">),</span> <span class="mf">0.01</span><span class="p">,</span>
-                           <span class="n">updater</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_peak</span><span class="p">,</span>
-                           <span class="n">tip</span><span class="o">=</span><span class="s2">&quot;Ratio to the radius of blurring pixels.&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Plugin.Init">
+<a class="viewcode-back" href="../../plugins.html#plugins.lctf.Plugin.Init">[docs]</a>
+    <span class="k">def</span> <span class="nf">Init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rmin</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;rmin&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">),</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">updater</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_ring</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rmax</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;rmax&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">updater</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_ring</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="o">=</span> <span class="n">LParam</span><span class="p">(</span><span class="s2">&quot;tol&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">),</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">updater</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_peak</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">((</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">rmin</span><span class="p">,</span>
@@ -219,7 +230,10 @@
             <span class="p">),</span>
             <span class="n">title</span><span class="o">=</span><span class="s2">&quot;FFT Cond.&quot;</span><span class="p">,</span>
             <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;vspin&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;button&#39;</span><span class="p">,</span> <span class="n">cw</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">tw</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span></div>
+
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">selected_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -227,12 +241,16 @@
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">selected_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">fftresize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_frame</span><span class="o">.</span><span class="n">roi</span><span class="p">,</span> <span class="n">maxsize</span><span class="o">=</span><span class="mi">2048</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">edi</span><span class="o">.</span><span class="n">fftcrop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_frame</span><span class="o">.</span><span class="n">roi</span><span class="p">)</span>
     
-<div class="viewcode-block" id="Plugin.calc_ring"><a class="viewcode-back" href="../../plugins.html#plugins.lctf.Plugin.calc_ring">[docs]</a>    <span class="k">def</span> <span class="nf">calc_ring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.calc_ring">
+<a class="viewcode-back" href="../../plugins.html#plugins.lctf.Plugin.calc_ring">[docs]</a>
+    <span class="k">def</span> <span class="nf">calc_ring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calc log-polar of ring pattern.</span>
+<span class="sd">        </span>
+<span class="sd">        Referenced rmin/rmax is the ratio to the radius.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_frame</span>
+        <span class="c1">## frame = self.selected_frame</span>
         <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_roi</span>
         <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span>
         
@@ -250,9 +268,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">r0</span> <span class="o">/</span> <span class="n">w</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">/</span> <span class="n">m</span><span class="p">)</span> <span class="c1"># [R0:R1] &lt;= [0:1/2]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fitting_curve</span><span class="o">.</span><span class="n">mod1d</span><span class="p">(</span><span class="n">dst</span><span class="p">)</span>
         
-        <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="s2">&quot;*fft of </span><span class="si">{}</span><span class="s2">*&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
-                             <span class="n">localunit</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">w</span><span class="o">/</span><span class="n">frame</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2"> Loading log-polar image...&quot;</span><span class="p">)</span>
             <span class="n">dst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fitting_curve</span><span class="o">.</span><span class="n">mod2d</span><span class="p">(</span><span class="n">dst</span><span class="p">)</span>
@@ -263,10 +278,19 @@
         <span class="n">eps</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fitting_curve</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stig</span> <span class="o">=</span> <span class="n">eps</span> <span class="o">/</span> <span class="n">m</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">phi</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;$result(eps, phi) = </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">eps</span><span class="p">,</span> <span class="n">phi</span><span class="p">)))</span></div>
+
     
-<div class="viewcode-block" id="Plugin.calc_peak"><a class="viewcode-back" href="../../plugins.html#plugins.lctf.Plugin.calc_peak">[docs]</a>    <span class="k">def</span> <span class="nf">calc_peak</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.calc_peak">
+<a class="viewcode-back" href="../../plugins.html#plugins.lctf.Plugin.calc_peak">[docs]</a>
+    <span class="k">def</span> <span class="nf">calc_peak</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calc min/max peak detection.</span>
+<span class="sd">        </span>
+<span class="sd">        Referenced tol is the ratio of blur pixels to the radius.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;- no data.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        
         <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span>
         <span class="n">R0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmin</span><span class="o">.</span><span class="n">value</span>
         <span class="n">R1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmax</span><span class="o">.</span><span class="n">value</span>
@@ -277,7 +301,9 @@
         <span class="n">orgdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">newaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="n">newdata</span> <span class="o">=</span> <span class="n">smooth1d</span><span class="p">(</span><span class="n">orgdata</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
-            <span class="n">edi</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">newdata</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># original smoothing data</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">newdata</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># original smoothing data</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         
         <span class="n">newdata</span><span class="p">,</span> <span class="n">maxima</span><span class="p">,</span> <span class="n">minima</span> <span class="o">=</span> <span class="n">find_radial_peaks</span><span class="p">(</span><span class="n">newdata</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
         
@@ -320,39 +346,48 @@
         
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;+ </span><span class="si">{}</span><span class="s2"> low peaks found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
         <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
-            <span class="n">edi</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span> <span class="c1"># raw data</span>
-            <span class="c1">## edi.plot(newaxis, orgdata, &#39;--&#39;, lw=1) # original data</span>
-            <span class="n">edi</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">newdata</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># interpolated</span>
-            <span class="n">edi</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lx</span><span class="p">,</span> <span class="n">ly</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">)</span> <span class="c1"># low peaks</span>
-            <span class="n">edi</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hx</span><span class="p">,</span> <span class="n">hy</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">)</span> <span class="c1"># high peaks</span>
-            <span class="n">edi</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">lpoints</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">)</span>    <span class="c1"># filtered peaks</span>
-            
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span> <span class="c1"># raw data</span>
+            <span class="c1">## plt.plot(newaxis, orgdata, &#39;--&#39;, lw=1) # original data</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">newdata</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># interpolated</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lx</span><span class="p">,</span> <span class="n">ly</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">)</span> <span class="c1"># low peaks</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hx</span><span class="p">,</span> <span class="n">hy</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">)</span> <span class="c1"># high peaks</span>
+            <span class="c1">## plt.plot(*self.lpoints, &#39;o&#39;) # filtered peaks</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Alpha^2&quot;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        
+        <span class="c1">## for debug</span>
         <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
-                <span class="n">eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stig</span><span class="p">)</span>
-                <span class="n">ang</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stig</span><span class="p">)</span> <span class="o">*</span> <span class="mi">180</span><span class="o">/</span><span class="n">pi</span>
-                
-                <span class="c1">## 不特定多数の円を描画する (最大 N まで)</span>
-                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">Arts</span>
-                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">,:</span><span class="mi">10</span><span class="p">]:</span>
-                    <span class="n">r</span> <span class="o">=</span> <span class="n">N</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-                    <span class="n">art</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
-                                         <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-                    <span class="n">art</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span>
-                    <span class="n">art</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eps</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span>
-                    <span class="n">art</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">ang</span> <span class="o">/</span> <span class="mi">2</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">attach_artists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">art</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;- no data.&quot;</span><span class="p">)</span></div></div>
+            <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_frame</span>
+            <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_roi</span>
+            <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">buf</span> <span class="o">=</span> <span class="n">fftshift</span><span class="p">(</span><span class="n">fft2</span><span class="p">(</span><span class="n">src</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="s2">&quot;*fft of </span><span class="si">{}</span><span class="s2">*&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                             <span class="n">localunit</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="n">w</span><span class="o">/</span><span class="n">frame</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">unit</span>
+            <span class="n">eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stig</span><span class="p">)</span>
+            <span class="n">ang</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stig</span><span class="p">)</span> <span class="o">*</span> <span class="mi">180</span><span class="o">/</span><span class="n">pi</span>
+            
+            <span class="c1">## 不特定多数の円を描画する (最大 N まで)</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">Arts</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">,:</span><span class="mi">10</span><span class="p">]:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">N</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">art</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+                                     <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+                <span class="n">art</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span>
+                <span class="n">art</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eps</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span>
+                <span class="n">art</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">ang</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">attach_artists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">art</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div>
+</div>
+
 </pre></div>
 
             <div class="clearer"></div>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h3><a href="../../index.html">Table of Contents</a></h3>
 <p class="caption" role="heading"><span class="caption-text">Tutorial:</span></p>
@@ -368,7 +403,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyJeol.html">pyJeol package</a></li>
 </ul>
 
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -376,13 +411,13 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -397,8 +432,8 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2023, Kazuya O&#39;moto @JEOL Ltd..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>
