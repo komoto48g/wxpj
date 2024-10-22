@@ -83,7 +83,7 @@ class Plugin(Layer):
     
     def calc_optvar(self, show=True):
         """Calc optical variables.
-
+        
         Referenced limit is maximum index for fitting.
         """
         xx = self.lctf.lpoints[0] # selected peak points of x:ref

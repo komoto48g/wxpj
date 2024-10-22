@@ -175,7 +175,7 @@ class Plugin(Layer):
         )
         self.layout((
                 self.rmin,
-                self.rmax
+                self.rmax,
             ),
             title="radii", cw=0, lw=40, tw=40
         )

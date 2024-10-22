@@ -16,13 +16,17 @@ class Plugin(Layer):
     def Init(self):
         self.layout((
                 Button(self, "1. Mark", self.calmark, icon='help', size=(72,-1)),
-                self.lcrf.rmin,
-                
                 Button(self, "2. Run", self.execute, icon='help', size=(72,-1)),
-                Button(self, "Setting", self.show_setting),
             ),
-            title="Evaluate ring pattern", row=2,
+            title="Evaluate ring pattern", row=1,
             type='vspin', cw=-1, lw=0, tw=44,
+        )
+        self.layout((
+                self.lcrf.rmin,
+                self.lcrf.rmax,
+                Button(self, "Advanced settings", self.show_setting),
+            ),
+            title="Selection radii", cw=0, lw=40, tw=40
         )
         self.lgbt.ksize.value = 13 # default blur window size
     
