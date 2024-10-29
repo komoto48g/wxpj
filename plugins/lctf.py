@@ -32,9 +32,9 @@ def logpolar(src, r0, r1, center=None):
     rh0 = np.log(r0) if r0>0 else 0
     rh1 = np.log(r1)
     r = np.exp(rh0 + (rh1 - rh0) * xx)
-    map_x = xc + r * np.cos(yy)
-    map_y = yc + r * np.sin(yy)
-    dst = cv2.remap(src.astype(np.float32), map_x, map_y, cv2.INTER_CUBIC)
+    map_x = (xc + r * np.cos(yy)).astype(np.float32)
+    map_y = (yc + r * np.sin(yy)).astype(np.float32)
+    dst = cv2.remap(src, map_x, map_y, cv2.INTER_CUBIC)
     return dst
 
 
