@@ -9,10 +9,6 @@ from matplotlib import pyplot as plt
 from matplotlib import cm
 
 
-## --------------------------------
-## Image conv/plot/view
-## --------------------------------
-
 def read_buffer(path):
     from wxpyJemacs import MainFrame as Frame
 
@@ -163,11 +159,19 @@ def enhanced_fft(src, ratio=1):
 
 
 def fftcrop(src, maxsize=2048, center=None):
-    """Crop src image in +- 2**nn square ROI centered at (x, y)."""
+    """Crop maximum ROI in +- 2**k pixel square from src centered at (x, y)."""
     h, w = src.shape
     m = min(h, w, maxsize)
-    n = 1 if m < 2 else 2**int(np.log2(m) - 1) # 2**nn
+    n = 1 if m < 2 else 2**int(np.log2(m) - 1) # 2**k
     x, y = center or (w//2, h//2)
+    return src[y-n:y+n, x-n:x+n]
+
+
+def crop(src, maxsize=256, center=None):
+    """Crop ROI from src centered at (x, y)."""
+    h, w = src.shape
+    x, y = center or (w//2, h//2)
+    n = maxsize//2
     return src[y-n:y+n, x-n:x+n]
 
 
