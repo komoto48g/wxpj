@@ -11,14 +11,16 @@ from mwx.graphman import Frame, Layer, Thread, Graph # noqa
 from mwx.controls import Param, LParam, ControlPanel, Clipboard, Icon # noqa
 from mwx.controls import Button, ToggleButton, TextCtrl, Choice, Gauge, Indicator # noqa
 
-import editor as edi
-
 
 class Layer(Layer):
-    """Layer with TEM notify interface.
-    """
+    import editor as edi
+
     su = property(lambda self: self.parent.require('startup'))
 
+
+class TemLayer(Layer):
+    """Layer with TEM notify and camera interface.
+    """
     illumination = property(lambda self: self.parent.notify.illumination)
     imaging = property(lambda self: self.parent.notify.imaging)
     omega = property(lambda self: self.parent.notify.omega)
@@ -28,18 +30,6 @@ class Layer(Layer):
     apts = property(lambda self: self.parent.notify.apts)
     gonio = property(lambda self: self.parent.notify.gonio)
     efilter = property(lambda self: self.parent.notify.efilter)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        
-        ## Accessing editor's functions.
-        self.edi = edi
-
-        ## Cross references.
-        try:
-            self.edi.output = self.output
-        except AttributeError:
-            print(f"- {self!r} deos not have an output reference.")
 
 
 ## --------------------------------

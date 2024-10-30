@@ -41,6 +41,7 @@ def init_mainframe(self):
     ## Accessing editor functions.
     import editor
     self.edi = editor
+    self.edi.output = self.output
     
     ## Startup module is required before any other plugins.
     self.su = self.require('startup')
