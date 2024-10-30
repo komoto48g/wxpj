@@ -17,7 +17,7 @@ import wx.adv
 import numpy as np
 
 from wxpj import Frame
-from wxpj import stylus
+from debut import stylus
 
 
 class MainFrame(Frame):
