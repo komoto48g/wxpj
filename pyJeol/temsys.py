@@ -94,11 +94,11 @@ class NotifyHandler(object):
                       "ht_info" : [ None ], # called when HT changed (invalid for BK-TEMCENTER)▲
                    "htsub_info" : [ None, self.on_htsub_fork ],
                   "htsub2_info" : [ None ],
-                     "apt_info" : [ None ], # called when apertures are drived
-                     "det_info" : [ None ], # called when detectors are drived
-                     "scr_info" : [ None ], # called when screen are drived (invalid for BK-TEMCENTER)▲
-                   "gonio_info" : [ None ], # called when gonio is drived
-                 "efilter_info" : [ None ], # called when energy filter is drived
+                     "apt_info" : [ None ], # called when apertures are driven
+                     "det_info" : [ None ], # called when detectors are driven
+                     "scr_info" : [ None ], # called when screen are driven (invalid for BK-TEMCENTER)▲
+                   "gonio_info" : [ None ], # called when gonio is driven
+                 "efilter_info" : [ None ], # called when energy filter is driven
                   "lens_notify" : [ None, lambda v: self.tem.lsys(v),
                                           lambda v: self.tem.fsys(v) ], # called when lense data changed
                   "defl_notify" : [ None, lambda v: self.tem.dsys(v) ], # called when deflector data changed
@@ -209,7 +209,7 @@ class NotifyHandler(object):
         self._substr = [''] * 3 # 3-fields for mode:str
     
     def on_filter_fork(self, argv):
-        """Called when filter is drived."""
+        """Called when filter is driven."""
         info = self.efilter.Info(argv)
         self.handler("efilter_info", info)
         

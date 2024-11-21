@@ -18,7 +18,7 @@ class Plugin(Layer):
         self.sigma = LParam("sigma", (0,100,1), 0)
         self.thresh = LParam("thresh", (0,255,1), 128)
         
-        btn = Button(self, label="+Exectue",
+        btn = Button(self, label="+Execute",
                      handler=lambda v: self.execute(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
         
         self.layout(
