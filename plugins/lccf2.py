@@ -22,7 +22,7 @@ def find_ellipses(src, rmin, rmax):
     ##     At least 5 points are needed to fit an ellipse.
     ##     NaN should be eliminated.
     ellipses = [cv2.fitEllipse(v) for v in contours if len(v) > 4]
-    ellipses = filter(lambda v: not np.any(np.isnan(v[0:2])), ellipses) # nan を排除する
+    ellipses = filter(lambda v: not np.any(np.isnan(v[0:2])), ellipses)
     h, w = src.shape
     
     def _inside(v, tol=0.75/2): # 画像の端にある円を除く

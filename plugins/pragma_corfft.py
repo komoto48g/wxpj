@@ -1,7 +1,6 @@
 #! python3
 import wx
 import numpy as np
-from numpy import nan
 
 from wxpj import Layer, LParam, Button, Choice
 import editor as edi
@@ -117,7 +116,7 @@ class Plugin(Layer):
             self.message("- No *result*")
             return
         self.message("\b @lccf...")
-        if self.score.value is nan:
+        if np.isnan(self.score.value):
             self.lccf.execute(frame, otsu=True)
         else:
             self.lccf.execute(frame, otsu=1-self.score.value/100)
