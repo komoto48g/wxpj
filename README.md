@@ -27,7 +27,7 @@ These instructions will get you a copy of the project up and running on your loc
 1. Install Python.
     - Supports Python 3.10, 3.11, and 3.12.
     - Supports Python 3.13, but a few minor bugs are still unresolved.
-    - ***Please avoid using Anaconda, as wxPython cannot be installed.***
+    - ***Please do not use Anaconda, as wxPython cannot be installed.***
 
 2. Install Python packages:
     ```
@@ -36,11 +36,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 3. Install wxpj software.
     To download and install the wxpj project, follow these steps:
-    1. Access the repository:
-        Go to the [wxpj GitHub repository](https://github.com/komoto48g/wxpj).
-    2. Download as ZIP:
-        - On the repo's main page, click the green "Code" button.
-        - In the dropdown menu, select "Download ZIP".
+    1. Access the wxpj GitHub repository.
+    2. Download as ZIP.
     3. Extract the ZIP file:
         - After downloading, locate the ZIP file on your computer.
         - Decide a destination folder and extract the contents.
@@ -48,12 +45,11 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## How to run wxpyJemacs
 
-Here, let "~/" represent the directory where the main program is unzipped.
-The main program file is "wxpyjemacs.py".
-
-Launch the program:
+Launch the main program:
 
     $ python ~/wxpyJemacs.py
+
+Here, "~/" represents the directory where the main program is unzipped.
 
 
 ## How to terminate wxpyJemacs
@@ -76,19 +72,13 @@ Then, the program will start in the same state as when the session was saved.
 
 ### Tips
 
-以下のようなバッチファイルを，メインプログラムのディレクトリと同じ場所に置き，`.jssn` を関連付けます．
+以下のようなバッチファイルを，メインプログラムのディレクトリ (wxpj-master) のある場所に置き，`.jssn` を関連付けます．
 これにより，`.jssn` をダブルクリックすることでプログラムが起動し，セッションを再開することができます．
 
 pJ.cmd
 ```
 python "%~dp0\wxpj-master\wxpyJemacs.py" -s%1
 ```
-
-> 関連付けの方法 (Windows 11 の場合)
-> 1. `.jssn` ファイルを右クリックする
-> 2. 「プログラムから開く」→「別のプログラムを選択」
-> 3. 「PC でアプリを選択する」→ "pJ.cmd" を選択する．
-> 4. 「常に使う」を押して実行する．
 
 
 ## Deployment
