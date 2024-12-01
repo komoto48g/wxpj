@@ -103,6 +103,8 @@ class Plugin(Layer):
         
         self.btn = Button(self, label="+Execute",
                           handler=lambda v: self.thread.Start(self.execute, skip=wx.GetKeyState(wx.WXK_SHIFT)))
+        self.btn.SetToolTip("[S-Lbutton] skip:option\n"
+                            "Skip estimation of the initial grid params.")
         
         self.order = LParam("order", (0,6,1), 3)
         
@@ -161,8 +163,6 @@ class Plugin(Layer):
     
     def execute(self, frame=None, skip=False):
         """Calculate parameters for fitting markers as a grid pattern.
-        
-        [S-Lbutton] Skip estimation of the initial grid params.
         
         Args:
             frame   : target frame

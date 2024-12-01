@@ -113,6 +113,8 @@ class Plugin(Layer):
         
         self.btn = Button(self, label="+Execute",
                           handler=lambda v: self.thread.Start(self.execute, skip=wx.GetKeyState(wx.WXK_SHIFT)))
+        self.btn.SetToolTip("[S-Lbutton] skip:option\n"
+                            "Skip estimation of the nearest maximum peak.")
         
         self.order = LParam("ring", (1,10,1), 3)
         
@@ -171,8 +173,6 @@ class Plugin(Layer):
     
     def execute(self, frame=None, skip=False):
         """Calculate ellipse parameters for fitting the plotted markers.
-        
-        [S-Lbutton] Skip estimation of the nearest maximum peak.
         
         Args:
             frame   : target frame

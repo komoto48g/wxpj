@@ -20,6 +20,8 @@ class Plugin(Layer):
         
         btn = Button(self, label="+Execute",
                      handler=lambda v: self.execute(otsu=wx.GetKeyState(wx.WXK_SHIFT)))
+        btn.SetToolTip("[S-Lbutton] otsu:option\n"
+                       "Estimate the threshold using Otsu's algorithm.")
         
         self.layout(
             self.params, title="blur-threshold",
@@ -31,8 +33,6 @@ class Plugin(Layer):
     
     def execute(self, frame=None, otsu=True):
         """GaussianBlur and binarize using threshold.
-        
-        [S-Lbutton] Estimate the threshold using Otsu's algorithm.
         
         Args:
             otsu    : float number (0 < r < 1) indicating threshold percentile

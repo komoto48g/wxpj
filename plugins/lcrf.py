@@ -166,6 +166,8 @@ class Plugin(Layer):
         
         btn = Button(self, label="+Execute",
                      handler=lambda v: self.execute(shift=wx.GetKeyState(wx.WXK_SHIFT)))
+        btn.SetToolTip("[S-Lbutton] shift:option\n"
+                       "Use the selector as the initial center position.")
         
         self.chkplt = wx.CheckBox(self, label="rdist")
         
@@ -189,7 +191,6 @@ class Plugin(Layer):
         Search center position and fit the model parameters.
         Find the peaks in the radial distribution using polar-transformation.
         Plot some markers on the ring pattern.
-        [S-Lbutton] Use the selector as the initial center position.
         
         Args:
             frame   : target frame
