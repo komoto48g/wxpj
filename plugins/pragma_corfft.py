@@ -15,7 +15,6 @@ class Plugin(Layer):
     """
     menukey = "Plugins/&Pragma Tools/"
     
-    lgbt = property(lambda self: self.parent.require('lgbt'))
     lccf = property(lambda self: self.parent.require('lccf2'))
     ldc = property(lambda self: self.parent.require('ld_cgrid'))
     
@@ -61,7 +60,6 @@ class Plugin(Layer):
             ),
             title="Output", row=0, show=1, vspacing=2,
         )
-        self.lgbt.ksize.value = 13 # default blur window size
     
     @property
     def result_frame(self):

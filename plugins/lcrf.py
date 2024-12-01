@@ -158,8 +158,6 @@ class Plugin(Layer):
     menukey = "Plugins/&Basic Tools/"
     category = "Basic Tools"
     
-    lgbt = property(lambda self: self.parent.require('lgbt'))
-    
     def Init(self):
         self.rmin = LParam("rmin", (0, 1, 0.01), 0.1, handler=self.set_radii)
         self.rmax = LParam("rmax", (0, 2, 0.01), 1.0, handler=self.set_radii)
@@ -171,10 +169,6 @@ class Plugin(Layer):
         
         self.chkplt = wx.CheckBox(self, label="rdist")
         
-        self.layout(
-            self.lgbt.params,
-            title="blur-threshold", cw=0, lw=40, tw=40, show=0
-        )
         self.layout((
                 self.rmin,
                 self.rmax,

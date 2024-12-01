@@ -48,10 +48,6 @@ class Plugin(Layer):
         
         btn = Button(self, label="+Execute", handler=self.execute)
         
-        self.layout(
-            self.lgbt.params,
-            title="blur-threshold", cw=0, lw=40, tw=40, show=0
-        )
         self.layout((
                 self.rmin,
                 self.rmax,
@@ -82,7 +78,8 @@ class Plugin(Layer):
         
         n = len(circles)
         self.message(f"Found {n} circles.")
-        if not circles:
+        if n == 0:
+            self.message(f"\b Adjust lccf/rmin or rmax to optimize detection.")
             return
         N = self.maxcount
         if n > N:
@@ -101,7 +98,7 @@ class Plugin(Layer):
                 self.attach_artists(frame.axes, art)
                 
                 ## 検出した楕円の中心をそのまま記録する
-                ## 強度の偏りが出るのを防ぐため，十分ぼかし幅をとること
+                ## 強度の偏りが出ないように，十分ぼかし幅をとること
                 xy.append(art.center)
                 
                 ## r = int(np.hypot(ra, rb) / 2) # max radius enclosing the area rectangle

@@ -9,7 +9,6 @@ class Plugin(Layer):
     category = "Pragma Tools"
     caption = "Ring"
     
-    lgbt = property(lambda self: self.parent.require('lgbt'))
     lcrf = property(lambda self: self.parent.require('lcrf'))
     ld = property(lambda self: self.parent.require('ld_ring'))
     
@@ -28,7 +27,6 @@ class Plugin(Layer):
             ),
             title="Selection radii", cw=0, lw=40, tw=40
         )
-        self.lgbt.ksize.value = 13 # default blur window size
     
     def show_setting(self):
         """Show the settings."""

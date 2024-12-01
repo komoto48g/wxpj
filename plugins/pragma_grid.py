@@ -9,7 +9,6 @@ class Plugin(Layer):
     category = "Pragma Tools"
     caption = "Grid"
     
-    lgbt = property(lambda self: self.parent.require('lgbt'))
     lccf = property(lambda self: self.parent.require('lccf2'))
     ld = property(lambda self: self.parent.require('ld_grid'))
     
@@ -28,7 +27,6 @@ class Plugin(Layer):
             ),
             title="Selection ellispse", cw=0, lw=40, tw=40
         )
-        self.lgbt.ksize.value = 13 # default blur window size
     
     def show_setting(self, force=0):
         """Show the settings."""

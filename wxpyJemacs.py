@@ -1,7 +1,7 @@
 #! python3
 """The frontend of Graph and Plug manager.
 """
-__version__ = "0.67"
+__version__ = "0.68"
 __author__ = "Kazuya O'moto <komoto@jeol.co.jp>"
 __copyright__ = "Copyright (c) 2018-2022"
 __license__ = """\
