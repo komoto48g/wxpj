@@ -13,16 +13,15 @@ These instructions will get you a copy of the project up and running on your loc
 ![setup](./images/network.png)
 
 
-#### Note (for internal use only)
+### Note (for internal use only)
 
 社内でインストールする場合プロキシが見つからない為に失敗するかもしれません．
 その場合はまず次の設定を行ってください
 
     $ set HTTPS_PROXY=http://i-net.jeol.co.jp:80
-    $ set HTTP_PROXY=http://i-net.jeol.co.jp:80
 
 
-### Installing
+## Installing
 
 1. Install Python.
     - Supports Python 3.10, 3.11, and 3.12.
@@ -41,6 +40,36 @@ These instructions will get you a copy of the project up and running on your loc
     3. Extract the ZIP file:
         - After downloading, locate the ZIP file on your computer.
         - Decide a destination folder and extract the contents.
+
+
+### Tips: インストール作業を簡単に (社内向け)
+
+これまで説明したインストール作業は，以下のコマンドで実行できます．
+以下のテキストを "install-wxpj.bat" などの適当な名前で保存し，そのファイルを実行してください．
+
+```
+@setlocal
+
+set HTTPS_PROXY=http://i-net.jeol.co.jp:80
+
+pip install -U pywin32 httplib2 mwxlib
+curl -L -o wxpj-master.zip https://github.com/komoto48g/wxpj/archive/refs/heads/master.zip
+tar -xf wxpj-master.zip -C ./
+
+@echo off
+
+echo セッションファイル .jssn を関連付けるコマンドファイルを出力します．
+echo python "%~dp0\wxpj-master\wxpyJemacs.py" -s%%~nx1 > pJ.cmd
+
+assoc .jssn=jssn_auto_file
+ftype jssn_auto_file=%~dp0\pJ.cmd %%1
+
+if %ERRORLEVEL% neq 0 (
+    echo 拡張子の関連付けは管理者権限が必要です．
+)
+```
+
+拡張子の関連付けも行いたい場合は，管理者権限が必要となります．
 
 
 ## How to run wxpyJemacs
@@ -70,14 +99,14 @@ To restart the session, launch the program with `-s` switch:
 Then, the program will start in the same state as when the session was saved.
 
 
-### Tips
+### Tips: To start the session more simply
 
 以下のようなバッチファイルを，メインプログラムのディレクトリ (wxpj-master) のある場所に置き，`.jssn` を関連付けます．
 これにより，`.jssn` をダブルクリックすることでプログラムが起動し，セッションを再開することができます．
 
 pJ.cmd
 ```
-python "%~dp0\wxpj-master\wxpyJemacs.py" -s%1
+python "%~dp0\wxpj-master\wxpyJemacs.py" -s%~nx1
 ```
 
 
@@ -87,11 +116,6 @@ Additional notes about how to deploy this on a live system
 
     !! PYJEM.TEM3 機能を使用するためには PY <= 3.5 (以下) をインストールしてください．
     !! 別途，TemExternal のインストールが必要です．
-
-<!--
-:memo: バージョン 0.46 以降では不要です．
-       No longer required after version 0.46 GOOD BYE PYJEM.
--->
 
 
 ## Built With
