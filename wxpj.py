@@ -6,7 +6,7 @@ import numpy as np
 
 from mwx.graphman import Frame, Layer, Thread, Graph # noqa
 from mwx.controls import Param, LParam, ControlPanel, Clipboard, Icon # noqa
-from mwx.controls import Button, ToggleButton, TextCtrl, Choice, Gauge, Indicator # noqa
+from mwx.controls import Button, ToggleButton, TextBox, Choice, Gauge, Indicator # noqa
 
 
 class Layer(Layer):
