@@ -59,7 +59,7 @@ tar -xf wxpj-master.zip -C ./
 @echo off
 
 echo セッションファイル .jssn を関連付けるコマンドファイルを出力します．
-echo python "%~dp0\wxpj-master\wxpyJemacs.py" -s%%~nx1 > pJ.cmd
+echo python "%~dp0\wxpj-master\wxpyJemacs.py" -s"%%~nx1" > pJ.cmd
 
 assoc .jssn=jssn_auto_file
 ftype jssn_auto_file=%~dp0\pJ.cmd %%1

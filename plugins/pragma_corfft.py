@@ -210,7 +210,7 @@ class Plugin(Layer):
         src = edi.fftcrop(frame.roi)
         
         self.message("Processing enhanced FFT...")
-        dst = edi.enhanced_fft(src, 0.75)
+        dst = edi.enhanced_fft(src, 1.0)
         
         n = src.shape[0] // 2
         d = max(int(n * 0.002), 2)

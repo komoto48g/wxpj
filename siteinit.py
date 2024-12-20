@@ -24,8 +24,8 @@ def init_mainframe(self):
     self.graph.unit = self.output.unit = 0.365
 
     ## Local cutoff tolerance score percentiles.
-    ## self.graph.score_percentile = 0.01
-    ## self.output.score_percentile = 0.01
+    self.graph.score_percentile = 0.005
+    self.output.score_percentile = 0.005
 
     ## Local max image size (matplotlib/WXAgg) typically < 24e6 (bytes).
     ## self.graph.nbytes_threshold = 8e6

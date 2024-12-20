@@ -60,7 +60,7 @@ class Plugin(Layer):
         session['unit'] = self.gu_param.value
     
     def on_unit_notify(self, frame):
-        if frame:
+        if frame is self.selected_view.frame:
             self.gu_param.value = frame.parent.unit
             self.lu_param.value = frame.localunit
     
