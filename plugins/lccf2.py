@@ -67,6 +67,9 @@ class Plugin(Layer):
         """
         if not frame:
             frame = self.selected_view.frame
+            if not frame:
+                self.message("- No frame.")
+                return
         del self.Arts
         del frame.markers
         

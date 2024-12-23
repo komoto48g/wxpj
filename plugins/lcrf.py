@@ -194,8 +194,10 @@ class Plugin(Layer):
         """
         if not frame:
             frame = self.selected_view.frame
-        if not frame:
-            return
+            if not frame:
+                self.message("- No frame.")
+                return
+        
         self.target_view = frame.parent
         
         src = frame.buffer
