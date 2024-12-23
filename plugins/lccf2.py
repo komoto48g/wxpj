@@ -40,8 +40,6 @@ class Plugin(Layer):
     menukey = "Plugins/&Basic Tools/"
     category = "Basic Tools"
     
-    lgbt = property(lambda self: self.parent.require('lgbt'))
-    
     def Init(self):
         self.rmin = LParam("rmin", (0,1000,1), 2)
         self.rmax = LParam("rmax", (0,1000,1), 200)
@@ -72,12 +70,12 @@ class Plugin(Layer):
         del self.Arts
         del frame.markers
         
-        src = self.lgbt.execute(frame, otsu)
+        buf, t = edi.lgbt(frame.buffer, otsu)
         
-        circles = find_ellipses(src, self.rmin.value, self.rmax.value)
+        circles = find_ellipses(buf, self.rmin.value, self.rmax.value)
         
         n = len(circles)
-        self.message(f"Found {n} circles.")
+        self.message(f"Found {n} circles, with a threshold value of {t:g}.")
         if n == 0:
             self.message(f"\b Adjust lccf/rmin or rmax to optimize detection.")
             return
