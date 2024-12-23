@@ -15,17 +15,14 @@ class Plugin(Layer):
     def Init(self):
         self.layout((
                 Button(self, "1. Mark", self.calmark, icon='help', size=(72,-1)),
-                Button(self, "2. Run", self.execute, icon='help', size=(72,-1)),
-            ),
-            title="Evaluate ring pattern", row=1,
-            type='vspin', cw=-1, lw=0, tw=44,
-        )
-        self.layout((
                 self.lcrf.rmin,
-                self.lcrf.rmax,
-                Button(self, "Advanced settings", self.show_setting),
+                
+                Button(self, "2. Run", self.execute, icon='help', size=(72,-1)),
+                
+                Button(self, "Settings", self.show_setting),
             ),
-            title="Selection radii", cw=0, lw=40, tw=40
+            title="Evaluate ring pattern", row=2,
+            type='vspin', cw=-1, lw=0, tw=44,
         )
     
     def show_setting(self):
