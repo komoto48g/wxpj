@@ -8,7 +8,7 @@ from wxpj import Layer, LParam, Button
 import editor as edi
 
 
-def find_ellipses(src, rmin, rmax):
+def find_ellipses(src, rmin):
     ## Find contours in binary image
     ## ▲ src 第一引数は上書きされるので後で参照するときは注意する
     argv = cv2.findContours(src, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -28,7 +28,7 @@ def find_ellipses(src, rmin, rmax):
     def _inside(v, tol=0.75/2): # 画像の端にある円を除く
         c, r, a = v
         d = tol * r[1]
-        return (rmin < r[0] and r[1] < rmax and d < c[0] < w-d and d < c[1] < h-d)
+        return (rmin < r[0] and d < c[0] < w-d and d < c[1] < h-d)
     
     return sorted(filter(_inside, ellipses),
                   key=lambda v: np.hypot(v[0][0]-w/2, v[0][1]-h/2)) # 位置で昇順ソート
@@ -42,13 +42,11 @@ class Plugin(Layer):
     
     def Init(self):
         self.rmin = LParam("rmin", (0,1000,1), 2)
-        self.rmax = LParam("rmax", (0,1000,1), 200)
         
         btn = Button(self, label="+Execute", handler=self.execute)
         
         self.layout((
                 self.rmin,
-                self.rmax,
             ),
             title="rectangles", cw=0, lw=40, tw=40
         )
@@ -75,12 +73,12 @@ class Plugin(Layer):
         
         buf, t = edi.lgbt(frame.buffer, otsu)
         
-        circles = find_ellipses(buf, self.rmin.value, self.rmax.value)
+        circles = find_ellipses(buf, self.rmin.value)
         
         n = len(circles)
         self.message(f"Found {n} circles, with a threshold value of {t:g}.")
         if n == 0:
-            self.message(f"\b Adjust lccf/rmin or rmax to optimize detection.")
+            self.message(f"\b Adjust lccf/rmin to optimize detection.")
             return
         N = self.maxcount
         if n > N:
