@@ -160,7 +160,6 @@ class Plugin(Layer):
     
     def Init(self):
         self.rmin = LParam("rmin", (0, 1, 0.01), 0.1, handler=self.set_radii)
-        self.rmax = LParam("rmax", (0, 2, 0.01), 1.0, handler=self.set_radii)
         
         btn = Button(self, label="+Execute",
                      handler=lambda v: self.execute(shift=wx.GetKeyState(wx.WXK_SHIFT)))
@@ -171,7 +170,6 @@ class Plugin(Layer):
         
         self.layout((
                 self.rmin,
-                self.rmax,
             ),
             title="radii", cw=0, lw=40, tw=40
         )
@@ -211,7 +209,7 @@ class Plugin(Layer):
         
         ## Search center and fit with model
         lo = h/2 * self.rmin.value
-        hi = h/2 * self.rmax.value
+        hi = h/2
         for i in range(maxloop):
             buf, _c, fitting_curve, = find_ring_center(src, c, lo, hi)
             d = np.hypot(c[0]-_c[0], c[1]-_c[1])
@@ -271,9 +269,8 @@ class Plugin(Layer):
         frame = view.frame
         h, w = frame.buffer.shape
         try:
-            c1, c2 = self.Arts[:2]
-            c1.radius = h/2 * self.rmin.value * frame.unit
-            c2.radius = h/2 * self.rmax.value * frame.unit
+            c1 = self.Arts[0]
+            c1.radius = h/2 * frame.unit * self.rmin.value
             self.Draw()
         except ValueError:
             pass
