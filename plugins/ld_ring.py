@@ -181,6 +181,9 @@ class Plugin(Layer):
         """
         if not frame:
             frame = self.selected_view.frame
+            if not frame:
+                self.message("- No frame.")
+                return
         
         x, y = frame.markers
         if not x.size:

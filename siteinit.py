@@ -51,8 +51,7 @@ def init_mainframe(self):
     self.load_plug(line_profile)
     self.load_plug(fft_view)
     
-    from plugins import lgbt, lcrf, lccf2
-    self.load_plug(lgbt)
+    from plugins import lcrf, lccf2
     self.load_plug(lcrf)
     self.load_plug(lccf2)
     

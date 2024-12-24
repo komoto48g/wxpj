@@ -248,15 +248,42 @@ def eval_corr_shift(src, tmp, crop=False, subpix=False):
 ## Image analysis; Detect ellipses
 ## --------------------------------
 
+def lgbt(src, otsu=True, ksize=13, sigma=0, t=128):
+    """Gaussian-blur and binarize using threshold.
+    
+    Args:
+        otsu    : Otsu's method is used for thresholding src image.
+                  True (1) to use Otsu's algorithm.
+                  False (0) to use the specified threshold value.
+                  Float number (0 < r < 1) specifies threshold percentile.
+        ksize   : size of blur window
+                  If a False value is specified, no blurring will be performed.
+    
+    Returns:
+        blurred and binarized dst image <uint8>
+    """
+    src = imconv(src)
+    if ksize > 1:
+        src = cv2.GaussianBlur(src, (ksize, ksize), sigma)
+    buf = src
+    if 0 <= otsu < 1:
+        if otsu:
+            t = np.percentile(buf, 100 * otsu)
+        t, dst = cv2.threshold(buf, t, 255, cv2.THRESH_BINARY)
+    else:
+        t, dst = cv2.threshold(buf, t, 255, cv2.THRESH_OTSU)
+    return dst, t
+
+
 def find_ellipses(src, ksize=1, otsu=True, sortby='size'):
     """Find the rotated rectangle in which the ellipse is inscribed.
     
     Args:
-        ksize   : size of blur window
-                  If a False value is specified, no blurring will be performed.
         otsu    : Otsu's method is used for thresholding src image.
                   True (r = 1) specifies to use Otsu's algorithm.
-                  A float number (r < 1) specifies threshold percentile.
+                  Float number (r < 1) specifies threshold percentile.
+        ksize   : size of blur window
+                  If a False value is specified, no blurring will be performed.
         sortby  : how to sort ('pos' or 'size')
     
     Returns:
@@ -271,7 +298,6 @@ def find_ellipses(src, ksize=1, otsu=True, sortby='size'):
         To filter ellipses with rectangle sizes from rmin to rmax:
         >>> ls = [(c,r,a) for c,r,a in ellipses if rmin < r[0] and r[1] < rmax]
     """
-    ## GaussianBlur and binarize using threshold.
     src = imconv(src)
     h, w = src.shape
     if ksize and ksize > 1:

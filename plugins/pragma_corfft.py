@@ -97,6 +97,10 @@ class Plugin(Layer):
         """
         if not frame:
             frame = self.graph.frame
+            if not frame:
+                self.message("- No frame.")
+                return
+        
         self.target_view = frame.parent # update target view <graph>
         
         if self.choice.Selection < 2: # FFT/FFT+ mode
